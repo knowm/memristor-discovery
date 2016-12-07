@@ -1,0 +1,15 @@
+target/
+javadoc/
+bin/
+.classpath
+.project
+.settings/
+.DS_Store
+.metadata/
+*.dylib
+*.log
+*.ser
+*.odg#
+log/
+*.class
+dependency-reduced-pom.xml
