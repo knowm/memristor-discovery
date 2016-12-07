@@ -1,14 +1,5 @@
 # Pre-requisites For Running Memristor Discovery
 
-## Calibrate the AD2 Device
-
-Open up Waveforms2015 and select from the Menu `Settings ==> Device Manager`. In the Window that pops up, select `Calibrate`. The rest is self explanatory. Make sure to calibrate "Waveform Generator 1 Low Gain" followed by "Oscilloscope".
-
-## Install DWF Framework on Mac OSX
-
-Move the dwf.framework to `/Library/Frameworks`, as indicated during the install of Waveforms from the DMG:
-
-![](./_img/Framework.png)
 
 ## Install Java 8 Runtime Environment
 
@@ -21,9 +12,41 @@ Download the Java SE Runtime Environment 8 from [Oracle's Website](http://www.or
     brew update
     brew cask install java
 
-## Design Notes
+### Option #3: Install on Ubuntu
 
-1. Help images should be 500 x 500 px.
+    sudo add-apt-repository -y ppa:webupd8team/java
+    sudo apt-get update
+    echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
+    echo debconf shared/accepted-oracle-license-v1-1 seen true | sudo debconf-set-selections
+    sudo apt-get -y install oracle-java8-installer
+    java -version
+    
+    
+## Install DWF Framework on Mac OSX
+
+Move the dwf.framework to `/Library/Frameworks`, as indicated during the install of Waveforms from the DMG:
+
+![](./_img/Framework.png)
+
+## Install DWF Framework on Linux
+
+Download .deb files from here: <https://reference.digilentinc.com/reference/software/waveforms/waveforms-3>
+
+    sudo mv ~/Downloads/digilent.waveforms_3.3.7_amd64.deb /var/cache/apt/archives
+    cd /var/cache/apt/archives
+    sudo dpkg -i digilent.waveforms_3.3.7_amd64.deb
+    
+    sudo mv ~/Downloads/digilent.adept.runtime_2.16.5-amd64.deb /var/cache/apt/archives
+    cd /var/cache/apt/archives
+    sudo dpkg -i digilent.adept.runtime_2.16.5-amd64.deb
+
+
+## Calibrate the AD2 Device
+
+Open up Waveforms2015 and select from the Menu `Settings ==> Device Manager`. In the Window that pops up, select `Calibrate`. The rest is self explanatory. Make sure to calibrate "Waveform Generator 1 Low Gain" followed by "Oscilloscope".
+
+
+# For Developers Only
 
 ## Building
 
@@ -49,5 +72,8 @@ Maven is used to build the executable jar and it will contain all the dependenci
     mvn clean install
     java -jar memristor-discovery.jar
     
-    
+## Design Notes
+
+1. Help images should be 500 x 500 px.
+
     
