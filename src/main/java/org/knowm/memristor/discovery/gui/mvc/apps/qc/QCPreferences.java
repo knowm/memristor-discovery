@@ -40,7 +40,7 @@ public class QCPreferences extends AppPreferences {
   private static final String PREFIX = "QC_";
 
   public static final String SERIES_R_INIT_KEY = PREFIX + "SERIES_R_INIT_KEY";
-  public static final int SERIES_R_INIT_DEFAULT_VALUE = 49_900;
+  public static final int SERIES_R_INIT_DEFAULT_VALUE = 5_000;
 
   public static final String AMPLITUDE_INIT_FLOAT_KEY = PREFIX + "AMPLITUDE_INIT_FLOAT_KEY";
   public static final float AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE = 1.25f;

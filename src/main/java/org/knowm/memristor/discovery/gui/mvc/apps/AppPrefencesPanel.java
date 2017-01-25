@@ -70,6 +70,7 @@ public abstract class AppPrefencesPanel extends JDialog {
    * @param owner
    */
   public AppPrefencesPanel(JFrame owner) {
+
     super(owner);
     this.appPreferences = initAppPreferences();
     createAndShowGUI();
