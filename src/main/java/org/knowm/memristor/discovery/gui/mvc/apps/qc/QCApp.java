@@ -356,21 +356,22 @@ public class QCApp extends App implements PropertyChangeListener {
         }
         controlPanel.getStopButton().doClick();
 
+        String classification = "";
         if (numpass == 8) {
           reportLines.add(1, "# Classification: Tier 1");
-          System.out.println("TIER 1");
+          classification = "TIER 1";
         }
         else if (numpass == 7) {
           reportLines.add(1, "# Classification: Tier 2");
-          System.out.println("TIER 2");
+          classification = "TIER 2";
         }
         else if (numpass == 6 | numpass == 5 | numpass == 4) {
           reportLines.add(1, "# Classification: Burn and Learn");
-          System.out.println("TIER 3");
+          classification = "BURN & LEARN";
         }
         else {
           reportLines.add(1, "# Classification: REJECT");
-          System.out.println("REJECT");
+          classification = "REJECT";
         }
 
         reportLines.add(" ");
@@ -405,12 +406,7 @@ public class QCApp extends App implements PropertyChangeListener {
 
         (new SaveReportThread()).start();
 
-        // String pdfFileName = model.getBasePath() + "Report.pdf";
-        // try {
-        // PDFUtil.createPDFReport2(pdfFileName);
-        // } catch (IOException ex) {
-        // ex.printStackTrace();
-        // }
+        JOptionPane.showMessageDialog(null, "Classification: " + classification);
 
       } catch (Exception e) {
         e.printStackTrace();
