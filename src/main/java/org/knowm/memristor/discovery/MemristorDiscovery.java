@@ -85,6 +85,8 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
 
   public static void main(String[] args) {
 
+    System.setProperty("apple.awt.application.name", "Knowm Memristor Discovery");
+
     final MemristorDiscovery memristorDiscovery = new MemristorDiscovery();
 
     // Schedule a job for the event dispatch thread:

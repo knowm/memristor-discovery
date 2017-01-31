@@ -155,7 +155,6 @@ public class HysteresisPrefencesPanel extends AppPrefencesPanel {
   @Override
   public void doSavePreferences() {
 
-    System.out.println(waveformComboBox.getSelectedItem().toString().trim());
     appPreferences.setString(HysteresisPreferences.WAVEFORM_INIT_STRING_KEY, waveformComboBox.getSelectedItem().toString().trim());
     appPreferences.setFloat(HysteresisPreferences.OFFSET_INIT_FLOAT_KEY, Float.parseFloat(offsetTextField.getText()));
     appPreferences.setFloat(HysteresisPreferences.AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(amplitudeTextField.getText()));
