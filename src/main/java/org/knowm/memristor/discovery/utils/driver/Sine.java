@@ -3,7 +3,7 @@
  * and is also available under alternative licenses negotiated directly
  * with Knowm, Inc.
  *
- * Copyright (c) 2016 Knowm Inc. www.knowm.org
+ * Copyright (c) 2016-2017 Knowm Inc. www.knowm.org
  *
  * This package also includes various components that are not part of
  * Memristor-Discovery itself:
@@ -25,7 +25,6 @@
  * If you have any questions regarding our licensing policy, please
  * contact us at `contact@knowm.org`.
  */
-
 package org.knowm.memristor.discovery.utils.driver;
 
 /**
