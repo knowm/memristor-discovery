@@ -67,6 +67,7 @@ public class ExperimentModel extends AppModel {
     // load model from prefs
     waveform = HysteresisPreferences.Waveform.valueOf(appPreferences.getString(HysteresisPreferences.WAVEFORM_INIT_STRING_KEY, HysteresisPreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
     seriesR = appPreferences.getInteger(HysteresisPreferences.SERIES_R_INIT_KEY, HysteresisPreferences.SERIES_R_INIT_DEFAULT_VALUE);
+    offset = appPreferences.getFloat(HysteresisPreferences.OFFSET_INIT_FLOAT_KEY, HysteresisPreferences.OFFSET_INIT_FLOAT_DEFAULT_VALUE);
     amplitude = appPreferences.getFloat(HysteresisPreferences.AMPLITUDE_INIT_FLOAT_KEY, HysteresisPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
     frequency = appPreferences.getInteger(HysteresisPreferences.FREQUENCY_INIT_KEY, HysteresisPreferences.FREQUENCY_INIT_DEFAULT_VALUE);
     swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_PREFERENCES_UPDATE, true, false);

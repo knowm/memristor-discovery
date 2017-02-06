@@ -34,11 +34,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 
-import javax.swing.AbstractAction;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
+import javax.swing.*;
 
 import org.knowm.memristor.discovery.gui.AboutDialog;
 import org.knowm.memristor.discovery.gui.mvc.apps.App;
@@ -86,6 +82,19 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
   public static void main(String[] args) {
 
     System.setProperty("apple.awt.application.name", "Knowm Memristor Discovery");
+
+    //Set the look and feel to users OS LaF.
+    try {
+      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
+    } catch (InstantiationException e) {
+      e.printStackTrace();
+    } catch (IllegalAccessException e) {
+      e.printStackTrace();
+    } catch (UnsupportedLookAndFeelException e) {
+      e.printStackTrace();
+    }
 
     final MemristorDiscovery memristorDiscovery = new MemristorDiscovery();
 
@@ -282,7 +291,7 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
   private void showPreferences() {
 
     int result = 0;
-    System.out.println("appID= " + appID);
+    // System.out.println("appID= " + appID);
     switch (appID) {
     case "Hysteresis":
       result = new HysteresisPrefencesPanel(mainFrame).doModal();
