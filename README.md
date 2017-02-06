@@ -10,6 +10,10 @@ The following screenshots how Memristor-Discovery running on the three supported
 
 ![Windows 10](_img/MD_Windows.png)
 
+# Installing Memristor-Doscovery
+
+See [Releases](https://github.com/knowm/memristor-discovery/releases) for downloads and installation instructions.
+
 # Pre-requisites For Running Memristor Discovery
 
 ## Install Java 8 Runtime Environment
@@ -31,7 +35,6 @@ Download the Java SE Runtime Environment 8 from [Oracle's Website](http://www.or
     echo debconf shared/accepted-oracle-license-v1-1 seen true | sudo debconf-set-selections
     sudo apt-get -y install oracle-java8-installer
     java -version
-    
     
 ## Install DWF Framework on Mac OSX
 
