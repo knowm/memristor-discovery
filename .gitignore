@@ -13,4 +13,4 @@ bin/
 log/
 *.class
 dependency-reduced-pom.xml
-*/iml
+*.iml
