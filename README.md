@@ -1,5 +1,16 @@
-# Pre-requisites For Running Memristor Discovery
+# About
 
+Memristor Discovery is a Java application for running memristor experiments of "applications" on the Knowm [Memristor Discovery Board](http://knowm.org/product/memristor-discovery/). It is designed to be cross-platform, meaning it runs on the latest versions of MacOS, Debian-based Linux and Windows 10. Running Memristor-Discovery requires Java and the Digilent waveforms Framework to be installed on your system (see below).
+
+The following screenshots how Memristor-Discovery running on the three supported operating systems.
+
+![MacOS](_img/MD_MacOS.png)
+
+![Linux](_img/MD_Linux.png)
+
+![Windows 10](_img/MD_Windows.png)
+
+# Pre-requisites For Running Memristor Discovery
 
 ## Install Java 8 Runtime Environment
 
@@ -41,10 +52,13 @@ Download .deb files from here: <https://reference.digilentinc.com/reference/soft
     cd /var/cache/apt/archives
     sudo dpkg -i digilent.waveforms_3.4.7_amd64.deb
 
+## Install DWF Framework on Windows
+
+Download Waveforms 2015 from here: <https://reference.digilentinc.com/reference/software/waveforms/waveforms-3/start> and run the installer.
 
 ## Calibrate the AD2 Device
 
-Open up Waveforms2015 and select from the Menu `Settings ==> Device Manager`. In the Window that pops up, select `Calibrate`. The rest is self explanatory. Make sure to calibrate "Waveform Generator 1 Low Gain" followed by "Oscilloscope".
+Open up Waveforms 2015 and select from the Menu `Settings ==> Device Manager`. In the Window that pops up, select `Calibrate`. The rest is self explanatory. Make sure to calibrate "Waveform Generator 1 Low Gain" followed by "Oscilloscope".
 
 
 # For Developers Only
