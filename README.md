@@ -30,15 +30,16 @@ Move the dwf.framework to `/Library/Frameworks`, as indicated during the install
 
 ## Install DWF Framework on Linux
 
-Download .deb files from here: <https://reference.digilentinc.com/reference/software/waveforms/waveforms-3>
+Download .deb files from here: <https://reference.digilentinc.com/reference/software/waveforms/waveforms-3/start>
 
-    sudo mv ~/Downloads/digilent.waveforms_3.3.7_amd64.deb /var/cache/apt/archives
-    cd /var/cache/apt/archives
-    sudo dpkg -i digilent.waveforms_3.3.7_amd64.deb
-    
+
     sudo mv ~/Downloads/digilent.adept.runtime_2.16.5-amd64.deb /var/cache/apt/archives
     cd /var/cache/apt/archives
     sudo dpkg -i digilent.adept.runtime_2.16.5-amd64.deb
+
+    sudo mv ~/Downloads/digilent.waveforms_3.4.7_amd64.deb /var/cache/apt/archives
+    cd /var/cache/apt/archives
+    sudo dpkg -i digilent.waveforms_3.4.7_amd64.deb
 
 
 ## Calibrate the AD2 Device
