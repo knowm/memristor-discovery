@@ -8,7 +8,7 @@ This app allows you to drive 8 memristors in series with a series resistor with 
 2.  Oscilloscope Probe V1 (Analog Discovery 2's "W1" and "gnd" connectors) is connected across the memristor (M) and series resistor (Rs).
 3.  Oscilloscope Probe V2 (Analog Discovery 2's "W2" and "gnd" connectors) is connected across the series resistor (Rs).
 
-## series Resistor
+## Series Resistor
 
 The series resistor provide two important functions:
 
