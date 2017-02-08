@@ -10,7 +10,7 @@ The following screenshots how Memristor-Discovery running on the three supported
 
 ![Windows 10](_img/MD_Windows.png)
 
-# Installing Memristor-Doscovery
+# Installing Memristor-Discovery
 
 See [Releases](https://github.com/knowm/memristor-discovery/releases) for downloads and installation instructions.
 
