@@ -127,7 +127,6 @@ public class HysteresisApp extends App implements PropertyChangeListener {
         // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
         allowPlotting = false;
         captureWorker.cancel(true);
-
       }
     });
 
@@ -143,7 +142,6 @@ public class HysteresisApp extends App implements PropertyChangeListener {
     // trigger plot of waveform
     PropertyChangeEvent evt = new PropertyChangeEvent(this, AppModel.EVENT_WAVEFORM_UPDATE, true, false);
     propertyChange(evt);
-
   }
 
   private class HysteresisCaptureWorker extends SwingWorker<Boolean, double[][]> {
@@ -151,21 +149,18 @@ public class HysteresisApp extends App implements PropertyChangeListener {
     @Override
     protected Boolean doInBackground() throws Exception {
 
+      // AnalogOut
       DWF.Waveform dwfWaveform = getDWFWaveform(experimentModel.getWaveform());
-
       dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, experimentModel.getFrequency(), experimentModel.getAmplitude(), experimentModel.getOffset(), 50);
 
+      System.out.println("experimentModel.getFrequency() = " + experimentModel.getFrequency());
+      double sampleFrequency = (double) experimentModel.getFrequency() * HysteresisPreferences.CAPTURE_BUFFER_SIZE / HysteresisPreferences.CAPTURE_PERIOD_COUNT;
+      System.out.println("sampleFrequency = " + sampleFrequency);
+
       // Analog In
-      dwfProxy.getDwf().startAnalogCaptureBothChannels(experimentModel.getFrequency() * HysteresisPreferences.CAPTURE_BUFFER_SIZE / HysteresisPreferences.CAPTURE_PERIOD_COUNT,
-          HysteresisPreferences.CAPTURE_BUFFER_SIZE, AcquisitionMode.ScanShift);
+      dwfProxy.getDwf().startAnalogCaptureBothChannels(sampleFrequency, HysteresisPreferences.CAPTURE_BUFFER_SIZE, AcquisitionMode.ScanShift);
 
       dwfProxy.setAD2Capturing(true);
-
-      // double rEq = 1.0 / (1.0 / model.getShunt() + 1.0 / HysteresisPreferences.SCOPE_RESISTANCE);
-
-      // System.out.println("scopeΩ=" + HysteresisPreferences.SCOPE_RESISTANCE);
-      // System.out.println("shuntΩ=" + model.getShunt());
-      // System.out.println("EqΩ=" + rEq);
 
       while (!isCancelled()) {
 
@@ -180,9 +175,8 @@ public class HysteresisApp extends App implements PropertyChangeListener {
           // Analog In
           dwfProxy.getDwf().stopAnalogCaptureBothChannels();
 
-          // dwf.FDwfAnalogInConfigure(false, false);
-          // dwf.FDwfAnalogOutConfigure(DWF.WAVEFORM_CHANNEL, false);
           dwfProxy.setAD2Capturing(false);
+
           // System.out.println("capture worker shut down.");
         }
 
@@ -206,7 +200,7 @@ public class HysteresisApp extends App implements PropertyChangeListener {
             for (int i = 0; i < timeData.length; i++) {
               timeData[i] = i * timeStep;
             }
-            publish(new double[][] { rawdata1, rawdata2, timeData });
+            publish(new double[][]{rawdata1, rawdata2, timeData});
           }
           else if (plotPanel.getIVButton().isSelected()) { // IV
 
@@ -221,7 +215,7 @@ public class HysteresisApp extends App implements PropertyChangeListener {
                 voltage[i] = rawdata1[i] - rawdata2[i];
               }
             }
-            publish(new double[][] { rawdata1, voltage, current });
+            publish(new double[][]{rawdata1, voltage, current});
           }
           else {// GV
 
@@ -243,9 +237,8 @@ public class HysteresisApp extends App implements PropertyChangeListener {
               voltage[i] = rawdata1[i] - rawdata2[i];
             }
 
-            publish(new double[][] { rawdata1, voltage, conductance });
+            publish(new double[][]{rawdata1, voltage, conductance});
           }
-
         }
       }
       return true;
@@ -302,34 +295,45 @@ public class HysteresisApp extends App implements PropertyChangeListener {
 
     switch (propName) {
 
-    case AppModel.EVENT_WAVEFORM_UPDATE:
+      case AppModel.EVENT_WAVEFORM_UPDATE:
 
-      if (dwfProxy.isAD2Capturing()) {
+        if (dwfProxy.isAD2Capturing()) {
 
-        DWF.Waveform dwfWaveform = getDWFWaveform(experimentModel.getWaveform());
-        dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, experimentModel.getFrequency(), experimentModel.getAmplitude(), experimentModel.getOffset(), 50);
+          // AnalogOut
+          DWF.Waveform dwfWaveform = getDWFWaveform(experimentModel.getWaveform());
+          dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, experimentModel.getFrequency(), experimentModel.getAmplitude(), experimentModel.getOffset(), 50);
 
-        if (plotPanel.getCaptureButton().isSelected()) {
-          plotPanel.switch2CaptureChart();
-        }
-        else if (plotPanel.getIVButton().isSelected()) {
-          plotPanel.switch2IVChart();
+          if (plotPanel.getCaptureButton().isSelected()) {
+            plotPanel.switch2CaptureChart();
+          }
+          else if (plotPanel.getIVButton().isSelected()) {
+            plotPanel.switch2IVChart();
+          }
+          else {
+            plotPanel.switch2GVChart();
+          }
         }
         else {
-          plotPanel.switch2GVChart();
+          plotPanel.switch2WaveformChart();
+          plotController.udpateWaveformChart(experimentModel.getWaveformTimeData(), experimentModel.getWaveformAmplitudeData(), experimentModel.getAmplitude(), experimentModel.getFrequency(),
+              experimentModel.getOffset());
         }
-      }
-      else {
-        plotPanel.switch2WaveformChart();
-        plotController.udpateWaveformChart(experimentModel.getWaveformTimeData(), experimentModel.getWaveformAmplitudeData(), experimentModel.getAmplitude(), experimentModel.getFrequency(),
-            experimentModel.getOffset());
-      }
-      break;
+        break;
+      case AppModel.EVENT_FREQUENCY_UPDATE:
 
-    default:
-      break;
+        // a special case when the frequency is changed. Not only does the analog out need to change (above), the capture frequency rate must also be changed.
+
+        if (dwfProxy.isAD2Capturing()) {
+
+          // Analog In
+          double sampleFrequency = (double) experimentModel.getFrequency() * HysteresisPreferences.CAPTURE_BUFFER_SIZE / HysteresisPreferences.CAPTURE_PERIOD_COUNT;
+          dwfProxy.getDwf().startAnalogCaptureBothChannels(sampleFrequency, HysteresisPreferences.CAPTURE_BUFFER_SIZE, AcquisitionMode.ScanShift);
+        }
+
+        break;
+      default:
+        break;
     }
-
   }
 
   @Override
@@ -347,13 +351,12 @@ public class HysteresisApp extends App implements PropertyChangeListener {
   private DWF.Waveform getDWFWaveform(HysteresisPreferences.Waveform waveform) {
 
     switch (waveform) {
-    case Sine:
-      return DWF.Waveform.Sine;
-    case Triangle:
-      return DWF.Waveform.Triangle;
-    default:
-      return DWF.Waveform.Sine;
+      case Sine:
+        return DWF.Waveform.Sine;
+      case Triangle:
+        return DWF.Waveform.Triangle;
+      default:
+        return DWF.Waveform.Sine;
     }
   }
-
 }

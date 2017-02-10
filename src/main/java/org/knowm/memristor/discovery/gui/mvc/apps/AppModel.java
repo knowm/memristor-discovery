@@ -33,6 +33,7 @@ public abstract class AppModel {
 
   /** Events */
   public static final String EVENT_WAVEFORM_UPDATE = "EVENT_WAVEFORM_UPDATE";
+  public static final String EVENT_FREQUENCY_UPDATE = "EVENT_FREQUENCY_UPDATE";
   public static final String EVENT_PREFERENCES_UPDATE = "EVENT_PREFERENCES_UPDATE";
 
   public abstract AppPreferences initAppPreferences();

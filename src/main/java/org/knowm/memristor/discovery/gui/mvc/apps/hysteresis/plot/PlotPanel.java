@@ -35,7 +35,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JSlider;
 import javax.swing.JTextField;
 
 import org.knowm.memristor.discovery.gui.mvc.apps.hysteresis.HysteresisPreferences;
@@ -73,7 +72,6 @@ public class PlotPanel extends JPanel {
   private final JCheckBox freezeYAxisCheckBoxGV;
   private final JLabel kLabelGV;
   private final JTextField kTextFieldGV;
-  private final JSlider kSlider;
 
   /**
    * Constructor
@@ -89,7 +87,7 @@ public class PlotPanel extends JPanel {
 
     waveformChart = new XYChartBuilder().width(400).height(400).title("Waveform").yAxisTitle("Voltage [V]").xAxisTitle("Time [s]").build();
     waveformChart.getStyler().setLegendVisible(false);
-    XYSeries series = waveformChart.addSeries("waveform", new double[] { 0 }, new double[] { 0 });
+    XYSeries series = waveformChart.addSeries("waveform", new double[]{0}, new double[]{0});
     series.setMarker(SeriesMarkers.NONE); // waveformChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
     waveformChartPanel = new XChartPanel<>(waveformChart);
     add(waveformChartPanel, BorderLayout.CENTER);
@@ -101,10 +99,10 @@ public class PlotPanel extends JPanel {
     captureChart = new XYChartBuilder().width(600).title("Capture").height(400).yAxisTitle("Voltage [V]").xAxisTitle("Time [s]").build();
     captureChart.getStyler().setLegendPosition(LegendPosition.InsideNE);
 
-    series = captureChart.addSeries("V1", new double[] { 0 }, new double[] { 0 });
+    series = captureChart.addSeries("V1", new double[]{0}, new double[]{0});
     series.setMarker(SeriesMarkers.NONE);
 
-    series = captureChart.addSeries("V2", new double[] { 0 }, new double[] { 0 });
+    series = captureChart.addSeries("V2", new double[]{0}, new double[]{0});
     series.setMarker(SeriesMarkers.NONE);
 
     captureChartPanel = new XChartPanel<>(captureChart);
@@ -117,7 +115,7 @@ public class PlotPanel extends JPanel {
     ivChart.getStyler().setLegendVisible(false);
     ivChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);
 
-    series = ivChart.addSeries("iv", new double[] { 0 }, new double[] { 0 });
+    series = ivChart.addSeries("iv", new double[]{0}, new double[]{0});
 
     ivChartPanel = new XChartPanel<>(ivChart);
 
@@ -133,8 +131,8 @@ public class PlotPanel extends JPanel {
 
     gvChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);
 
-    series = gvChart.addSeries("gv", new double[] { 0 }, new double[] { 0 });
-    series = gvChart.addSeries("gv_m", new double[] { 0 }, new double[] { 0 });
+    series = gvChart.addSeries("gv", new double[]{0}, new double[]{0});
+    series = gvChart.addSeries("gv_m", new double[]{0}, new double[]{0});
 
     gvChartPanel = new XChartPanel<>(gvChart);
 
@@ -159,17 +157,10 @@ public class PlotPanel extends JPanel {
     freezeYAxisCheckBoxGV = new JCheckBox("Freeze Y-Axis");
     kLabelGV = new JLabel("K: ");
     kTextFieldGV = new JTextField(4);
-    kSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 10);
-    kSlider.setMajorTickSpacing(20);
-    kSlider.setMinorTickSpacing(5);
-    kSlider.setPaintTicks(true);
-    kSlider.setPaintLabels(true);
-    kSlider.setSnapToTicks(true);
 
     gvChartControlPanel.add(freezeYAxisCheckBoxGV);
     gvChartControlPanel.add(kLabelGV);
     gvChartControlPanel.add(kTextFieldGV);
-    gvChartControlPanel.add(kSlider);
   }
 
   private void addRadioButtons() {
@@ -272,11 +263,6 @@ public class PlotPanel extends JPanel {
   public JTextField getkTextFieldGV() {
 
     return kTextFieldGV;
-  }
-
-  public JSlider getkSlider() {
-
-    return kSlider;
   }
 
   public double getIVChartMax() {

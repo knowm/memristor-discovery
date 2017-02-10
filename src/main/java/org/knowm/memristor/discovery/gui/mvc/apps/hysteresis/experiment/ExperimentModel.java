@@ -164,8 +164,12 @@ public class ExperimentModel extends AppModel {
 
   public void setFrequency(int frequency) {
 
+    int oldFreq =  this.frequency;
+
     this.frequency = frequency;
     swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_FREQUENCY_UPDATE, oldFreq, frequency);
+
   }
 
   public double[] getWaveformTimeData() {

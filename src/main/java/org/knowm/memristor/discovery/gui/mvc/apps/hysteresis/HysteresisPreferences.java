@@ -68,7 +68,7 @@ public class HysteresisPreferences extends AppPreferences {
 
   public static final boolean IS_VIN = true;
 
-  public static final int CAPTURE_BUFFER_SIZE = 80;
+  public static final int CAPTURE_BUFFER_SIZE = 100;
   public static final int CAPTURE_PERIOD_COUNT = 1;
 
   /**

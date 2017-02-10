@@ -40,7 +40,6 @@ public class PlotModel extends AppModel {
   private double k;
 
   /** Min Max params */
-
   Double yMaxIV = null;
   Double yMinIV = null;
 

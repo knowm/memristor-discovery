@@ -36,10 +36,7 @@ import java.beans.PropertyChangeListener;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import javax.swing.JSlider;
 import javax.swing.JTextField;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import org.knowm.memristor.discovery.gui.mvc.apps.AppModel;
 import org.knowm.memristor.discovery.gui.mvc.apps.hysteresis.HysteresisPreferences;
@@ -119,7 +116,6 @@ public class PlotController implements PropertyChangeListener {
           plotModel.setyMaxIV(null);
           plotModel.setyMinIV(null);
         }
-
       }
     });
     plotPanel.getFreezeYAxisCheckBoxGV().addActionListener(new ActionListener() {
@@ -135,7 +131,6 @@ public class PlotController implements PropertyChangeListener {
           plotModel.setyMaxGV(null);
           plotModel.setyMinGV(null);
         }
-
       }
     });
 
@@ -156,19 +151,6 @@ public class PlotController implements PropertyChangeListener {
         }
       }
     });
-    plotPanel.getkSlider().addChangeListener(new ChangeListener() {
-
-      @Override
-      public void stateChanged(ChangeEvent e) {
-
-        JSlider source = (JSlider) e.getSource();
-        if (!(source.getValueIsAdjusting())) {
-          plotModel.setK(source.getValue() / (double) 100);
-          plotPanel.getkTextFieldGV().setText(Double.toString(plotModel.getK()));
-        }
-      }
-
-    });
   }
 
   public void udpateWaveformChart(double[] waveformTimeData, double[] waveformAmplitudeData, double amplitude, int frequency, double offset) {
@@ -181,9 +163,6 @@ public class PlotController implements PropertyChangeListener {
 
   public void udpateVtChart(double[] captureAmplitudeData1, double[] captureAmplitudeData2, double[] timeData, int frequency, double amplitude, double offset) {
 
-    // System.out.println(Arrays.toString(captureAmplitudeData1));
-    // System.out.println(Arrays.toString(captureAmplitudeData2));
-    // System.out.println(Arrays.toString(current));
     plotPanel.getCaptureChart().setTitle(getVtChartTitle(amplitude, frequency, offset));
     plotPanel.getCaptureChart().updateXYSeries("V1", timeData, captureAmplitudeData1, null);
     plotPanel.getCaptureChart().updateXYSeries("V2", timeData, captureAmplitudeData2, null);
@@ -193,9 +172,6 @@ public class PlotController implements PropertyChangeListener {
 
   public void udpateIVChart(double[] captureAmplitudeData1, double[] vMemristor, double[] current, int frequency, double amplitude, double offset) {
 
-    // System.out.println(Arrays.toString(captureAmplitudeData1));
-    // System.out.println(Arrays.toString(vMemristor));
-    // System.out.println(Arrays.toString(current));
     plotPanel.getIvChart().getStyler().setYAxisMax(plotModel.getyMaxIV());
     plotPanel.getIvChart().getStyler().setYAxisMin(plotModel.getyMinIV());
 
@@ -212,27 +188,13 @@ public class PlotController implements PropertyChangeListener {
 
   public void udpateGVChart(double[] captureAmplitudeData1, double[] vMemristor, double[] conductance, int frequency, double amplitude, double offset) {
 
-    // System.out.println(Arrays.toString(captureAmplitudeData1));
-    // System.out.println(Arrays.toString(vMemristor));
-    // System.out.println(Arrays.toString(resistance));
-
-    // plotPanel.getGvChart().getStyler().setYAxisMax(plotModel.getyMaxGV());
-    // plotPanel.getGvChart().getStyler().setYAxisMin(plotModel.getyMinGV());
-
     plotPanel.getGvChart().getStyler().setYAxisMax(plotModel.getyMaxGV());
     plotPanel.getGvChart().getStyler().setYAxisMin(0.0);
-
     plotPanel.getGvChart().getStyler().setXAxisMin(-1.0);
     plotPanel.getGvChart().getStyler().setXAxisMax(1.0);
-
     plotPanel.getGvChart().setTitle(getGVChartTitle(amplitude, frequency, offset));
-    // if (!HysteresisPreferences.IS_VIN) {
     plotPanel.getGvChart().updateXYSeries("gv", captureAmplitudeData1, conductance, null);
     plotPanel.getGvChart().updateXYSeries("gv_m", vMemristor, conductance, null);
-    // }
-    // else {
-    // gvChart.updateXYSeries("gv", vMemristor, conductance, null);
-    // }
     plotPanel.getGvChartPanel().revalidate();
     plotPanel.getGvChartPanel().repaint();
   }
@@ -286,13 +248,13 @@ public class PlotController implements PropertyChangeListener {
 
     switch (evt.getPropertyName()) {
 
-    case AppModel.EVENT_PREFERENCES_UPDATE:
+      case AppModel.EVENT_PREFERENCES_UPDATE:
 
-      initGUIComponentsFromModel();
-      break;
+        initGUIComponentsFromModel();
+        break;
 
-    default:
-      break;
+      default:
+        break;
     }
   }
 }
