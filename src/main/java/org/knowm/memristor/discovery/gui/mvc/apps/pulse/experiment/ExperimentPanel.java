@@ -25,7 +25,7 @@
  * If you have any questions regarding our licensing policy, please
  * contact us at `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.apps.pulse2.experiment;
+package org.knowm.memristor.discovery.gui.mvc.apps.pulse.experiment;
 
 import java.awt.Component;
 import java.awt.Dimension;

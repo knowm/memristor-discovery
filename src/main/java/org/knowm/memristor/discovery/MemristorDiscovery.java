@@ -33,7 +33,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import org.knowm.memristor.discovery.gui.AboutDialog;
 import org.knowm.memristor.discovery.gui.mvc.apps.App;
@@ -42,8 +48,6 @@ import org.knowm.memristor.discovery.gui.mvc.apps.hysteresis.HysteresisApp;
 import org.knowm.memristor.discovery.gui.mvc.apps.hysteresis.HysteresisPrefencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.apps.pulse.PulseApp;
 import org.knowm.memristor.discovery.gui.mvc.apps.pulse.PulsePrefencesPanel;
-import org.knowm.memristor.discovery.gui.mvc.apps.pulse2.PulseApp2;
-import org.knowm.memristor.discovery.gui.mvc.apps.pulse2.PulsePrefencesPanel2;
 import org.knowm.memristor.discovery.gui.mvc.apps.qc.QCApp;
 import org.knowm.memristor.discovery.gui.mvc.apps.qc.QCPrefencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.footer.FooterController;
@@ -67,8 +71,8 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
 
   private final DWFProxy dwf = new DWFProxy();
 
-  // private final String[] apps = new String[] { "Hysteresis", "Pulse", "Pulse2", "QC" };
-  private final String[] apps = new String[] { "Hysteresis", "Pulse2" };
+  // private final String[] apps = new String[] { "Hysteresis", "Pulse", "QC" };
+  private final String[] apps = new String[]{"Hysteresis", "Pulse"};
   private String appID;
   // private String appID = apps[0];
   private App app;
@@ -160,28 +164,24 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
           System.out.println(appID);
 
           switch (e.getActionCommand()) {
-          case "Hysteresis":
-            app = new HysteresisApp(dwf, mainFrame.getContentPane());
-            break;
-          case "Pulse":
-            app = new PulseApp(dwf, mainFrame.getContentPane());
-            break;
-          case "Pulse2":
-            app = new PulseApp2(dwf, mainFrame.getContentPane());
-            break;
-          case "QC":
-            app = new QCApp(dwf, mainFrame.getContentPane());
-            break;
+            case "Hysteresis":
+              app = new HysteresisApp(dwf, mainFrame.getContentPane());
+              break;
+            case "Pulse":
+              app = new PulseApp(dwf, mainFrame.getContentPane());
+              break;
+            case "QC":
+              app = new QCApp(dwf, mainFrame.getContentPane());
+              break;
 
-          default:
-            break;
+            default:
+              break;
           }
 
           dwf.startupAD2();
 
           mainFrame.setTitle(FRAME_TITLE_BASE + e.getActionCommand());
         }
-
       });
       appMenuItem.setActionCommand(appMenuItem.getName());
       menu.add(appMenuItem);
@@ -199,7 +199,6 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
 
         new AppHelpDialog(mainFrame, appID);
       }
-
     });
     helpMenuItem.setActionCommand(helpMenuItem.getName());
     menu.add(helpMenuItem);
@@ -236,7 +235,7 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
     appID = "Hysteresis";
     mainFrame.setTitle(FRAME_TITLE_BASE + "Hysteresis");
 
-    // app = new PulseApp2(dwf, mainFrameContainer);
+    // app = new PulseApp(dwf, mainFrameContainer);
     // appID = "Pulse2";
     // mainFrame.setTitle(FRAME_TITLE_BASE + appID);
 
@@ -292,21 +291,18 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
     int result = 0;
     // System.out.println("appID= " + appID);
     switch (appID) {
-    case "Hysteresis":
-      result = new HysteresisPrefencesPanel(mainFrame).doModal();
-      break;
-    case "Pulse":
-      result = new PulsePrefencesPanel(mainFrame).doModal();
-      break;
-    case "Pulse2":
-      result = new PulsePrefencesPanel2(mainFrame).doModal();
-      break;
-    case "QC":
-      result = new QCPrefencesPanel(mainFrame).doModal();
-      break;
+      case "Hysteresis":
+        result = new HysteresisPrefencesPanel(mainFrame).doModal();
+        break;
+      case "Pulse":
+        result = new PulsePrefencesPanel(mainFrame).doModal();
+        break;
+      case "QC":
+        result = new QCPrefencesPanel(mainFrame).doModal();
+        break;
 
-    default:
-      break;
+      default:
+        break;
     }
     // if (result == AppPrefencesPanel.ID_OK) {
     // app.refreshModelFromPreferences();
@@ -319,5 +315,4 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
 
     new AboutDialog(mainFrame);
   }
-
 }

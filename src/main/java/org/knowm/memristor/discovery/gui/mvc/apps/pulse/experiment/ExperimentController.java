@@ -25,7 +25,7 @@
  * If you have any questions regarding our licensing policy, please
  * contact us at `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.apps.pulse2.experiment;
+package org.knowm.memristor.discovery.gui.mvc.apps.pulse.experiment;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -42,7 +42,7 @@ import javax.swing.event.ChangeListener;
 
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.apps.AppModel;
-import org.knowm.memristor.discovery.gui.mvc.apps.pulse2.plot.PlotPanel;
+import org.knowm.memristor.discovery.gui.mvc.apps.pulse.plot.PlotPanel;
 
 public class ExperimentController implements PropertyChangeListener {
 

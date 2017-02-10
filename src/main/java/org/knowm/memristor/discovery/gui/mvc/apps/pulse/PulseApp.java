@@ -40,16 +40,28 @@ import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.apps.App;
 import org.knowm.memristor.discovery.gui.mvc.apps.AppModel;
+import org.knowm.memristor.discovery.gui.mvc.apps.pulse.experiment.ExperimentController;
+import org.knowm.memristor.discovery.gui.mvc.apps.pulse.experiment.ExperimentModel;
+import org.knowm.memristor.discovery.gui.mvc.apps.pulse.experiment.ExperimentPanel;
+import org.knowm.memristor.discovery.gui.mvc.apps.pulse.plot.PlotController;
+import org.knowm.memristor.discovery.gui.mvc.apps.pulse.plot.PlotModel;
+import org.knowm.memristor.discovery.gui.mvc.apps.pulse.plot.PlotPanel;
 import org.knowm.waveforms4j.DWF;
 import org.knowm.waveforms4j.DWF.AcquisitionMode;
+import org.knowm.waveforms4j.DWF.AnalogTriggerCondition;
+import org.knowm.waveforms4j.DWF.AnalogTriggerType;
 import org.knowm.waveforms4j.DWF.Waveform;
 
 public class PulseApp extends App implements PropertyChangeListener {
 
   private final DWFProxy dwfProxy;
-  private final PulseModel model = new PulseModel();
-  private PulseControlPanel controlPanel;
-  private PulseMainPanel mainPanel;
+
+  private final ExperimentModel experimentModel = new ExperimentModel();
+  private ExperimentPanel experimentPanel;
+
+  private PlotPanel plotPanel;
+  private final PlotModel plotModel = new PlotModel();
+  private final PlotController plotController;
 
   private CaptureWorker captureWorker;
   private boolean allowPlotting = true;
@@ -63,19 +75,15 @@ public class PulseApp extends App implements PropertyChangeListener {
   public PulseApp(DWFProxy dwfProxy, Container mainFrameContainer) {
 
     this.dwfProxy = dwfProxy;
-    createAndShowGUI(mainFrameContainer);
-  }
 
-  private void createAndShowGUI(Container mainFrameContainer) {
+    experimentPanel = new ExperimentPanel();
+    mainFrameContainer.add(experimentPanel, BorderLayout.WEST);
 
-    controlPanel = new PulseControlPanel();
-    mainFrameContainer.add(controlPanel, BorderLayout.WEST);
-
-    /////////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////////
     // START BUTTON ////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////////
 
-    controlPanel.getStartButton().addActionListener(new ActionListener() {
+    experimentPanel.getStartButton().addActionListener(new ActionListener() {
 
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -83,20 +91,18 @@ public class PulseApp extends App implements PropertyChangeListener {
         allowPlotting = true;
         dwfProxy.setAD2Capturing(true);
 
-        // switchPanel.enableAllDigitalIOCheckBoxes(false);
-        // controlPanel.enableAllChildComponents(false);
-        controlPanel.getStartButton().setEnabled(false);
-        controlPanel.getStopButton().setEnabled(true);
+        experimentPanel.getStartButton().setEnabled(false);
+        experimentPanel.getStopButton().setEnabled(true);
 
         // switch to capture view
-        if (mainPanel.getCaptureButton().isSelected()) {
-          mainPanel.switch2CaptureChart();
+        if (plotPanel.getCaptureButton().isSelected()) {
+          plotPanel.switch2CaptureChart();
         }
-        else if (mainPanel.getItButton().isSelected()) {
-          mainPanel.switch2ITChart();
+        else if (plotPanel.getIVButton().isSelected()) {
+          plotPanel.switch2IVChart();
         }
         else {
-          mainPanel.switch2RTChart();
+          plotPanel.switch2GVChart();
         }
 
         // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
@@ -105,11 +111,11 @@ public class PulseApp extends App implements PropertyChangeListener {
       }
     });
 
-    /////////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////////
     // STOP BUTTON //////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////////
 
-    controlPanel.getStopButton().addActionListener(new ActionListener() {
+    experimentPanel.getStopButton().addActionListener(new ActionListener() {
 
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -117,24 +123,28 @@ public class PulseApp extends App implements PropertyChangeListener {
         dwfProxy.setAD2Capturing(false);
 
         // switchPanel.enableAllDigitalIOCheckBoxes(true);
-        // controlPanel.enableAllChildComponents(true);
-        controlPanel.getStartButton().setEnabled(true);
-        controlPanel.getStopButton().setEnabled(false);
+        // experimentPanel.enableAllChildComponents(true);
+        experimentPanel.getStartButton().setEnabled(true);
+        experimentPanel.getStopButton().setEnabled(false);
 
         // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
         allowPlotting = false;
         captureWorker.cancel(true);
-
       }
     });
 
-    mainPanel = new PulseMainPanel();
-    mainFrameContainer.add(mainPanel, BorderLayout.CENTER);
+    plotPanel = new PlotPanel();
+    plotController = new PlotController(plotPanel, plotModel);
+    mainFrameContainer.add(plotPanel, BorderLayout.CENTER);
 
-    new PulseController(controlPanel, mainPanel, model, dwfProxy);
+    new ExperimentController(experimentPanel, plotPanel, experimentModel, dwfProxy);
 
-    // register this as the listener of the model
-    model.addListener(this);
+    // register this as the listener of the experimentModel
+    experimentModel.addListener(this);
+
+    // trigger plot of waveform
+    PropertyChangeEvent evt = new PropertyChangeEvent(this, AppModel.EVENT_WAVEFORM_UPDATE, true, false);
+    propertyChange(evt);
   }
 
   private class CaptureWorker extends SwingWorker<Boolean, double[][]> {
@@ -142,88 +152,103 @@ public class PulseApp extends App implements PropertyChangeListener {
     @Override
     protected Boolean doInBackground() throws Exception {
 
-      // Analog Out
-      double dutycycle = 5;
-      double divosior = 10;
-      if (model.getAmplitude() > 0) {
-        dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, Waveform.Square, model.getCalculatedFrequency() / divosior, model.getAmplitude() / 2, model.getAmplitude() / 2 + 0.003, dutycycle);
+      // System.out.println("experimentModel.getCalculatedFrequency(): " + experimentModel.getCalculatedFrequency());
+
+      // Analog In
+      dwfProxy.getDwf().FDwfAnalogInChannelEnableSet(DWF.OSCILLOSCOPE_CHANNEL_1, true);
+      dwfProxy.getDwf().FDwfAnalogInChannelRangeSet(DWF.OSCILLOSCOPE_CHANNEL_1, 2.5);
+      dwfProxy.getDwf().FDwfAnalogInChannelEnableSet(DWF.OSCILLOSCOPE_CHANNEL_2, true);
+      dwfProxy.getDwf().FDwfAnalogInChannelRangeSet(DWF.OSCILLOSCOPE_CHANNEL_2, 2.5);
+      dwfProxy.getDwf().FDwfAnalogInFrequencySet(experimentModel.getCalculatedFrequency() * 1_000);
+      dwfProxy.getDwf().FDwfAnalogInBufferSizeSet(PulsePreferences.CAPTURE_BUFFER_SIZE);
+      dwfProxy.getDwf().FDwfAnalogInAcquisitionModeSet(AcquisitionMode.Single.getId());
+      // dwf.startAnalogCaptureBothChannels(experimentModel.getCalculatedFrequency() * 100, PulsePreferences.CAPTURE_BUFFER_SIZE, AcquisitionMode.Record);
+      // dwf.setAD2Capturing(true);
+      dwfProxy.getDwf().FDwfAnalogInTriggerAutoTimeoutSet(0); // disable auto trigger
+      dwfProxy.getDwf().FDwfAnalogInTriggerSourceSet(DWF.TriggerSource.trigsrcDetectorAnalogIn.getId()); // one of the analog in channels
+      dwfProxy.getDwf().FDwfAnalogInTriggerTypeSet(AnalogTriggerType.trigtypeEdge.getId());
+      dwfProxy.getDwf().FDwfAnalogInTriggerChannelSet(0); // first channel
+
+      if (experimentModel.getAmplitude() > 0) {
+
+        dwfProxy.getDwf().FDwfAnalogInTriggerConditionSet(AnalogTriggerCondition.trigcondRisingPositive.getId());
+        dwfProxy.getDwf().FDwfAnalogInTriggerLevelSet(0.05);
       }
       else {
-        dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, Waveform.Square, model.getCalculatedFrequency() / divosior, model.getAmplitude() / 2, model.getAmplitude() / 2 + 0.003, dutycycle);
+        dwfProxy.getDwf().FDwfAnalogInTriggerConditionSet(AnalogTriggerCondition.trigcondFallingNegative.getId());
+        dwfProxy.getDwf().FDwfAnalogInTriggerLevelSet(-0.05);
       }
-      // Analog In
-      dwfProxy.getDwf().startAnalogCaptureBothChannels(model.getCalculatedFrequency() * PulsePreferences.CAPTURE_BUFFER_SIZE / PulsePreferences.CAPTURE_PERIOD_COUNT,
-          PulsePreferences.CAPTURE_BUFFER_SIZE, AcquisitionMode.ScanShift);
 
-      dwfProxy.setAD2Capturing(true);
+      // arm the capture
+      dwfProxy.getDwf().FDwfAnalogInConfigure(false, true);
 
-      while (!isCancelled()) {
+      // generate the pulse
+      // System.out.println("experimentModel.getCalculatedFrequency() = " + experimentModel.getCalculatedFrequency());
+      dwfProxy.getDwf().startSinglePulse(DWF.WAVEFORM_CHANNEL_1, Waveform.Sine, experimentModel.getCalculatedFrequency(), experimentModel.getAmplitude(), 0, 50);
 
-        try {
-          Thread.sleep(50);
-        } catch (InterruptedException e) {
-          // eat it. caught when interrupt is called
-          dwfProxy.getDwf().FDwfAnalogInConfigure(false, false);
-          dwfProxy.getDwf().FDwfAnalogOutConfigure(DWF.WAVEFORM_CHANNEL_1, false);
-          dwfProxy.setAD2Capturing(false);
-          // System.out.println("capture worker shut down.");
-        }
-
+      while (true) {
         byte status = dwfProxy.getDwf().FDwfAnalogInStatus(true);
         // System.out.println("status: " + status);
-
-        int validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
-        // System.out.println("validSamples: " + validSamples);
-
-        if (validSamples > 0) {
-
-          // captureAmplitudeData = dwf.FDwfAnalogInStatusData(OSCILLOSCOPE_CHANNEL_1, validSamples);
-          double[] rawdata1 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
-          double[] rawdata2 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
-
-          double[] timeData = new double[rawdata1.length];
-          double timeStep = 1 / (double) model.getCalculatedFrequency() * PulsePreferences.CAPTURE_PERIOD_COUNT / PulsePreferences.CAPTURE_BUFFER_SIZE;
-          for (int i = 0; i < timeData.length; i++) {
-            timeData[i] = i * timeStep * 1000000;
-          }
-          if (mainPanel.getCaptureButton().isSelected()) {
-
-            // Calculate time data
-            publish(new double[][] { rawdata1, rawdata2, timeData });
-          }
-          else if (mainPanel.getItButton().isSelected()) {
-
-            // create current data
-            double[] current = new double[rawdata2.length];
-            for (int i = 0; i < current.length; i++) {
-              current[i] = rawdata2[i] / model.getShunt() * PulsePreferences.CURRENT_UNIT.getDivisor();
-            }
-            publish(new double[][] { rawdata1, current, timeData });
-          }
-          else {
-
-            // create resistance data
-            double[] resistance = new double[rawdata2.length];
-            for (int i = 0; i < resistance.length; i++) {
-              if (rawdata1[i] < 0.05 && rawdata1[i] > -0.05) {
-                resistance[i] = Double.NaN;
-              }
-              else {
-                resistance[i] = (rawdata1[i] - rawdata2[i]) / (rawdata2[i] / model.getShunt()) / PulsePreferences.RESISTANCE_UNIT.getDivisor();
-              }
-            }
-            publish(new double[][] { rawdata1, resistance, timeData });
-          }
-
+        if (status == 2) { // done capturing
+          break;
         }
       }
+
+      int validSamples = 0;
+      double[] vin = null;
+      double[] vout = null;
+      byte status = dwfProxy.getDwf().FDwfAnalogInStatus(true);
+      // System.out.println("status: " + status);
+      validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
+      vin = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
+      vout = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
+      // System.out.println("validSamples: " + validSamples);
+
+      dwfProxy.getDwf().FDwfAnalogInConfigure(false, false);
+      dwfProxy.setAD2Capturing(false);
+      dwfProxy.getDwf().FDwfAnalogOutConfigure(DWF.WAVEFORM_CHANNEL_1, false); // stop function generator
+
+      ///////////////////////////
+      // Create Chart Data //////
+      ///////////////////////////
+
+      // create time data
+      double[] timeData = new double[vin.length];
+      double timeStep = 1 / (double) experimentModel.getCalculatedFrequency();
+      // System.out.println("timeStep = " + timeStep);
+      for (int i = 0; i < timeData.length; i++) {
+        timeData[i] = i * timeStep * 1_000;
+      }
+
+      // create current data
+      double[] current = new double[vout.length];
+      for (int i = 0; i < current.length; i++) {
+        current[i] = Math.abs(vout[i] / experimentModel.getSeriesR() * PulsePreferences.CURRENT_UNIT.getDivisor());
+      }
+
+      // create conductance data
+      double[] conductance = new double[vout.length];
+      for (int i = 0; i < conductance.length; i++) {
+
+        double I = vout[i] / experimentModel.getSeriesR();
+
+        double G = I / (vin[i] - vout[i]) * PulsePreferences.CONDUCTANCE_UNIT.getDivisor();
+
+        G = G < 0 ? 0 : G;
+
+        double ave = (1 - plotModel.getK()) * (plotModel.getAve()) + plotModel.getK() * (G);
+        plotModel.setAve(ave);
+
+        conductance[i] = ave;
+      }
+
+      publish(new double[][]{timeData, vin, vout, current, conductance});
+
       return true;
     }
 
     @Override
     protected void process(List<double[][]> chunks) {
-
-      long start = System.currentTimeMillis();
 
       if (allowPlotting) {
 
@@ -231,33 +256,29 @@ public class PulseApp extends App implements PropertyChangeListener {
 
         // Messages received from the doInBackground() (when invoking the publish() method). See: http://www.javacreed.com/swing-worker-example/
 
-        if (mainPanel.getCaptureButton().isSelected()) {
-          mainPanel.udpateVtChart(chunks.get(chunks.size() - 1)[0], chunks.get(chunks.size() - 1)[1], chunks.get(chunks.size() - 1)[2], model.getPulseWidth(), model.getAmplitude());
+        plotController.udpateVtChart(chunks.get(chunks.size() - 1)[0], chunks.get(chunks.size() - 1)[1], chunks.get(chunks.size() - 1)[2], experimentModel.getPulseWidth(), experimentModel
+            .getAmplitude());
+        plotController.udpateIVChart(chunks.get(chunks.size() - 1)[0], chunks.get(chunks.size() - 1)[3], experimentModel.getPulseWidth(), experimentModel
+            .getAmplitude());
+        plotController.updateGVChart(chunks.get(chunks.size() - 1)[0], chunks.get(chunks.size() - 1)[4], experimentModel.getPulseWidth(), experimentModel
+            .getAmplitude());
+
+        if (plotPanel.getCaptureButton().isSelected()) {
+          plotController.repaintVtChart();
         }
-        else if (mainPanel.getItButton().isSelected()) {
-          mainPanel.udpateITChart(chunks.get(chunks.size() - 1)[0], chunks.get(chunks.size() - 1)[1], chunks.get(chunks.size() - 1)[2], model.getPulseWidth(), model.getAmplitude());
+        else if (plotPanel.getIVButton().isSelected()) {
+          plotController.repaintItChart();
         }
         else {
-          mainPanel.udpateRTChart(chunks.get(chunks.size() - 1)[0], chunks.get(chunks.size() - 1)[1], chunks.get(chunks.size() - 1)[2], model.getPulseWidth(), model.getAmplitude());
+          plotController.repaintRtChart();
         }
       }
-      // controlPanel.getStopButton().doClick();
-
-      long duration = System.currentTimeMillis() - start;
-      // System.out.println("duration" + duration);
-
-      // System.out.println("capturedData: " + Arrays.toString(captureAmplitudeData));
-      // swingPropertyChangeSupport.firePropertyChange(Events.CAPTURE_UPDATE, true, false);
-      try {
-        // Thread.sleep(40 - duration); // 40 ms ==> 25fps
-        Thread.sleep(50 - duration); // 50 ms ==> 20fps
-      } catch (InterruptedException e) {
-      }
+      experimentPanel.getStopButton().doClick();
     }
   }
 
   /**
-   * These property change events are triggered in the model in the case where the underlying model is updated. Here, the controller can respond to those events and make sure the corresponding GUI
+   * These property change events are triggered in the experimentModel in the case where the underlying experimentModel is updated. Here, the controller can respond to those events and make sure the corresponding GUI
    * components get updated.
    */
   @Override
@@ -269,45 +290,48 @@ public class PulseApp extends App implements PropertyChangeListener {
 
     switch (propName) {
 
-    case AppModel.EVENT_WAVEFORM_UPDATE:
+      case AppModel.EVENT_WAVEFORM_UPDATE:
 
-      if (dwfProxy.isAD2Capturing()) {
+        if (dwfProxy.isAD2Capturing()) {
 
-        // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
-        captureWorker.cancel(true);
+          // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
+          captureWorker.cancel(true);
 
-        try {
-          Thread.sleep(10);
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
+          try {
+            Thread.sleep(10);
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
 
-        // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
-        captureWorker = new CaptureWorker();
-        captureWorker.execute();
+          // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
+          captureWorker = new CaptureWorker();
+          captureWorker.execute();
 
-        if (mainPanel.getCaptureButton().isSelected()) {
-          mainPanel.switch2CaptureChart();
-        }
-        else if (mainPanel.getItButton().isSelected()) {
-          mainPanel.switch2ITChart();
+          if (plotPanel.getCaptureButton().isSelected()) {
+            plotPanel.switch2CaptureChart();
+          }
+          else if (plotPanel.getIVButton().isSelected()) {
+            plotPanel.switch2IVChart();
+          }
+          else {
+            plotPanel.switch2GVChart();
+          }
         }
         else {
-          mainPanel.switch2RTChart();
+          plotPanel.switch2WaveformChart();
+          plotController.udpateWaveformChart(experimentModel.getWaveformTimeData(), experimentModel.getWaveformAmplitudeData(), experimentModel.getAmplitude(), experimentModel.getPulseWidth());
         }
-      }
-      break;
+        break;
 
-    default:
-      break;
+      default:
+        break;
     }
-
   }
 
   @Override
   public AppModel getExperimentModel() {
 
-    return model;
+    return experimentModel;
   }
 
   @Override

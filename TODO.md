@@ -1,6 +1,6 @@
 ## TODO
 
-
+1. Fix issue of pulses less than 5µs not rendering with the correct time width on plot
 ## DONE
 
 1. test csv export

@@ -25,7 +25,7 @@
  * If you have any questions regarding our licensing policy, please
  * contact us at `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.apps.pulse2.plot;
+package org.knowm.memristor.discovery.gui.mvc.apps.pulse.plot;
 
 import java.awt.BorderLayout;
 
@@ -37,7 +37,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
-import org.knowm.memristor.discovery.gui.mvc.apps.pulse2.PulsePreferences2;
+import org.knowm.memristor.discovery.gui.mvc.apps.pulse.PulsePreferences;
 import org.knowm.xchart.XChartPanel;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
@@ -111,7 +111,7 @@ public class PlotPanel extends JPanel {
     // I-T Chart ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    ivChart = new XYChartBuilder().width(600).title("I-T").height(400).yAxisTitle("Current [" + PulsePreferences2.CURRENT_UNIT.getLabel() + "]").xAxisTitle("Time [µs]").build();
+    ivChart = new XYChartBuilder().width(600).title("I-T").height(400).yAxisTitle("Current [" + PulsePreferences.CURRENT_UNIT.getLabel() + "]").xAxisTitle("Time [µs]").build();
     ivChart.getStyler().setLegendVisible(false);
     ivChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);
 
@@ -123,7 +123,7 @@ public class PlotPanel extends JPanel {
     // G-T Chart ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    gvChart = new XYChartBuilder().width(100).title("G-T").height(100).yAxisTitle("Conductance [" + PulsePreferences2.CONDUCTANCE_UNIT.getLabel() + "]").xAxisTitle("Time [µs]").build();
+    gvChart = new XYChartBuilder().width(100).title("G-T").height(100).yAxisTitle("Conductance [" + PulsePreferences.CONDUCTANCE_UNIT.getLabel() + "]").xAxisTitle("Time [µs]").build();
     gvChart.getStyler().setLegendVisible(false);
     gvChart.getStyler().setYAxisMin(0.0);
 

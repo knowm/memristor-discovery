@@ -25,14 +25,14 @@
  * If you have any questions regarding our licensing policy, please
  * contact us at `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.apps.pulse2.experiment;
+package org.knowm.memristor.discovery.gui.mvc.apps.pulse.experiment;
 
 import java.beans.PropertyChangeListener;
 
 import org.knowm.memristor.discovery.gui.mvc.apps.AppModel;
 import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferences;
 import org.knowm.memristor.discovery.gui.mvc.apps.hysteresis.HysteresisPreferences;
-import org.knowm.memristor.discovery.gui.mvc.apps.pulse2.PulsePreferences2;
+import org.knowm.memristor.discovery.gui.mvc.apps.pulse.PulsePreferences;
 import org.knowm.memristor.discovery.utils.driver.Driver;
 import org.knowm.memristor.discovery.utils.driver.Square;
 import org.slf4j.Logger;
@@ -63,10 +63,10 @@ public class ExperimentModel extends AppModel {
   public void loadModelFromPrefs() {
 
     // load model from prefs
-    seriesResistance = appPreferences.getInteger(PulsePreferences2.SERIES_R_INIT_KEY, PulsePreferences2.SERIES_R_INIT_DEFAULT_VALUE);
+    seriesResistance = appPreferences.getInteger(PulsePreferences.SERIES_R_INIT_KEY, PulsePreferences.SERIES_R_INIT_DEFAULT_VALUE);
     // seriesResistance = 1000;
-    amplitude = appPreferences.getFloat(PulsePreferences2.AMPLITUDE_INIT_FLOAT_KEY, PulsePreferences2.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
-    pulseWidth = appPreferences.getInteger(PulsePreferences2.PULSE_WIDTH_INIT_KEY, PulsePreferences2.PULSE_WIDTH_INIT_DEFAULT_VALUE);
+    amplitude = appPreferences.getFloat(PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY, PulsePreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
+    pulseWidth = appPreferences.getInteger(PulsePreferences.PULSE_WIDTH_INIT_KEY, PulsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
     swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_PREFERENCES_UPDATE, true, false);
   }
   /**
@@ -152,7 +152,7 @@ public class ExperimentModel extends AppModel {
   @Override
   public AppPreferences initAppPreferences() {
 
-    return new PulsePreferences2();
+    return new PulsePreferences();
   }
 
 }

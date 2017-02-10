@@ -25,7 +25,7 @@
  * If you have any questions regarding our licensing policy, please
  * contact us at `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.apps.pulse2.plot;
+package org.knowm.memristor.discovery.gui.mvc.apps.pulse.plot;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

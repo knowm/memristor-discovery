@@ -25,13 +25,13 @@
  * If you have any questions regarding our licensing policy, please
  * contact us at `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.apps.pulse2.plot;
+package org.knowm.memristor.discovery.gui.mvc.apps.pulse.plot;
 
 import java.beans.PropertyChangeListener;
 
 import org.knowm.memristor.discovery.gui.mvc.apps.AppModel;
 import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferences;
-import org.knowm.memristor.discovery.gui.mvc.apps.pulse2.PulsePreferences2;
+import org.knowm.memristor.discovery.gui.mvc.apps.pulse.PulsePreferences;
 
 public class PlotModel extends AppModel {
 
@@ -119,13 +119,13 @@ public class PlotModel extends AppModel {
   @Override
   public AppPreferences initAppPreferences() {
 
-    return new PulsePreferences2();
+    return new PulsePreferences();
   }
 
   @Override
   public void loadModelFromPrefs() {
 
-    k = appPreferences.getDouble(PulsePreferences2.K_INIT_DOUBLE_KEY, PulsePreferences2.K_INIT_DOUBLE_DEFAULT_VALUE);
+    k = appPreferences.getDouble(PulsePreferences.K_INIT_DOUBLE_KEY, PulsePreferences.K_INIT_DOUBLE_DEFAULT_VALUE);
     swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_PREFERENCES_UPDATE, true, false);
   }
 

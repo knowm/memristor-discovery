@@ -90,7 +90,7 @@ public class PulsePrefencesPanel extends AppPrefencesPanel {
     gc.gridy++;
 
     gc.gridx = 0;
-    this.pulseWidthLabel = new JLabel("Pulse Width [ns]");
+    this.pulseWidthLabel = new JLabel("Pulse Width [ns]:");
     preferencesPanel.add(pulseWidthLabel, gc);
 
     gc.gridx = 1;
@@ -116,6 +116,7 @@ public class PulsePrefencesPanel extends AppPrefencesPanel {
   @Override
   public String getAppName() {
 
-    return "Pulse";
+    return "Pulse 2";
   }
+
 }
