@@ -1,6 +1,9 @@
 ## TODO
 
 1. Fix issue of pulses less than 5µs not rendering with the correct time width on plot
+1. Remove redundant copy-pasta code, abstract stuff
+1. Put experiment controls in a scrolling panel
+
 ## DONE
 
 1. test csv export

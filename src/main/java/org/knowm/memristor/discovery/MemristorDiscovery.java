@@ -156,6 +156,7 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
           Container mainFrameContainer = mainFrame.getContentPane();
           mainFrameContainer.removeAll();
           mainFrameContainer.revalidate();
+          mainFrameContainer.repaint();
           mainFrameContainer.add(headerPanel, BorderLayout.NORTH);
           mainFrameContainer.add(footerPanel, BorderLayout.SOUTH);
 
