@@ -25,7 +25,7 @@
  * If you have any questions regarding our licensing policy, please
  * contact us at `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.apps.hysteresis.plot;
+package org.knowm.memristor.discovery.gui.mvc.apps.pulse2.plot;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -39,7 +39,6 @@ import java.math.RoundingMode;
 import javax.swing.JTextField;
 
 import org.knowm.memristor.discovery.gui.mvc.apps.AppModel;
-import org.knowm.memristor.discovery.gui.mvc.apps.hysteresis.HysteresisPreferences;
 
 public class PlotController implements PropertyChangeListener {
 
@@ -153,84 +152,86 @@ public class PlotController implements PropertyChangeListener {
     });
   }
 
-  public void udpateWaveformChart(double[] waveformTimeData, double[] waveformAmplitudeData, double amplitude, int frequency, double offset) {
+  public void udpateWaveformChart(double[] timeData, double[] waveformAmplitudeData, double amplitude, int pulseWidth) {
 
-    plotPanel.getWaveformChart().setTitle(getWaveformChartTitle(amplitude, frequency, offset));
-    plotPanel.getWaveformChart().updateXYSeries("waveform", waveformTimeData, waveformAmplitudeData, null);
+    plotPanel.getWaveformChart().setTitle(getWaveformChartTitle(amplitude, pulseWidth));
+    plotPanel.getWaveformChart().updateXYSeries("waveform", timeData, waveformAmplitudeData, null);
     plotPanel.getWaveformChartPanel().revalidate();
     plotPanel.getWaveformChartPanel().repaint();
   }
 
-  public void udpateVtChart(double[] captureAmplitudeData1, double[] captureAmplitudeData2, double[] timeData, int frequency, double amplitude, double offset) {
+  public void udpateVtChart(double[] timeData, double[] captureAmplitudeData1, double[] captureAmplitudeData2, int pulseWidth, double amplitude) {
 
-    plotPanel.getCaptureChart().setTitle(getVtChartTitle(amplitude, frequency, offset));
+    plotPanel.getCaptureChart().setTitle(getVtChartTitle(amplitude, pulseWidth));
     plotPanel.getCaptureChart().updateXYSeries("V1", timeData, captureAmplitudeData1, null);
     plotPanel.getCaptureChart().updateXYSeries("V2", timeData, captureAmplitudeData2, null);
-    plotPanel.getCaptureChartPanel().revalidate();
-    plotPanel.getCaptureChartPanel().repaint();
   }
 
-  public void udpateIVChart(double[] captureAmplitudeData1, double[] vMemristor, double[] current, int frequency, double amplitude, double offset) {
+  public void udpateIVChart(double[] timeData, double[] current, int pulseWidth, double amplitude) {
 
     plotPanel.getIvChart().getStyler().setYAxisMax(plotModel.getyMaxIV());
     plotPanel.getIvChart().getStyler().setYAxisMin(plotModel.getyMinIV());
 
-    plotPanel.getIvChart().setTitle(getIVChartTitle(amplitude, frequency, offset));
-    if (!HysteresisPreferences.IS_VIN) {
-      plotPanel.getIvChart().updateXYSeries("iv", vMemristor, current, null);
-    }
-    else {
-      plotPanel.getIvChart().updateXYSeries("iv", captureAmplitudeData1, current, null);
-    }
+    plotPanel.getIvChart().setTitle(getIVChartTitle(amplitude, pulseWidth));
+    plotPanel.getIvChart().updateXYSeries("iv", timeData, current, null);
+  }
+
+  public void updateGVChart(double[] timeData, double[] conductance, int pulseWidth, double amplitude) {
+
+    plotPanel.getGvChart().getStyler().setYAxisMax(plotModel.getyMaxGV());
+    plotPanel.getGvChart().getStyler().setYAxisMin(0.0);
+    plotPanel.getGvChart().setTitle(getGVChartTitle(amplitude, pulseWidth));
+    plotPanel.getGvChart().updateXYSeries("gv", timeData, conductance, null);
+  }
+
+  public void repaintVtChart() {
+
+    plotPanel.getCaptureChartPanel().revalidate();
+    plotPanel.getCaptureChartPanel().repaint();
+  }
+
+  public void repaintItChart() {
+
     plotPanel.getIvChartPanel().revalidate();
     plotPanel.getIvChartPanel().repaint();
   }
 
-  public void updateGVChart(double[] captureAmplitudeData1, double[] vMemristor, double[] conductance, int frequency, double amplitude, double offset) {
+  public void repaintRtChart() {
 
-    plotPanel.getGvChart().getStyler().setYAxisMax(plotModel.getyMaxGV());
-    plotPanel.getGvChart().getStyler().setYAxisMin(0.0);
-    plotPanel.getGvChart().getStyler().setXAxisMin(-1.0);
-    plotPanel.getGvChart().getStyler().setXAxisMax(1.0);
-    plotPanel.getGvChart().setTitle(getGVChartTitle(amplitude, frequency, offset));
-    plotPanel.getGvChart().updateXYSeries("gv", captureAmplitudeData1, conductance, null);
-    plotPanel.getGvChart().updateXYSeries("gv_m", vMemristor, conductance, null);
     plotPanel.getGvChartPanel().revalidate();
     plotPanel.getGvChartPanel().repaint();
   }
 
-  private String getWaveformChartTitle(double amplitude, int frequency, double offset) {
+  private String getWaveformChartTitle(double amplitude, int pulseWidth) {
 
-    return "Waveform: " + getWaveform(amplitude, frequency, offset);
+    return "Waveform: " + getWaveform(amplitude, pulseWidth);
   }
 
-  private String getVtChartTitle(double amplitude, int frequency, double offset) {
+  private String getVtChartTitle(double amplitude, int pulseWidth) {
 
-    return "Capture: " + getWaveform(amplitude, frequency, offset);
+    return "Capture: " + getWaveform(amplitude, pulseWidth);
   }
 
-  private String getIVChartTitle(double amplitude, int frequency, double offset) {
+  private String getIVChartTitle(double amplitude, int pulseWidth) {
 
-    return "I-V: " + getWaveform(amplitude, frequency, offset);
+    return "I-V: " + getWaveform(amplitude, pulseWidth);
   }
 
-  private String getGVChartTitle(double amplitude, int frequency, double offset) {
+  private String getGVChartTitle(double amplitude, int pulseWidth) {
 
-    return "G-V: " + getWaveform(amplitude, frequency, offset);
+    return "G-V: " + getWaveform(amplitude, pulseWidth);
   }
 
-  private String getWaveform(double amplitude, int frequency, double offset) {
+  private String getWaveform(double amplitude, int pulseWidth) {
 
-    return "Amplitude = " + getFormattedAmplitude(amplitude) + " V, Frequency = " + frequency + " Hz, Offset = " + getFormattedAmplitude(offset) + " V";
+    return "Amplitude = " + getFormattedAmplitude(amplitude) + " V, Pulse Width = " + pulseWidth / 1000 + " µs";
   }
 
-  // TODO move to utils class
   private double getFormattedAmplitude(double amplitude) {
 
     return round(amplitude, 2);
   }
 
-  // TODO move to utils class
   public double round(double value, int places) {
 
     if (places < 0)

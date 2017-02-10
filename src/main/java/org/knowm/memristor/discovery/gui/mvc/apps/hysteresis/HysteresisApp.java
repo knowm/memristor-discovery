@@ -52,8 +52,10 @@ import org.knowm.waveforms4j.DWF.AcquisitionMode;
 public class HysteresisApp extends App implements PropertyChangeListener {
 
   private final DWFProxy dwfProxy;
+
   private final ExperimentModel experimentModel = new ExperimentModel();
   private final ExperimentPanel experimentPanel;
+
   private final PlotPanel plotPanel;
   private final PlotModel plotModel = new PlotModel();
   private final PlotController plotController;
@@ -264,16 +266,13 @@ public class HysteresisApp extends App implements PropertyChangeListener {
               .getAmplitude(), experimentModel.getOffset());
         }
         else {
-          plotController.udpateGVChart(chunks.get(chunks.size() - 1)[0], chunks.get(chunks.size() - 1)[1], chunks.get(chunks.size() - 1)[2], experimentModel.getFrequency(), experimentModel
+          plotController.updateGVChart(chunks.get(chunks.size() - 1)[0], chunks.get(chunks.size() - 1)[1], chunks.get(chunks.size() - 1)[2], experimentModel.getFrequency(), experimentModel
               .getAmplitude(), experimentModel.getOffset());
         }
       }
 
+      // Throttle GUI updates at some FPS rate.
       long duration = System.currentTimeMillis() - start;
-      // System.out.println("duration" + duration);
-
-      // System.out.println("capturedData: " + Arrays.toString(captureAmplitudeData));
-      // swingPropertyChangeSupport.firePropertyChange(Events.CAPTURE_UPDATE, true, false);
       try {
         // Thread.sleep(40 - duration); // 40 ms ==> 25fps
         Thread.sleep(50 - duration); // 50 ms ==> 20fps

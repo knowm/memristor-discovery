@@ -25,31 +25,38 @@
  * If you have any questions regarding our licensing policy, please
  * contact us at `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.apps.pulse2;
+package org.knowm.memristor.discovery.gui.mvc.apps.pulse2.experiment;
 
 import java.beans.PropertyChangeListener;
 
 import org.knowm.memristor.discovery.gui.mvc.apps.AppModel;
 import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferences;
+import org.knowm.memristor.discovery.gui.mvc.apps.hysteresis.HysteresisPreferences;
+import org.knowm.memristor.discovery.gui.mvc.apps.pulse2.PulsePreferences2;
+import org.knowm.memristor.discovery.utils.driver.Driver;
+import org.knowm.memristor.discovery.utils.driver.Square;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class PulseModel2 extends AppModel {
+public class ExperimentModel extends AppModel {
 
-  private final Logger logger = LoggerFactory.getLogger(PulseModel2.class);
+  private final Logger logger = LoggerFactory.getLogger(ExperimentModel.class);
 
   /** Waveform */
   private float amplitude;
-  private int pulseWidth;
+  private int pulseWidth; // model store pulse width in nanoseconds
 
   /** Shunt */
   private int seriesResistance;
 
+  private final double[] waveformTimeData = new double[HysteresisPreferences.CAPTURE_BUFFER_SIZE];
+  private final double[] waveformAmplitudeData = new double[HysteresisPreferences.CAPTURE_BUFFER_SIZE];
+
   /**
    * Constructor
    */
-  public PulseModel2() {
-
+  public ExperimentModel() {
+    updateWaveformChartData();
   }
 
   @Override
@@ -61,6 +68,25 @@ public class PulseModel2 extends AppModel {
     amplitude = appPreferences.getFloat(PulsePreferences2.AMPLITUDE_INIT_FLOAT_KEY, PulsePreferences2.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
     pulseWidth = appPreferences.getInteger(PulsePreferences2.PULSE_WIDTH_INIT_KEY, PulsePreferences2.PULSE_WIDTH_INIT_DEFAULT_VALUE);
     swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_PREFERENCES_UPDATE, true, false);
+  }
+  /**
+   * Given the state of the model, update the waveform x and y axis data arrays.
+   */
+  void updateWaveformChartData() {
+
+    Driver driver = new Square("Sine", 0, 0, amplitude, getCalculatedFrequency());
+
+    double stopTime = 1 / (double) getCalculatedFrequency() * HysteresisPreferences.CAPTURE_PERIOD_COUNT;
+    double timeStep = 1 / (double) getCalculatedFrequency() * HysteresisPreferences.CAPTURE_PERIOD_COUNT / HysteresisPreferences.CAPTURE_BUFFER_SIZE;
+
+    int counter = 0;
+    for (double i = 0.0; i < stopTime; i = i + timeStep) {
+      if (counter >= HysteresisPreferences.CAPTURE_BUFFER_SIZE) {
+        break;
+      }
+      waveformTimeData[counter] = i * 1_000_000;
+      waveformAmplitudeData[counter++] = driver.getSignal(i);
+    }
   }
 
   /**
@@ -93,9 +119,10 @@ public class PulseModel2 extends AppModel {
     return pulseWidth;
   }
 
-  public int getCalculatedFrequency() {
+  public double getCalculatedFrequency() {
 
-    return (int) (1.0 / (2.0 * (double) pulseWidth) * 1000000000);
+    // System.out.println("pulseWidth = " + pulseWidth);
+    return (1.0 / (2.0 * (double) pulseWidth) * 1_000_000_000); // 50% duty cycle
   }
 
   public void setPulseWidth(int pulseWidth) {
@@ -103,15 +130,23 @@ public class PulseModel2 extends AppModel {
     this.pulseWidth = pulseWidth;
     swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
+  public double[] getWaveformTimeData() {
 
-  public int getShunt() {
+    return waveformTimeData;
+  }
+
+  public double[] getWaveformAmplitudeData() {
+
+    return waveformAmplitudeData;
+  }
+  public int getSeriesR() {
 
     return seriesResistance;
   }
 
-  public void setShunt(int shunt) {
+  public void setSeriesR(int seriesResistance) {
 
-    this.seriesResistance = shunt;
+    this.seriesResistance = seriesResistance;
   }
 
   @Override

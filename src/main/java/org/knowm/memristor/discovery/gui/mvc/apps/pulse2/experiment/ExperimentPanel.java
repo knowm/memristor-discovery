@@ -25,7 +25,7 @@
  * If you have any questions regarding our licensing policy, please
  * contact us at `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.apps.pulse2;
+package org.knowm.memristor.discovery.gui.mvc.apps.pulse2.experiment;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -46,7 +46,7 @@ import javax.swing.JTextField;
  * 
  * @author timmolter
  */
-public class PulseControlPanel2 extends JPanel {
+public class ExperimentPanel extends JPanel {
 
   private final JSlider amplitudeSlider;
   private final JSlider pulseWidthSlider;
@@ -61,7 +61,7 @@ public class PulseControlPanel2 extends JPanel {
   /**
    * Constructor
    */
-  public PulseControlPanel2() {
+  public ExperimentPanel() {
 
     setLayout(new GridBagLayout());
     GridBagConstraints c = new GridBagConstraints();
@@ -77,13 +77,13 @@ public class PulseControlPanel2 extends JPanel {
     amplitudeSlider.setPaintLabels(true);
     amplitudeSlider.setSnapToTicks(true);
     Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
-    labelTable.put(new Integer(-300), new JLabel("-3"));
-    labelTable.put(new Integer(-200), new JLabel("-2"));
-    labelTable.put(new Integer(-100), new JLabel("-1"));
-    labelTable.put(new Integer(0), new JLabel("0"));
-    labelTable.put(new Integer(100), new JLabel("1"));
-    labelTable.put(new Integer(200), new JLabel("2"));
-    labelTable.put(new Integer(300), new JLabel("3"));
+    labelTable.put(-300, new JLabel("-3"));
+    labelTable.put(-200, new JLabel("-2"));
+    labelTable.put(-100, new JLabel("-1"));
+    labelTable.put(0, new JLabel("0"));
+    labelTable.put(100, new JLabel("1"));
+    labelTable.put(200, new JLabel("2"));
+    labelTable.put(300, new JLabel("3"));
     amplitudeSlider.setLabelTable(labelTable);
     c.gridx = 0;
     c.gridy++;
@@ -91,16 +91,16 @@ public class PulseControlPanel2 extends JPanel {
     amplitudeSlider.setPreferredSize(new Dimension(300, 80));
     add(amplitudeSlider, c);
 
-    pulseWidthSlider = new JSlider(JSlider.HORIZONTAL, 5, 100, 5);
+    pulseWidthSlider = new JSlider(JSlider.HORIZONTAL, 5000, 100000, 5000);
     pulseWidthSlider.setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
-    pulseWidthSlider.setMinorTickSpacing(5);
+    pulseWidthSlider.setMinorTickSpacing(5000);
     pulseWidthSlider.setPaintTicks(true);
     pulseWidthSlider.setPaintLabels(true);
     pulseWidthSlider.setSnapToTicks(true);
     labelTable = new Hashtable<>();
-    labelTable.put(new Integer(5), new JLabel("5"));
-    labelTable.put(new Integer(50), new JLabel("50"));
-    labelTable.put(new Integer(100), new JLabel("100"));
+    labelTable.put(5000, new JLabel("5"));
+    labelTable.put(50000, new JLabel("50"));
+    labelTable.put(100000, new JLabel("100"));
     pulseWidthSlider.setLabelTable(labelTable);
     c.gridy++;
     add(pulseWidthSlider, c);
@@ -112,12 +112,12 @@ public class PulseControlPanel2 extends JPanel {
     pulseWidthSliderNs.setPaintLabels(true);
     pulseWidthSliderNs.setSnapToTicks(true);
     labelTable = new Hashtable<>();
-    labelTable.put(new Integer(500), new JLabel(".5"));
-    labelTable.put(new Integer(1000), new JLabel("1"));
-    labelTable.put(new Integer(2000), new JLabel("2"));
-    labelTable.put(new Integer(3000), new JLabel("3"));
-    labelTable.put(new Integer(4000), new JLabel("4"));
-    labelTable.put(new Integer(5000), new JLabel("5"));
+    labelTable.put(500, new JLabel(".5"));
+    labelTable.put(1000, new JLabel("1"));
+    labelTable.put(2000, new JLabel("2"));
+    labelTable.put(3000, new JLabel("3"));
+    labelTable.put(4000, new JLabel("4"));
+    labelTable.put(5000, new JLabel("5"));
     pulseWidthSliderNs.setLabelTable(labelTable);
     c.gridy++;
     add(pulseWidthSliderNs, c);
