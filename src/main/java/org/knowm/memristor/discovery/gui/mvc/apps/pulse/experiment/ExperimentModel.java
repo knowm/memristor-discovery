@@ -42,11 +42,16 @@ public class ExperimentModel extends AppModel {
 
   private final Logger logger = LoggerFactory.getLogger(ExperimentModel.class);
 
-  /** Waveform */
+  /**
+   * Waveform
+   */
   private float amplitude;
   private int pulseWidth; // model store pulse width in nanoseconds
+  private int pulseNumber;
 
-  /** Shunt */
+  /**
+   * Shunt
+   */
   private int seriesResistance;
 
   private final double[] waveformTimeData = new double[HysteresisPreferences.CAPTURE_BUFFER_SIZE];
@@ -56,6 +61,7 @@ public class ExperimentModel extends AppModel {
    * Constructor
    */
   public ExperimentModel() {
+
     updateWaveformChartData();
   }
 
@@ -64,20 +70,21 @@ public class ExperimentModel extends AppModel {
 
     // load model from prefs
     seriesResistance = appPreferences.getInteger(PulsePreferences.SERIES_R_INIT_KEY, PulsePreferences.SERIES_R_INIT_DEFAULT_VALUE);
-    // seriesResistance = 1000;
     amplitude = appPreferences.getFloat(PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY, PulsePreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
     pulseWidth = appPreferences.getInteger(PulsePreferences.PULSE_WIDTH_INIT_KEY, PulsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
+    pulseNumber = 1;
     swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_PREFERENCES_UPDATE, true, false);
   }
+
   /**
    * Given the state of the model, update the waveform x and y axis data arrays.
    */
   void updateWaveformChartData() {
 
-    Driver driver = new Square("Sine", 0, 0, amplitude, getCalculatedFrequency());
+    Driver driver = new Square("Square", 0, 0, amplitude, getCalculatedFrequency());
 
-    double stopTime = 1 / (double) getCalculatedFrequency() * HysteresisPreferences.CAPTURE_PERIOD_COUNT;
-    double timeStep = 1 / (double) getCalculatedFrequency() * HysteresisPreferences.CAPTURE_PERIOD_COUNT / HysteresisPreferences.CAPTURE_BUFFER_SIZE;
+    double stopTime = 1 / getCalculatedFrequency() * HysteresisPreferences.CAPTURE_PERIOD_COUNT * pulseNumber;
+    double timeStep = 1 / getCalculatedFrequency() * HysteresisPreferences.CAPTURE_PERIOD_COUNT / HysteresisPreferences.CAPTURE_BUFFER_SIZE * pulseNumber;
 
     int counter = 0;
     for (double i = 0.0; i < stopTime; i = i + timeStep) {
@@ -91,7 +98,7 @@ public class ExperimentModel extends AppModel {
 
   /**
    * Here is where the Controller registers itself as a listener to model changes.
-   * 
+   *
    * @param listener
    */
   public void addListener(PropertyChangeListener listener) {
@@ -130,6 +137,7 @@ public class ExperimentModel extends AppModel {
     this.pulseWidth = pulseWidth;
     swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
+
   public double[] getWaveformTimeData() {
 
     return waveformTimeData;
@@ -139,6 +147,18 @@ public class ExperimentModel extends AppModel {
 
     return waveformAmplitudeData;
   }
+
+  public int getPulseNumber() {
+
+    return pulseNumber;
+  }
+
+  public void setPulseNumber(int pulseNumber) {
+
+    this.pulseNumber = pulseNumber;
+    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
+  }
+
   public int getSeriesR() {
 
     return seriesResistance;
@@ -154,5 +174,4 @@ public class ExperimentModel extends AppModel {
 
     return new PulsePreferences();
   }
-
 }

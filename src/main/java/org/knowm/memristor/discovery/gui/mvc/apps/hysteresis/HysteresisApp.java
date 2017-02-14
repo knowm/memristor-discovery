@@ -155,11 +155,8 @@ public class HysteresisApp extends App implements PropertyChangeListener {
       DWF.Waveform dwfWaveform = getDWFWaveform(experimentModel.getWaveform());
       dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, experimentModel.getFrequency(), experimentModel.getAmplitude(), experimentModel.getOffset(), 50);
 
-      System.out.println("experimentModel.getFrequency() = " + experimentModel.getFrequency());
-      double sampleFrequency = (double) experimentModel.getFrequency() * HysteresisPreferences.CAPTURE_BUFFER_SIZE / HysteresisPreferences.CAPTURE_PERIOD_COUNT;
-      System.out.println("sampleFrequency = " + sampleFrequency);
-
       // Analog In
+      double sampleFrequency = (double) experimentModel.getFrequency() * HysteresisPreferences.CAPTURE_BUFFER_SIZE / HysteresisPreferences.CAPTURE_PERIOD_COUNT;
       dwfProxy.getDwf().startAnalogCaptureBothChannels(sampleFrequency, HysteresisPreferences.CAPTURE_BUFFER_SIZE, AcquisitionMode.ScanShift);
 
       dwfProxy.setAD2Capturing(true);
@@ -300,7 +297,10 @@ public class HysteresisApp extends App implements PropertyChangeListener {
 
           // AnalogOut
           DWF.Waveform dwfWaveform = getDWFWaveform(experimentModel.getWaveform());
-          dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, experimentModel.getFrequency(), experimentModel.getAmplitude(), experimentModel.getOffset(), 50);
+          // TODO if this is a good machanism, use it everywhere else. Perhaps create an exception subclass and catch it higher up.
+          if(!dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, experimentModel.getFrequency(), experimentModel.getAmplitude(), experimentModel.getOffset(), 50)){
+            throw new RuntimeException(dwfProxy.getDwf().FDwfGetLastErrorMsg());
+          }
 
           if (plotPanel.getCaptureButton().isSelected()) {
             plotPanel.switch2CaptureChart();

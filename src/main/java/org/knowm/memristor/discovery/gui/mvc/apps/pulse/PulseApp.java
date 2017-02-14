@@ -50,7 +50,6 @@ import org.knowm.waveforms4j.DWF;
 import org.knowm.waveforms4j.DWF.AcquisitionMode;
 import org.knowm.waveforms4j.DWF.AnalogTriggerCondition;
 import org.knowm.waveforms4j.DWF.AnalogTriggerType;
-import org.knowm.waveforms4j.DWF.Waveform;
 
 public class PulseApp extends App implements PropertyChangeListener {
 
@@ -145,8 +144,15 @@ public class PulseApp extends App implements PropertyChangeListener {
     // trigger plot of waveform
     PropertyChangeEvent evt = new PropertyChangeEvent(this, AppModel.EVENT_WAVEFORM_UPDATE, true, false);
     propertyChange(evt);
+
+    // set analog out offset to zero, as it seems like it's not quite there by default
+    dwfProxy.getDwf().FDwfAnalogOutNodeOffsetSet(DWF.WAVEFORM_CHANNEL_1, 0);
+    dwfProxy.getDwf().FDwfAnalogOutConfigure(DWF.WAVEFORM_CHANNEL_1, true);
   }
 
+  /**
+   * This is set up to send a single pulse driving across the memristor and series resistor and read V1 and V2 for a single pulse, starting on an edge that passes a threshold of abs(0.05 V).
+   */
   private class CaptureWorker extends SwingWorker<Boolean, double[][]> {
 
     @Override
@@ -154,23 +160,25 @@ public class PulseApp extends App implements PropertyChangeListener {
 
       // System.out.println("experimentModel.getCalculatedFrequency(): " + experimentModel.getCalculatedFrequency());
 
-      // Analog In
+      // System.out.println("Arbitrary Wave Buffer Size Min and Max: " + Arrays.toString(dwfProxy.getDwf().FDwfAnalogOutNodeDataInfo(DWF.WAVEFORM_CHANNEL_1)));
+
+      //////////////////////////////////
+      // Analog In /////////////////
+      //////////////////////////////////
       dwfProxy.getDwf().FDwfAnalogInChannelEnableSet(DWF.OSCILLOSCOPE_CHANNEL_1, true);
       dwfProxy.getDwf().FDwfAnalogInChannelRangeSet(DWF.OSCILLOSCOPE_CHANNEL_1, 2.5);
       dwfProxy.getDwf().FDwfAnalogInChannelEnableSet(DWF.OSCILLOSCOPE_CHANNEL_2, true);
       dwfProxy.getDwf().FDwfAnalogInChannelRangeSet(DWF.OSCILLOSCOPE_CHANNEL_2, 2.5);
-      dwfProxy.getDwf().FDwfAnalogInFrequencySet(experimentModel.getCalculatedFrequency() * 1_000);
-      dwfProxy.getDwf().FDwfAnalogInBufferSizeSet(PulsePreferences.CAPTURE_BUFFER_SIZE);
+      dwfProxy.getDwf().FDwfAnalogInFrequencySet(experimentModel.getCalculatedFrequency() * 400);
+      dwfProxy.getDwf().FDwfAnalogInBufferSizeSet(PulsePreferences.CAPTURE_BUFFER_SIZE );
       dwfProxy.getDwf().FDwfAnalogInAcquisitionModeSet(AcquisitionMode.Single.getId());
-      // dwf.startAnalogCaptureBothChannels(experimentModel.getCalculatedFrequency() * 100, PulsePreferences.CAPTURE_BUFFER_SIZE, AcquisitionMode.Record);
-      // dwf.setAD2Capturing(true);
+      // Trigger single capture on rising edge of analog signal pulse
       dwfProxy.getDwf().FDwfAnalogInTriggerAutoTimeoutSet(0); // disable auto trigger
       dwfProxy.getDwf().FDwfAnalogInTriggerSourceSet(DWF.TriggerSource.trigsrcDetectorAnalogIn.getId()); // one of the analog in channels
       dwfProxy.getDwf().FDwfAnalogInTriggerTypeSet(AnalogTriggerType.trigtypeEdge.getId());
       dwfProxy.getDwf().FDwfAnalogInTriggerChannelSet(0); // first channel
-
+      // Trigger Level
       if (experimentModel.getAmplitude() > 0) {
-
         dwfProxy.getDwf().FDwfAnalogInTriggerConditionSet(AnalogTriggerCondition.trigcondRisingPositive.getId());
         dwfProxy.getDwf().FDwfAnalogInTriggerLevelSet(0.05);
       }
@@ -180,29 +188,37 @@ public class PulseApp extends App implements PropertyChangeListener {
       }
 
       // arm the capture
-      dwfProxy.getDwf().FDwfAnalogInConfigure(false, true);
+      dwfProxy.getDwf().FDwfAnalogInConfigure(true, true);
+
+      //////////////////////////////////
+      //////////////////////////////////
+
+      //////////////////////////////////
+      // Pulse Out /////////////////
+      //////////////////////////////////
 
       // generate the pulse
-      // System.out.println("experimentModel.getCalculatedFrequency() = " + experimentModel.getCalculatedFrequency());
-      dwfProxy.getDwf().startSinglePulse(DWF.WAVEFORM_CHANNEL_1, Waveform.Sine, experimentModel.getCalculatedFrequency(), experimentModel.getAmplitude(), 0, 50);
+      // dwfProxy.getDwf().startSinglePulse(DWF.WAVEFORM_CHANNEL_1, Waveform.Sine, experimentModel.getCalculatedFrequency(), experimentModel.getAmplitude(), 0, 50);
 
+      // custom waveform
+      boolean success = dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, experimentModel.getCalculatedFrequency(), experimentModel.getAmplitude(), 0, experimentModel.getPulseNumber());
+      System.out.println("success = " + success);
+
+      //////////////////////////////////
+      //////////////////////////////////
+
+      // Read In Data
       while (true) {
         byte status = dwfProxy.getDwf().FDwfAnalogInStatus(true);
-        // System.out.println("status: " + status);
+        System.out.println("status: " + status);
         if (status == 2) { // done capturing
           break;
         }
       }
-
-      int validSamples = 0;
-      double[] vin = null;
-      double[] vout = null;
-      byte status = dwfProxy.getDwf().FDwfAnalogInStatus(true);
-      // System.out.println("status: " + status);
-      validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
-      vin = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
-      vout = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
-      // System.out.println("validSamples: " + validSamples);
+      int validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
+      double[] vin = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
+      double[] vout = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
+      System.out.println("validSamples: " + validSamples);
 
       dwfProxy.getDwf().FDwfAnalogInConfigure(false, false);
       dwfProxy.setAD2Capturing(false);

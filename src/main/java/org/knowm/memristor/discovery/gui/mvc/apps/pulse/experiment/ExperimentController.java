@@ -99,6 +99,7 @@ public class ExperimentController implements PropertyChangeListener {
       experimentPanel.getPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
       experimentPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + experimentModel.getPulseWidth() / 1000));
     }
+    experimentPanel.getPulseNumberSlider().setBorder(BorderFactory.createTitledBorder("Pulse Number = " + experimentModel.getPulseNumber()));
   }
 
   /**
@@ -143,6 +144,19 @@ public class ExperimentController implements PropertyChangeListener {
           experimentModel.setPulseWidth(source.getValue());
           experimentPanel.getPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
           experimentPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + (double) experimentModel.getPulseWidth() / 1000));
+        }
+      }
+    });
+
+    experimentPanel.getPulseNumberSlider().addChangeListener(new ChangeListener() {
+
+      @Override
+      public void stateChanged(ChangeEvent e) {
+
+        JSlider source = (JSlider) e.getSource();
+        if (!(source.getValueIsAdjusting())) {
+          experimentModel.setPulseNumber(source.getValue());
+          experimentPanel.getPulseNumberSlider().setBorder(BorderFactory.createTitledBorder("Pulse Number = " + experimentModel.getPulseNumber()));
         }
       }
     });

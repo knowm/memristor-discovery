@@ -57,9 +57,8 @@ public class PulsePreferences extends AppPreferences {
   public static final ConductanceUnits CONDUCTANCE_UNIT = ConductanceUnits.MilliSiemens;
 
   // public static final int CAPTURE_BUFFER_SIZE = DWF.AD2_MAX_BUFFER_SIZE;
-  public static final int CAPTURE_BUFFER_SIZE = 2000;
-
-  public static final boolean IS_VIN = true;
+  public static final int CAPTURE_BUFFER_SIZE = 8000;
+  // public static final int CAPTURE_BUFFER_SIZE = 8192 / 11; // AD2 buffer size / most pulses allowed.
 
   /**
    * Constructor

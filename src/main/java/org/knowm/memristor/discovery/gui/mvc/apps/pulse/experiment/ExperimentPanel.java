@@ -55,6 +55,8 @@ public class ExperimentPanel extends JPanel {
   private final JLabel seriesLabel;
   private final JTextField seriesTextField;
 
+  private final JSlider pulseNumberSlider;
+
   private final JButton startButton;
   private final JButton stopButton;
 
@@ -122,6 +124,20 @@ public class ExperimentPanel extends JPanel {
     c.gridy++;
     add(pulseWidthSliderNs, c);
 
+    pulseNumberSlider = new JSlider(JSlider.HORIZONTAL, 1, 10, 1);
+    pulseNumberSlider.setBorder(BorderFactory.createTitledBorder("Pulse Number"));
+    pulseNumberSlider.setMinorTickSpacing(1);
+    pulseNumberSlider.setPaintTicks(true);
+    pulseNumberSlider.setPaintLabels(true);
+    pulseNumberSlider.setSnapToTicks(true);
+    labelTable = new Hashtable<>();
+    labelTable.put(1, new JLabel("1"));
+    labelTable.put(5, new JLabel("5"));
+    labelTable.put(10, new JLabel("10"));
+    pulseNumberSlider.setLabelTable(labelTable);
+    c.gridy++;
+    add(pulseNumberSlider, c);
+
     seriesLabel = new JLabel("Series R [Ohm]");
     seriesLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.gridy++;
@@ -133,6 +149,8 @@ public class ExperimentPanel extends JPanel {
     c.gridy++;
     c.insets = new Insets(0, 5, 14, 5);
     add(seriesTextField, c);
+
+
 
     startButton = new JButton("Start");
     startButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -171,6 +189,11 @@ public class ExperimentPanel extends JPanel {
   public JSlider getPulseWidthSliderNs() {
 
     return pulseWidthSliderNs;
+  }
+
+  public JSlider getPulseNumberSlider() {
+
+    return pulseNumberSlider;
   }
 
   public JTextField getSeriesTextField() {

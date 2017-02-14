@@ -199,7 +199,6 @@ public class ExperimentController implements PropertyChangeListener, KeyListener
         }
       }
     });
-
   }
 
   ActionListener waveformRadioButtonActionListener = new ActionListener() {

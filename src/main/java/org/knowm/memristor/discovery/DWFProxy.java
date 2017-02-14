@@ -46,13 +46,14 @@ public class DWFProxy {
    * Constructor
    */
   public DWFProxy() {
+
     dwf = new DWF();
     swingPropertyChangeSupport = new SwingPropertyChangeSupport(this);
   }
 
   /**
    * Here is where the Controller registers itself as a listener to model changes.
-   * 
+   *
    * @param listener
    */
   public void addListener(PropertyChangeListener listener) {
@@ -97,6 +98,10 @@ public class DWFProxy {
 
       if (isAD2Running) {
 
+
+        // Set this to false (default=true). Need to call FDwfAnalogOutConfigure(true), FDwfAnalogInConfigure(true) in order for *Set* methods to take effect.
+        dwf.FDwfDeviceAutoConfigureSet(false);
+
         /////////////////////////////////////////////////////////////
         // Digital I/O //////////////////////////////////////////////
         /////////////////////////////////////////////////////////////
@@ -110,6 +115,9 @@ public class DWFProxy {
         /////////////////////////////////////////////////////////////
         dwf.setPowerSupply(0, 5.0);
         dwf.setPowerSupply(1, -5.0);
+      }else{
+
+        System.out.println(dwf.FDwfGetLastErrorMsg());
       }
       return isAD2Running;
     }
@@ -168,13 +176,13 @@ public class DWFProxy {
 
   /**
    * A GUI element was clicked, so we need to update the model. Don't need to fire a property change for the GUI since the change came from the GUI.
-   * 
+   *
    * @param toggleClickedID
    * @param isOn
    */
   public void updateDigitalIOState(int toggleClickedID, boolean isOn) {
 
-    logger.debug("toggleClickedID: " + toggleClickedID);
+    // logger.debug("toggleClickedID: " + toggleClickedID);
     int oldValDigitalIO = digitalIOStates;
 
     // Update model
@@ -185,10 +193,11 @@ public class DWFProxy {
       digitalIOStates = digitalIOStates & ~(1 << toggleClickedID);
     }
 
-    logger.debug("new state: " + digitalIOStates);
+    // logger.debug("new state: " + digitalIOStates);
 
     boolean successful = dwf.FDwfDigitalIOOutputSet(digitalIOStates);
-    logger.debug("AD2 Device Digital I/O Written: " + successful);
+    // logger.debug("AD2 Device Digital I/O Written: " + successful);
+    dwf.FDwfDigitalIOConfigure();
 
     digitalIOStates = dwf.getDigitalIOStatus();
     swingPropertyChangeSupport.firePropertyChange(DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
@@ -196,20 +205,20 @@ public class DWFProxy {
 
   public void setAllIOStates(int outputSetMask) {
 
-    logger.debug("outputSetMask: " + outputSetMask);
+    // logger.debug("outputSetMask: " + outputSetMask);
     int oldValDigitalIO = digitalIOStates;
 
     // Update model
     digitalIOStates = outputSetMask;
 
-    logger.debug("new state: " + digitalIOStates);
+    // logger.debug("new state: " + digitalIOStates);
 
     boolean successful = dwf.FDwfDigitalIOOutputSet(digitalIOStates);
-    logger.debug("AD2 Device Digital I/O Written: " + successful);
+    // logger.debug("AD2 Device Digital I/O Written: " + successful);
+    dwf.FDwfDigitalIOConfigure();
 
     digitalIOStates = dwf.getDigitalIOStatus();
     swingPropertyChangeSupport.firePropertyChange(DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
-
   }
 
   /////////////////////////////////////////////////////////////
