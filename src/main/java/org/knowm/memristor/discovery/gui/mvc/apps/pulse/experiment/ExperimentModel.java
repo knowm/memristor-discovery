@@ -81,7 +81,7 @@ public class ExperimentModel extends AppModel {
    */
   void updateWaveformChartData() {
 
-    Driver driver = new Square("Square", 0, 0, amplitude, getCalculatedFrequency());
+    Driver driver = new Square("Square", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
 
     double stopTime = 1 / getCalculatedFrequency() * HysteresisPreferences.CAPTURE_PERIOD_COUNT * pulseNumber;
     double timeStep = 1 / getCalculatedFrequency() * HysteresisPreferences.CAPTURE_PERIOD_COUNT / HysteresisPreferences.CAPTURE_BUFFER_SIZE * pulseNumber;

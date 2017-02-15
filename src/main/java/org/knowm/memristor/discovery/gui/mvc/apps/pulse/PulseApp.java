@@ -158,6 +158,8 @@ public class PulseApp extends App implements PropertyChangeListener {
 
       // System.out.println("Arbitrary Wave Buffer Size Min and Max: " + Arrays.toString(dwfProxy.getDwf().FDwfAnalogOutNodeDataInfo(DWF.WAVEFORM_CHANNEL_1)));
 
+      int sampleFrequencyMultiplier = 200; // adjust this down if you want to capture more pulses as the buffer size is limited.
+
       //////////////////////////////////
       // Analog In /////////////////
       //////////////////////////////////
@@ -165,8 +167,8 @@ public class PulseApp extends App implements PropertyChangeListener {
       dwfProxy.getDwf().FDwfAnalogInChannelRangeSet(DWF.OSCILLOSCOPE_CHANNEL_1, 2.5);
       dwfProxy.getDwf().FDwfAnalogInChannelEnableSet(DWF.OSCILLOSCOPE_CHANNEL_2, true);
       dwfProxy.getDwf().FDwfAnalogInChannelRangeSet(DWF.OSCILLOSCOPE_CHANNEL_2, 2.5);
-      dwfProxy.getDwf().FDwfAnalogInFrequencySet(experimentModel.getCalculatedFrequency() * 400);
-      dwfProxy.getDwf().FDwfAnalogInBufferSizeSet(PulsePreferences.CAPTURE_BUFFER_SIZE );
+      dwfProxy.getDwf().FDwfAnalogInFrequencySet(experimentModel.getCalculatedFrequency() * sampleFrequencyMultiplier);
+      dwfProxy.getDwf().FDwfAnalogInBufferSizeSet(PulsePreferences.CAPTURE_BUFFER_SIZE);
       dwfProxy.getDwf().FDwfAnalogInAcquisitionModeSet(AcquisitionMode.Single.getId());
       // Trigger single capture on rising edge of analog signal pulse
       dwfProxy.getDwf().FDwfAnalogInTriggerAutoTimeoutSet(0); // disable auto trigger
@@ -197,8 +199,7 @@ public class PulseApp extends App implements PropertyChangeListener {
       // dwfProxy.getDwf().startSinglePulse(DWF.WAVEFORM_CHANNEL_1, Waveform.Sine, experimentModel.getCalculatedFrequency(), experimentModel.getAmplitude(), 0, 50);
 
       // custom waveform
-      boolean success = dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, experimentModel.getCalculatedFrequency(), experimentModel.getAmplitude(), 0, experimentModel.getPulseNumber());
-      System.out.println("success = " + success);
+      dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, experimentModel.getCalculatedFrequency(), experimentModel.getAmplitude(), 0, experimentModel.getPulseNumber());
 
       //////////////////////////////////
       //////////////////////////////////
@@ -206,15 +207,15 @@ public class PulseApp extends App implements PropertyChangeListener {
       // Read In Data
       while (true) {
         byte status = dwfProxy.getDwf().FDwfAnalogInStatus(true);
-        System.out.println("status: " + status);
+        // System.out.println("status: " + status);
         if (status == 2) { // done capturing
           break;
         }
       }
       int validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
-      double[] vin = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
-      double[] vout = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
-      System.out.println("validSamples: " + validSamples);
+      double[] v1 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
+      double[] v2 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
+      // System.out.println("validSamples: " + validSamples);
 
       dwfProxy.getDwf().FDwfAnalogInConfigure(false, false);
       dwfProxy.setAD2Capturing(false);
@@ -224,27 +225,47 @@ public class PulseApp extends App implements PropertyChangeListener {
       // Create Chart Data //////
       ///////////////////////////
 
+      // The data is a bit weird, as what's captured is a long window of "idle" voltage before the pulses. We clean that now...
+      int startIndex = 0;
+      for (int i = 0; i < v1.length; i++) {
+        if (Math.abs(v1[i]) > .075) {
+          startIndex = i;
+          break;
+        }
+      }
+      int endIndex = v1.length - 1;
+      for (int i = v1.length - 1; i > 0; i--) {
+        if (Math.abs(v1[i]) > .075) {
+          endIndex = i;
+          break;
+        }
+      }
+      int bufferLength = endIndex - startIndex;
+
       // create time data
-      double[] timeData = new double[vin.length];
+      double[] timeData = new double[bufferLength];
       double timeStep = 1 / (double) experimentModel.getCalculatedFrequency();
       // System.out.println("timeStep = " + timeStep);
-      for (int i = 0; i < timeData.length; i++) {
-        timeData[i] = i * timeStep * 1_000;
+      for (int i = 0; i < bufferLength; i++) {
+        timeData[i] = i * timeStep * sampleFrequencyMultiplier;
       }
 
       // create current data
-      double[] current = new double[vout.length];
-      for (int i = 0; i < current.length; i++) {
-        current[i] = Math.abs(vout[i] / experimentModel.getSeriesR() * PulsePreferences.CURRENT_UNIT.getDivisor());
+      double[] current = new double[bufferLength];
+      double[] V1Cleaned = new double[bufferLength];
+      double[] V2Cleaned = new double[bufferLength];
+      for (int i = 0; i < bufferLength; i++) {
+        current[i] = Math.abs(v2[i + startIndex] / experimentModel.getSeriesR() * PulsePreferences.CURRENT_UNIT.getDivisor());
+        V1Cleaned[i] = v1[i + startIndex];
+        V2Cleaned[i] = v2[i + startIndex];
       }
 
       // create conductance data
-      double[] conductance = new double[vout.length];
-      for (int i = 0; i < conductance.length; i++) {
+      double[] conductance = new double[bufferLength];
+      for (int i = 0; i < bufferLength; i++) {
+        double I = v2[i + startIndex] / experimentModel.getSeriesR();
 
-        double I = vout[i] / experimentModel.getSeriesR();
-
-        double G = I / (vin[i] - vout[i]) * PulsePreferences.CONDUCTANCE_UNIT.getDivisor();
+        double G = I / (v1[i + startIndex] - v2[i + startIndex]) * PulsePreferences.CONDUCTANCE_UNIT.getDivisor();
 
         G = G < 0 ? 0 : G;
 
@@ -254,7 +275,7 @@ public class PulseApp extends App implements PropertyChangeListener {
         conductance[i] = ave;
       }
 
-      publish(new double[][]{timeData, vin, vout, current, conductance});
+      publish(new double[][]{timeData, V1Cleaned, V2Cleaned, current, conductance});
 
       return true;
     }
