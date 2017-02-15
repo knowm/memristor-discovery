@@ -98,10 +98,6 @@ public class DWFProxy {
 
       if (isAD2Running) {
 
-
-        // Set this to false (default=true). Need to call FDwfAnalogOutConfigure(true), FDwfAnalogInConfigure(true) in order for *Set* methods to take effect.
-        dwf.FDwfDeviceAutoConfigureSet(false);
-
         /////////////////////////////////////////////////////////////
         // Digital I/O //////////////////////////////////////////////
         /////////////////////////////////////////////////////////////
@@ -115,6 +111,26 @@ public class DWFProxy {
         /////////////////////////////////////////////////////////////
         dwf.setPowerSupply(0, 5.0);
         dwf.setPowerSupply(1, -5.0);
+
+        /////////////////////////////////////////////////////////////
+        // Analog Out //////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////
+        // set analog out offset to zero, as it seems like it's not quite there by default
+        dwf.FDwfAnalogOutNodeOffsetSet(DWF.WAVEFORM_CHANNEL_1, 0);
+        dwf.FDwfAnalogOutNodeOffsetSet(DWF.WAVEFORM_CHANNEL_2, 0);
+        // dwf.FDwfAnalogOutConfigure(DWF.WAVEFORM_CHANNEL_1, true);
+
+        /////////////////////////////////////////////////////////////
+        // Analog In //////////////////////////////////////////////
+        /////////////////////////////////////////////////////////////
+        dwf.FDwfAnalogInChannelEnableSet(DWF.OSCILLOSCOPE_CHANNEL_1, true);
+        dwf.FDwfAnalogInChannelRangeSet(DWF.OSCILLOSCOPE_CHANNEL_1, 2.5);
+        dwf.FDwfAnalogInChannelEnableSet(DWF.OSCILLOSCOPE_CHANNEL_2, true);
+        dwf.FDwfAnalogInChannelRangeSet(DWF.OSCILLOSCOPE_CHANNEL_2, 2.5);
+
+        // Set this to false (default=true). Need to call FDwfAnalogOutConfigure(true), FDwfAnalogInConfigure(true) in order for *Set* methods to take effect.
+        dwf.FDwfDeviceAutoConfigureSet(false);
+
       }else{
 
         System.out.println(dwf.FDwfGetLastErrorMsg());

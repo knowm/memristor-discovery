@@ -144,10 +144,6 @@ public class PulseApp extends App implements PropertyChangeListener {
     // trigger plot of waveform
     PropertyChangeEvent evt = new PropertyChangeEvent(this, AppModel.EVENT_WAVEFORM_UPDATE, true, false);
     propertyChange(evt);
-
-    // set analog out offset to zero, as it seems like it's not quite there by default
-    dwfProxy.getDwf().FDwfAnalogOutNodeOffsetSet(DWF.WAVEFORM_CHANNEL_1, 0);
-    dwfProxy.getDwf().FDwfAnalogOutConfigure(DWF.WAVEFORM_CHANNEL_1, true);
   }
 
   /**
