@@ -27,6 +27,8 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.apps.hysteresis;
 
+import static javax.swing.BorderFactory.createEmptyBorder;
+
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
@@ -35,6 +37,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
+import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
 
 import org.knowm.memristor.discovery.DWFProxy;
@@ -74,7 +77,9 @@ public class HysteresisApp extends App implements PropertyChangeListener {
     this.dwfProxy = dwfProxy;
 
     experimentPanel = new ExperimentPanel();
-    mainFrameContainer.add(experimentPanel, BorderLayout.WEST);
+    JScrollPane jScrollPane = new JScrollPane(experimentPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    jScrollPane.setBorder(createEmptyBorder());
+    mainFrameContainer.add(jScrollPane, BorderLayout.WEST);
 
     // ///////////////////////////////////////////////////////////
     // START BUTTON ////////////////////////////////////////////

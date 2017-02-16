@@ -27,6 +27,8 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.apps.qc;
 
+import static javax.swing.BorderFactory.createEmptyBorder;
+
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
@@ -44,6 +46,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
 
 import org.knowm.memristor.discovery.DWFProxy;
@@ -110,7 +113,9 @@ public class QCApp extends App implements PropertyChangeListener {
   private void createAndShowGUI(Container mainFrameContainer) {
 
     controlPanel = new QCControlPanel();
-    mainFrameContainer.add(controlPanel, BorderLayout.WEST);
+    JScrollPane jScrollPane = new JScrollPane(controlPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    jScrollPane.setBorder(createEmptyBorder());
+    mainFrameContainer.add(jScrollPane, BorderLayout.WEST);
 
     // ///////////////////////////////////////////////////////////
     // START BUTTON ////////////////////////////////////////////
