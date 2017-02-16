@@ -79,7 +79,7 @@ public class ExperimentModel extends AppModel {
    */
   void updateWaveformChartData() {
 
-    // TODO
+    // TODO Do this better, time axis is not correct
 
     double[] waveform = PulseUtils.generatePositiveAndNegativeDCRamps(amplitude);
 
