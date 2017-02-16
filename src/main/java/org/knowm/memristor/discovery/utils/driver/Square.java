@@ -35,15 +35,15 @@ public class Square extends Driver {
   /**
    * Constructor
    * 
-   * @param matchingSourceId
+   * @param name
    * @param dcOffset
    * @param phase
    * @param amplitude
    * @param frequency
    */
-  public Square(String matchingSourceId, double dcOffset, double phase, double amplitude, double frequency) {
+  public Square(String name, double dcOffset, double phase, double amplitude, double frequency) {
 
-    super(matchingSourceId, dcOffset, phase, amplitude, frequency);
+    super(name, dcOffset, phase, amplitude, frequency);
   }
 
   @Override

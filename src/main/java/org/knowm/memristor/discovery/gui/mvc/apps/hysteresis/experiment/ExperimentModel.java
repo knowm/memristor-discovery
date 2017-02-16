@@ -34,6 +34,7 @@ import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferences;
 import org.knowm.memristor.discovery.gui.mvc.apps.hysteresis.HysteresisPreferences;
 import org.knowm.memristor.discovery.utils.driver.Driver;
 import org.knowm.memristor.discovery.utils.driver.Sine;
+import org.knowm.memristor.discovery.utils.driver.Square;
 import org.knowm.memristor.discovery.utils.driver.Triangle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +43,9 @@ public class ExperimentModel extends AppModel {
 
   private final Logger logger = LoggerFactory.getLogger(ExperimentModel.class);
 
-  /** Waveform */
+  /**
+   * Waveform
+   */
   public HysteresisPreferences.Waveform waveform;
   float offset;
   private float amplitude;
@@ -50,7 +53,9 @@ public class ExperimentModel extends AppModel {
   private final double[] waveformTimeData = new double[HysteresisPreferences.CAPTURE_BUFFER_SIZE];
   private final double[] waveformAmplitudeData = new double[HysteresisPreferences.CAPTURE_BUFFER_SIZE];
 
-  /** Series R */
+  /**
+   * Series R
+   */
   private int seriesR;
 
   /**
@@ -75,7 +80,7 @@ public class ExperimentModel extends AppModel {
 
   /**
    * Here is where the Controller registers itself as a listener to model changes.
-   * 
+   *
    * @param listener
    */
   public void addListener(PropertyChangeListener listener) {
@@ -90,15 +95,18 @@ public class ExperimentModel extends AppModel {
 
     Driver driver;
     switch (waveform) {
-    case Sine:
-      driver = new Sine("Sine", offset, 0, amplitude, frequency);
-      break;
-    case Triangle:
-      driver = new Triangle("Triangle", offset, 0, amplitude, frequency);
-      break;
-    default:
-      driver = new Sine("Sine", offset, 0, amplitude, frequency);
-      break;
+      case Sine:
+        driver = new Sine("Sine", offset, 0, amplitude, frequency);
+        break;
+      case Triangle:
+        driver = new Triangle("Triangle", offset, 0, amplitude, frequency);
+        break;
+      case Square:
+        driver = new Square("Square", offset, 0, amplitude, frequency);
+        break;
+      default:
+        driver = new Sine("Sine", offset, 0, amplitude, frequency);
+        break;
     }
 
     double stopTime = 1 / (double) frequency * HysteresisPreferences.CAPTURE_PERIOD_COUNT;
@@ -164,12 +172,11 @@ public class ExperimentModel extends AppModel {
 
   public void setFrequency(int frequency) {
 
-    int oldFreq =  this.frequency;
+    int oldFreq = this.frequency;
 
     this.frequency = frequency;
     swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
     swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_FREQUENCY_UPDATE, oldFreq, frequency);
-
   }
 
   public double[] getWaveformTimeData() {
@@ -197,5 +204,4 @@ public class ExperimentModel extends AppModel {
 
     return new HysteresisPreferences();
   }
-
 }

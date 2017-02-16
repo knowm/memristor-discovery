@@ -40,7 +40,7 @@ public class HysteresisPreferences extends AppPreferences {
 
   public enum Waveform {
 
-    Sine, Triangle;
+    Sine, Triangle, Square;
   }
 
   public static final String WAVEFORM_INIT_STRING_KEY = PREFIX + "WAVEFORM_INIT_STRING_KEY";
@@ -78,5 +78,4 @@ public class HysteresisPreferences extends AppPreferences {
 
     super(HysteresisPreferences.class);
   }
-
 }

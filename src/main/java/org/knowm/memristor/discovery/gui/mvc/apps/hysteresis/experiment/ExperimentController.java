@@ -84,15 +84,18 @@ public class ExperimentController implements PropertyChangeListener, KeyListener
   private void initGUIComponentsFromModel() {
 
     switch (experimentModel.getWaveform()) {
-    case Sine:
-      experimentPanel.getSineRadioButton().setSelected(true);
-      break;
-    case Triangle:
-      experimentPanel.getTriangleRadioButton().setSelected(true);
-      break;
-    default:
-      experimentPanel.getSineRadioButton().setSelected(true);
-      break;
+      case Sine:
+        experimentPanel.getSineRadioButton().setSelected(true);
+        break;
+      case Triangle:
+        experimentPanel.getTriangleRadioButton().setSelected(true);
+        break;
+      case Square:
+        experimentPanel.getSquareRadioButton().setSelected(true);
+        break;
+      default:
+        experimentPanel.getSineRadioButton().setSelected(true);
+        break;
     }
 
     experimentPanel.getOffsetSlider().setValue((int) (experimentModel.getOffset() * 100));
@@ -101,12 +104,12 @@ public class ExperimentController implements PropertyChangeListener, KeyListener
     experimentPanel.getAmplitudeSlider().setBorder(BorderFactory.createTitledBorder("Amplitude [V] = " + experimentModel.getAmplitude()));
     if (experimentModel.getFrequency() <= 100) {
       experimentPanel.getFrequencySlider().setValue(experimentModel.getFrequency());
-      experimentPanel.getFrequencySliderLog().setValue(0);
+      experimentPanel.getFrequencySliderLog().setValue((int) Math.log10(experimentModel.getFrequency() + 1));
       experimentPanel.getFrequencySlider().setBorder(BorderFactory.createTitledBorder("Frequency [Hz] = " + experimentModel.getFrequency()));
       experimentPanel.getFrequencySliderLog().setBorder(BorderFactory.createTitledBorder("Frequency [Hz]"));
     }
     else {
-      experimentPanel.getFrequencySlider().setValue(0);
+      experimentPanel.getFrequencySlider().setValue(experimentModel.getFrequency());
       experimentPanel.getFrequencySliderLog().setValue((int) Math.log10(experimentModel.getFrequency() + 1));
       experimentPanel.getFrequencySliderLog().setBorder(BorderFactory.createTitledBorder("Frequency [Hz] = " + experimentModel.getFrequency()));
       experimentPanel.getFrequencySlider().setBorder(BorderFactory.createTitledBorder("Frequency [Hz]"));
@@ -121,6 +124,7 @@ public class ExperimentController implements PropertyChangeListener, KeyListener
 
     experimentPanel.getSineRadioButton().addActionListener(waveformRadioButtonActionListener);
     experimentPanel.getTriangleRadioButton().addActionListener(waveformRadioButtonActionListener);
+    experimentPanel.getSquareRadioButton().addActionListener(waveformRadioButtonActionListener);
 
     experimentPanel.getOffsetSlider().addChangeListener(new ChangeListener() {
 
@@ -162,7 +166,6 @@ public class ExperimentController implements PropertyChangeListener, KeyListener
           experimentPanel.getFrequencySliderLog().setBorder(BorderFactory.createTitledBorder("Frequency [Hz]"));
         }
       }
-
     });
     experimentPanel.getFrequencySlider().addKeyListener(this);
 
@@ -178,7 +181,6 @@ public class ExperimentController implements PropertyChangeListener, KeyListener
           experimentPanel.getFrequencySlider().setBorder(BorderFactory.createTitledBorder("Frequency [Hz]"));
         }
       }
-
     });
     experimentPanel.getFrequencySliderLog().addKeyListener(this);
 
@@ -206,7 +208,7 @@ public class ExperimentController implements PropertyChangeListener, KeyListener
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
 
-      for (Enumeration<AbstractButton> buttons = experimentPanel.getWaveformRadioButtonGroup().getElements(); buttons.hasMoreElements();) {
+      for (Enumeration<AbstractButton> buttons = experimentPanel.getWaveformRadioButtonGroup().getElements(); buttons.hasMoreElements(); ) {
         AbstractButton button = buttons.nextElement();
         if (button.isSelected()) {
           experimentModel.setWaveform(button.getText());
@@ -224,23 +226,23 @@ public class ExperimentController implements PropertyChangeListener, KeyListener
 
     switch (evt.getPropertyName()) {
 
-    case DWFProxy.AD2_STARTUP_CHANGE:
+      case DWFProxy.AD2_STARTUP_CHANGE:
 
-      experimentPanel.enableAllChildComponents((Boolean) evt.getNewValue());
-      break;
+        experimentPanel.enableAllChildComponents((Boolean) evt.getNewValue());
+        break;
 
-    case AppModel.EVENT_PREFERENCES_UPDATE:
+      case AppModel.EVENT_PREFERENCES_UPDATE:
 
-      initGUIComponentsFromModel();
-      break;
+        initGUIComponentsFromModel();
+        break;
 
-    case AppModel.EVENT_WAVEFORM_UPDATE:
+      case AppModel.EVENT_WAVEFORM_UPDATE:
 
-      experimentModel.updateWaveformChartData();
-      break;
+        experimentModel.updateWaveformChartData();
+        break;
 
-    default:
-      break;
+      default:
+        break;
     }
   }
 
@@ -275,5 +277,4 @@ public class ExperimentController implements PropertyChangeListener, KeyListener
       cl.stateChanged(ce);
     }
   }
-
 }

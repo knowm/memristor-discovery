@@ -202,7 +202,7 @@ public class DCApp extends App implements PropertyChangeListener {
       // dwfProxy.getDwf().startSinglePulse(DWF.WAVEFORM_CHANNEL_1, Waveform.Sine, experimentModel.getCalculatedFrequency(), experimentModel.getAmplitude(), 0, 50);
 
       // custom waveform
-      double[] waveform = PulseUtils.generatePositiveAndNegativeDCSquares(experimentModel.getAmplitude());
+      double[] waveform = PulseUtils.generatePositiveAndNegativeDCRamps(experimentModel.getAmplitude());
       dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, experimentModel.getCalculatedFrequency(), 0, experimentModel.getPulseNumber(), waveform);
       System.out.println("experimentModel.getCalculatedFrequency() = " + experimentModel.getCalculatedFrequency());
 

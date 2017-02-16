@@ -84,7 +84,7 @@ public class HysteresisPrefencesPanel extends AppPrefencesPanel {
 
     gc.gridx = 1;
     this.waveformComboBox = new JComboBox<>();
-    this.waveformComboBox.setModel(new DefaultComboBoxModel<HysteresisPreferences.Waveform>(HysteresisPreferences.Waveform.values()));
+    this.waveformComboBox.setModel(new DefaultComboBoxModel<>(HysteresisPreferences.Waveform.values()));
     HysteresisPreferences.Waveform waveform = HysteresisPreferences.Waveform.valueOf(appPreferences.getString(HysteresisPreferences.WAVEFORM_INIT_STRING_KEY,
         HysteresisPreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
     this.waveformComboBox.setSelectedItem(waveform);

@@ -31,7 +31,6 @@ import java.beans.PropertyChangeListener;
 
 import org.knowm.memristor.discovery.gui.mvc.apps.AppModel;
 import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferences;
-import org.knowm.memristor.discovery.gui.mvc.apps.hysteresis.HysteresisPreferences;
 import org.knowm.memristor.discovery.gui.mvc.apps.pulse.PulsePreferences;
 import org.knowm.memristor.discovery.utils.driver.Driver;
 import org.knowm.memristor.discovery.utils.driver.Square;
@@ -54,8 +53,8 @@ public class ExperimentModel extends AppModel {
    */
   private int seriesResistance;
 
-  private final double[] waveformTimeData = new double[HysteresisPreferences.CAPTURE_BUFFER_SIZE];
-  private final double[] waveformAmplitudeData = new double[HysteresisPreferences.CAPTURE_BUFFER_SIZE];
+  private final double[] waveformTimeData = new double[PulsePreferences.CAPTURE_BUFFER_SIZE];
+  private final double[] waveformAmplitudeData = new double[PulsePreferences.CAPTURE_BUFFER_SIZE];
 
   /**
    * Constructor
@@ -83,12 +82,12 @@ public class ExperimentModel extends AppModel {
 
     Driver driver = new Square("Square", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
 
-    double stopTime = 1 / getCalculatedFrequency() * HysteresisPreferences.CAPTURE_PERIOD_COUNT * pulseNumber;
-    double timeStep = 1 / getCalculatedFrequency() * HysteresisPreferences.CAPTURE_PERIOD_COUNT / HysteresisPreferences.CAPTURE_BUFFER_SIZE * pulseNumber;
+    double stopTime = 1 / getCalculatedFrequency() * pulseNumber;
+    double timeStep = 1 / getCalculatedFrequency() / PulsePreferences.CAPTURE_BUFFER_SIZE * pulseNumber;
 
     int counter = 0;
     for (double i = 0.0; i < stopTime; i = i + timeStep) {
-      if (counter >= HysteresisPreferences.CAPTURE_BUFFER_SIZE) {
+      if (counter >= PulsePreferences.CAPTURE_BUFFER_SIZE) {
         break;
       }
       waveformTimeData[counter] = i * 1_000_000;

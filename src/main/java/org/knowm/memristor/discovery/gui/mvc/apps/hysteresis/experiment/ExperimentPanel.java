@@ -55,6 +55,7 @@ public class ExperimentPanel extends JPanel {
   private final ButtonGroup waveformRadioButtonGroup;
   private final JRadioButton sineRadioButton;
   private final JRadioButton triangleRadioButton;
+  private final JRadioButton squareRadioButton;
 
   private final JSlider offsetSlider;
   private final JSlider amplitudeSlider;
@@ -80,15 +81,19 @@ public class ExperimentPanel extends JPanel {
 
     sineRadioButton = new JRadioButton("Sine");
     triangleRadioButton = new JRadioButton("Triangle");
+    squareRadioButton = new JRadioButton("Square");
     waveformRadioButtonGroup = new ButtonGroup();
     waveformRadioButtonGroup.add(sineRadioButton);
     waveformRadioButtonGroup.add(triangleRadioButton);
+    // waveformRadioButtonGroup.add(squareRadioButton);
     add(sineRadioButton);
     add(triangleRadioButton);
+    // add(squareRadioButton);
     waveformRadioButtonBox = Box.createVerticalBox();
     waveformRadioButtonBox.setBorder(BorderFactory.createTitledBorder("Waveform"));
     waveformRadioButtonBox.add(sineRadioButton);
     waveformRadioButtonBox.add(triangleRadioButton);
+    // waveformRadioButtonBox.add(squareRadioButton);
     c.gridx = 0;
     c.gridy++;
     c.insets = new Insets(0, 6, 4, 6);
@@ -193,6 +198,7 @@ public class ExperimentPanel extends JPanel {
 
     sineRadioButton.setEnabled(enabled);
     triangleRadioButton.setEnabled(enabled);
+    squareRadioButton.setEnabled(enabled);
     amplitudeSlider.setEnabled(enabled);
     frequencySlider.setEnabled(enabled);
     seriesTextField.setEnabled(enabled);
@@ -213,6 +219,11 @@ public class ExperimentPanel extends JPanel {
   public JRadioButton getTriangleRadioButton() {
 
     return triangleRadioButton;
+  }
+
+  public JRadioButton getSquareRadioButton() {
+
+    return squareRadioButton;
   }
 
   public JSlider getOffsetSlider() {

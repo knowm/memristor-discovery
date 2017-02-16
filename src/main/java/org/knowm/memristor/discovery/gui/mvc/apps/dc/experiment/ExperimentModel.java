@@ -32,9 +32,7 @@ import java.beans.PropertyChangeListener;
 import org.knowm.memristor.discovery.gui.mvc.apps.AppModel;
 import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferences;
 import org.knowm.memristor.discovery.gui.mvc.apps.dc.DCPreferences;
-import org.knowm.memristor.discovery.gui.mvc.apps.hysteresis.HysteresisPreferences;
-import org.knowm.memristor.discovery.utils.driver.Driver;
-import org.knowm.memristor.discovery.utils.driver.Square;
+import org.knowm.memristor.discovery.utils.PulseUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,12 +48,12 @@ public class ExperimentModel extends AppModel {
   private int pulseNumber;
 
   /**
-   * Shunt
+   * Series Resistor
    */
   private int seriesResistance;
 
-  private final double[] waveformTimeData = new double[HysteresisPreferences.CAPTURE_BUFFER_SIZE];
-  private final double[] waveformAmplitudeData = new double[HysteresisPreferences.CAPTURE_BUFFER_SIZE];
+  private final double[] waveformTimeData = null;
+  private final double[] waveformAmplitudeData = new double[DCPreferences.CAPTURE_BUFFER_SIZE];
 
   /**
    * Constructor
@@ -81,18 +79,16 @@ public class ExperimentModel extends AppModel {
    */
   void updateWaveformChartData() {
 
-    Driver driver = new Square("Square", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
+    // TODO
 
-    double stopTime = 1 / getCalculatedFrequency() * HysteresisPreferences.CAPTURE_PERIOD_COUNT * pulseNumber;
-    double timeStep = 1 / getCalculatedFrequency() * HysteresisPreferences.CAPTURE_PERIOD_COUNT / HysteresisPreferences.CAPTURE_BUFFER_SIZE * pulseNumber;
+    double[] waveform = PulseUtils.generatePositiveAndNegativeDCRamps(amplitude);
+
+    // double stopTime = 1 / getCalculatedFrequency() * DCPreferences.CAPTURE_PERIOD_COUNT * pulseNumber;
+    // double timeStep = 1 / getCalculatedFrequency() * DCPreferences.CAPTURE_PERIOD_COUNT / DCPreferences.CAPTURE_BUFFER_SIZE * pulseNumber;
 
     int counter = 0;
-    for (double i = 0.0; i < stopTime; i = i + timeStep) {
-      if (counter >= HysteresisPreferences.CAPTURE_BUFFER_SIZE) {
-        break;
-      }
-      waveformTimeData[counter] = i * 1_000_000;
-      waveformAmplitudeData[counter++] = driver.getSignal(i);
+    for (int i = 0; i < DCPreferences.CAPTURE_BUFFER_SIZE; i++) {
+      waveformAmplitudeData[counter++] = waveform[i * waveform.length / DCPreferences.CAPTURE_BUFFER_SIZE];
     }
   }
 

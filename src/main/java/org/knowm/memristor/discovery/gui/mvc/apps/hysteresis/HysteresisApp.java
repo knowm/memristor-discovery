@@ -298,7 +298,7 @@ public class HysteresisApp extends App implements PropertyChangeListener {
           // AnalogOut
           DWF.Waveform dwfWaveform = getDWFWaveform(experimentModel.getWaveform());
           // TODO if this is a good machanism, use it everywhere else. Perhaps create an exception subclass and catch it higher up.
-          if(!dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, experimentModel.getFrequency(), experimentModel.getAmplitude(), experimentModel.getOffset(), 50)){
+          if (!dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, experimentModel.getFrequency(), experimentModel.getAmplitude(), experimentModel.getOffset(), 50)) {
             throw new RuntimeException(dwfProxy.getDwf().FDwfGetLastErrorMsg());
           }
 
@@ -354,6 +354,8 @@ public class HysteresisApp extends App implements PropertyChangeListener {
         return DWF.Waveform.Sine;
       case Triangle:
         return DWF.Waveform.Triangle;
+      case Square:
+        return DWF.Waveform.Square;
       default:
         return DWF.Waveform.Sine;
     }
