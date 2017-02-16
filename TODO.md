@@ -1,10 +1,10 @@
 ## TODO
 
-1. Fix issue of pulses less than 5µs not rendering with the correct time width on plot
 1. Remove redundant copy-pasta code, abstract stuff
 
 ## DONE
 
+1. Fix issue of pulses less than 5µs not rendering with the correct time width on plot
 1. Put experiment controls in a scrolling panel
 1. test csv export
 1. Fix FTDI error file that keeps occurring

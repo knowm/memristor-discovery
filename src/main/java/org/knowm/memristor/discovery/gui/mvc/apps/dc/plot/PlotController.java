@@ -224,7 +224,7 @@ public class PlotController implements PropertyChangeListener {
 
   private String getWaveform(double amplitude, int pulseWidth) {
 
-    return "Amplitude = " + getFormattedAmplitude(amplitude) + " V, Pulse Width = " + pulseWidth / 1000 + " µs";
+    return "Amplitude = " + getFormattedAmplitude(amplitude) + " V, Pulse Width = " + (double) pulseWidth / 1000 + " µs";
   }
 
   private double getFormattedAmplitude(double amplitude) {
