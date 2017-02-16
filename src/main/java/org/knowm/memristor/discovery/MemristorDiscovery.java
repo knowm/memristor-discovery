@@ -44,6 +44,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 import org.knowm.memristor.discovery.gui.AboutDialog;
 import org.knowm.memristor.discovery.gui.mvc.apps.App;
 import org.knowm.memristor.discovery.gui.mvc.apps.AppHelpDialog;
+import org.knowm.memristor.discovery.gui.mvc.apps.dc.DCApp;
+import org.knowm.memristor.discovery.gui.mvc.apps.dc.DCPrefencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.apps.hysteresis.HysteresisApp;
 import org.knowm.memristor.discovery.gui.mvc.apps.hysteresis.HysteresisPrefencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.apps.pulse.PulseApp;
@@ -72,7 +74,7 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
   private final DWFProxy dwf = new DWFProxy();
 
   // private final String[] apps = new String[] { "Hysteresis", "Pulse", "QC" };
-  private final String[] apps = new String[]{"Hysteresis", "Pulse"};
+  private final String[] apps = new String[]{"Hysteresis", "Pulse", "DC"};
   private String appID;
   // private String appID = apps[0];
   private App app;
@@ -174,6 +176,9 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
             case "QC":
               app = new QCApp(dwf, mainFrame.getContentPane());
               break;
+            case "DC":
+              app = new DCApp(dwf, mainFrame.getContentPane());
+              break;
 
             default:
               break;
@@ -232,9 +237,15 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
 
     // default app injected here
 
-    app = new HysteresisApp(dwf, mainFrameContainer);
-    appID = "Hysteresis";
-    mainFrame.setTitle(FRAME_TITLE_BASE + "Hysteresis");
+    // app = new HysteresisApp(dwf, mainFrameContainer);
+    // appID = "Hysteresis";
+    // mainFrame.setTitle(FRAME_TITLE_BASE + "Hysteresis");
+
+
+    app = new DCApp(dwf, mainFrameContainer);
+    appID = "DC";
+    mainFrame.setTitle(FRAME_TITLE_BASE + "DC");
+
 
     // app = new DCApp(dwf, mainFrameContainer);
     // appID = "Pulse2";
@@ -300,6 +311,9 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
         break;
       case "QC":
         result = new QCPrefencesPanel(mainFrame).doModal();
+        break;
+      case "DC":
+        result = new DCPrefencesPanel(mainFrame).doModal();
         break;
 
       default:

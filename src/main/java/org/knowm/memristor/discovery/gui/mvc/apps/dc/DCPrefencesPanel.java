@@ -25,7 +25,7 @@
  * If you have any questions regarding our licensing policy, please
  * contact us at `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.apps.pulse;
+package org.knowm.memristor.discovery.gui.mvc.apps.dc;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -38,7 +38,7 @@ import javax.swing.JTextField;
 import org.knowm.memristor.discovery.gui.mvc.apps.AppPrefencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferences;
 
-public class PulsePrefencesPanel extends AppPrefencesPanel {
+public class DCPrefencesPanel extends AppPrefencesPanel {
 
   private JLabel shuntResistorLabel;
   private JTextField shuntResistorTextField;
@@ -54,7 +54,7 @@ public class PulsePrefencesPanel extends AppPrefencesPanel {
    *
    * @param owner
    */
-  public PulsePrefencesPanel(JFrame owner) {
+  public DCPrefencesPanel(JFrame owner) {
 
     super(owner);
   }
@@ -73,7 +73,7 @@ public class PulsePrefencesPanel extends AppPrefencesPanel {
 
     gc.gridx = 1;
     this.shuntResistorTextField = new JTextField(12);
-    this.shuntResistorTextField.setText(String.valueOf(appPreferences.getInteger(PulsePreferences.SERIES_R_INIT_KEY, PulsePreferences.SERIES_R_INIT_DEFAULT_VALUE)));
+    this.shuntResistorTextField.setText(String.valueOf(appPreferences.getInteger(DCPreferences.SERIES_R_INIT_KEY, DCPreferences.SERIES_R_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(shuntResistorTextField, gc);
 
     gc.gridy++;
@@ -84,7 +84,7 @@ public class PulsePrefencesPanel extends AppPrefencesPanel {
 
     gc.gridx = 1;
     this.amplitudeTextField = new JTextField(12);
-    this.amplitudeTextField.setText(String.valueOf(appPreferences.getFloat(PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY, PulsePreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
+    this.amplitudeTextField.setText(String.valueOf(appPreferences.getFloat(DCPreferences.AMPLITUDE_INIT_FLOAT_KEY, DCPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
     preferencesPanel.add(amplitudeTextField, gc);
 
     gc.gridy++;
@@ -95,27 +95,27 @@ public class PulsePrefencesPanel extends AppPrefencesPanel {
 
     gc.gridx = 1;
     this.pulseWidthTextField = new JTextField(12);
-    this.pulseWidthTextField.setText(String.valueOf(appPreferences.getInteger(PulsePreferences.PULSE_WIDTH_INIT_KEY, PulsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE)));
+    this.pulseWidthTextField.setText(String.valueOf(appPreferences.getInteger(DCPreferences.PULSE_WIDTH_INIT_KEY, DCPreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(pulseWidthTextField, gc);
   }
 
   @Override
   public void doSavePreferences() {
 
-    appPreferences.setInteger(PulsePreferences.SERIES_R_INIT_KEY, Integer.parseInt(shuntResistorTextField.getText()));
-    appPreferences.setFloat(PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(amplitudeTextField.getText()));
-    appPreferences.setInteger(PulsePreferences.PULSE_WIDTH_INIT_KEY, Integer.parseInt(pulseWidthTextField.getText()));
+    appPreferences.setInteger(DCPreferences.SERIES_R_INIT_KEY, Integer.parseInt(shuntResistorTextField.getText()));
+    appPreferences.setFloat(DCPreferences.AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(amplitudeTextField.getText()));
+    appPreferences.setInteger(DCPreferences.PULSE_WIDTH_INIT_KEY, Integer.parseInt(pulseWidthTextField.getText()));
   }
 
   @Override
   public AppPreferences initAppPreferences() {
 
-    return new PulsePreferences();
+    return new DCPreferences();
   }
 
   @Override
   public String getAppName() {
 
-    return "Pulse";
+    return "DC";
   }
 }
