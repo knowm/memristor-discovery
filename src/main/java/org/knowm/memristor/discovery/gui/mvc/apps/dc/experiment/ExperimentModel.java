@@ -28,11 +28,15 @@
 package org.knowm.memristor.discovery.gui.mvc.apps.dc.experiment;
 
 import java.beans.PropertyChangeListener;
+import java.util.Arrays;
 
 import org.knowm.memristor.discovery.gui.mvc.apps.AppModel;
 import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferences;
 import org.knowm.memristor.discovery.gui.mvc.apps.dc.DCPreferences;
-import org.knowm.memristor.discovery.utils.PulseUtils;
+import org.knowm.memristor.discovery.utils.driver.Driver;
+import org.knowm.memristor.discovery.utils.driver.RampUpDown;
+import org.knowm.memristor.discovery.utils.driver.Sawtooth;
+import org.knowm.memristor.discovery.utils.driver.Triangle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,14 +51,14 @@ public class ExperimentModel extends AppModel {
 
   private float amplitude;
   private int pulseWidth; // model store pulse width in nanoseconds
-  private int pulseNumber;
+  private int pulseNumber = 1;
 
   /**
    * Series Resistor
    */
   private int seriesResistance;
 
-  private final double[] waveformTimeData = null;
+  private final double[] waveformTimeData = new double[DCPreferences.CAPTURE_BUFFER_SIZE];
   private final double[] waveformAmplitudeData = new double[DCPreferences.CAPTURE_BUFFER_SIZE];
 
   /**
@@ -73,7 +77,6 @@ public class ExperimentModel extends AppModel {
     seriesResistance = appPreferences.getInteger(DCPreferences.SERIES_R_INIT_KEY, DCPreferences.SERIES_R_INIT_DEFAULT_VALUE);
     amplitude = appPreferences.getFloat(DCPreferences.AMPLITUDE_INIT_FLOAT_KEY, DCPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
     pulseWidth = appPreferences.getInteger(DCPreferences.PULSE_WIDTH_INIT_KEY, DCPreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
-    pulseNumber = 1;
     swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
@@ -84,43 +87,44 @@ public class ExperimentModel extends AppModel {
 
     // TODO Do this better, time axis is not correct
 
-    double[] waveform = PulseUtils.generatePositiveAndNegativeDCRamps(amplitude);
-
-    // double stopTime = 1 / getCalculatedFrequency() * DCPreferences.CAPTURE_PERIOD_COUNT * pulseNumber;
-    // double timeStep = 1 / getCalculatedFrequency() * DCPreferences.CAPTURE_PERIOD_COUNT / DCPreferences.CAPTURE_BUFFER_SIZE * pulseNumber;
-
-    int counter = 0;
-    for (int i = 0; i < DCPreferences.CAPTURE_BUFFER_SIZE; i++) {
-      waveformAmplitudeData[counter++] = waveform[i * waveform.length / DCPreferences.CAPTURE_BUFFER_SIZE];
-    }
-
-    // Driver driver;
-    // switch (waveform) {
-    //   case Sine:
-    //     driver = new Sine("Sine", offset, 0, amplitude, frequency);
-    //     break;
-    //   case Triangle:
-    //     driver = new Triangle("Triangle", offset, 0, amplitude, frequency);
-    //     break;
-    //   case Square:
-    //     driver = new Square("Square", offset, 0, amplitude, frequency);
-    //     break;
-    //   default:
-    //     driver = new Sine("Sine", offset, 0, amplitude, frequency);
-    //     break;
-    // }
+    // double[] waveform = PulseUtils.generatePositiveAndNegativeDCRamps(amplitude);
     //
-    // double stopTime = 1 / (double) frequency * HysteresisPreferences.CAPTURE_PERIOD_COUNT;
-    // double timeStep = 1 / (double) frequency * HysteresisPreferences.CAPTURE_PERIOD_COUNT / HysteresisPreferences.CAPTURE_BUFFER_SIZE;
+    // // double stopTime = 1 / getCalculatedFrequency() * DCPreferences.CAPTURE_PERIOD_COUNT * pulseNumber;
+    // // double timeStep = 1 / getCalculatedFrequency() * DCPreferences.CAPTURE_PERIOD_COUNT / DCPreferences.CAPTURE_BUFFER_SIZE * pulseNumber;
     //
     // int counter = 0;
-    // for (double i = 0.0; i < stopTime; i = i + timeStep) {
-    //   if (counter >= HysteresisPreferences.CAPTURE_BUFFER_SIZE) {
-    //     break;
-    //   }
-    //   waveformTimeData[counter] = i;
-    //   waveformAmplitudeData[counter++] = driver.getSignal(i);
+    // for (int i = 0; i < DCPreferences.CAPTURE_BUFFER_SIZE; i++) {
+    //   waveformAmplitudeData[counter++] = waveform[i * waveform.length / DCPreferences.CAPTURE_BUFFER_SIZE];
     // }
+
+    Driver driver;
+    switch (waveform) {
+      case RampUpDown:
+        driver = new RampUpDown("RampUpDown", 0, 0, amplitude, getCalculatedFrequency());
+        break;
+      case Triangle:
+        driver = new Triangle("Triangle", 0, 0, amplitude, getCalculatedFrequency());
+        break;
+      case SawTooth:
+        driver = new Sawtooth("Sawtooth", 0, 0, amplitude, getCalculatedFrequency());
+        break;
+      default:
+        driver = new RampUpDown("RampUpDown", 0, 0, amplitude, getCalculatedFrequency());
+        break;
+    }
+
+    double timeStep = 1 / getCalculatedFrequency() * pulseNumber / DCPreferences.CAPTURE_BUFFER_SIZE;
+
+    int counter = 0;
+
+    do {
+      double time = counter * timeStep;
+      waveformTimeData[counter] = time * 1_000_000;
+      waveformAmplitudeData[counter] = driver.getSignal(time);
+    } while (++counter < DCPreferences.CAPTURE_BUFFER_SIZE);
+
+    System.out.println("Arrays.toString(waveformTimeData) = " + Arrays.toString(waveformTimeData));
+    System.out.println("Arrays.toString(waveformAmplitudeData) = " + Arrays.toString(waveformAmplitudeData));
   }
 
   /**

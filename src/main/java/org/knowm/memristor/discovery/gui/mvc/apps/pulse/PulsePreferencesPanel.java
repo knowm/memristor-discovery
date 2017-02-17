@@ -35,8 +35,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferences;
+import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferencesPanel;
 
 public class PulsePreferencesPanel extends AppPreferencesPanel {
 
@@ -102,6 +102,8 @@ public class PulsePreferencesPanel extends AppPreferencesPanel {
   @Override
   public void doSavePreferences() {
 
+    // TODO add num pulses prefs.
+    // appPreferences.setInteger(PulsePreferences.NUM_PULSES_INIT_KEY, Integer.parseInt(shuntResistorTextField.getText()));
     appPreferences.setInteger(PulsePreferences.SERIES_R_INIT_KEY, Integer.parseInt(shuntResistorTextField.getText()));
     appPreferences.setFloat(PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(amplitudeTextField.getText()));
     appPreferences.setInteger(PulsePreferences.PULSE_WIDTH_INIT_KEY, Integer.parseInt(pulseWidthTextField.getText()));

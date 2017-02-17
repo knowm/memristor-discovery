@@ -46,7 +46,7 @@ public class ExperimentModel extends AppModel {
    */
   private float amplitude;
   private int pulseWidth; // model store pulse width in nanoseconds
-  private int pulseNumber;
+  private int pulseNumber=1;
 
   /**
    * Shunt
@@ -71,7 +71,6 @@ public class ExperimentModel extends AppModel {
     seriesResistance = appPreferences.getInteger(PulsePreferences.SERIES_R_INIT_KEY, PulsePreferences.SERIES_R_INIT_DEFAULT_VALUE);
     amplitude = appPreferences.getFloat(PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY, PulsePreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
     pulseWidth = appPreferences.getInteger(PulsePreferences.PULSE_WIDTH_INIT_KEY, PulsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
-    pulseNumber = 1;
     swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
