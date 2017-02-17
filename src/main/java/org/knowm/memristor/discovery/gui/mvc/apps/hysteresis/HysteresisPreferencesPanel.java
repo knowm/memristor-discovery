@@ -37,10 +37,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.knowm.memristor.discovery.gui.mvc.apps.AppPrefencesPanel;
+import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferences;
 
-public class HysteresisPrefencesPanel extends AppPrefencesPanel {
+public class HysteresisPreferencesPanel extends AppPreferencesPanel {
 
   private JLabel waveformLabel;
   private JComboBox<HysteresisPreferences.Waveform> waveformComboBox;
@@ -65,7 +65,7 @@ public class HysteresisPrefencesPanel extends AppPrefencesPanel {
    *
    * @param owner
    */
-  public HysteresisPrefencesPanel(JFrame owner) {
+  public HysteresisPreferencesPanel(JFrame owner) {
 
     super(owner);
   }

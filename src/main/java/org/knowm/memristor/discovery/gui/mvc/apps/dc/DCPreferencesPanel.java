@@ -30,18 +30,24 @@ package org.knowm.memristor.discovery.gui.mvc.apps.dc;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.knowm.memristor.discovery.gui.mvc.apps.AppPrefencesPanel;
+import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferences;
+import org.knowm.memristor.discovery.gui.mvc.apps.dc.DCPreferences.Waveform;
 
-public class DCPrefencesPanel extends AppPrefencesPanel {
+public class DCPreferencesPanel extends AppPreferencesPanel {
 
-  private JLabel shuntResistorLabel;
-  private JTextField shuntResistorTextField;
+  private JLabel waveformLabel;
+  private JComboBox<Waveform> waveformComboBox;
+
+  private JLabel seriesResistorLabel;
+  private JTextField seriesResistorTextField;
 
   private JLabel amplitudeLabel;
   private JTextField amplitudeTextField;
@@ -54,7 +60,7 @@ public class DCPrefencesPanel extends AppPrefencesPanel {
    *
    * @param owner
    */
-  public DCPrefencesPanel(JFrame owner) {
+  public DCPreferencesPanel(JFrame owner) {
 
     super(owner);
   }
@@ -68,13 +74,29 @@ public class DCPrefencesPanel extends AppPrefencesPanel {
 
     gc.gridy = 0;
     gc.gridx = 0;
-    this.shuntResistorLabel = new JLabel("Series Resistor:");
-    preferencesPanel.add(shuntResistorLabel, gc);
+
+    this.waveformLabel = new JLabel("Waveform:");
+    preferencesPanel.add(waveformLabel, gc);
 
     gc.gridx = 1;
-    this.shuntResistorTextField = new JTextField(12);
-    this.shuntResistorTextField.setText(String.valueOf(appPreferences.getInteger(DCPreferences.SERIES_R_INIT_KEY, DCPreferences.SERIES_R_INIT_DEFAULT_VALUE)));
-    preferencesPanel.add(shuntResistorTextField, gc);
+    this.waveformComboBox = new JComboBox<>();
+    this.waveformComboBox.setModel(new DefaultComboBoxModel<>(DCPreferences.Waveform.values()));
+    DCPreferences.Waveform waveform = DCPreferences.Waveform.valueOf(appPreferences.getString(DCPreferences.WAVEFORM_INIT_STRING_KEY,
+        DCPreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
+    this.waveformComboBox.setSelectedItem(waveform);
+    preferencesPanel.add(waveformComboBox, gc);
+
+    /////////////////////////////////////////////////////////
+
+    gc.gridy++;
+    gc.gridx = 0;
+    this.seriesResistorLabel = new JLabel("Series Resistor:");
+    preferencesPanel.add(seriesResistorLabel, gc);
+
+    gc.gridx = 1;
+    this.seriesResistorTextField = new JTextField(12);
+    this.seriesResistorTextField.setText(String.valueOf(appPreferences.getInteger(DCPreferences.SERIES_R_INIT_KEY, DCPreferences.SERIES_R_INIT_DEFAULT_VALUE)));
+    preferencesPanel.add(seriesResistorTextField, gc);
 
     gc.gridy++;
 
@@ -102,7 +124,8 @@ public class DCPrefencesPanel extends AppPrefencesPanel {
   @Override
   public void doSavePreferences() {
 
-    appPreferences.setInteger(DCPreferences.SERIES_R_INIT_KEY, Integer.parseInt(shuntResistorTextField.getText()));
+    appPreferences.setString(DCPreferences.WAVEFORM_INIT_STRING_KEY, waveformComboBox.getSelectedItem().toString().trim());
+    appPreferences.setInteger(DCPreferences.SERIES_R_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
     appPreferences.setFloat(DCPreferences.AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(amplitudeTextField.getText()));
     appPreferences.setInteger(DCPreferences.PULSE_WIDTH_INIT_KEY, Integer.parseInt(pulseWidthTextField.getText()));
   }

@@ -44,14 +44,15 @@ import javax.swing.UnsupportedLookAndFeelException;
 import org.knowm.memristor.discovery.gui.AboutDialog;
 import org.knowm.memristor.discovery.gui.mvc.apps.App;
 import org.knowm.memristor.discovery.gui.mvc.apps.AppHelpDialog;
+import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.apps.dc.DCApp;
-import org.knowm.memristor.discovery.gui.mvc.apps.dc.DCPrefencesPanel;
+import org.knowm.memristor.discovery.gui.mvc.apps.dc.DCPreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.apps.hysteresis.HysteresisApp;
-import org.knowm.memristor.discovery.gui.mvc.apps.hysteresis.HysteresisPrefencesPanel;
+import org.knowm.memristor.discovery.gui.mvc.apps.hysteresis.HysteresisPreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.apps.pulse.PulseApp;
-import org.knowm.memristor.discovery.gui.mvc.apps.pulse.PulsePrefencesPanel;
+import org.knowm.memristor.discovery.gui.mvc.apps.pulse.PulsePreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.apps.qc.QCApp;
-import org.knowm.memristor.discovery.gui.mvc.apps.qc.QCPrefencesPanel;
+import org.knowm.memristor.discovery.gui.mvc.apps.qc.QCPreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.footer.FooterController;
 import org.knowm.memristor.discovery.gui.mvc.footer.FooterPanel;
 import org.knowm.memristor.discovery.gui.mvc.header.HeaderController;
@@ -241,11 +242,9 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
     // appID = "Hysteresis";
     // mainFrame.setTitle(FRAME_TITLE_BASE + "Hysteresis");
 
-
     app = new DCApp(dwf, mainFrameContainer);
     appID = "DC";
     mainFrame.setTitle(FRAME_TITLE_BASE + "DC");
-
 
     // app = new DCApp(dwf, mainFrameContainer);
     // appID = "Pulse2";
@@ -304,25 +303,24 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
     // System.out.println("appID= " + appID);
     switch (appID) {
       case "Hysteresis":
-        result = new HysteresisPrefencesPanel(mainFrame).doModal();
+        result = new HysteresisPreferencesPanel(mainFrame).doModal();
         break;
       case "Pulse":
-        result = new PulsePrefencesPanel(mainFrame).doModal();
+        result = new PulsePreferencesPanel(mainFrame).doModal();
         break;
       case "QC":
-        result = new QCPrefencesPanel(mainFrame).doModal();
+        result = new QCPreferencesPanel(mainFrame).doModal();
         break;
       case "DC":
-        result = new DCPrefencesPanel(mainFrame).doModal();
+        result = new DCPreferencesPanel(mainFrame).doModal();
         break;
 
       default:
         break;
     }
-    // if (result == AppPrefencesPanel.ID_OK) {
-    // app.refreshModelFromPreferences();
-    // }
-
+    if (result == AppPreferencesPanel.ID_OK) {
+      app.refreshModelFromPreferences();
+    }
   }
 
   @Override

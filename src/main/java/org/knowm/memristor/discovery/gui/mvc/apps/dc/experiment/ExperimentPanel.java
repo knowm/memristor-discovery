@@ -35,18 +35,27 @@ import java.awt.Insets;
 import java.util.Hashtable;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 
 /**
  * Provides controls for running the experiment
- * 
+ *
  * @author timmolter
  */
 public class ExperimentPanel extends JPanel {
+
+  private final Box waveformRadioButtonBox;
+  private final ButtonGroup waveformRadioButtonGroup;
+  private final JRadioButton rampUpDownRadioButton;
+  private final JRadioButton triangleRadioButton;
+  private final JRadioButton sawToothRadioButton;
 
   private final JSlider amplitudeSlider;
   private final JSlider pulseWidthSlider;
@@ -70,6 +79,26 @@ public class ExperimentPanel extends JPanel {
     c.fill = GridBagConstraints.HORIZONTAL;
     setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
     // setBackground(Color.yellow);
+
+    rampUpDownRadioButton = new JRadioButton("RampUpDown");
+    triangleRadioButton = new JRadioButton("Triangle");
+    sawToothRadioButton = new JRadioButton("SawTooth");
+    waveformRadioButtonGroup = new ButtonGroup();
+    waveformRadioButtonGroup.add(rampUpDownRadioButton);
+    waveformRadioButtonGroup.add(triangleRadioButton);
+    waveformRadioButtonGroup.add(sawToothRadioButton);
+    add(rampUpDownRadioButton);
+    add(triangleRadioButton);
+    add(sawToothRadioButton);
+    waveformRadioButtonBox = Box.createVerticalBox();
+    waveformRadioButtonBox.setBorder(BorderFactory.createTitledBorder("Waveform"));
+    waveformRadioButtonBox.add(rampUpDownRadioButton);
+    waveformRadioButtonBox.add(triangleRadioButton);
+    waveformRadioButtonBox.add(sawToothRadioButton);
+    c.gridx = 0;
+    c.gridy++;
+    c.insets = new Insets(0, 6, 4, 6);
+    add(waveformRadioButtonBox, c);
 
     amplitudeSlider = new JSlider(JSlider.HORIZONTAL, -300, 300, 0);
     amplitudeSlider.setBorder(BorderFactory.createTitledBorder("Amplitude [V]"));
@@ -152,8 +181,6 @@ public class ExperimentPanel extends JPanel {
     c.insets = new Insets(0, 5, 14, 5);
     add(seriesTextField, c);
 
-
-
     startButton = new JButton("Start");
     startButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     // startButton.setSize(128, 28);
@@ -170,12 +197,35 @@ public class ExperimentPanel extends JPanel {
 
   public void enableAllChildComponents(boolean enabled) {
 
+    rampUpDownRadioButton.setEnabled(enabled);
+    triangleRadioButton.setEnabled(enabled);
+    sawToothRadioButton.setEnabled(enabled);
     amplitudeSlider.setEnabled(enabled);
     pulseWidthSlider.setEnabled(enabled);
     pulseWidthSliderNs.setEnabled(enabled);
     seriesTextField.setEnabled(enabled);
     startButton.setEnabled(enabled);
     stopButton.setEnabled(false);
+  }
+
+  public ButtonGroup getWaveformRadioButtonGroup() {
+
+    return waveformRadioButtonGroup;
+  }
+
+  public JRadioButton getRampUpDownRadioButton() {
+
+    return rampUpDownRadioButton;
+  }
+
+  public JRadioButton getTriangleRadioButton() {
+
+    return triangleRadioButton;
+  }
+
+  public JRadioButton getSawToothRadioButton() {
+
+    return sawToothRadioButton;
   }
 
   public JSlider getAmplitudeSlider() {
@@ -212,5 +262,4 @@ public class ExperimentPanel extends JPanel {
 
     return stopButton;
   }
-
 }

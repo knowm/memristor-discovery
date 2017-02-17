@@ -36,7 +36,7 @@ import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferences;
  */
 public class PulsePreferences extends AppPreferences {
 
-  private static final String PREFIX = "PULSE_2_";
+  private static final String PREFIX = "PULSE_";
 
   public static final String SERIES_R_INIT_KEY = PREFIX + "SERIES_R_INIT_KEY";
   public static final int SERIES_R_INIT_DEFAULT_VALUE = 5_000;

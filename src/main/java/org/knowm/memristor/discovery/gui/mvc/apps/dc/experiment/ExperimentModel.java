@@ -43,6 +43,8 @@ public class ExperimentModel extends AppModel {
   /**
    * Waveform
    */
+  public DCPreferences.Waveform waveform;
+
   private float amplitude;
   private int pulseWidth; // model store pulse width in nanoseconds
   private int pulseNumber;
@@ -67,6 +69,7 @@ public class ExperimentModel extends AppModel {
   public void loadModelFromPrefs() {
 
     // load model from prefs
+    waveform = DCPreferences.Waveform.valueOf(appPreferences.getString(DCPreferences.WAVEFORM_INIT_STRING_KEY, DCPreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
     seriesResistance = appPreferences.getInteger(DCPreferences.SERIES_R_INIT_KEY, DCPreferences.SERIES_R_INIT_DEFAULT_VALUE);
     amplitude = appPreferences.getFloat(DCPreferences.AMPLITUDE_INIT_FLOAT_KEY, DCPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
     pulseWidth = appPreferences.getInteger(DCPreferences.PULSE_WIDTH_INIT_KEY, DCPreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
@@ -90,6 +93,34 @@ public class ExperimentModel extends AppModel {
     for (int i = 0; i < DCPreferences.CAPTURE_BUFFER_SIZE; i++) {
       waveformAmplitudeData[counter++] = waveform[i * waveform.length / DCPreferences.CAPTURE_BUFFER_SIZE];
     }
+
+    // Driver driver;
+    // switch (waveform) {
+    //   case Sine:
+    //     driver = new Sine("Sine", offset, 0, amplitude, frequency);
+    //     break;
+    //   case Triangle:
+    //     driver = new Triangle("Triangle", offset, 0, amplitude, frequency);
+    //     break;
+    //   case Square:
+    //     driver = new Square("Square", offset, 0, amplitude, frequency);
+    //     break;
+    //   default:
+    //     driver = new Sine("Sine", offset, 0, amplitude, frequency);
+    //     break;
+    // }
+    //
+    // double stopTime = 1 / (double) frequency * HysteresisPreferences.CAPTURE_PERIOD_COUNT;
+    // double timeStep = 1 / (double) frequency * HysteresisPreferences.CAPTURE_PERIOD_COUNT / HysteresisPreferences.CAPTURE_BUFFER_SIZE;
+    //
+    // int counter = 0;
+    // for (double i = 0.0; i < stopTime; i = i + timeStep) {
+    //   if (counter >= HysteresisPreferences.CAPTURE_BUFFER_SIZE) {
+    //     break;
+    //   }
+    //   waveformTimeData[counter] = i;
+    //   waveformAmplitudeData[counter++] = driver.getSignal(i);
+    // }
   }
 
   /**
@@ -105,6 +136,23 @@ public class ExperimentModel extends AppModel {
   /////////////////////////////////////////////////////////////
   // GETTERS AND SETTERS //////////////////////////////////////
   /////////////////////////////////////////////////////////////
+
+  public DCPreferences.Waveform getWaveform() {
+
+    return waveform;
+  }
+
+  public void setWaveform(DCPreferences.Waveform waveform) {
+
+    this.waveform = waveform;
+    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
+  }
+
+  public void setWaveform(String text) {
+
+    waveform = Enum.valueOf(DCPreferences.Waveform.class, text);
+    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
+  }
 
   public float getAmplitude() {
 

@@ -47,7 +47,7 @@ import javax.swing.border.EmptyBorder;
  * 
  * @author timmolter
  */
-public abstract class AppPrefencesPanel extends JDialog {
+public abstract class AppPreferencesPanel extends JDialog {
 
   public abstract void doCreateAndShowGUI(JPanel preferencesPanel);
 
@@ -68,7 +68,7 @@ public abstract class AppPrefencesPanel extends JDialog {
    *
    * @param owner
    */
-  public AppPrefencesPanel(JFrame owner) {
+  public AppPreferencesPanel(JFrame owner) {
 
     super(owner);
     this.appPreferences = initAppPreferences();
@@ -102,8 +102,8 @@ public abstract class AppPrefencesPanel extends JDialog {
       public void actionPerformed(ActionEvent arg0) {
 
         exitCode = ID_CANCEL;
-        AppPrefencesPanel.this.setVisible(false);
-        AppPrefencesPanel.this.dispatchEvent(new WindowEvent(AppPrefencesPanel.this, WindowEvent.WINDOW_CLOSING));
+        AppPreferencesPanel.this.setVisible(false);
+        AppPreferencesPanel.this.dispatchEvent(new WindowEvent(AppPreferencesPanel.this, WindowEvent.WINDOW_CLOSING));
       }
     });
     buttonPane.add(cancelButton);
@@ -123,8 +123,8 @@ public abstract class AppPrefencesPanel extends JDialog {
         }
 
         exitCode = ID_OK;
-        AppPrefencesPanel.this.setVisible(false);
-        AppPrefencesPanel.this.dispatchEvent(new WindowEvent(AppPrefencesPanel.this, WindowEvent.WINDOW_CLOSING));
+        AppPreferencesPanel.this.setVisible(false);
+        AppPreferencesPanel.this.dispatchEvent(new WindowEvent(AppPreferencesPanel.this, WindowEvent.WINDOW_CLOSING));
       }
     });
     buttonPane.add(okButton);

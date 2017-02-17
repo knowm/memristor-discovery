@@ -111,7 +111,7 @@ public class PlotPanel extends JPanel {
     // I-T Chart ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    ivChart = new XYChartBuilder().width(600).title("I-T").height(400).yAxisTitle("Current [" + DCPreferences.CURRENT_UNIT.getLabel() + "]").xAxisTitle("Time [µs]").build();
+    ivChart = new XYChartBuilder().width(600).title("I-T").height(400).yAxisTitle("Current [" + DCPreferences.CURRENT_UNIT.getLabel() + "]").xAxisTitle("Voltage [V]").build();
     ivChart.getStyler().setLegendVisible(false);
     ivChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);
 
@@ -123,7 +123,7 @@ public class PlotPanel extends JPanel {
     // G-T Chart ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    gvChart = new XYChartBuilder().width(100).title("G-T").height(100).yAxisTitle("Conductance [" + DCPreferences.CONDUCTANCE_UNIT.getLabel() + "]").xAxisTitle("Time [µs]").build();
+    gvChart = new XYChartBuilder().width(100).title("G-T").height(100).yAxisTitle("Conductance [" + DCPreferences.CONDUCTANCE_UNIT.getLabel() + "]").xAxisTitle("Voltage [V]").build();
     gvChart.getStyler().setLegendVisible(false);
     gvChart.getStyler().setYAxisMin(0.0);
 
@@ -141,8 +141,8 @@ public class PlotPanel extends JPanel {
 
     radioPanel = new JPanel();
     captureButton = new JRadioButton("Capture");
-    ivButton = new JRadioButton("I-T");
-    gvButton = new JRadioButton("G-T");
+    ivButton = new JRadioButton("I-V");
+    gvButton = new JRadioButton("G-V");
     radioButtonGroup = new ButtonGroup();
     addRadioButtons();
 

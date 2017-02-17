@@ -36,7 +36,15 @@ import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferences;
  */
 public class DCPreferences extends AppPreferences {
 
-  private static final String PREFIX = "PULSE_2_";
+  private static final String PREFIX = "DC_";
+
+  public enum Waveform {
+
+    RampUpDown, Triangle, SawTooth;
+  }
+
+  public static final String WAVEFORM_INIT_STRING_KEY = PREFIX + "WAVEFORM_INIT_STRING_KEY";
+  public static final String WAVEFORM_INIT_STRING_DEFAULT_VALUE = "RampUpDown";
 
   public static final String SERIES_R_INIT_KEY = PREFIX + "SERIES_R_INIT_KEY";
   public static final int SERIES_R_INIT_DEFAULT_VALUE = 5_000;
@@ -48,7 +56,7 @@ public class DCPreferences extends AppPreferences {
   public static final int PULSE_WIDTH_INIT_DEFAULT_VALUE = 5000;
 
   public static final String K_INIT_DOUBLE_KEY = PREFIX + "K_INIT_DOUBLE_KEY";
-  public static final double K_INIT_DOUBLE_DEFAULT_VALUE = 0.001;
+  public static final double K_INIT_DOUBLE_DEFAULT_VALUE = 0.3;
 
   ///////////////////////////////////////////////////////////////////////////////////////
 

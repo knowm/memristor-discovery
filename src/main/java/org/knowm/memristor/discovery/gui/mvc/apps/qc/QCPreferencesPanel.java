@@ -25,7 +25,7 @@
  * If you have any questions regarding our licensing policy, please
  * contact us at `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.apps.pulse;
+package org.knowm.memristor.discovery.gui.mvc.apps.qc;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -35,10 +35,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.knowm.memristor.discovery.gui.mvc.apps.AppPrefencesPanel;
+import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferences;
 
-public class PulsePrefencesPanel extends AppPrefencesPanel {
+public class QCPreferencesPanel extends AppPreferencesPanel {
 
   private JLabel shuntResistorLabel;
   private JTextField shuntResistorTextField;
@@ -46,15 +46,18 @@ public class PulsePrefencesPanel extends AppPrefencesPanel {
   private JLabel amplitudeLabel;
   private JTextField amplitudeTextField;
 
-  private JLabel pulseWidthLabel;
-  private JTextField pulseWidthTextField;
+  private JLabel frequencyLabel;
+  private JTextField frequencyTextField;
+
+  private JLabel savePathLabel;
+  private JTextField savePathTextField;
 
   /**
    * Constructor
    *
    * @param owner
    */
-  public PulsePrefencesPanel(JFrame owner) {
+  public QCPreferencesPanel(JFrame owner) {
 
     super(owner);
   }
@@ -73,49 +76,62 @@ public class PulsePrefencesPanel extends AppPrefencesPanel {
 
     gc.gridx = 1;
     this.shuntResistorTextField = new JTextField(12);
-    this.shuntResistorTextField.setText(String.valueOf(appPreferences.getInteger(PulsePreferences.SERIES_R_INIT_KEY, PulsePreferences.SERIES_R_INIT_DEFAULT_VALUE)));
+    this.shuntResistorTextField.setText(String.valueOf(appPreferences.getInteger(QCPreferences.SERIES_R_INIT_KEY, QCPreferences.SERIES_R_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(shuntResistorTextField, gc);
 
     gc.gridy++;
 
     gc.gridx = 0;
-    this.amplitudeLabel = new JLabel("Amplitude [V]:");
+    this.amplitudeLabel = new JLabel("Waveform Amplitude [V]:");
     preferencesPanel.add(amplitudeLabel, gc);
 
     gc.gridx = 1;
     this.amplitudeTextField = new JTextField(12);
-    this.amplitudeTextField.setText(String.valueOf(appPreferences.getFloat(PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY, PulsePreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
+    this.amplitudeTextField.setText(String.valueOf(appPreferences.getFloat(QCPreferences.AMPLITUDE_INIT_FLOAT_KEY, QCPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
     preferencesPanel.add(amplitudeTextField, gc);
 
     gc.gridy++;
 
     gc.gridx = 0;
-    this.pulseWidthLabel = new JLabel("Pulse Width [ns]:");
-    preferencesPanel.add(pulseWidthLabel, gc);
+    this.frequencyLabel = new JLabel("Waveform Frequency [Hz]:");
+    preferencesPanel.add(frequencyLabel, gc);
 
     gc.gridx = 1;
-    this.pulseWidthTextField = new JTextField(12);
-    this.pulseWidthTextField.setText(String.valueOf(appPreferences.getInteger(PulsePreferences.PULSE_WIDTH_INIT_KEY, PulsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE)));
-    preferencesPanel.add(pulseWidthTextField, gc);
+    this.frequencyTextField = new JTextField(12);
+    this.frequencyTextField.setText(String.valueOf(appPreferences.getInteger(QCPreferences.FREQUENCY_INIT_KEY, QCPreferences.FREQUENCY_INIT_DEFAULT_VALUE)));
+    preferencesPanel.add(frequencyTextField, gc);
+
+    gc.gridy++;
+
+    gc.gridx = 0;
+    this.savePathLabel = new JLabel("Report Save Path:");
+    preferencesPanel.add(savePathLabel, gc);
+
+    gc.gridx = 1;
+    this.savePathTextField = new JTextField(20);
+    this.savePathTextField.setText(String.valueOf(appPreferences.getString(QCPreferences.REPORT_DIRECTORY_PATH_KEY, QCPreferences.REPORT_DIRECTORY_PATH_DEFAULT_VALUE)));
+    preferencesPanel.add(savePathTextField, gc);
+
   }
 
   @Override
   public void doSavePreferences() {
 
-    appPreferences.setInteger(PulsePreferences.SERIES_R_INIT_KEY, Integer.parseInt(shuntResistorTextField.getText()));
-    appPreferences.setFloat(PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(amplitudeTextField.getText()));
-    appPreferences.setInteger(PulsePreferences.PULSE_WIDTH_INIT_KEY, Integer.parseInt(pulseWidthTextField.getText()));
+    appPreferences.setInteger(QCPreferences.SERIES_R_INIT_KEY, Integer.parseInt(shuntResistorTextField.getText()));
+    appPreferences.setFloat(QCPreferences.AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(amplitudeTextField.getText()));
+    appPreferences.setInteger(QCPreferences.FREQUENCY_INIT_KEY, Integer.parseInt(frequencyTextField.getText()));
+    appPreferences.setString(QCPreferences.REPORT_DIRECTORY_PATH_KEY, savePathTextField.getText());
   }
 
   @Override
   public AppPreferences initAppPreferences() {
 
-    return new PulsePreferences();
+    return new QCPreferences();
   }
 
   @Override
   public String getAppName() {
 
-    return "Pulse";
+    return "QC";
   }
 }

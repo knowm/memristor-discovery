@@ -293,15 +293,16 @@ public class DCApp extends App implements PropertyChangeListener {
 
       if (allowPlotting) {
 
+        double[][] newestChunk = chunks.get(chunks.size() - 1);
+
         // System.out.println("" + chunks.size());
 
-        // Messages received from the doInBackground() (when invoking the publish() method). See: http://www.javacreed.com/swing-worker-example/
 
-        plotController.udpateVtChart(chunks.get(chunks.size() - 1)[0], chunks.get(chunks.size() - 1)[1], chunks.get(chunks.size() - 1)[2], experimentModel.getPulseWidth(), experimentModel
+        plotController.udpateVtChart(newestChunk[0], newestChunk[1], newestChunk[2], experimentModel.getPulseWidth(), experimentModel
             .getAmplitude());
-        plotController.udpateIVChart(chunks.get(chunks.size() - 1)[0], chunks.get(chunks.size() - 1)[3], experimentModel.getPulseWidth(), experimentModel
+        plotController.udpateIVChart(newestChunk[1], newestChunk[3], experimentModel.getPulseWidth(), experimentModel
             .getAmplitude());
-        plotController.updateGVChart(chunks.get(chunks.size() - 1)[0], chunks.get(chunks.size() - 1)[4], experimentModel.getPulseWidth(), experimentModel
+        plotController.updateGVChart(newestChunk[1], newestChunk[4], experimentModel.getPulseWidth(), experimentModel
             .getAmplitude());
 
         if (plotPanel.getCaptureButton().isSelected()) {
@@ -378,7 +379,6 @@ public class DCApp extends App implements PropertyChangeListener {
   @Override
   public AppModel getPlotModel() {
 
-    // TODO Auto-generated method stub
-    return null;
+    return plotModel;
   }
 }
