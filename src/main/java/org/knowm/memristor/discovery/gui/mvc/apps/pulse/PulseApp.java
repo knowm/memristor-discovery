@@ -49,7 +49,7 @@ import org.knowm.memristor.discovery.gui.mvc.apps.pulse.experiment.ExperimentPan
 import org.knowm.memristor.discovery.gui.mvc.apps.pulse.plot.PlotController;
 import org.knowm.memristor.discovery.gui.mvc.apps.pulse.plot.PlotModel;
 import org.knowm.memristor.discovery.gui.mvc.apps.pulse.plot.PlotPanel;
-import org.knowm.memristor.discovery.utils.PulseUtils;
+import org.knowm.memristor.discovery.utils.WaveformUtils;
 import org.knowm.waveforms4j.DWF;
 import org.knowm.waveforms4j.DWF.AcquisitionMode;
 import org.knowm.waveforms4j.DWF.AnalogTriggerCondition;
@@ -207,7 +207,7 @@ public class PulseApp extends App implements PropertyChangeListener {
       // dwfProxy.getDwf().startSinglePulse(DWF.WAVEFORM_CHANNEL_1, Waveform.Sine, experimentModel.getCalculatedFrequency(), experimentModel.getAmplitude(), 0, 50);
 
       // custom waveform
-      double[] waveform = PulseUtils.generateSquarePulseWithReadPulses(experimentModel.getAmplitude());
+      double[] waveform = WaveformUtils.generateSquarePulseWithReadPulses(experimentModel.getAmplitude());
       dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, experimentModel.getCalculatedFrequency(), 0, experimentModel.getPulseNumber(), waveform);
       // System.out.println("waveform: " + Arrays.toString(waveform));
 

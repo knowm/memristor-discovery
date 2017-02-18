@@ -49,6 +49,7 @@ import org.knowm.memristor.discovery.gui.mvc.apps.hysteresis.experiment.Experime
 import org.knowm.memristor.discovery.gui.mvc.apps.hysteresis.plot.PlotController;
 import org.knowm.memristor.discovery.gui.mvc.apps.hysteresis.plot.PlotModel;
 import org.knowm.memristor.discovery.gui.mvc.apps.hysteresis.plot.PlotPanel;
+import org.knowm.memristor.discovery.utils.WaveformUtils;
 import org.knowm.waveforms4j.DWF;
 import org.knowm.waveforms4j.DWF.AcquisitionMode;
 
@@ -157,7 +158,7 @@ public class HysteresisApp extends App implements PropertyChangeListener {
     protected Boolean doInBackground() throws Exception {
 
       // AnalogOut
-      DWF.Waveform dwfWaveform = getDWFWaveform(experimentModel.getWaveform());
+      DWF.Waveform dwfWaveform = WaveformUtils.getDWFWaveform(experimentModel.getWaveform());
       dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, experimentModel.getFrequency(), experimentModel.getAmplitude(), experimentModel.getOffset(), 50);
 
       // Analog In
@@ -301,7 +302,7 @@ public class HysteresisApp extends App implements PropertyChangeListener {
         if (dwfProxy.isAD2Capturing()) {
 
           // AnalogOut
-          DWF.Waveform dwfWaveform = getDWFWaveform(experimentModel.getWaveform());
+          DWF.Waveform dwfWaveform = WaveformUtils.getDWFWaveform(experimentModel.getWaveform());
           // TODO if this is a good machanism, use it everywhere else. Perhaps create an exception subclass and catch it higher up.
           if (!dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, experimentModel.getFrequency(), experimentModel.getAmplitude(), experimentModel.getOffset(), 50)) {
             throw new RuntimeException(dwfProxy.getDwf().FDwfGetLastErrorMsg());
@@ -352,17 +353,5 @@ public class HysteresisApp extends App implements PropertyChangeListener {
     return plotModel;
   }
 
-  private DWF.Waveform getDWFWaveform(HysteresisPreferences.Waveform waveform) {
 
-    switch (waveform) {
-      case Sine:
-        return DWF.Waveform.Sine;
-      case Triangle:
-        return DWF.Waveform.Triangle;
-      case Square:
-        return DWF.Waveform.Square;
-      default:
-        return DWF.Waveform.Sine;
-    }
-  }
 }

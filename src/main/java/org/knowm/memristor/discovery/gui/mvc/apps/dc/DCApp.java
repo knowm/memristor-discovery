@@ -35,6 +35,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JScrollPane;
@@ -49,7 +50,11 @@ import org.knowm.memristor.discovery.gui.mvc.apps.dc.experiment.ExperimentPanel;
 import org.knowm.memristor.discovery.gui.mvc.apps.dc.plot.PlotController;
 import org.knowm.memristor.discovery.gui.mvc.apps.dc.plot.PlotModel;
 import org.knowm.memristor.discovery.gui.mvc.apps.dc.plot.PlotPanel;
-import org.knowm.memristor.discovery.utils.PulseUtils;
+import org.knowm.memristor.discovery.utils.driver.Driver;
+import org.knowm.memristor.discovery.utils.driver.Sawtooth;
+import org.knowm.memristor.discovery.utils.driver.SawtoothUpDown;
+import org.knowm.memristor.discovery.utils.driver.Triangle;
+import org.knowm.memristor.discovery.utils.driver.TriangleUpDown;
 import org.knowm.waveforms4j.DWF;
 import org.knowm.waveforms4j.DWF.AcquisitionMode;
 import org.knowm.waveforms4j.DWF.AnalogTriggerCondition;
@@ -204,12 +209,50 @@ public class DCApp extends App implements PropertyChangeListener {
       //////////////////////////////////
 
       // generate the pulse
-      // dwfProxy.getDwf().startSinglePulse(DWF.WAVEFORM_CHANNEL_1, Waveform.Sine, experimentModel.getCalculatedFrequency(), experimentModel.getAmplitude(), 0, 50);
+      // DWF.Waveform dwfWaveform = WaveformUtils.getDWFWaveform(experimentModel.getWaveform());
+      // if(dwfWaveform != DWF.Waveform.Custom) {
+      //   dwfProxy.getDwf().startSinglePulse(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, experimentModel.getCalculatedFrequency(), experimentModel.getAmplitude(), 0, 50);
+      // }else{
 
       // custom waveform
-      double[] waveform = PulseUtils.generatePositiveAndNegativeDCRamps(experimentModel.getAmplitude());
+      Driver driver;
+      switch (experimentModel.getWaveform()) {
+        case Sawtooth:
+          driver = new Sawtooth("Sawtooth", 0, 0, experimentModel.getAmplitude(), experimentModel.getCalculatedFrequency());
+          break;
+        case SawtoothUpDown:
+          driver = new SawtoothUpDown("SawtoothUpDown", 0, 0, experimentModel.getAmplitude(), experimentModel.getCalculatedFrequency());
+          break;
+        case Triangle:
+          driver = new Triangle("Triangle", 0, 0, experimentModel.getAmplitude(), experimentModel.getCalculatedFrequency());
+          break;
+        case TriangleUpDown:
+          driver = new TriangleUpDown("TriangleUpDown", 0, 0, experimentModel.getAmplitude(), experimentModel.getCalculatedFrequency());
+          break;
+        default:
+          driver = new SawtoothUpDown("SawtoothUpDown", 0, 0, experimentModel.getAmplitude(), experimentModel.getCalculatedFrequency());
+          break;
+      }
+
+      int counter = 0;
+      double[] waveform = new double[4096];
+      double timeInc = 1 / experimentModel.getCalculatedFrequency() / 4096;
+
+      do {
+        double time = counter * timeInc;
+        waveform[counter] = driver.getSignal(time) / 5.0; // / 5.0 to scale between 1 and -1
+      } while (++counter < 4096);
+
+      System.out.println("waveform = " + Arrays.toString(waveform));
+
+      // XYChart chart = QuickChart.getChart("Sample Chart", "X", "Y", "y(x)", null, waveform);
+      // new SwingWrapper(chart).displayChart();
+
+      // double[] waveform = WaveformUtils.generatePositiveAndNegativeDCRamps(experimentModel.getAmplitude());
       dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, experimentModel.getCalculatedFrequency(), 0, experimentModel.getPulseNumber(), waveform);
+
       System.out.println("experimentModel.getCalculatedFrequency() = " + experimentModel.getCalculatedFrequency());
+      // }
 
       //////////////////////////////////
       //////////////////////////////////
@@ -264,7 +307,7 @@ public class DCApp extends App implements PropertyChangeListener {
       double[] V1Cleaned = new double[bufferLength];
       double[] V2Cleaned = new double[bufferLength];
       for (int i = 0; i < bufferLength; i++) {
-        current[i] = Math.abs(v2[i + startIndex] / experimentModel.getSeriesR() * DCPreferences.CURRENT_UNIT.getDivisor());
+        current[i] = v2[i + startIndex] / experimentModel.getSeriesR() * DCPreferences.CURRENT_UNIT.getDivisor();
         V1Cleaned[i] = v1[i + startIndex];
         V2Cleaned[i] = v2[i + startIndex];
       }
@@ -297,12 +340,11 @@ public class DCApp extends App implements PropertyChangeListener {
 
         // System.out.println("" + chunks.size());
 
-
-        plotController.udpateVtChart(newestChunk[0], newestChunk[1], newestChunk[2], experimentModel.getPulseWidth(), experimentModel
+        plotController.udpateVtChart(newestChunk[0], newestChunk[1], newestChunk[2], experimentModel.getPeriod(), experimentModel
             .getAmplitude());
-        plotController.udpateIVChart(newestChunk[1], newestChunk[3], experimentModel.getPulseWidth(), experimentModel
+        plotController.udpateIVChart(newestChunk[1], newestChunk[3], experimentModel.getPeriod(), experimentModel
             .getAmplitude());
-        plotController.updateGVChart(newestChunk[1], newestChunk[4], experimentModel.getPulseWidth(), experimentModel
+        plotController.updateGVChart(newestChunk[1], newestChunk[4], experimentModel.getPeriod(), experimentModel
             .getAmplitude());
 
         if (plotPanel.getCaptureButton().isSelected()) {
@@ -361,7 +403,7 @@ public class DCApp extends App implements PropertyChangeListener {
         }
         else {
           plotPanel.switch2WaveformChart();
-          plotController.udpateWaveformChart(experimentModel.getWaveformTimeData(), experimentModel.getWaveformAmplitudeData(), experimentModel.getAmplitude(), experimentModel.getPulseWidth());
+          plotController.udpateWaveformChart(experimentModel.getWaveformTimeData(), experimentModel.getWaveformAmplitudeData(), experimentModel.getAmplitude(), experimentModel.getPeriod());
         }
         break;
 

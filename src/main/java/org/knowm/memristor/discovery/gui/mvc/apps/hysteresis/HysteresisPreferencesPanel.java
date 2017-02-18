@@ -37,8 +37,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferences;
+import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferences.Waveform;
+import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferencesPanel;
 
 public class HysteresisPreferencesPanel extends AppPreferencesPanel {
 
@@ -84,7 +85,7 @@ public class HysteresisPreferencesPanel extends AppPreferencesPanel {
 
     gc.gridx = 1;
     this.waveformComboBox = new JComboBox<>();
-    this.waveformComboBox.setModel(new DefaultComboBoxModel<>(HysteresisPreferences.Waveform.values()));
+    this.waveformComboBox.setModel(new DefaultComboBoxModel<>(new Waveform[]{Waveform.Sine, Waveform.Triangle}));
     HysteresisPreferences.Waveform waveform = HysteresisPreferences.Waveform.valueOf(appPreferences.getString(HysteresisPreferences.WAVEFORM_INIT_STRING_KEY,
         HysteresisPreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
     this.waveformComboBox.setSelectedItem(waveform);
@@ -149,7 +150,6 @@ public class HysteresisPreferencesPanel extends AppPreferencesPanel {
     this.kTextField = new JTextField(12);
     this.kTextField.setText(String.valueOf(appPreferences.getDouble(HysteresisPreferences.K_INIT_DOUBLE_KEY, HysteresisPreferences.K_INIT_DOUBLE_DEFAULT_VALUE)));
     preferencesPanel.add(kTextField, gc);
-
   }
 
   @Override

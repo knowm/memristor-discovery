@@ -34,7 +34,7 @@ public class Triangle extends Driver {
 
   /**
    * Constructor
-   * 
+   *
    * @param name
    * @param dcOffset
    * @param phase
@@ -53,19 +53,13 @@ public class Triangle extends Driver {
     double remainderTime = (time + phase) % T;
 
     // up phase
-    if (0 <= (remainderTime) && (remainderTime) * T < .25 / frequency * T) {
-      return 4 * frequency * amplitude * (remainderTime) + dcOffset;
-    }
-
-    // up phase
-    else if (.75 / frequency * T <= (remainderTime) * T && (remainderTime) * T < 1.0 / frequency * T) {
-      return 4 * frequency * amplitude * (remainderTime) - 4 * amplitude + dcOffset;
+    if (0 <= (remainderTime) && (remainderTime) * T < .5 / frequency * T) {
+      return 2 * frequency * amplitude * (remainderTime) + dcOffset;
     }
 
     // down phase
     else {
-      return -4 * frequency * amplitude * (remainderTime) + 2 * amplitude + dcOffset;
+      return -2 * frequency * amplitude * (remainderTime) + 2 * amplitude + dcOffset;
     }
   }
-
 }

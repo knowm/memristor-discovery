@@ -37,9 +37,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferences;
-import org.knowm.memristor.discovery.gui.mvc.apps.dc.DCPreferences.Waveform;
+import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferences.Waveform;
+import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferencesPanel;
 
 public class DCPreferencesPanel extends AppPreferencesPanel {
 
@@ -52,8 +52,8 @@ public class DCPreferencesPanel extends AppPreferencesPanel {
   private JLabel amplitudeLabel;
   private JTextField amplitudeTextField;
 
-  private JLabel pulseWidthLabel;
-  private JTextField pulseWidthTextField;
+  private JLabel periodLabel;
+  private JTextField periodTextField;
 
   /**
    * Constructor
@@ -80,9 +80,10 @@ public class DCPreferencesPanel extends AppPreferencesPanel {
 
     gc.gridx = 1;
     this.waveformComboBox = new JComboBox<>();
-    this.waveformComboBox.setModel(new DefaultComboBoxModel<>(DCPreferences.Waveform.values()));
+    this.waveformComboBox.setModel(new DefaultComboBoxModel<>(new Waveform[]{Waveform.Sawtooth, Waveform.SawtoothUpDown, Waveform.Triangle, Waveform.TriangleUpDown}));
     DCPreferences.Waveform waveform = DCPreferences.Waveform.valueOf(appPreferences.getString(DCPreferences.WAVEFORM_INIT_STRING_KEY,
         DCPreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
+    // DCPreferences.Waveform waveform =  Waveform.Sawtooth;
     this.waveformComboBox.setSelectedItem(waveform);
     preferencesPanel.add(waveformComboBox, gc);
 
@@ -112,13 +113,13 @@ public class DCPreferencesPanel extends AppPreferencesPanel {
     gc.gridy++;
 
     gc.gridx = 0;
-    this.pulseWidthLabel = new JLabel("Pulse Width [ns]:");
-    preferencesPanel.add(pulseWidthLabel, gc);
+    this.periodLabel = new JLabel("Period [ns]:");
+    preferencesPanel.add(periodLabel, gc);
 
     gc.gridx = 1;
-    this.pulseWidthTextField = new JTextField(12);
-    this.pulseWidthTextField.setText(String.valueOf(appPreferences.getInteger(DCPreferences.PULSE_WIDTH_INIT_KEY, DCPreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE)));
-    preferencesPanel.add(pulseWidthTextField, gc);
+    this.periodTextField = new JTextField(12);
+    this.periodTextField.setText(String.valueOf(appPreferences.getInteger(DCPreferences.PERIOD_INIT_KEY, DCPreferences.PERIOD_INIT_DEFAULT_VALUE)));
+    preferencesPanel.add(periodTextField, gc);
   }
 
   @Override
@@ -127,7 +128,7 @@ public class DCPreferencesPanel extends AppPreferencesPanel {
     appPreferences.setString(DCPreferences.WAVEFORM_INIT_STRING_KEY, waveformComboBox.getSelectedItem().toString().trim());
     appPreferences.setInteger(DCPreferences.SERIES_R_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
     appPreferences.setFloat(DCPreferences.AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(amplitudeTextField.getText()));
-    appPreferences.setInteger(DCPreferences.PULSE_WIDTH_INIT_KEY, Integer.parseInt(pulseWidthTextField.getText()));
+    appPreferences.setInteger(DCPreferences.PERIOD_INIT_KEY, Integer.parseInt(periodTextField.getText()));
   }
 
   @Override

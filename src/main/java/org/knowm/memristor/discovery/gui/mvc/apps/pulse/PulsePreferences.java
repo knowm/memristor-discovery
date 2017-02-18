@@ -47,7 +47,7 @@ public class PulsePreferences extends AppPreferences {
   public static final String AMPLITUDE_INIT_FLOAT_KEY = PREFIX + "AMPLITUDE_INIT_FLOAT_KEY";
   public static final float AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE = 0.1f;
 
-  public static final String PULSE_WIDTH_INIT_KEY = PREFIX + "PULSE_WIDTH_INIT_KEY";
+  public static final String PULSE_WIDTH_INIT_KEY = PREFIX + "PERIOD_INIT_KEY";
   public static final int PULSE_WIDTH_INIT_DEFAULT_VALUE = 5000;
 
   public static final String K_INIT_DOUBLE_KEY = PREFIX + "K_INIT_DOUBLE_KEY";

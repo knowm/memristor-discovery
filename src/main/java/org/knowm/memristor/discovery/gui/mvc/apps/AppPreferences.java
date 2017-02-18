@@ -43,6 +43,11 @@ public abstract class AppPreferences {
     preferences = Preferences.userNodeForPackage(c);
   }
 
+  public enum Waveform {
+
+    Sine, Triangle, TriangleUpDown, Square, SawtoothUpDown, Sawtooth;
+  }
+
   public enum CurrentUnits {
 
     Amps(1, "A"), Milliamps(1000, "mA"), MicroAmps(1_000_000, "µA");
@@ -51,6 +56,7 @@ public abstract class AppPreferences {
     private final String label;
 
     private CurrentUnits(double divisor, String label) {
+
       this.divisor = divisor;
       this.label = label;
     }
@@ -74,6 +80,7 @@ public abstract class AppPreferences {
     private final String label;
 
     private ResistanceUnits(double divisor, String label) {
+
       this.divisor = divisor;
       this.label = label;
     }
@@ -97,6 +104,7 @@ public abstract class AppPreferences {
     private final String label;
 
     private ConductanceUnits(double divisor, String label) {
+
       this.divisor = divisor;
       this.label = label;
     }
@@ -171,5 +179,4 @@ public abstract class AppPreferences {
 
     return this.preferences.getBoolean(key, defaultValue);
   }
-
 }

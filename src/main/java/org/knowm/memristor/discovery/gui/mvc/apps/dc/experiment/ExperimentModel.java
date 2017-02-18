@@ -28,21 +28,17 @@
 package org.knowm.memristor.discovery.gui.mvc.apps.dc.experiment;
 
 import java.beans.PropertyChangeListener;
-import java.util.Arrays;
 
 import org.knowm.memristor.discovery.gui.mvc.apps.AppModel;
 import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferences;
 import org.knowm.memristor.discovery.gui.mvc.apps.dc.DCPreferences;
 import org.knowm.memristor.discovery.utils.driver.Driver;
-import org.knowm.memristor.discovery.utils.driver.RampUpDown;
 import org.knowm.memristor.discovery.utils.driver.Sawtooth;
+import org.knowm.memristor.discovery.utils.driver.SawtoothUpDown;
 import org.knowm.memristor.discovery.utils.driver.Triangle;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.knowm.memristor.discovery.utils.driver.TriangleUpDown;
 
 public class ExperimentModel extends AppModel {
-
-  private final Logger logger = LoggerFactory.getLogger(ExperimentModel.class);
 
   /**
    * Waveform
@@ -50,7 +46,7 @@ public class ExperimentModel extends AppModel {
   public DCPreferences.Waveform waveform;
 
   private float amplitude;
-  private int pulseWidth; // model store pulse width in nanoseconds
+  private int period; // model store period in nanoseconds
   private int pulseNumber = 1;
 
   /**
@@ -74,9 +70,10 @@ public class ExperimentModel extends AppModel {
 
     // load model from prefs
     waveform = DCPreferences.Waveform.valueOf(appPreferences.getString(DCPreferences.WAVEFORM_INIT_STRING_KEY, DCPreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
+    // waveform = Waveform.Sawtooth;
     seriesResistance = appPreferences.getInteger(DCPreferences.SERIES_R_INIT_KEY, DCPreferences.SERIES_R_INIT_DEFAULT_VALUE);
     amplitude = appPreferences.getFloat(DCPreferences.AMPLITUDE_INIT_FLOAT_KEY, DCPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
-    pulseWidth = appPreferences.getInteger(DCPreferences.PULSE_WIDTH_INIT_KEY, DCPreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
+    period = appPreferences.getInteger(DCPreferences.PERIOD_INIT_KEY, DCPreferences.PERIOD_INIT_DEFAULT_VALUE);
     swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
@@ -87,7 +84,7 @@ public class ExperimentModel extends AppModel {
 
     // TODO Do this better, time axis is not correct
 
-    // double[] waveform = PulseUtils.generatePositiveAndNegativeDCRamps(amplitude);
+    // double[] waveform = WaveformUtils.generatePositiveAndNegativeDCRamps(amplitude);
     //
     // // double stopTime = 1 / getCalculatedFrequency() * DCPreferences.CAPTURE_PERIOD_COUNT * pulseNumber;
     // // double timeStep = 1 / getCalculatedFrequency() * DCPreferences.CAPTURE_PERIOD_COUNT / DCPreferences.CAPTURE_BUFFER_SIZE * pulseNumber;
@@ -99,32 +96,34 @@ public class ExperimentModel extends AppModel {
 
     Driver driver;
     switch (waveform) {
-      case RampUpDown:
-        driver = new RampUpDown("RampUpDown", 0, 0, amplitude, getCalculatedFrequency());
+      case Sawtooth:
+        driver = new Sawtooth("Sawtooth", 0, 0, amplitude, getCalculatedFrequency());
+        break;
+      case SawtoothUpDown:
+        driver = new SawtoothUpDown("SawtoothUpDown", 0, 0, amplitude, getCalculatedFrequency());
         break;
       case Triangle:
         driver = new Triangle("Triangle", 0, 0, amplitude, getCalculatedFrequency());
         break;
-      case SawTooth:
-        driver = new Sawtooth("Sawtooth", 0, 0, amplitude, getCalculatedFrequency());
+      case TriangleUpDown:
+        driver = new TriangleUpDown("Triangle", 0, 0, amplitude, getCalculatedFrequency());
         break;
       default:
-        driver = new RampUpDown("RampUpDown", 0, 0, amplitude, getCalculatedFrequency());
+        driver = new SawtoothUpDown("SawtoothUpDown", 0, 0, amplitude, getCalculatedFrequency());
         break;
     }
 
     double timeStep = 1 / getCalculatedFrequency() * pulseNumber / DCPreferences.CAPTURE_BUFFER_SIZE;
 
     int counter = 0;
-
     do {
       double time = counter * timeStep;
       waveformTimeData[counter] = time * 1_000_000;
       waveformAmplitudeData[counter] = driver.getSignal(time);
     } while (++counter < DCPreferences.CAPTURE_BUFFER_SIZE);
 
-    System.out.println("Arrays.toString(waveformTimeData) = " + Arrays.toString(waveformTimeData));
-    System.out.println("Arrays.toString(waveformAmplitudeData) = " + Arrays.toString(waveformAmplitudeData));
+    // System.out.println("Arrays.toString(waveformTimeData) = " + Arrays.toString(waveformTimeData));
+    // System.out.println("Arrays.toString(waveformAmplitudeData) = " + Arrays.toString(waveformAmplitudeData));
   }
 
   /**
@@ -169,20 +168,21 @@ public class ExperimentModel extends AppModel {
     swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
-  public int getPulseWidth() {
+  public int getPeriod() {
 
-    return pulseWidth;
+    return period;
   }
 
   public double getCalculatedFrequency() {
 
-    System.out.println("pulseWidth = " + pulseWidth);
-    return (1.0 / (2.0 * (double) pulseWidth) * 1_000_000_000); // 50% duty cycle
+    System.out.println("period = " + period);
+    // return (1.0 / (2.0 * (double) period) * 1_000_000_000); // 50% duty cycle
+    return (1.0 / ((double) period) * 1_000_000_000); // 50% duty cycle
   }
 
-  public void setPulseWidth(int pulseWidth) {
+  public void setPeriod(int period) {
 
-    this.pulseWidth = pulseWidth;
+    this.period = period;
     swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 

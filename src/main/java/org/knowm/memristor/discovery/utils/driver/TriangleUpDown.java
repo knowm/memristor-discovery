@@ -30,7 +30,7 @@ package org.knowm.memristor.discovery.utils.driver;
 /**
  * @author timmolter
  */
-public class Sawtooth extends Driver {
+public class TriangleUpDown extends Driver {
 
   /**
    * Constructor
@@ -41,7 +41,7 @@ public class Sawtooth extends Driver {
    * @param amplitude
    * @param frequency
    */
-  public Sawtooth(String name, double dcOffset, double phase, double amplitude, double frequency) {
+  public TriangleUpDown(String name, double dcOffset, double phase, double amplitude, double frequency) {
 
     super(name, dcOffset, phase, amplitude, frequency);
   }
@@ -52,6 +52,20 @@ public class Sawtooth extends Driver {
     double T = 1 / frequency;
     double remainderTime = (time + phase) % T;
 
-    return frequency * amplitude * (remainderTime) + dcOffset;
+    // up phase
+    if (0 <= (remainderTime) && (remainderTime) * T < .25 / frequency * T) {
+      return 4 * frequency * amplitude * (remainderTime) + dcOffset;
+    }
+
+    // up phase
+    else if (.75 / frequency * T <= (remainderTime) * T && (remainderTime) * T < 1.0 / frequency * T) {
+      return 4 * frequency * amplitude * (remainderTime) - 4 * amplitude + dcOffset;
+    }
+
+    // down phase
+    else {
+      return -4 * frequency * amplitude * (remainderTime) + 2 * amplitude + dcOffset;
+    }
   }
+
 }

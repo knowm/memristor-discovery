@@ -1,9 +1,12 @@
 package org.knowm.memristor.discovery.utils;
 
+import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferences.Waveform;
+import org.knowm.waveforms4j.DWF;
+
 /**
  * Created by timmolter on 2/15/17.
  */
-public class PulseUtils {
+public class WaveformUtils {
 
   public static double[] generateSquarePulseWithReadPulses(double amplitude) {
 
@@ -74,5 +77,25 @@ public class PulseUtils {
     // }
 
     return rgdData; // weird name, but that's what Waveforms SDK calls it.
+  }
+
+  public static DWF.Waveform getDWFWaveform(Waveform waveform) {
+
+    switch (waveform) {
+      case Sine:
+        return DWF.Waveform.Sine;
+      case Triangle:
+        return DWF.Waveform.Triangle;
+      case TriangleUpDown:
+        return DWF.Waveform.Triangle;
+      case Square:
+        return DWF.Waveform.Square;
+      case SawtoothUpDown:
+        return DWF.Waveform.Custom;
+      case Sawtooth:
+        return DWF.Waveform.Custom;
+      default:
+        return DWF.Waveform.Sine;
+    }
   }
 }

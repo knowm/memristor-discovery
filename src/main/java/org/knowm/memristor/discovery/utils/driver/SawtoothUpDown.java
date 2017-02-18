@@ -3,7 +3,7 @@ package org.knowm.memristor.discovery.utils.driver;
 /**
  * Created by timmolter on 2/17/17.
  */
-public class RampUpDown extends Driver {
+public class SawtoothUpDown extends Driver {
 
   /**
    * Constructor
@@ -14,7 +14,7 @@ public class RampUpDown extends Driver {
    * @param amplitude
    * @param frequency
    */
-  public RampUpDown(String name, double dcOffset, double phase, double amplitude, double frequency) {
+  public SawtoothUpDown(String name, double dcOffset, double phase, double amplitude, double frequency) {
 
     super(name, dcOffset, phase, amplitude, frequency);
   }
@@ -26,13 +26,13 @@ public class RampUpDown extends Driver {
     double remainderTime = (time + phase) % T;
 
     // up phase
-    if (0 <= (remainderTime) && (remainderTime) * T < .50 / frequency * T) {
+    if (0 <= (remainderTime) && (remainderTime) * T < .5 / frequency * T) {
       return 2 * frequency * amplitude * (remainderTime) + dcOffset;
     }
 
-    // up phase
+    // down phase
     else {
-      return 2 * frequency * amplitude * (remainderTime) - 2 * amplitude + dcOffset;
+      return -2 * frequency * amplitude * (remainderTime) +  amplitude + dcOffset;
     }
   }
 }

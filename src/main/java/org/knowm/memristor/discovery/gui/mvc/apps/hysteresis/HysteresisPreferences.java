@@ -38,11 +38,6 @@ public class HysteresisPreferences extends AppPreferences {
 
   private static final String PREFIX = "HYSTERESIS_";
 
-  public enum Waveform {
-
-    Sine, Triangle, Square;
-  }
-
   public static final String WAVEFORM_INIT_STRING_KEY = PREFIX + "WAVEFORM_INIT_STRING_KEY";
   public static final String WAVEFORM_INIT_STRING_DEFAULT_VALUE = "Sine";
 
