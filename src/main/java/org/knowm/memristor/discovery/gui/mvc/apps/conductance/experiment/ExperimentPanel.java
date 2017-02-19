@@ -113,7 +113,6 @@ public class ExperimentPanel extends JPanel {
     labelTable.put(-100, new JLabel("-1"));
     labelTable.put(0, new JLabel("0"));
     resetAmplitudeSlider.setLabelTable(labelTable);
-    c.gridx = 0;
     c.gridy++;
     c.insets = new Insets(0, 6, 4, 6);
     resetAmplitudeSlider.setPreferredSize(new Dimension(300, 80));

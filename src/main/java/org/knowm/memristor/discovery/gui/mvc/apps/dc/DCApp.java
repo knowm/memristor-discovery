@@ -157,17 +157,11 @@ public class DCApp extends App implements PropertyChangeListener {
     propertyChange(evt);
   }
 
-  /**
-   * This is set up to send a single pulse driving across the memristor and series resistor and read V1 and V2 for a single pulse, starting on an edge that passes a threshold of abs(0.05 V).
-   */
   private class CaptureWorker extends SwingWorker<Boolean, double[][]> {
 
     @Override
     protected Boolean doInBackground() throws Exception {
 
-      // System.out.println("experimentModel.getCalculatedFrequency(): " + experimentModel.getCalculatedFrequency());
-
-      // System.out.println("Arbitrary Wave Buffer Size Min and Max: " + Arrays.toString(dwfProxy.getDwf().FDwfAnalogOutNodeDataInfo(DWF.WAVEFORM_CHANNEL_1)));
 
       int sampleFrequencyMultiplier = 200; // adjust this down if you want to capture more pulses as the buffer size is limited.
 
@@ -245,14 +239,10 @@ public class DCApp extends App implements PropertyChangeListener {
 
       System.out.println("waveform = " + Arrays.toString(waveform));
 
-      // XYChart chart = QuickChart.getChart("Sample Chart", "X", "Y", "y(x)", null, waveform);
-      // new SwingWrapper(chart).displayChart();
-
       // double[] waveform = WaveformUtils.generatePositiveAndNegativeDCRamps(experimentModel.getAmplitude());
       dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, experimentModel.getCalculatedFrequency(), 0, experimentModel.getPulseNumber(), waveform);
 
       System.out.println("experimentModel.getCalculatedFrequency() = " + experimentModel.getCalculatedFrequency());
-      // }
 
       //////////////////////////////////
       //////////////////////////////////

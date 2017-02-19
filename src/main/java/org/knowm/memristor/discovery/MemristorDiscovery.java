@@ -47,6 +47,8 @@ import org.knowm.memristor.discovery.gui.mvc.apps.AppHelpDialog;
 import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.apps.conductance.ConductanceApp;
 import org.knowm.memristor.discovery.gui.mvc.apps.conductance.ConductancePreferencesPanel;
+import org.knowm.memristor.discovery.gui.mvc.apps.dc.DCApp;
+import org.knowm.memristor.discovery.gui.mvc.apps.dc.DCPreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.apps.hysteresis.HysteresisApp;
 import org.knowm.memristor.discovery.gui.mvc.apps.hysteresis.HysteresisPreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.apps.pulse.PulseApp;
@@ -175,7 +177,7 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
               app = new PulseApp(dwf, mainFrame.getContentPane());
               break;
             case "DC":
-              app = new ConductanceApp(dwf, mainFrame.getContentPane());
+              app = new DCApp(dwf, mainFrame.getContentPane());
               break;
             case "Conductance":
               app = new ConductanceApp(dwf, mainFrame.getContentPane());
@@ -316,7 +318,7 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
         result = new PulsePreferencesPanel(mainFrame).doModal();
         break;
       case "DC":
-        result = new ConductancePreferencesPanel(mainFrame).doModal();
+        result = new DCPreferencesPanel(mainFrame).doModal();
         break;
       case "Conductance":
         result = new ConductancePreferencesPanel(mainFrame).doModal();

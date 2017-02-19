@@ -114,8 +114,7 @@ public class PlotPanel extends JPanel {
     ivChart = new XYChartBuilder().width(600).title("I-T").height(400).yAxisTitle("Current [" + DCPreferences.CURRENT_UNIT.getLabel() + "]").xAxisTitle("Voltage [V]").build();
     ivChart.getStyler().setLegendVisible(false);
     ivChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);
-
-    series = ivChart.addSeries("iv", new double[]{0}, new double[]{0});
+    ivChart.addSeries("iv", new double[]{0}, new double[]{0});
 
     ivChartPanel = new XChartPanel<>(ivChart);
 
@@ -127,11 +126,8 @@ public class PlotPanel extends JPanel {
     gvChart.getStyler().setLegendVisible(false);
     gvChart.getStyler().setYAxisMin(0.0);
 
-    // rvChart.getStyler().setYAxisMax(200.0);
-
     gvChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);
-
-    series = gvChart.addSeries("gv", new double[]{0}, new double[]{0});
+    gvChart.addSeries("gv", new double[]{0}, new double[]{0});
 
     gvChartPanel = new XChartPanel<>(gvChart);
 
@@ -180,7 +176,6 @@ public class PlotPanel extends JPanel {
 
   private void addChartControlGV() {
 
-    // add(freezeYAxisCheckBoxGV, BorderLayout.NORTH);
     add(gvChartControlPanel, BorderLayout.NORTH);
   }
 

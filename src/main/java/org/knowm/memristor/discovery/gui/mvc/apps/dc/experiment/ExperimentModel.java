@@ -40,18 +40,10 @@ import org.knowm.memristor.discovery.utils.driver.TriangleUpDown;
 
 public class ExperimentModel extends AppModel {
 
-  /**
-   * Waveform
-   */
   public DCPreferences.Waveform waveform;
-
   private float amplitude;
   private int period; // model store period in nanoseconds
   private int pulseNumber = 1;
-
-  /**
-   * Series Resistor
-   */
   private int seriesResistance;
 
   private final double[] waveformTimeData = new double[DCPreferences.CAPTURE_BUFFER_SIZE];
@@ -68,9 +60,7 @@ public class ExperimentModel extends AppModel {
   @Override
   public void loadModelFromPrefs() {
 
-    // load model from prefs
     waveform = DCPreferences.Waveform.valueOf(appPreferences.getString(DCPreferences.WAVEFORM_INIT_STRING_KEY, DCPreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
-    // waveform = Waveform.Sawtooth;
     seriesResistance = appPreferences.getInteger(DCPreferences.SERIES_R_INIT_KEY, DCPreferences.SERIES_R_INIT_DEFAULT_VALUE);
     amplitude = appPreferences.getFloat(DCPreferences.AMPLITUDE_INIT_FLOAT_KEY, DCPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
     period = appPreferences.getInteger(DCPreferences.PERIOD_INIT_KEY, DCPreferences.PERIOD_INIT_DEFAULT_VALUE);
@@ -82,17 +72,6 @@ public class ExperimentModel extends AppModel {
    */
   void updateWaveformChartData() {
 
-    // TODO Do this better, time axis is not correct
-
-    // double[] waveform = WaveformUtils.generatePositiveAndNegativeDCRamps(amplitude);
-    //
-    // // double stopTime = 1 / getCalculatedFrequency() * DCPreferences.CAPTURE_PERIOD_COUNT * pulseNumber;
-    // // double timeStep = 1 / getCalculatedFrequency() * DCPreferences.CAPTURE_PERIOD_COUNT / DCPreferences.CAPTURE_BUFFER_SIZE * pulseNumber;
-    //
-    // int counter = 0;
-    // for (int i = 0; i < DCPreferences.CAPTURE_BUFFER_SIZE; i++) {
-    //   waveformAmplitudeData[counter++] = waveform[i * waveform.length / DCPreferences.CAPTURE_BUFFER_SIZE];
-    // }
 
     Driver driver;
     switch (waveform) {
@@ -122,8 +101,6 @@ public class ExperimentModel extends AppModel {
       waveformAmplitudeData[counter] = driver.getSignal(time);
     } while (++counter < DCPreferences.CAPTURE_BUFFER_SIZE);
 
-    // System.out.println("Arrays.toString(waveformTimeData) = " + Arrays.toString(waveformTimeData));
-    // System.out.println("Arrays.toString(waveformAmplitudeData) = " + Arrays.toString(waveformAmplitudeData));
   }
 
   /**

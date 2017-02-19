@@ -121,7 +121,6 @@ public class ExperimentPanel extends JPanel {
     labelTable.put(200, new JLabel("2"));
     labelTable.put(300, new JLabel("3"));
     amplitudeSlider.setLabelTable(labelTable);
-    c.gridx = 0;
     c.gridy++;
     c.insets = new Insets(0, 6, 4, 6);
     amplitudeSlider.setPreferredSize(new Dimension(300, 80));

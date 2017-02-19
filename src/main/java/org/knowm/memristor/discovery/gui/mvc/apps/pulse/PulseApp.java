@@ -152,9 +152,6 @@ public class PulseApp extends App implements PropertyChangeListener {
     propertyChange(evt);
   }
 
-  /**
-   * This is set up to send a single pulse driving across the memristor and series resistor and read V1 and V2 for a single pulse, starting on an edge that passes a threshold of abs(0.05 V).
-   */
   private class CaptureWorker extends SwingWorker<Boolean, double[][]> {
 
     @Override
