@@ -45,8 +45,8 @@ import org.knowm.memristor.discovery.gui.AboutDialog;
 import org.knowm.memristor.discovery.gui.mvc.apps.App;
 import org.knowm.memristor.discovery.gui.mvc.apps.AppHelpDialog;
 import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferencesPanel;
-import org.knowm.memristor.discovery.gui.mvc.apps.dc.DCApp;
-import org.knowm.memristor.discovery.gui.mvc.apps.dc.DCPreferencesPanel;
+import org.knowm.memristor.discovery.gui.mvc.apps.conductance.ConductanceApp;
+import org.knowm.memristor.discovery.gui.mvc.apps.conductance.ConductancePreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.apps.hysteresis.HysteresisApp;
 import org.knowm.memristor.discovery.gui.mvc.apps.hysteresis.HysteresisPreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.apps.pulse.PulseApp;
@@ -75,7 +75,7 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
   private final DWFProxy dwf = new DWFProxy();
 
   // private final String[] apps = new String[] { "Hysteresis", "Pulse", "QC" };
-  private final String[] apps = new String[]{"Hysteresis", "Pulse", "DC"};
+  private final String[] apps = new String[]{"Hysteresis", "Pulse", "DC", "Conductance"};
   private String appID;
   // private String appID = apps[0];
   private App app;
@@ -174,11 +174,14 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
             case "Pulse":
               app = new PulseApp(dwf, mainFrame.getContentPane());
               break;
+            case "DC":
+              app = new ConductanceApp(dwf, mainFrame.getContentPane());
+              break;
+            case "Conductance":
+              app = new ConductanceApp(dwf, mainFrame.getContentPane());
+              break;
             case "QC":
               app = new QCApp(dwf, mainFrame.getContentPane());
-              break;
-            case "DC":
-              app = new DCApp(dwf, mainFrame.getContentPane());
               break;
 
             default:
@@ -242,11 +245,15 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
     // appID = "Hysteresis";
     // mainFrame.setTitle(FRAME_TITLE_BASE + "Hysteresis");
 
-    app = new DCApp(dwf, mainFrameContainer);
-    appID = "DC";
-    mainFrame.setTitle(FRAME_TITLE_BASE + "DC");
-
     // app = new DCApp(dwf, mainFrameContainer);
+    // appID = "DC";
+    // mainFrame.setTitle(FRAME_TITLE_BASE + "DC");
+
+    app = new ConductanceApp(dwf, mainFrameContainer);
+    appID = "Conductance";
+    mainFrame.setTitle(FRAME_TITLE_BASE + "Conductance");
+
+    // app = new ConductanceApp(dwf, mainFrameContainer);
     // appID = "Pulse2";
     // mainFrame.setTitle(FRAME_TITLE_BASE + appID);
 
@@ -308,11 +315,14 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
       case "Pulse":
         result = new PulsePreferencesPanel(mainFrame).doModal();
         break;
+      case "DC":
+        result = new ConductancePreferencesPanel(mainFrame).doModal();
+        break;
+      case "Conductance":
+        result = new ConductancePreferencesPanel(mainFrame).doModal();
+        break;
       case "QC":
         result = new QCPreferencesPanel(mainFrame).doModal();
-        break;
-      case "DC":
-        result = new DCPreferencesPanel(mainFrame).doModal();
         break;
 
       default:
