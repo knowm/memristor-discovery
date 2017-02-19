@@ -128,11 +128,10 @@
                     <additionalparam>-Xdoclint:none</additionalparam>
                 </configuration>
             </plugin>
-            <!-- for header in all .java files -->
             <plugin>
-                <groupId>com.mycila.maven-license-plugin</groupId>
-                <artifactId>maven-license-plugin</artifactId>
-                <version>1.10.b1</version>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>3.0</version>
                 <configuration>
                     <header>LICENSE</header>
                     <aggregate>true</aggregate>
@@ -145,18 +144,6 @@
                     </excludes>
                 </configuration>
             </plugin>
-            <!--<plugin>-->
-            <!--<groupId>com.mycila</groupId>-->
-            <!--<artifactId>license-maven-plugin</artifactId>-->
-            <!--<version>3.0</version>-->
-            <!--<configuration>-->
-            <!--<header>LICENSE</header>-->
-            <!--<aggregate>true</aggregate>-->
-            <!--<includes>-->
-            <!--<include>**/*.java</include>-->
-            <!--</includes>-->
-            <!--</configuration>-->
-            <!--</plugin>-->
             <!-- for creating a single jar containing all dependencies -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
