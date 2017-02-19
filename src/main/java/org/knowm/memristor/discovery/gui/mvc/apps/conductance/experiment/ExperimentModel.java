@@ -31,27 +31,24 @@ import java.beans.PropertyChangeListener;
 
 import org.knowm.memristor.discovery.gui.mvc.apps.AppModel;
 import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferences;
+import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferences.Waveform;
 import org.knowm.memristor.discovery.gui.mvc.apps.conductance.ConductancePreferences;
 import org.knowm.memristor.discovery.utils.driver.Driver;
 import org.knowm.memristor.discovery.utils.driver.Sawtooth;
-import org.knowm.memristor.discovery.utils.driver.SawtoothUpDown;
 import org.knowm.memristor.discovery.utils.driver.Triangle;
-import org.knowm.memristor.discovery.utils.driver.TriangleUpDown;
 
 public class ExperimentModel extends AppModel {
 
-  /**
-   * Waveform
-   */
-  public ConductancePreferences.Waveform waveform;
+  // RESET
+  private Waveform resetPulseType;
+  private float resetAmplitude;
+  private int resetPulseWidth; // model store resetPulseWidth in nanoseconds
 
-  private float amplitude;
-  private int period; // model store period in nanoseconds
-  private int pulseNumber = 1;
+  // SET
+  private float setConductance;
+  private float setAmplitude;
+  private int setPulseWidth; // model store resetPulseWidth in nanoseconds
 
-  /**
-   * Series Resistor
-   */
   private int seriesResistance;
 
   private final double[] waveformTimeData = new double[ConductancePreferences.CAPTURE_BUFFER_SIZE];
@@ -68,52 +65,39 @@ public class ExperimentModel extends AppModel {
   @Override
   public void loadModelFromPrefs() {
 
-    // load model from prefs
-    waveform = ConductancePreferences.Waveform.valueOf(appPreferences.getString(ConductancePreferences.WAVEFORM_INIT_STRING_KEY, ConductancePreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
-    // waveform = Waveform.Sawtooth;
-    seriesResistance = appPreferences.getInteger(ConductancePreferences.SERIES_R_INIT_KEY, ConductancePreferences.SERIES_R_INIT_DEFAULT_VALUE);
-    amplitude = appPreferences.getFloat(ConductancePreferences.AMPLITUDE_INIT_FLOAT_KEY, ConductancePreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
-    period = appPreferences.getInteger(ConductancePreferences.PERIOD_INIT_KEY, ConductancePreferences.PERIOD_INIT_DEFAULT_VALUE);
+    // RESET
+    resetPulseType = ConductancePreferences.Waveform.valueOf(appPreferences.getString(ConductancePreferences.RESET_PULSE_TYPE_INIT_STRING_KEY, ConductancePreferences.RESET_PULSE_TYPE_INIT_STRING_DEFAULT_VALUE));
+    resetAmplitude = appPreferences.getFloat(ConductancePreferences.RESET_AMPLITUDE_INIT_FLOAT_KEY, ConductancePreferences.RESET_AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
+    resetPulseWidth = appPreferences.getInteger(ConductancePreferences.RESET_PULSE_WIDTH_INIT_KEY, ConductancePreferences.RESET_PERIOD_INIT_DEFAULT_VALUE);
+
+    // SET
+    setConductance = appPreferences.getFloat(ConductancePreferences.SET_CONDUCTANCE_INIT_KEY, ConductancePreferences.SET_CONDUCTANCE_INIT_DEFAULT_VALUE);
+    setAmplitude = appPreferences.getFloat(ConductancePreferences.SET_AMPLITUDE_INIT_FLOAT_KEY, ConductancePreferences.SET_AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
+    setPulseWidth = appPreferences.getInteger(ConductancePreferences.SET_PULSE_WIDTH_INIT_KEY, ConductancePreferences.SET_PERIOD_INIT_DEFAULT_VALUE);
+
     swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_PREFERENCES_UPDATE, true, false);
+    seriesResistance = appPreferences.getInteger(ConductancePreferences.SERIES_R_INIT_KEY, ConductancePreferences.SERIES_R_INIT_DEFAULT_VALUE);
   }
 
   /**
-   * Given the state of the model, update the waveform x and y axis data arrays.
+   * Given the state of the model, update the resetPulseType x and y axis data arrays.
    */
   void updateWaveformChartData() {
 
-    // TODO Do this better, time axis is not correct
-
-    // double[] waveform = WaveformUtils.generatePositiveAndNegativeDCRamps(amplitude);
-    //
-    // // double stopTime = 1 / getCalculatedFrequency() * ConductancePreferences.CAPTURE_PERIOD_COUNT * pulseNumber;
-    // // double timeStep = 1 / getCalculatedFrequency() * ConductancePreferences.CAPTURE_PERIOD_COUNT / ConductancePreferences.CAPTURE_BUFFER_SIZE * pulseNumber;
-    //
-    // int counter = 0;
-    // for (int i = 0; i < ConductancePreferences.CAPTURE_BUFFER_SIZE; i++) {
-    //   waveformAmplitudeData[counter++] = waveform[i * waveform.length / ConductancePreferences.CAPTURE_BUFFER_SIZE];
-    // }
-
     Driver driver;
-    switch (waveform) {
+    switch (resetPulseType) {
       case Sawtooth:
-        driver = new Sawtooth("Sawtooth", 0, 0, amplitude, getCalculatedFrequency());
-        break;
-      case SawtoothUpDown:
-        driver = new SawtoothUpDown("SawtoothUpDown", 0, 0, amplitude, getCalculatedFrequency());
+        driver = new Sawtooth("Sawtooth", 0, 0, resetAmplitude, getCalculatedFrequency());
         break;
       case Triangle:
-        driver = new Triangle("Triangle", 0, 0, amplitude, getCalculatedFrequency());
-        break;
-      case TriangleUpDown:
-        driver = new TriangleUpDown("Triangle", 0, 0, amplitude, getCalculatedFrequency());
+        driver = new Triangle("Triangle", 0, 0, resetAmplitude, getCalculatedFrequency());
         break;
       default:
-        driver = new SawtoothUpDown("SawtoothUpDown", 0, 0, amplitude, getCalculatedFrequency());
+        driver = new Sawtooth("Sawtooth", 0, 0, resetAmplitude, getCalculatedFrequency());
         break;
     }
 
-    double timeStep = 1 / getCalculatedFrequency() * pulseNumber / ConductancePreferences.CAPTURE_BUFFER_SIZE;
+    double timeStep = 1 / getCalculatedFrequency() / ConductancePreferences.CAPTURE_BUFFER_SIZE;
 
     int counter = 0;
     do {
@@ -140,49 +124,77 @@ public class ExperimentModel extends AppModel {
   // GETTERS AND SETTERS //////////////////////////////////////
   /////////////////////////////////////////////////////////////
 
-  public ConductancePreferences.Waveform getWaveform() {
+  public ConductancePreferences.Waveform getResetPulseType() {
 
-    return waveform;
+    return resetPulseType;
   }
 
-  public void setWaveform(ConductancePreferences.Waveform waveform) {
+  public void setResetPulseType(ConductancePreferences.Waveform resetPulseType) {
 
-    this.waveform = waveform;
+    this.resetPulseType = resetPulseType;
     swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public void setWaveform(String text) {
 
-    waveform = Enum.valueOf(ConductancePreferences.Waveform.class, text);
+    resetPulseType = Enum.valueOf(ConductancePreferences.Waveform.class, text);
     swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
-  public float getAmplitude() {
+  public float getResetAmplitude() {
 
-    return amplitude;
+    return resetAmplitude;
   }
 
-  public void setAmplitude(float amplitude) {
+  public void setResetAmplitude(float resetAmplitude) {
 
-    this.amplitude = amplitude;
+    this.resetAmplitude = resetAmplitude;
     swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
-  public int getPeriod() {
+  public int getResetPulseWidth() {
 
-    return period;
+    return resetPulseWidth;
   }
 
-  public double getCalculatedFrequency() {
+  public void setResetPulseWidth(int resetPulseWidth) {
 
-    System.out.println("period = " + period);
-    // return (1.0 / (2.0 * (double) period) * 1_000_000_000); // 50% duty cycle
-    return (1.0 / ((double) period) * 1_000_000_000); // 50% duty cycle
+    this.resetPulseWidth = resetPulseWidth;
+    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
-  public void setPeriod(int period) {
+  // SET
 
-    this.period = period;
+  public float getSetConductance() {
+
+    return setConductance;
+  }
+
+  public void setSetConductance(float setConductance) {
+
+    this.setConductance = setConductance;
+    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
+  }
+
+  public float getSetAmplitude() {
+
+    return setAmplitude;
+  }
+
+  public void setSetAmplitude(float setAmplitude) {
+
+    this.setAmplitude = setAmplitude;
+    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
+  }
+
+  public int getSetPulseWidth() {
+
+    return setPulseWidth;
+  }
+
+  public void setSetPulseWidth(int setPulseWidth) {
+
+    this.setPulseWidth = setPulseWidth;
     swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
@@ -194,17 +206,6 @@ public class ExperimentModel extends AppModel {
   public double[] getWaveformAmplitudeData() {
 
     return waveformAmplitudeData;
-  }
-
-  public int getPulseNumber() {
-
-    return pulseNumber;
-  }
-
-  public void setPulseNumber(int pulseNumber) {
-
-    this.pulseNumber = pulseNumber;
-    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public int getSeriesR() {
@@ -221,5 +222,12 @@ public class ExperimentModel extends AppModel {
   public AppPreferences initAppPreferences() {
 
     return new ConductancePreferences();
+  }
+
+  public double getCalculatedFrequency() {
+
+    System.out.println("resetPulseWidth = " + resetPulseWidth);
+    return (1.0 / (2.0 * (double) resetPulseWidth) * 1_000_000_000); // 50% duty cycle
+    // return (1.0 / ((double) resetPulseWidth) * 1_000_000_000); // 50% duty cycle
   }
 }

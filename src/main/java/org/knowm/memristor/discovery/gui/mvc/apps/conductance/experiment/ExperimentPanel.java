@@ -51,21 +51,23 @@ import javax.swing.JTextField;
  */
 public class ExperimentPanel extends JPanel {
 
-  private final Box waveformRadioButtonBox;
-  private final ButtonGroup waveformRadioButtonGroup;
+  // RESET
+  private final Box resetPulseTypeRadioButtonBox;
+  private final ButtonGroup resetPulseTypeRadioButtonGroup;
   private final JRadioButton sawToothRadioButton;
-  private final JRadioButton sawtoothUpDownRadioButton;
-  private final JRadioButton triangleRadioButton;
-  private final JRadioButton triangleUpDownRadioButton;
+  private final JRadioButton squareRadioButton;
+  private final JSlider resetAmplitudeSlider;
+  private final JSlider resetPulseWidthSlider;
+  private final JButton resetButton;
 
-  private final JSlider amplitudeSlider;
-  private final JSlider periodSlider;
-  private final JSlider periodSliderNs;
+  // SET
 
   private final JLabel seriesLabel;
   private final JTextField seriesTextField;
+  private final JSlider setAmplitudeSlider;
+  private final JSlider setPulseWidthSlider;
 
-  private final JSlider pulseNumberSlider;
+  private final JSlider setConductanceSlider;
 
   private final JButton startButton;
   private final JButton stopButton;
@@ -79,100 +81,114 @@ public class ExperimentPanel extends JPanel {
     GridBagConstraints c = new GridBagConstraints();
     c.fill = GridBagConstraints.HORIZONTAL;
     setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
-    // setBackground(Color.yellow);
+
+    // RESET
 
     sawToothRadioButton = new JRadioButton("Sawtooth");
-    sawtoothUpDownRadioButton = new JRadioButton("SawtoothUpDown");
-    triangleRadioButton = new JRadioButton("Triangle");
-    triangleUpDownRadioButton = new JRadioButton("TriangleUpDown");
-    waveformRadioButtonGroup = new ButtonGroup();
-    waveformRadioButtonGroup.add(sawToothRadioButton);
-    waveformRadioButtonGroup.add(sawtoothUpDownRadioButton);
-    waveformRadioButtonGroup.add(triangleRadioButton);
-    waveformRadioButtonGroup.add(triangleUpDownRadioButton);
+    squareRadioButton = new JRadioButton("Triangle");
+    resetPulseTypeRadioButtonGroup = new ButtonGroup();
+    resetPulseTypeRadioButtonGroup.add(sawToothRadioButton);
+    resetPulseTypeRadioButtonGroup.add(squareRadioButton);
     add(sawToothRadioButton);
-    add(sawtoothUpDownRadioButton);
-    add(triangleRadioButton);
-    add(triangleUpDownRadioButton);
-    waveformRadioButtonBox = Box.createVerticalBox();
-    waveformRadioButtonBox.setBorder(BorderFactory.createTitledBorder("Waveform"));
-    waveformRadioButtonBox.add(sawToothRadioButton);
-    waveformRadioButtonBox.add(sawtoothUpDownRadioButton);
-    waveformRadioButtonBox.add(triangleRadioButton);
-    waveformRadioButtonBox.add(triangleUpDownRadioButton);
+    add(squareRadioButton);
+    resetPulseTypeRadioButtonBox = Box.createVerticalBox();
+    resetPulseTypeRadioButtonBox.setBorder(BorderFactory.createTitledBorder("Reset Pulse Type"));
+    resetPulseTypeRadioButtonBox.add(sawToothRadioButton);
+    resetPulseTypeRadioButtonBox.add(squareRadioButton);
     c.gridx = 0;
     c.gridy++;
     c.insets = new Insets(0, 6, 4, 6);
-    add(waveformRadioButtonBox, c);
+    add(resetPulseTypeRadioButtonBox, c);
 
-    amplitudeSlider = new JSlider(JSlider.HORIZONTAL, -300, 300, 0);
-    amplitudeSlider.setBorder(BorderFactory.createTitledBorder("Amplitude [V]"));
-    amplitudeSlider.setMajorTickSpacing(50);
-    amplitudeSlider.setMinorTickSpacing(10);
-    amplitudeSlider.setPaintTicks(true);
-    amplitudeSlider.setPaintLabels(true);
-    amplitudeSlider.setSnapToTicks(true);
+    resetAmplitudeSlider = new JSlider(JSlider.HORIZONTAL, -300, 0, 0);
+    resetAmplitudeSlider.setBorder(BorderFactory.createTitledBorder("Reset Amplitude [V]"));
+    resetAmplitudeSlider.setMajorTickSpacing(50);
+    resetAmplitudeSlider.setMinorTickSpacing(10);
+    resetAmplitudeSlider.setPaintTicks(true);
+    resetAmplitudeSlider.setPaintLabels(true);
+    resetAmplitudeSlider.setSnapToTicks(true);
     Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
     labelTable.put(-300, new JLabel("-3"));
     labelTable.put(-200, new JLabel("-2"));
     labelTable.put(-100, new JLabel("-1"));
     labelTable.put(0, new JLabel("0"));
-    labelTable.put(100, new JLabel("1"));
-    labelTable.put(200, new JLabel("2"));
-    labelTable.put(300, new JLabel("3"));
-    amplitudeSlider.setLabelTable(labelTable);
+    resetAmplitudeSlider.setLabelTable(labelTable);
     c.gridx = 0;
     c.gridy++;
     c.insets = new Insets(0, 6, 4, 6);
-    amplitudeSlider.setPreferredSize(new Dimension(300, 80));
-    add(amplitudeSlider, c);
+    resetAmplitudeSlider.setPreferredSize(new Dimension(300, 80));
+    add(resetAmplitudeSlider, c);
 
-    periodSlider = new JSlider(JSlider.HORIZONTAL, 5000, 100000, 5000);
-    periodSlider.setBorder(BorderFactory.createTitledBorder("Period [µs]"));
-    periodSlider.setMinorTickSpacing(5000);
-    periodSlider.setPaintTicks(true);
-    periodSlider.setPaintLabels(true);
-    periodSlider.setSnapToTicks(true);
+    resetPulseWidthSlider = new JSlider(JSlider.HORIZONTAL, 5000, 100000, 5000);
+    resetPulseWidthSlider.setBorder(BorderFactory.createTitledBorder("Reset Pulse Width [µs]"));
+    resetPulseWidthSlider.setMinorTickSpacing(5000);
+    resetPulseWidthSlider.setPaintTicks(true);
+    resetPulseWidthSlider.setPaintLabels(true);
+    resetPulseWidthSlider.setSnapToTicks(true);
     labelTable = new Hashtable<>();
     labelTable.put(5000, new JLabel("5"));
     labelTable.put(50000, new JLabel("50"));
     labelTable.put(100000, new JLabel("100"));
-    periodSlider.setLabelTable(labelTable);
+    resetPulseWidthSlider.setLabelTable(labelTable);
     c.gridy++;
-    add(periodSlider, c);
+    add(resetPulseWidthSlider, c);
 
-    periodSliderNs = new JSlider(JSlider.HORIZONTAL, 500, 5000, 5000);
-    periodSliderNs.setBorder(BorderFactory.createTitledBorder("Period [µs]"));
-    periodSliderNs.setMinorTickSpacing(250);
-    periodSliderNs.setPaintTicks(true);
-    periodSliderNs.setPaintLabels(true);
-    periodSliderNs.setSnapToTicks(true);
+    resetButton = new JButton("Reset");
+    resetButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.gridy++;
+    c.insets = new Insets(0, 0, 0, 0);
+    add(resetButton, c);
+
+    // SET
+
+    setConductanceSlider = new JSlider(JSlider.HORIZONTAL, 100, 1500, 1000);
+    setConductanceSlider.setBorder(BorderFactory.createTitledBorder("Set Conductance [mS]"));
+    setConductanceSlider.setMinorTickSpacing(100);
+    setConductanceSlider.setPaintTicks(true);
+    setConductanceSlider.setPaintLabels(true);
+    setConductanceSlider.setSnapToTicks(true);
     labelTable = new Hashtable<>();
+    labelTable.put(100, new JLabel(".1"));
     labelTable.put(500, new JLabel(".5"));
-    labelTable.put(1000, new JLabel("1"));
-    labelTable.put(2000, new JLabel("2"));
-    labelTable.put(3000, new JLabel("3"));
-    labelTable.put(4000, new JLabel("4"));
-    labelTable.put(5000, new JLabel("5"));
-    periodSliderNs.setLabelTable(labelTable);
+    labelTable.put(1000, new JLabel("1.0"));
+    labelTable.put(1500, new JLabel("1.5"));
+    setConductanceSlider.setLabelTable(labelTable);
     c.gridy++;
-    add(periodSliderNs, c);
+    c.insets = new Insets(20, 0, 0, 0);
+    add(setConductanceSlider, c);
 
-    pulseNumberSlider = new JSlider(JSlider.HORIZONTAL, 1, 20, 1);
-    pulseNumberSlider.setBorder(BorderFactory.createTitledBorder("Pulse Number"));
-    pulseNumberSlider.setMinorTickSpacing(1);
-    pulseNumberSlider.setPaintTicks(true);
-    pulseNumberSlider.setPaintLabels(true);
-    pulseNumberSlider.setSnapToTicks(true);
+    setAmplitudeSlider = new JSlider(JSlider.HORIZONTAL, 0, 300, 0);
+    setAmplitudeSlider.setBorder(BorderFactory.createTitledBorder("Reset Amplitude [V]"));
+    setAmplitudeSlider.setMajorTickSpacing(50);
+    setAmplitudeSlider.setMinorTickSpacing(10);
+    setAmplitudeSlider.setPaintTicks(true);
+    setAmplitudeSlider.setPaintLabels(true);
+    setAmplitudeSlider.setSnapToTicks(true);
     labelTable = new Hashtable<>();
-    labelTable.put(1, new JLabel("1"));
-    labelTable.put(5, new JLabel("5"));
-    labelTable.put(10, new JLabel("10"));
-    labelTable.put(15, new JLabel("15"));
-    labelTable.put(20, new JLabel("20"));
-    pulseNumberSlider.setLabelTable(labelTable);
+    labelTable.put(0, new JLabel("0"));
+    labelTable.put(100, new JLabel("1"));
+    labelTable.put(200, new JLabel("2"));
+    labelTable.put(300, new JLabel("3"));
+    setAmplitudeSlider.setLabelTable(labelTable);
+    c.gridx = 0;
     c.gridy++;
-    add(pulseNumberSlider, c);
+    c.insets = new Insets(0, 6, 4, 6);
+    setAmplitudeSlider.setPreferredSize(new Dimension(300, 80));
+    add(setAmplitudeSlider, c);
+
+    setPulseWidthSlider = new JSlider(JSlider.HORIZONTAL, 5000, 100000, 5000);
+    setPulseWidthSlider.setBorder(BorderFactory.createTitledBorder("Reset Pulse Width [µs]"));
+    setPulseWidthSlider.setMinorTickSpacing(5000);
+    setPulseWidthSlider.setPaintTicks(true);
+    setPulseWidthSlider.setPaintLabels(true);
+    setPulseWidthSlider.setSnapToTicks(true);
+    labelTable = new Hashtable<>();
+    labelTable.put(5000, new JLabel("5"));
+    labelTable.put(50000, new JLabel("50"));
+    labelTable.put(100000, new JLabel("100"));
+    setPulseWidthSlider.setLabelTable(labelTable);
+    c.gridy++;
+    add(setPulseWidthSlider, c);
 
     seriesLabel = new JLabel("Series R [Ohm]");
     seriesLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -203,35 +219,22 @@ public class ExperimentPanel extends JPanel {
   public void enableAllChildComponents(boolean enabled) {
 
     sawToothRadioButton.setEnabled(enabled);
-    sawtoothUpDownRadioButton.setEnabled(enabled);
-    triangleRadioButton.setEnabled(enabled);
-    triangleUpDownRadioButton.setEnabled(enabled);
-    amplitudeSlider.setEnabled(enabled);
-    periodSlider.setEnabled(enabled);
-    periodSliderNs.setEnabled(enabled);
+    squareRadioButton.setEnabled(enabled);
+    resetAmplitudeSlider.setEnabled(enabled);
+    resetPulseWidthSlider.setEnabled(enabled);
     seriesTextField.setEnabled(enabled);
     startButton.setEnabled(enabled);
     stopButton.setEnabled(false);
   }
 
-  public ButtonGroup getWaveformRadioButtonGroup() {
+  public ButtonGroup getResetPulseTypeRadioButtonGroup() {
 
-    return waveformRadioButtonGroup;
+    return resetPulseTypeRadioButtonGroup;
   }
 
-  public JRadioButton getSawtoothUpDownRadioButton() {
+  public JRadioButton getSquareRadioButton() {
 
-    return sawtoothUpDownRadioButton;
-  }
-
-  public JRadioButton getTriangleRadioButton() {
-
-    return triangleRadioButton;
-  }
-
-  public JRadioButton getTriangleUpDownRadioButton() {
-
-    return triangleUpDownRadioButton;
+    return squareRadioButton;
   }
 
   public JRadioButton getSawToothRadioButton() {
@@ -239,24 +242,34 @@ public class ExperimentPanel extends JPanel {
     return sawToothRadioButton;
   }
 
-  public JSlider getAmplitudeSlider() {
+  public JSlider getResetAmplitudeSlider() {
 
-    return amplitudeSlider;
+    return resetAmplitudeSlider;
   }
 
-  public JSlider getPeriodSlider() {
+  public JSlider getResetPulseWidthSlider() {
 
-    return periodSlider;
+    return resetPulseWidthSlider;
   }
 
-  public JSlider getPeriodSliderNs() {
+  public JButton getResetButton() {
 
-    return periodSliderNs;
+    return resetButton;
   }
 
-  public JSlider getPulseNumberSlider() {
+  public JSlider getSetConductanceSlider() {
 
-    return pulseNumberSlider;
+    return setConductanceSlider;
+  }
+
+  public JSlider getSetAmplitudeSlider() {
+
+    return setAmplitudeSlider;
+  }
+
+  public JSlider getSetPulseWidthSlider() {
+
+    return setPulseWidthSlider;
   }
 
   public JTextField getSeriesTextField() {

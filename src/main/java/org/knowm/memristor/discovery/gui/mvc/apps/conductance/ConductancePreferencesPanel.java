@@ -43,17 +43,29 @@ import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferencesPanel;
 
 public class ConductancePreferencesPanel extends AppPreferencesPanel {
 
-  private JLabel waveformLabel;
-  private JComboBox<Waveform> waveformComboBox;
+  // RESET
+  private JLabel resetPulseTypeLabel;
+  private JComboBox<Waveform> resetPulseTypeComboBox;
+
+  private JLabel resetAmplitudeLabel;
+  private JTextField resetAmplitudeTextField;
+
+  private JLabel resetPulseWidthLabel;
+  private JTextField resetPulseWidthTextField;
+
+  // SET
+
+  private JLabel setConductanceLabel;
+  private JTextField setConductanceTextField;
+
+  private JLabel setAmplitudeLabel;
+  private JTextField setAmplitudeTextField;
+
+  private JLabel setPulseWidthLabel;
+  private JTextField setPulseWidthTextField;
 
   private JLabel seriesResistorLabel;
   private JTextField seriesResistorTextField;
-
-  private JLabel amplitudeLabel;
-  private JTextField amplitudeTextField;
-
-  private JLabel periodLabel;
-  private JTextField periodTextField;
 
   /**
    * Constructor
@@ -75,19 +87,70 @@ public class ConductancePreferencesPanel extends AppPreferencesPanel {
     gc.gridy = 0;
     gc.gridx = 0;
 
-    this.waveformLabel = new JLabel("Waveform:");
-    preferencesPanel.add(waveformLabel, gc);
+    // RESET
+
+    this.resetPulseTypeLabel = new JLabel("Reset Pulse Type:");
+    preferencesPanel.add(resetPulseTypeLabel, gc);
 
     gc.gridx = 1;
-    this.waveformComboBox = new JComboBox<>();
-    this.waveformComboBox.setModel(new DefaultComboBoxModel<>(new Waveform[]{Waveform.Sawtooth, Waveform.SawtoothUpDown, Waveform.Triangle, Waveform.TriangleUpDown}));
-   ConductancePreferences.Waveform waveform =ConductancePreferences.Waveform.valueOf(appPreferences.getString(ConductancePreferences.WAVEFORM_INIT_STRING_KEY,
-       ConductancePreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
-    // ConductancePreferences.Waveform waveform =  Waveform.Sawtooth;
-    this.waveformComboBox.setSelectedItem(waveform);
-    preferencesPanel.add(waveformComboBox, gc);
+    this.resetPulseTypeComboBox = new JComboBox<>();
+    this.resetPulseTypeComboBox.setModel(new DefaultComboBoxModel<>(new Waveform[]{Waveform.Sawtooth, Waveform.Square}));
+    ConductancePreferences.Waveform waveform = ConductancePreferences.Waveform.valueOf(appPreferences.getString(ConductancePreferences.RESET_PULSE_TYPE_INIT_STRING_KEY,
+        ConductancePreferences.RESET_PULSE_TYPE_INIT_STRING_DEFAULT_VALUE));
+    this.resetPulseTypeComboBox.setSelectedItem(waveform);
+    preferencesPanel.add(resetPulseTypeComboBox, gc);
 
-    /////////////////////////////////////////////////////////
+    gc.gridy++;
+    gc.gridx = 0;
+    this.resetAmplitudeLabel = new JLabel("Reset Amplitude [V]:");
+    preferencesPanel.add(resetAmplitudeLabel, gc);
+
+    gc.gridx = 1;
+    this.resetAmplitudeTextField = new JTextField(12);
+    this.resetAmplitudeTextField.setText(String.valueOf(appPreferences.getFloat(ConductancePreferences.RESET_AMPLITUDE_INIT_FLOAT_KEY, ConductancePreferences.RESET_AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
+    preferencesPanel.add(resetAmplitudeTextField, gc);
+
+    gc.gridy++;
+    gc.gridx = 0;
+    this.resetPulseWidthLabel = new JLabel("Reset Pulse Width [ns]:");
+    preferencesPanel.add(resetPulseWidthLabel, gc);
+
+    gc.gridx = 1;
+    this.resetPulseWidthTextField = new JTextField(12);
+    this.resetPulseWidthTextField.setText(String.valueOf(appPreferences.getInteger(ConductancePreferences.RESET_PULSE_WIDTH_INIT_KEY, ConductancePreferences.RESET_PERIOD_INIT_DEFAULT_VALUE)));
+    preferencesPanel.add(resetPulseWidthTextField, gc);
+
+    // SET
+
+    gc.gridy++;
+    gc.gridx = 0;
+    this.setConductanceLabel = new JLabel("Set Conductance [mS]:");
+    preferencesPanel.add(setConductanceLabel, gc);
+
+    gc.gridx = 1;
+    this.setConductanceTextField = new JTextField(12);
+    this.setConductanceTextField.setText(String.valueOf(appPreferences.getFloat(ConductancePreferences.SET_CONDUCTANCE_INIT_KEY, ConductancePreferences.SET_CONDUCTANCE_INIT_DEFAULT_VALUE)));
+    preferencesPanel.add(setConductanceTextField, gc);
+
+    gc.gridy++;
+    gc.gridx = 0;
+    this.setAmplitudeLabel = new JLabel("Set Amplitude [V]:");
+    preferencesPanel.add(setAmplitudeLabel, gc);
+
+    gc.gridx = 1;
+    this.setAmplitudeTextField = new JTextField(12);
+    this.setAmplitudeTextField.setText(String.valueOf(appPreferences.getFloat(ConductancePreferences.SET_AMPLITUDE_INIT_FLOAT_KEY, ConductancePreferences.SET_AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
+    preferencesPanel.add(setAmplitudeTextField, gc);
+
+    gc.gridy++;
+    gc.gridx = 0;
+    this.setPulseWidthLabel = new JLabel("Set Pulse Width [ns]:");
+    preferencesPanel.add(setPulseWidthLabel, gc);
+
+    gc.gridx = 1;
+    this.resetPulseWidthTextField = new JTextField(12);
+    this.resetPulseWidthTextField.setText(String.valueOf(appPreferences.getInteger(ConductancePreferences.SET_PULSE_WIDTH_INIT_KEY, ConductancePreferences.SET_PERIOD_INIT_DEFAULT_VALUE)));
+    preferencesPanel.add(setPulseWidthTextField, gc);
 
     gc.gridy++;
     gc.gridx = 0;
@@ -98,37 +161,19 @@ public class ConductancePreferencesPanel extends AppPreferencesPanel {
     this.seriesResistorTextField = new JTextField(12);
     this.seriesResistorTextField.setText(String.valueOf(appPreferences.getInteger(ConductancePreferences.SERIES_R_INIT_KEY, ConductancePreferences.SERIES_R_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(seriesResistorTextField, gc);
-
-    gc.gridy++;
-
-    gc.gridx = 0;
-    this.amplitudeLabel = new JLabel("Amplitude [V]:");
-    preferencesPanel.add(amplitudeLabel, gc);
-
-    gc.gridx = 1;
-    this.amplitudeTextField = new JTextField(12);
-    this.amplitudeTextField.setText(String.valueOf(appPreferences.getFloat(ConductancePreferences.AMPLITUDE_INIT_FLOAT_KEY, ConductancePreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
-    preferencesPanel.add(amplitudeTextField, gc);
-
-    gc.gridy++;
-
-    gc.gridx = 0;
-    this.periodLabel = new JLabel("Period [ns]:");
-    preferencesPanel.add(periodLabel, gc);
-
-    gc.gridx = 1;
-    this.periodTextField = new JTextField(12);
-    this.periodTextField.setText(String.valueOf(appPreferences.getInteger(ConductancePreferences.PERIOD_INIT_KEY, ConductancePreferences.PERIOD_INIT_DEFAULT_VALUE)));
-    preferencesPanel.add(periodTextField, gc);
   }
 
   @Override
   public void doSavePreferences() {
 
-    appPreferences.setString(ConductancePreferences.WAVEFORM_INIT_STRING_KEY, waveformComboBox.getSelectedItem().toString().trim());
+    appPreferences.setString(ConductancePreferences.RESET_PULSE_TYPE_INIT_STRING_KEY, resetPulseTypeComboBox.getSelectedItem().toString().trim());
+    appPreferences.setFloat(ConductancePreferences.RESET_AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(resetAmplitudeTextField.getText()));
+    appPreferences.setInteger(ConductancePreferences.RESET_PULSE_WIDTH_INIT_KEY, Integer.parseInt(resetPulseWidthTextField.getText()));
+
+    // SET
+
+    appPreferences.setFloat(ConductancePreferences.SET_CONDUCTANCE_INIT_KEY, Float.parseFloat(setConductanceTextField.getText()));
     appPreferences.setInteger(ConductancePreferences.SERIES_R_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
-    appPreferences.setFloat(ConductancePreferences.AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(amplitudeTextField.getText()));
-    appPreferences.setInteger(ConductancePreferences.PERIOD_INIT_KEY, Integer.parseInt(periodTextField.getText()));
   }
 
   @Override

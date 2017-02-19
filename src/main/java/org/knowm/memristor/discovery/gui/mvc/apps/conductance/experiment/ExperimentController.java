@@ -74,7 +74,7 @@ public class ExperimentController implements PropertyChangeListener {
     // register the controller as the listener of the experimentModel
     experimentModel.addListener(this);
 
-    // init waveform chart
+    // init resetWaveform chart
     plotPanel.switch2WaveformChart();
   }
 
@@ -86,40 +86,32 @@ public class ExperimentController implements PropertyChangeListener {
 
   private void initGUIComponentsFromModel() {
 
-    switch (experimentModel.getWaveform()) {
+    // RESET
+    switch (experimentModel.getResetPulseType()) {
       case Sawtooth:
         experimentPanel.getSawToothRadioButton().setSelected(true);
         break;
-      case SawtoothUpDown:
-        experimentPanel.getSawtoothUpDownRadioButton().setSelected(true);
-        break;
       case Triangle:
-        experimentPanel.getTriangleRadioButton().setSelected(true);
-        break;
-      case TriangleUpDown:
-        experimentPanel.getTriangleUpDownRadioButton().setSelected(true);
+        experimentPanel.getSquareRadioButton().setSelected(true);
         break;
       default:
-        experimentPanel.getSawtoothUpDownRadioButton().setSelected(true);
+        experimentPanel.getSawToothRadioButton().setSelected(true);
         break;
     }
 
+    experimentPanel.getResetAmplitudeSlider().setValue((int) (experimentModel.getResetAmplitude() * 100));
+    experimentPanel.getResetAmplitudeSlider().setBorder(BorderFactory.createTitledBorder(" Reset Amplitude [V] = " + experimentModel.getResetAmplitude()));
+    experimentPanel.getResetPulseWidthSlider().setValue((experimentModel.getResetPulseWidth()));
+    experimentPanel.getResetPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Reset Period [µs] = " + experimentModel.getResetPulseWidth() / 1000));
+
+    // SET
+
+    experimentPanel.getSetAmplitudeSlider().setValue((int) (experimentModel.getSetAmplitude() * 100));
+    experimentPanel.getSetAmplitudeSlider().setBorder(BorderFactory.createTitledBorder(" Set Amplitude [V] = " + experimentModel.getSetAmplitude()));
+    experimentPanel.getSetPulseWidthSlider().setValue((experimentModel.getSetPulseWidth()));
+    experimentPanel.getSetPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Set Period [µs] = " + experimentModel.getSetPulseWidth() / 1000));
+
     experimentPanel.getSeriesTextField().setText("" + experimentModel.getSeriesR());
-    experimentPanel.getAmplitudeSlider().setValue((int) (experimentModel.getAmplitude() * 100));
-    experimentPanel.getAmplitudeSlider().setBorder(BorderFactory.createTitledBorder("Amplitude [V] = " + experimentModel.getAmplitude()));
-    if (experimentModel.getPeriod() >= 5000) {
-      experimentPanel.getPeriodSlider().setValue((int) (experimentModel.getPeriod()));
-      experimentPanel.getPeriodSliderNs().setValue(0);
-      experimentPanel.getPeriodSlider().setBorder(BorderFactory.createTitledBorder("Period [µs] = " + experimentModel.getPeriod() / 1000));
-      experimentPanel.getPeriodSliderNs().setBorder(BorderFactory.createTitledBorder("Period [µs]"));
-    }
-    else {
-      experimentPanel.getPeriodSlider().setValue(0);
-      experimentPanel.getPeriodSliderNs().setValue(experimentModel.getPeriod());
-      experimentPanel.getPeriodSlider().setBorder(BorderFactory.createTitledBorder("Period [µs]"));
-      experimentPanel.getPeriodSliderNs().setBorder(BorderFactory.createTitledBorder("Period [µs] = " + experimentModel.getPeriod() / 1000));
-    }
-    experimentPanel.getPulseNumberSlider().setBorder(BorderFactory.createTitledBorder("Pulse Number = " + experimentModel.getPulseNumber()));
   }
 
   /**
@@ -128,60 +120,70 @@ public class ExperimentController implements PropertyChangeListener {
   private void setUpViewEvents() {
 
     experimentPanel.getSawToothRadioButton().addActionListener(waveformRadioButtonActionListener);
-    experimentPanel.getSawtoothUpDownRadioButton().addActionListener(waveformRadioButtonActionListener);
-    experimentPanel.getTriangleRadioButton().addActionListener(waveformRadioButtonActionListener);
-    experimentPanel.getTriangleUpDownRadioButton().addActionListener(waveformRadioButtonActionListener);
+    experimentPanel.getSquareRadioButton().addActionListener(waveformRadioButtonActionListener);
 
-    experimentPanel.getAmplitudeSlider().addChangeListener(new ChangeListener() {
+    experimentPanel.getResetAmplitudeSlider().addChangeListener(new ChangeListener() {
 
       @Override
       public void stateChanged(ChangeEvent e) {
 
         JSlider source = (JSlider) e.getSource();
         if (!(source.getValueIsAdjusting())) {
-          experimentModel.setAmplitude(source.getValue() / (float) 100);
-          experimentPanel.getAmplitudeSlider().setBorder(BorderFactory.createTitledBorder("Amplitude [V] = " + experimentModel.getAmplitude()));
+          experimentModel.setResetAmplitude(source.getValue() / (float) 100);
+          experimentPanel.getResetAmplitudeSlider().setBorder(BorderFactory.createTitledBorder("Set Amplitude [V] = " + experimentModel.getResetAmplitude()));
         }
       }
     });
 
-    experimentPanel.getPeriodSlider().addChangeListener(new ChangeListener() {
+    experimentPanel.getResetPulseWidthSlider().addChangeListener(new ChangeListener() {
 
       @Override
       public void stateChanged(ChangeEvent e) {
 
         JSlider source = (JSlider) e.getSource();
         if (!(source.getValueIsAdjusting())) {
-          experimentModel.setPeriod(source.getValue());
-          experimentPanel.getPeriodSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + (double) experimentModel.getPeriod() / 1000));
-          experimentPanel.getPeriodSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
+          experimentModel.setResetPulseWidth(source.getValue());
+          experimentPanel.getResetPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Set Pulse Width [µs] = " + (double) experimentModel.getResetPulseWidth() / 1000));
         }
       }
     });
 
-    experimentPanel.getPeriodSliderNs().addChangeListener(new ChangeListener() {
+    // SET
+
+    experimentPanel.getSetConductanceSlider().addChangeListener(new ChangeListener() {
 
       @Override
       public void stateChanged(ChangeEvent e) {
 
         JSlider source = (JSlider) e.getSource();
         if (!(source.getValueIsAdjusting())) {
-          experimentModel.setPeriod(source.getValue());
-          experimentPanel.getPeriodSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
-          experimentPanel.getPeriodSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + (double) experimentModel.getPeriod() / 1000));
+          experimentModel.setSetConductance(source.getValue() / (float) 1000);
+          experimentPanel.getSetConductanceSlider().setBorder(BorderFactory.createTitledBorder("Set Conductance [mS] = " + experimentModel.getSetConductance()));
+        }
+      }
+    });
+    experimentPanel.getSetAmplitudeSlider().addChangeListener(new ChangeListener() {
+
+      @Override
+      public void stateChanged(ChangeEvent e) {
+
+        JSlider source = (JSlider) e.getSource();
+        if (!(source.getValueIsAdjusting())) {
+          experimentModel.setSetAmplitude(source.getValue() / (float) 100);
+          experimentPanel.getSetAmplitudeSlider().setBorder(BorderFactory.createTitledBorder("Set Amplitude [V] = " + experimentModel.getSetAmplitude()));
         }
       }
     });
 
-    experimentPanel.getPulseNumberSlider().addChangeListener(new ChangeListener() {
+    experimentPanel.getSetPulseWidthSlider().addChangeListener(new ChangeListener() {
 
       @Override
       public void stateChanged(ChangeEvent e) {
 
         JSlider source = (JSlider) e.getSource();
         if (!(source.getValueIsAdjusting())) {
-          experimentModel.setPulseNumber(source.getValue());
-          experimentPanel.getPulseNumberSlider().setBorder(BorderFactory.createTitledBorder("Pulse Number = " + experimentModel.getPulseNumber()));
+          experimentModel.setSetPulseWidth(source.getValue());
+          experimentPanel.getSetPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Set Pulse Width [µs] = " + (double) experimentModel.getSetPulseWidth() / 1000));
         }
       }
     });
@@ -218,7 +220,7 @@ public class ExperimentController implements PropertyChangeListener {
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
 
-      for (Enumeration<AbstractButton> buttons = experimentPanel.getWaveformRadioButtonGroup().getElements(); buttons.hasMoreElements(); ) {
+      for (Enumeration<AbstractButton> buttons = experimentPanel.getResetPulseTypeRadioButtonGroup().getElements(); buttons.hasMoreElements(); ) {
         AbstractButton button = buttons.nextElement();
         if (button.isSelected()) {
           experimentModel.setWaveform(button.getText());

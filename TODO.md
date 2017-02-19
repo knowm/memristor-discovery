@@ -1,6 +1,7 @@
 ## TODO
 
 1. Remove redundant copy-pasta code, abstract stuff
+1. Possibly apply arrow key slider fix as a new object type and use everywhere.
 
 ## DONE
 

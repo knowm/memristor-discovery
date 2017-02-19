@@ -28,6 +28,7 @@
 package org.knowm.memristor.discovery.gui.mvc.apps.conductance;
 
 import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferences;
+import org.knowm.waveforms4j.DWF;
 
 /**
  * Stores various operational preferences
@@ -38,20 +39,32 @@ public class ConductancePreferences extends AppPreferences {
 
   private static final String PREFIX = "CONDUCTANCE_";
 
-  public static final String WAVEFORM_INIT_STRING_KEY = PREFIX + "WAVEFORM_INIT_STRING_KEY";
-  public static final String WAVEFORM_INIT_STRING_DEFAULT_VALUE = "SawtoothUpDown";
+  public static final String RESET_PULSE_TYPE_INIT_STRING_KEY = PREFIX + "RESET_PULSE_TYPE_INIT_STRING_KEY";
+  public static final String RESET_PULSE_TYPE_INIT_STRING_DEFAULT_VALUE = "Sawtooth";
 
   public static final String SERIES_R_INIT_KEY = PREFIX + "SERIES_R_INIT_KEY";
-  public static final int SERIES_R_INIT_DEFAULT_VALUE = 5_000;
+  public static final int SERIES_R_INIT_DEFAULT_VALUE = 1_000;
 
-  public static final String AMPLITUDE_INIT_FLOAT_KEY = PREFIX + "AMPLITUDE_INIT_FLOAT_KEY";
-  public static final float AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE = 0.1f;
+  public static final String RESET_AMPLITUDE_INIT_FLOAT_KEY = PREFIX + "RESET_AMPLITUDE_INIT_FLOAT_KEY";
+  public static final float RESET_AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE = -1.0f;
 
-  public static final String PERIOD_INIT_KEY = PREFIX + "PERIOD_INIT_KEY";
-  public static final int PERIOD_INIT_DEFAULT_VALUE = 5000;
+  public static final String RESET_PULSE_WIDTH_INIT_KEY = PREFIX + "RESET_PULSE_WIDTH_INIT_KEY";
+  public static final int RESET_PERIOD_INIT_DEFAULT_VALUE = 5000;
 
   public static final String K_INIT_DOUBLE_KEY = PREFIX + "K_INIT_DOUBLE_KEY";
   public static final double K_INIT_DOUBLE_DEFAULT_VALUE = 0.3;
+
+  // SET
+
+  public static final String SET_CONDUCTANCE_INIT_KEY = PREFIX + "SET_CONDUCTANCE_INIT_KEY";
+  public static final float SET_CONDUCTANCE_INIT_DEFAULT_VALUE = 1.0f;
+
+
+  public static final String SET_AMPLITUDE_INIT_FLOAT_KEY = PREFIX + "SET_AMPLITUDE_INIT_FLOAT_KEY";
+  public static final float SET_AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE = 1.0f;
+
+  public static final String SET_PULSE_WIDTH_INIT_KEY = PREFIX + "SET_PULSE_WIDTH_INIT_KEY";
+  public static final int SET_PERIOD_INIT_DEFAULT_VALUE = 5000;
 
   ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -59,9 +72,7 @@ public class ConductancePreferences extends AppPreferences {
   public static final ResistanceUnits RESISTANCE_UNIT = ResistanceUnits.KiloOhms;
   public static final ConductanceUnits CONDUCTANCE_UNIT = ConductanceUnits.MilliSiemens;
 
-  // public static final int CAPTURE_BUFFER_SIZE = DWF.AD2_MAX_BUFFER_SIZE;
-  public static final int CAPTURE_BUFFER_SIZE = 8000;
-  // public static final int CAPTURE_BUFFER_SIZE = 8192 / 11; // AD2 buffer size / most pulses allowed.
+  public static final int CAPTURE_BUFFER_SIZE = DWF.AD2_MAX_BUFFER_SIZE;
 
   /**
    * Constructor
