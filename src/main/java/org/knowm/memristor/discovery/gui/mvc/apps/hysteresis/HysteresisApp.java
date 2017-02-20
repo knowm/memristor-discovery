@@ -256,20 +256,22 @@ public class HysteresisApp extends App implements PropertyChangeListener {
 
       if (allowPlotting) {
 
+        double[][] newestChunk = chunks.get(chunks.size() - 1);
+
         // System.out.println("" + chunks.size());
 
         // Messages received from the doInBackground() (when invoking the publish() method). See: http://www.javacreed.com/swing-worker-example/
 
         if (plotPanel.getCaptureButton().isSelected()) {
-          plotController.udpateVtChart(chunks.get(chunks.size() - 1)[0], chunks.get(chunks.size() - 1)[1], chunks.get(chunks.size() - 1)[2], experimentModel.getFrequency(), experimentModel
+          plotController.udpateVtChart(newestChunk[0], newestChunk[1], newestChunk[2], experimentModel.getFrequency(), experimentModel
               .getAmplitude(), experimentModel.getOffset());
         }
         else if (plotPanel.getIVButton().isSelected()) {
-          plotController.udpateIVChart(chunks.get(chunks.size() - 1)[0], chunks.get(chunks.size() - 1)[1], chunks.get(chunks.size() - 1)[2], experimentModel.getFrequency(), experimentModel
+          plotController.udpateIVChart(newestChunk[0], newestChunk[1], newestChunk[2], experimentModel.getFrequency(), experimentModel
               .getAmplitude(), experimentModel.getOffset());
         }
         else {
-          plotController.updateGVChart(chunks.get(chunks.size() - 1)[0], chunks.get(chunks.size() - 1)[1], chunks.get(chunks.size() - 1)[2], experimentModel.getFrequency(), experimentModel
+          plotController.updateGVChart(newestChunk[0], newestChunk[1], newestChunk[2], experimentModel.getFrequency(), experimentModel
               .getAmplitude(), experimentModel.getOffset());
         }
       }
@@ -352,6 +354,4 @@ public class HysteresisApp extends App implements PropertyChangeListener {
 
     return plotModel;
   }
-
-
 }
