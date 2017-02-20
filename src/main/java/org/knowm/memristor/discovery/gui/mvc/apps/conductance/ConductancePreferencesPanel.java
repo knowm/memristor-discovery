@@ -148,8 +148,8 @@ public class ConductancePreferencesPanel extends AppPreferencesPanel {
     preferencesPanel.add(setPulseWidthLabel, gc);
 
     gc.gridx = 1;
-    this.resetPulseWidthTextField = new JTextField(12);
-    this.resetPulseWidthTextField.setText(String.valueOf(appPreferences.getInteger(ConductancePreferences.SET_PULSE_WIDTH_INIT_KEY, ConductancePreferences.SET_PERIOD_INIT_DEFAULT_VALUE)));
+    this.setPulseWidthTextField = new JTextField(12);
+    this.setPulseWidthTextField.setText(String.valueOf(appPreferences.getInteger(ConductancePreferences.SET_PULSE_WIDTH_INIT_KEY, ConductancePreferences.SET_PERIOD_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(setPulseWidthTextField, gc);
 
     gc.gridy++;

@@ -43,12 +43,17 @@ import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.apps.App;
 import org.knowm.memristor.discovery.gui.mvc.apps.AppModel;
+import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferences.Waveform;
 import org.knowm.memristor.discovery.gui.mvc.apps.conductance.experiment.ExperimentController;
 import org.knowm.memristor.discovery.gui.mvc.apps.conductance.experiment.ExperimentModel;
 import org.knowm.memristor.discovery.gui.mvc.apps.conductance.experiment.ExperimentPanel;
 import org.knowm.memristor.discovery.gui.mvc.apps.conductance.plot.PlotController;
 import org.knowm.memristor.discovery.gui.mvc.apps.conductance.plot.PlotModel;
 import org.knowm.memristor.discovery.gui.mvc.apps.conductance.plot.PlotPanel;
+import org.knowm.memristor.discovery.gui.mvc.apps.dc.DCPreferences;
+import org.knowm.memristor.discovery.utils.PostProcessDataUtils;
+import org.knowm.memristor.discovery.utils.WaveformUtils;
+import org.knowm.waveforms4j.DWF;
 
 public class ConductanceApp extends App implements PropertyChangeListener {
 
@@ -135,13 +140,13 @@ public class ConductanceApp extends App implements PropertyChangeListener {
         }
 
         // start AD2 resetWaveform 1 and start AD2 capture on channel 1 and 2
-        resetCaptureWorker = new ResetCaptureWorker();
-        resetCaptureWorker.execute();
+        setCaptureWorker = new SetCaptureWorker();
+        setCaptureWorker.execute();
       }
     });
 
     // ///////////////////////////////////////////////////////////
-    // STOP BUTTON //////////////////////////////////////////////
+    // STOP BUTTON ///////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
     experimentPanel.getStopButton().addActionListener(new ActionListener() {
@@ -158,7 +163,7 @@ public class ConductanceApp extends App implements PropertyChangeListener {
 
         // stop AD2 resetWaveform 1 and stop AD2 capture on channel 1 and 2
         allowPlotting = false;
-        resetCaptureWorker.cancel(true);
+        setCaptureWorker.cancel(true);
       }
     });
 
@@ -183,7 +188,78 @@ public class ConductanceApp extends App implements PropertyChangeListener {
 
       // Send off Single Pulse and capture the response
 
+      //////////////////////////////////
+      // Analog In /////////////////
+      //////////////////////////////////
 
+      int sampleFrequencyMultiplier = 200; // adjust this down if you want to capture more pulses as the buffer size is limited.
+      double sampleFrequency = experimentModel.getCalculatedFrequency() * sampleFrequencyMultiplier; // adjust this down if you want to capture more pulses as the buffer size is limited.
+      dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02 * (experimentModel.getResetAmplitude() > 0 ? 1 : -1));
+      Thread.sleep(10); // Attempt to allow Analog In to get fired up for the next set of pulses
+
+      //////////////////////////////////
+      // Pulse Out /////////////////
+      //////////////////////////////////
+
+      // custom waveform
+      double[] customWaveform = WaveformUtils.generateCustomWaveform(experimentModel.getResetPulseType(), experimentModel.getResetAmplitude(), experimentModel.getCalculatedFrequency());
+      dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, experimentModel.getCalculatedFrequency(), 0, 1, customWaveform);
+
+      // Read In Data
+      while (true) {
+        byte status = dwfProxy.getDwf().FDwfAnalogInStatus(true);
+        System.out.println("status: " + status);
+        if (status == 2) { // done capturing
+          // Stop Analog In and Out
+          dwfProxy.getDwf().FDwfAnalogInConfigure(false, false);
+          dwfProxy.setAD2Capturing(false);
+          dwfProxy.getDwf().FDwfAnalogOutConfigure(DWF.WAVEFORM_CHANNEL_1, false); // stop function generator
+          break;
+        }
+      }
+
+      // Get Raw Data from Oscilloscope
+      int validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
+      double[] v1 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
+      double[] v2 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
+      System.out.println("validSamples: " + validSamples);
+
+      ///////////////////////////
+      // Create Chart Data //////
+      ///////////////////////////
+
+      double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2);
+      double[] V1Trimmed = trimmedRawData[0];
+      double[] V2Trimmed = trimmedRawData[1];
+      int bufferLength = V1Trimmed.length;
+
+      // create time data
+      double[] timeData = new double[bufferLength];
+      double timeStep = 1 / sampleFrequency * DCPreferences.TIME_UNIT.getDivisor();
+      for (int i = 0; i < bufferLength; i++) {
+        timeData[i] = i * timeStep;
+      }
+
+      // create current data
+      double[] current = new double[bufferLength];
+      for (int i = 0; i < bufferLength; i++) {
+        current[i] = V2Trimmed[i] / experimentModel.getSeriesR() * DCPreferences.CURRENT_UNIT.getDivisor();
+      }
+
+      // create conductance data
+      double[] conductance = new double[bufferLength];
+      for (int i = 0; i < bufferLength; i++) {
+
+        double I = V2Trimmed[i] / experimentModel.getSeriesR();
+        double G = I / (V1Trimmed[i] - V2Trimmed[i]) * DCPreferences.CONDUCTANCE_UNIT.getDivisor();
+        G = G < 0 ? 0 : G;
+
+        double ave = (1 - plotModel.getK()) * (plotModel.getAve()) + plotModel.getK() * (G);
+        plotModel.setAve(ave);
+        conductance[i] = ave;
+      }
+
+      publish(new double[][]{timeData, V1Trimmed, V2Trimmed, current, conductance});
 
       return true;
     }
@@ -223,6 +299,106 @@ public class ConductanceApp extends App implements PropertyChangeListener {
     @Override
     protected Boolean doInBackground() throws Exception {
 
+      boolean isConductanceReached = false;
+
+      int counter = 0;
+      while (!isCancelled() || !isConductanceReached) {
+
+        try {
+          Thread.sleep(50);
+        } catch (InterruptedException e) {
+          // eat it. caught when interrupt is called
+
+          dwfProxy.getDwf().FDwfAnalogInConfigure(false, false);
+          dwfProxy.setAD2Capturing(false);
+          dwfProxy.getDwf().FDwfAnalogOutConfigure(DWF.WAVEFORM_CHANNEL_1, false); // stop function generator
+        }
+
+        // 1. set pulse
+
+        //////////////////////////////////
+        // Analog In /////////////////
+        //////////////////////////////////
+
+        int sampleFrequencyMultiplier = 200; // adjust this down if you want to capture more pulses as the buffer size is limited.
+        double sampleFrequency = experimentModel.getCalculatedFrequency() * sampleFrequencyMultiplier; // adjust this down if you want to capture more pulses as the buffer size is limited.
+        dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02 * (experimentModel.getSetAmplitude() > 0 ? 1 : -1));
+        Thread.sleep(10); // Attempt to allow Analog In to get fired up for the next set of pulses
+
+        //////////////////////////////////
+        // Pulse Out /////////////////
+        //////////////////////////////////
+        // custom waveform
+        double[] customWaveform = WaveformUtils.generateCustomWaveform(Waveform.Square, experimentModel.getSetAmplitude(), experimentModel.getCalculatedFrequency());
+        dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, experimentModel.getCalculatedFrequency(), 0, 1, customWaveform);
+
+        // Read In Data
+        while (true) {
+          byte status = dwfProxy.getDwf().FDwfAnalogInStatus(true);
+          // System.out.println("status: " + status);
+          if (status == 2) { // done capturing
+            // Stop Analog In and Out
+            dwfProxy.getDwf().FDwfAnalogInConfigure(false, false);
+            dwfProxy.setAD2Capturing(false);
+            dwfProxy.getDwf().FDwfAnalogOutConfigure(DWF.WAVEFORM_CHANNEL_1, false); // stop function generator
+            break;
+          }
+        }
+
+        // 2. read pulse
+
+        // 2a. Parse conductance
+
+        // 2b. Break if conductance reaches desired level.
+
+        // Get Raw Data from Oscilloscope
+        int validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
+        double[] v1 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
+        double[] v2 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
+        // System.out.println("validSamples: " + validSamples);
+
+        ///////////////////////////
+        // Create Chart Data //////
+        ///////////////////////////
+
+        double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2);
+        double[] V1Trimmed = trimmedRawData[0];
+        double[] V2Trimmed = trimmedRawData[1];
+        int bufferLength = V1Trimmed.length;
+
+        // create time data
+        double[] timeData = new double[bufferLength];
+        double timeStep = 1 / sampleFrequency * DCPreferences.TIME_UNIT.getDivisor();
+        for (int i = 0; i < bufferLength; i++) {
+          timeData[i] = i * timeStep;
+        }
+
+        // create current data
+        double[] current = new double[bufferLength];
+        for (int i = 0; i < bufferLength; i++) {
+          current[i] = V2Trimmed[i] / experimentModel.getSeriesR() * DCPreferences.CURRENT_UNIT.getDivisor();
+        }
+
+        // create conductance data
+        double[] conductance = new double[bufferLength];
+        for (int i = 0; i < bufferLength; i++) {
+
+          double I = V2Trimmed[i] / experimentModel.getSeriesR();
+          double G = I / (V1Trimmed[i] - V2Trimmed[i]) * DCPreferences.CONDUCTANCE_UNIT.getDivisor();
+          G = G < 0 ? 0 : G;
+
+          double ave = (1 - plotModel.getK()) * (plotModel.getAve()) + plotModel.getK() * (G);
+          plotModel.setAve(ave);
+          conductance[i] = ave;
+        }
+
+        publish(new double[][]{timeData, V1Trimmed, V2Trimmed, current, conductance});
+
+        if (counter++ > 10) {
+          isConductanceReached = true;
+        }
+      }
+      experimentPanel.getStopButton().doClick();
       return true;
     }
 
@@ -233,7 +409,7 @@ public class ConductanceApp extends App implements PropertyChangeListener {
 
         double[][] newestChunk = chunks.get(chunks.size() - 1);
 
-        // System.out.println("" + chunks.size());
+        System.out.println("" + chunks.size());
 
         plotController.udpateVtChart(newestChunk[0], newestChunk[1], newestChunk[2], experimentModel.getResetPulseWidth(), experimentModel
             .getResetAmplitude());
@@ -252,7 +428,6 @@ public class ConductanceApp extends App implements PropertyChangeListener {
           plotController.repaintRtChart();
         }
       }
-      experimentPanel.getStopButton().doClick();
     }
   }
 
