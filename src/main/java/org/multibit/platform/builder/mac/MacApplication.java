@@ -15,6 +15,7 @@
  */
 package org.multibit.platform.builder.mac;
 
+import java.awt.Image;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -166,6 +167,11 @@ public class MacApplication implements GenericApplication {
 
         log.debug("GenericAboutHandler configured");
 
+    }
+
+    public void setDockIconImage(Image image){
+
+        callNativeMethod(nativeApplication, "setDockIconImage", new Class[]{java.awt.Image.class}, new Object[]{image});
     }
 
     /**

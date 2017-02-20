@@ -45,7 +45,6 @@ import javax.swing.JMenuItem;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import com.apple.eawt.Application;
 import org.knowm.memristor.discovery.gui.AboutDialog;
 import org.knowm.memristor.discovery.gui.mvc.apps.App;
 import org.knowm.memristor.discovery.gui.mvc.apps.AppHelpDialog;
@@ -67,6 +66,7 @@ import org.knowm.memristor.discovery.gui.mvc.header.HeaderPanel;
 import org.multibit.platform.GenericApplication;
 import org.multibit.platform.GenericApplicationFactory;
 import org.multibit.platform.GenericApplicationSpecification;
+import org.multibit.platform.builder.mac.MacApplication;
 import org.multibit.platform.listener.GenericAboutEvent;
 import org.multibit.platform.listener.GenericAboutEventListener;
 import org.multibit.platform.listener.GenericPreferencesEvent;
@@ -99,10 +99,6 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
     //Set the look and feel to users OS LaF.
     try {
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-      Application application = Application.getApplication();
-      URL iconURL = MemristorDiscovery.class.getResource("/img/logo_square_256.png");
-      Image image = Toolkit.getDefaultToolkit().getImage(iconURL);
-      application.setDockIconImage(image);
     } catch (ClassNotFoundException e) {
       e.printStackTrace();
     } catch (InstantiationException e) {
@@ -129,14 +125,20 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
 
   public void createAndShowGUI() {
 
-    System.setProperty("apple.laf.useScreenMenuBar", "true");
-    System.setProperty("apple.eawt.quitStrategy", "CLOSE_ALL_WINDOWS");
-
     GenericApplicationSpecification specification = new GenericApplicationSpecification();
     specification.getQuitEventListeners().add(this);
     specification.getPreferencesEventListeners().add(this);
     specification.getAboutEventListeners().add(this);
     GenericApplication genericApplication = GenericApplicationFactory.INSTANCE.buildGenericApplication(specification);
+
+    if (genericApplication.isMac()) {
+      System.setProperty("apple.laf.useScreenMenuBar", "true");
+      System.setProperty("apple.eawt.quitStrategy", "CLOSE_ALL_WINDOWS");
+      URL iconURL = MemristorDiscovery.class.getResource("/img/logo_square_256.png");
+      Image image = Toolkit.getDefaultToolkit().getImage(iconURL);
+      MacApplication macApplication = (MacApplication) genericApplication;
+      macApplication.setDockIconImage(image);
+    }
 
     // Create and set up the window.
     mainFrame = new JFrame(FRAME_TITLE_BASE + appID);
