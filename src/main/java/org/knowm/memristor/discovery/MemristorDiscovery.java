@@ -29,11 +29,15 @@ package org.knowm.memristor.discovery;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
+import java.net.URL;
 
 import javax.swing.AbstractAction;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -41,6 +45,7 @@ import javax.swing.JMenuItem;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import com.apple.eawt.Application;
 import org.knowm.memristor.discovery.gui.AboutDialog;
 import org.knowm.memristor.discovery.gui.mvc.apps.App;
 import org.knowm.memristor.discovery.gui.mvc.apps.AppHelpDialog;
@@ -94,6 +99,10 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
     //Set the look and feel to users OS LaF.
     try {
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+      Application application = Application.getApplication();
+      URL iconURL = MemristorDiscovery.class.getResource("/img/logo_square_256.png");
+      Image image = Toolkit.getDefaultToolkit().getImage(iconURL);
+      application.setDockIconImage(image);
     } catch (ClassNotFoundException e) {
       e.printStackTrace();
     } catch (InstantiationException e) {
@@ -143,6 +152,10 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
     });
     Container mainFrameContainer = mainFrame.getContentPane();
     mainFrameContainer.setLayout(new BorderLayout(12, 0));
+
+    URL iconURL = getClass().getResource("/img/logo_square_48.png");
+    ImageIcon icon = new ImageIcon(iconURL);
+    mainFrame.setIconImage(icon.getImage());
 
     // app menu
     JMenuBar menuBar = new JMenuBar();
