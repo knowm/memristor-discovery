@@ -28,7 +28,6 @@
 package org.knowm.memristor.discovery;
 
 import java.beans.PropertyChangeListener;
-import java.util.Arrays;
 
 import javax.swing.SwingWorker;
 import javax.swing.event.SwingPropertyChangeSupport;
@@ -99,9 +98,9 @@ public class DWFProxy {
 
       if (isAD2Running) {
 
-        // Some device read out stuff
-        System.out.println("Analog Out Custom Waveform Buffer Size Channel 1: "+Arrays.toString(dwf.FDwfAnalogOutNodeDataInfo(DWF.WAVEFORM_CHANNEL_1)));
-        System.out.println("Analog Out Custom Waveform Buffer Size Channel 2: "+Arrays.toString(dwf.FDwfAnalogOutNodeDataInfo(DWF.WAVEFORM_CHANNEL_2)));
+        // // Some device read out stuff
+        // System.out.println("Analog Out Custom Waveform Buffer Size Channel 1: "+Arrays.toString(dwf.FDwfAnalogOutNodeDataInfo(DWF.WAVEFORM_CHANNEL_1)));
+        // System.out.println("Analog Out Custom Waveform Buffer Size Channel 2: "+Arrays.toString(dwf.FDwfAnalogOutNodeDataInfo(DWF.WAVEFORM_CHANNEL_2)));
 
 
         /////////////////////////////////////////////////////////////

@@ -48,7 +48,7 @@
         <dependency>
             <groupId>org.knowm</groupId>
             <artifactId>waveforms4j</artifactId>
-            <version>0.0.5-SNAPSHOT</version>
+            <version>0.0.5</version>
         </dependency>
         <dependency>
             <groupId>org.knowm.xchart</groupId>
