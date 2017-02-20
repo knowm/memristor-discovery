@@ -126,7 +126,7 @@ public class ExperimentPanel extends JPanel {
 
     pulseNumberSlider = new JSlider(JSlider.HORIZONTAL, 1, 20, 1);
     pulseNumberSlider.setBorder(BorderFactory.createTitledBorder("Pulse Number"));
-    pulseNumberSlider.setMinorTickSpacing(2);
+    pulseNumberSlider.setMinorTickSpacing(1);
     pulseNumberSlider.setPaintTicks(true);
     pulseNumberSlider.setPaintLabels(true);
     pulseNumberSlider.setSnapToTicks(true);
