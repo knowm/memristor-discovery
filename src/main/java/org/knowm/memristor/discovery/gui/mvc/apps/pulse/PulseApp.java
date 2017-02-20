@@ -43,17 +43,17 @@ import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.apps.App;
 import org.knowm.memristor.discovery.gui.mvc.apps.AppModel;
+import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferences.Waveform;
+import org.knowm.memristor.discovery.gui.mvc.apps.dc.DCPreferences;
 import org.knowm.memristor.discovery.gui.mvc.apps.pulse.experiment.ExperimentController;
 import org.knowm.memristor.discovery.gui.mvc.apps.pulse.experiment.ExperimentModel;
 import org.knowm.memristor.discovery.gui.mvc.apps.pulse.experiment.ExperimentPanel;
 import org.knowm.memristor.discovery.gui.mvc.apps.pulse.plot.PlotController;
 import org.knowm.memristor.discovery.gui.mvc.apps.pulse.plot.PlotModel;
 import org.knowm.memristor.discovery.gui.mvc.apps.pulse.plot.PlotPanel;
+import org.knowm.memristor.discovery.utils.PostProcessDataUtils;
 import org.knowm.memristor.discovery.utils.WaveformUtils;
 import org.knowm.waveforms4j.DWF;
-import org.knowm.waveforms4j.DWF.AcquisitionMode;
-import org.knowm.waveforms4j.DWF.AnalogTriggerCondition;
-import org.knowm.waveforms4j.DWF.AnalogTriggerType;
 
 public class PulseApp extends App implements PropertyChangeListener {
 
@@ -161,52 +161,23 @@ public class PulseApp extends App implements PropertyChangeListener {
 
       // System.out.println("Arbitrary Wave Buffer Size Min and Max: " + Arrays.toString(dwfProxy.getDwf().FDwfAnalogOutNodeDataInfo(DWF.WAVEFORM_CHANNEL_1)));
 
-      int sampleFrequencyMultiplier = 200; // adjust this down if you want to capture more pulses as the buffer size is limited.
-
       //////////////////////////////////
       // Analog In /////////////////
       //////////////////////////////////
-      dwfProxy.getDwf().FDwfAnalogInChannelEnableSet(DWF.OSCILLOSCOPE_CHANNEL_1, true);
-      dwfProxy.getDwf().FDwfAnalogInChannelRangeSet(DWF.OSCILLOSCOPE_CHANNEL_1, 2.5);
-      dwfProxy.getDwf().FDwfAnalogInChannelEnableSet(DWF.OSCILLOSCOPE_CHANNEL_2, true);
-      dwfProxy.getDwf().FDwfAnalogInChannelRangeSet(DWF.OSCILLOSCOPE_CHANNEL_2, 2.5);
-      dwfProxy.getDwf().FDwfAnalogInFrequencySet(experimentModel.getCalculatedFrequency() * sampleFrequencyMultiplier);
-      dwfProxy.getDwf().FDwfAnalogInBufferSizeSet(PulsePreferences.CAPTURE_BUFFER_SIZE);
-      dwfProxy.getDwf().FDwfAnalogInAcquisitionModeSet(AcquisitionMode.Single.getId());
-      // Trigger single capture on rising edge of analog signal pulse
-      dwfProxy.getDwf().FDwfAnalogInTriggerAutoTimeoutSet(0); // disable auto trigger
-      dwfProxy.getDwf().FDwfAnalogInTriggerSourceSet(DWF.TriggerSource.trigsrcDetectorAnalogIn.getId()); // one of the analog in channels
-      dwfProxy.getDwf().FDwfAnalogInTriggerTypeSet(AnalogTriggerType.trigtypeEdge.getId());
-      dwfProxy.getDwf().FDwfAnalogInTriggerChannelSet(0); // first channel
-      // Trigger Level
-      if (experimentModel.getAmplitude() > 0) {
-        dwfProxy.getDwf().FDwfAnalogInTriggerConditionSet(AnalogTriggerCondition.trigcondRisingPositive.getId());
-        dwfProxy.getDwf().FDwfAnalogInTriggerLevelSet(0.05);
-      }
-      else {
-        dwfProxy.getDwf().FDwfAnalogInTriggerConditionSet(AnalogTriggerCondition.trigcondFallingNegative.getId());
-        dwfProxy.getDwf().FDwfAnalogInTriggerLevelSet(-0.05);
-      }
 
-      // arm the capture
-      dwfProxy.getDwf().FDwfAnalogInConfigure(true, true);
+      int sampleFrequencyMultiplier = 200; // adjust this down if you want to capture more pulses as the buffer size is limited.
+      double sampleFrequency = experimentModel.getCalculatedFrequency() * sampleFrequencyMultiplier; // adjust this down if you want to capture more pulses as the buffer size is limited.
 
-      //////////////////////////////////
-      //////////////////////////////////
-
+      dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02 * (experimentModel.getAmplitude() > 0 ? 1 : -1));
       Thread.sleep(10); // Attempt to allow Analog In to get fired up for the next set of pulses
 
       //////////////////////////////////
       // Pulse Out /////////////////
       //////////////////////////////////
 
-      // generate the pulse
-      // dwfProxy.getDwf().startSinglePulse(DWF.WAVEFORM_CHANNEL_1, Waveform.Sine, experimentModel.getCalculatedFrequency(), experimentModel.getAmplitude(), 0, 50);
-
       // custom waveform
-      double[] waveform = WaveformUtils.generateSquarePulseWithReadPulses(experimentModel.getAmplitude());
-      dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, experimentModel.getCalculatedFrequency(), 0, experimentModel.getPulseNumber(), waveform);
-      // System.out.println("waveform: " + Arrays.toString(waveform));
+      double[] customWaveform = WaveformUtils.generateCustomWaveform(Waveform.Square, experimentModel.getAmplitude(), experimentModel.getCalculatedFrequency());
+      dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, experimentModel.getCalculatedFrequency(), 0, experimentModel.getPulseNumber(), customWaveform);
 
       //////////////////////////////////
       //////////////////////////////////
@@ -222,7 +193,7 @@ public class PulseApp extends App implements PropertyChangeListener {
       int validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
       double[] v1 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
       double[] v2 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
-      System.out.println("validSamples: " + validSamples);
+      // System.out.println("validSamples: " + validSamples);
 
       dwfProxy.getDwf().FDwfAnalogInConfigure(false, false);
       dwfProxy.setAD2Capturing(false);
@@ -232,54 +203,38 @@ public class PulseApp extends App implements PropertyChangeListener {
       // Create Chart Data //////
       ///////////////////////////
 
-      // The data is a bit weird, as what's captured is a long window of "idle" voltage before the pulses. We clean that now...
-      int startIndex = 0;
-      for (int i = 0; i < v1.length; i++) {
-        if (Math.abs(v1[i]) > .075) {
-          startIndex = i;
-          break;
-        }
-      }
-      int endIndex = v1.length - 1;
-      for (int i = v1.length - 1; i > 0; i--) {
-        if (Math.abs(v1[i]) > .075) {
-          endIndex = i;
-          break;
-        }
-      }
-      int bufferLength = endIndex - startIndex;
+      double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2);
+      double[] V1Trimmed = trimmedRawData[0];
+      double[] V2Trimmed = trimmedRawData[1];
+      int bufferLength = V1Trimmed.length;
 
       // create time data
       double[] timeData = new double[bufferLength];
-      double timeStep = 1 / (experimentModel.getCalculatedFrequency() * sampleFrequencyMultiplier) * 1_000_000;
+      double timeStep = 1 / sampleFrequency * DCPreferences.TIME_UNIT.getDivisor();
       for (int i = 0; i < bufferLength; i++) {
         timeData[i] = i * timeStep;
       }
 
       // create current data
       double[] current = new double[bufferLength];
-      double[] V1Cleaned = new double[bufferLength];
-      double[] V2Cleaned = new double[bufferLength];
       for (int i = 0; i < bufferLength; i++) {
-        current[i] = Math.abs(v2[i + startIndex] / experimentModel.getSeriesR() * PulsePreferences.CURRENT_UNIT.getDivisor());
-        V1Cleaned[i] = v1[i + startIndex];
-        V2Cleaned[i] = v2[i + startIndex];
+        current[i] = V2Trimmed[i] / experimentModel.getSeriesR() * DCPreferences.CURRENT_UNIT.getDivisor();
       }
 
       // create conductance data
       double[] conductance = new double[bufferLength];
       for (int i = 0; i < bufferLength; i++) {
 
-        double I = v2[i + startIndex] / experimentModel.getSeriesR();
-        double G = I / (v1[i + startIndex] - v2[i + startIndex]) * PulsePreferences.CONDUCTANCE_UNIT.getDivisor();
+        double I = V2Trimmed[i] / experimentModel.getSeriesR();
+        double G = I / (V1Trimmed[i] - V2Trimmed[i]) * DCPreferences.CONDUCTANCE_UNIT.getDivisor();
         G = G < 0 ? 0 : G;
+
         double ave = (1 - plotModel.getK()) * (plotModel.getAve()) + plotModel.getK() * (G);
         plotModel.setAve(ave);
-
         conductance[i] = ave;
       }
 
-      publish(new double[][]{timeData, V1Cleaned, V2Cleaned, current, conductance});
+      publish(new double[][]{timeData, V1Trimmed, V2Trimmed, current, conductance});
 
       return true;
     }

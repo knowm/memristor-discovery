@@ -31,6 +31,7 @@ import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferences.Waveform;
 import org.knowm.memristor.discovery.utils.driver.Driver;
 import org.knowm.memristor.discovery.utils.driver.Sawtooth;
 import org.knowm.memristor.discovery.utils.driver.SawtoothUpDown;
+import org.knowm.memristor.discovery.utils.driver.Square;
 import org.knowm.memristor.discovery.utils.driver.Triangle;
 import org.knowm.memristor.discovery.utils.driver.TriangleUpDown;
 import org.knowm.waveforms4j.DWF;
@@ -59,7 +60,7 @@ public class WaveformUtils {
     return rgdData; // weird name, but that's what Waveforms SDK calls it.
   }
 
-  public static double[] generateCustomWaveform(Waveform waveform, double amplitude, double frequency){
+  public static double[] generateCustomWaveform(Waveform waveform, double amplitude, double frequency) {
 
     Driver driver;
     switch (waveform) {
@@ -74,6 +75,12 @@ public class WaveformUtils {
         break;
       case TriangleUpDown:
         driver = new TriangleUpDown("TriangleUpDown", 0, 0, amplitude, frequency);
+        break;
+      case Square:
+        driver = new Square("Square", amplitude / 2, 0, amplitude / 2, frequency);
+        break;
+      case SquareUpDown:
+        driver = new Square("SquareUpDown", 0, 0, amplitude, frequency);
         break;
       default:
         driver = new SawtoothUpDown("SawtoothUpDown", 0, 0, amplitude, frequency);
@@ -90,7 +97,6 @@ public class WaveformUtils {
     } while (++counter < 4096);
     return customWaveform;
   }
-
 
   public static DWF.Waveform getDWFWaveform(Waveform waveform) {
 
