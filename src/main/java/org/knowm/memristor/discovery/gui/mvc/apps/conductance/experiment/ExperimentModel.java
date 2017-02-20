@@ -226,7 +226,6 @@ public class ExperimentModel extends AppModel {
 
   public double getCalculatedFrequency() {
 
-    System.out.println("resetPulseWidth = " + resetPulseWidth);
     return (1.0 / (2.0 * (double) resetPulseWidth) * 1_000_000_000); // 50% duty cycle
     // return (1.0 / ((double) resetPulseWidth) * 1_000_000_000); // 50% duty cycle
   }

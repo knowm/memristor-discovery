@@ -119,7 +119,29 @@ public abstract class AppPreferences {
       return label;
     }
   }
+  public enum TimeUnits {
 
+    Seconds(1, "s"), MilliSeconds(1000, "ms"), MicroSeconds(1_000_000, "µs");
+
+    private final double divisor;
+    private final String label;
+
+    private TimeUnits(double divisor, String label) {
+
+      this.divisor = divisor;
+      this.label = label;
+    }
+
+    public double getDivisor() {
+
+      return divisor;
+    }
+
+    public String getLabel() {
+
+      return label;
+    }
+  }
   public void setString(String key, String value) {
 
     this.preferences.put(key, value.trim());

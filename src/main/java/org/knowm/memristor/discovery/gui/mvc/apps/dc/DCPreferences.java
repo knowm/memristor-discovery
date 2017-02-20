@@ -58,6 +58,7 @@ public class DCPreferences extends AppPreferences {
   public static final CurrentUnits CURRENT_UNIT = CurrentUnits.MicroAmps;
   public static final ResistanceUnits RESISTANCE_UNIT = ResistanceUnits.KiloOhms;
   public static final ConductanceUnits CONDUCTANCE_UNIT = ConductanceUnits.MilliSiemens;
+  public static final TimeUnits TIME_UNIT = TimeUnits.MicroSeconds;
 
   // public static final int CAPTURE_BUFFER_SIZE = DWF.AD2_MAX_BUFFER_SIZE;
   public static final int CAPTURE_BUFFER_SIZE = 8000;

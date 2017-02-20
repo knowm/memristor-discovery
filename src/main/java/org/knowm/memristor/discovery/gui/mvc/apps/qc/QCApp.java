@@ -235,7 +235,7 @@ public class QCApp extends App implements PropertyChangeListener {
 
           // start capture
           dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, model.getWaveform(), model.getFrequency(), model.getAmplitude(), model.getOffset(), 50);
-          dwfProxy.getDwf().startAnalogCaptureBothChannels(model.getFrequency() * QCPreferences.CAPTURE_BUFFER_SIZE / QCPreferences.CAPTURE_PERIOD_COUNT, QCPreferences.CAPTURE_BUFFER_SIZE,
+          dwfProxy.getDwf().startAnalogCaptureBothChannelsImmediately(model.getFrequency() * QCPreferences.CAPTURE_BUFFER_SIZE / QCPreferences.CAPTURE_PERIOD_COUNT, QCPreferences.CAPTURE_BUFFER_SIZE,
               AcquisitionMode.ScanShift);
           dwfProxy.setAD2Capturing(true);
 

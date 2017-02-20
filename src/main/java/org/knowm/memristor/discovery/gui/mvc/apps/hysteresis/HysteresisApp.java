@@ -163,7 +163,7 @@ public class HysteresisApp extends App implements PropertyChangeListener {
 
       // Analog In
       double sampleFrequency = (double) experimentModel.getFrequency() * HysteresisPreferences.CAPTURE_BUFFER_SIZE / HysteresisPreferences.CAPTURE_PERIOD_COUNT;
-      dwfProxy.getDwf().startAnalogCaptureBothChannels(sampleFrequency, HysteresisPreferences.CAPTURE_BUFFER_SIZE, AcquisitionMode.ScanShift);
+      dwfProxy.getDwf().startAnalogCaptureBothChannelsImmediately(sampleFrequency, HysteresisPreferences.CAPTURE_BUFFER_SIZE, AcquisitionMode.ScanShift);
 
       dwfProxy.setAD2Capturing(true);
 
@@ -332,7 +332,7 @@ public class HysteresisApp extends App implements PropertyChangeListener {
 
           // Analog In
           double sampleFrequency = (double) experimentModel.getFrequency() * HysteresisPreferences.CAPTURE_BUFFER_SIZE / HysteresisPreferences.CAPTURE_PERIOD_COUNT;
-          dwfProxy.getDwf().startAnalogCaptureBothChannels(sampleFrequency, HysteresisPreferences.CAPTURE_BUFFER_SIZE, AcquisitionMode.ScanShift);
+          dwfProxy.getDwf().startAnalogCaptureBothChannelsImmediately(sampleFrequency, HysteresisPreferences.CAPTURE_BUFFER_SIZE, AcquisitionMode.ScanShift);
         }
 
         break;

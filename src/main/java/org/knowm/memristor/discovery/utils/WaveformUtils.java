@@ -28,6 +28,11 @@
 package org.knowm.memristor.discovery.utils;
 
 import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferences.Waveform;
+import org.knowm.memristor.discovery.utils.driver.Driver;
+import org.knowm.memristor.discovery.utils.driver.Sawtooth;
+import org.knowm.memristor.discovery.utils.driver.SawtoothUpDown;
+import org.knowm.memristor.discovery.utils.driver.Triangle;
+import org.knowm.memristor.discovery.utils.driver.TriangleUpDown;
 import org.knowm.waveforms4j.DWF;
 
 /**
@@ -54,57 +59,38 @@ public class WaveformUtils {
     return rgdData; // weird name, but that's what Waveforms SDK calls it.
   }
 
-  // public static double[] generatePositiveAndNegativeDCRamps(double amplitude) {
-  //
-  //   // read pulses
-  //   double readPulseMagnitude = .1 / 5.0;
-  //   int size = 1024; // could go up to 4096
-  //   double[] rgdData = new double[size];
-  //
-  //   for (int i = 0; i < size / 2; i++) {
-  //     rgdData[i] = i * -1.0 * amplitude / 5.0 / (size / 2);
-  //   }
-  //   for (int i = size / 2; i < size; i++) {
-  //     rgdData[i] = i * 1.0 * amplitude / 5.0 / (size / 2) - amplitude / 5.0;
-  //   }
-  //
-  //   // leading read pulse
-  //   for (int i = 0; i < size / 90; i++) {
-  //     rgdData[i] = readPulseMagnitude;
-  //   }
-  //   // // trailing read pulse
-  //   // for (int i = size * 9 / 10; i < size; i++) {
-  //   //   rgdData[i] = readPulseMagnitude;
-  //   // }
-  //
-  //   return rgdData; // weird name, but that's what Waveforms SDK calls it.
-  // }
-  //
-  // public static double[] generatePositiveAndNegativeDCSquares(double amplitude) {
-  //
-  //   // read pulses
-  //   double readPulseMagnitude = .1 / 5.0;
-  //   int size = 1024; // could go up to 4096
-  //   double[] rgdData = new double[size];
-  //
-  //   for (int i = 0; i < size / 2; i++) {
-  //     rgdData[i] = amplitude / 5.0;
-  //   }
-  //   for (int i = size / 2; i < size; i++) {
-  //     rgdData[i] = -1.0 * amplitude / 5.0;
-  //   }
-  //
-  //   // leading read pulse
-  //   for (int i = 0; i < size / 90; i++) {
-  //     rgdData[i] = readPulseMagnitude;
-  //   }
-  //   // // trailing read pulse
-  //   // for (int i = size * 9 / 10; i < size; i++) {
-  //   //   rgdData[i] = readPulseMagnitude;
-  //   // }
-  //
-  //   return rgdData; // weird name, but that's what Waveforms SDK calls it.
-  // }
+  public static double[] generateCustomWaveform(Waveform waveform, double amplitude, double frequency){
+
+    Driver driver;
+    switch (waveform) {
+      case Sawtooth:
+        driver = new Sawtooth("Sawtooth", 0, 0, amplitude, frequency);
+        break;
+      case SawtoothUpDown:
+        driver = new SawtoothUpDown("SawtoothUpDown", 0, 0, amplitude, frequency);
+        break;
+      case Triangle:
+        driver = new Triangle("Triangle", 0, 0, amplitude, frequency);
+        break;
+      case TriangleUpDown:
+        driver = new TriangleUpDown("TriangleUpDown", 0, 0, amplitude, frequency);
+        break;
+      default:
+        driver = new SawtoothUpDown("SawtoothUpDown", 0, 0, amplitude, frequency);
+        break;
+    }
+
+    int counter = 0;
+    double[] customWaveform = new double[4096];
+    double timeInc = 1 / frequency / 4096;
+
+    do {
+      double time = counter * timeInc;
+      customWaveform[counter] = driver.getSignal(time) / 5.0; // / 5.0 to scale between 1 and -1
+    } while (++counter < 4096);
+    return customWaveform;
+  }
+
 
   public static DWF.Waveform getDWFWaveform(Waveform waveform) {
 

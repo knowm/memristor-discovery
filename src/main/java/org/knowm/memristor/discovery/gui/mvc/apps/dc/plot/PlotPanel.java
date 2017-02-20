@@ -85,7 +85,7 @@ public class PlotPanel extends JPanel {
     // Waveform Chart ///////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    waveformChart = new XYChartBuilder().width(400).height(400).title("Waveform").yAxisTitle("Voltage [V]").xAxisTitle("Time [µs]").build();
+    waveformChart = new XYChartBuilder().width(400).height(400).title("Waveform").yAxisTitle("Voltage [V]").xAxisTitle("Time  [" + DCPreferences.TIME_UNIT.getLabel() + "]").build();
     waveformChart.getStyler().setLegendVisible(false);
     XYSeries series = waveformChart.addSeries("waveform", new double[]{0}, new double[]{0});
     series.setMarker(SeriesMarkers.NONE); // waveformChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
@@ -96,7 +96,7 @@ public class PlotPanel extends JPanel {
     // Capture Chart ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    captureChart = new XYChartBuilder().width(600).title("Capture").height(400).yAxisTitle("Voltage [V]").xAxisTitle("Time [µs]").build();
+    captureChart = new XYChartBuilder().width(600).title("Capture").height(400).yAxisTitle("Voltage [V]").xAxisTitle("Time [" + DCPreferences.TIME_UNIT.getLabel() + "]").build();
     captureChart.getStyler().setLegendPosition(LegendPosition.InsideNE);
 
     series = captureChart.addSeries("V1", new double[]{0}, new double[]{0});

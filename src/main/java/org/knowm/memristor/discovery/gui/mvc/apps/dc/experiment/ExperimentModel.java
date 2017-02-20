@@ -152,7 +152,7 @@ public class ExperimentModel extends AppModel {
 
   public double getCalculatedFrequency() {
 
-    System.out.println("period = " + period);
+    // System.out.println("period = " + period);
     // return (1.0 / (2.0 * (double) period) * 1_000_000_000); // 50% duty cycle
     return (1.0 / ((double) period) * 1_000_000_000); // 50% duty cycle
   }

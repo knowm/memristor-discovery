@@ -4,6 +4,8 @@
 1. Possibly apply arrow key slider fix as a new object type and use everywhere.
 1. Redo all help files
 1. Redo User Manual
+1. Think about error detection during DWF call and exception handling
+1. Profile app
 
 ## DONE
 

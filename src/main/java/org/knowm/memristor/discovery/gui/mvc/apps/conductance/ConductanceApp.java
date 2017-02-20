@@ -181,6 +181,10 @@ public class ConductanceApp extends App implements PropertyChangeListener {
     @Override
     protected Boolean doInBackground() throws Exception {
 
+      // Send off Single Pulse and capture the response
+
+
+
       return true;
     }
 
