@@ -31,7 +31,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Enumeration;
@@ -44,15 +43,16 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.knowm.memristor.discovery.DWFProxy;
+import org.knowm.memristor.discovery.gui.mvc.LeftAndRightArrowKeyListener;
 import org.knowm.memristor.discovery.gui.mvc.apps.AppModel;
 import org.knowm.memristor.discovery.gui.mvc.apps.hysteresis.plot.PlotPanel;
 
-public class ExperimentController implements PropertyChangeListener, KeyListener {
+public class ExperimentController implements PropertyChangeListener {
 
   private final ExperimentPanel experimentPanel;
   private final ExperimentModel experimentModel;
 
-  boolean leftRightArrowKeyPressed = false;
+  LeftAndRightArrowKeyListener leftAndRightArrowKeyListener = new LeftAndRightArrowKeyListener();
 
   /**
    * Constructor
@@ -132,13 +132,13 @@ public class ExperimentController implements PropertyChangeListener, KeyListener
       public void stateChanged(ChangeEvent e) {
 
         JSlider source = (JSlider) e.getSource();
-        if (!(source.getValueIsAdjusting()) && !leftRightArrowKeyPressed) {
+        if (!(source.getValueIsAdjusting()) && !leftAndRightArrowKeyListener.isLeftRightArrowKeyPressed()) {
           experimentModel.setOffset(source.getValue() / (float) 100);
           experimentPanel.getOffsetSlider().setBorder(BorderFactory.createTitledBorder("Offset [V] = " + experimentModel.getOffset()));
         }
       }
     });
-    experimentPanel.getOffsetSlider().addKeyListener(this);
+    experimentPanel.getOffsetSlider().addKeyListener(leftAndRightArrowKeyListener);
 
     experimentPanel.getAmplitudeSlider().addChangeListener(new ChangeListener() {
 
@@ -146,13 +146,13 @@ public class ExperimentController implements PropertyChangeListener, KeyListener
       public void stateChanged(ChangeEvent e) {
 
         JSlider source = (JSlider) e.getSource();
-        if (!(source.getValueIsAdjusting()) && !leftRightArrowKeyPressed) {
+        if (!(source.getValueIsAdjusting()) && !leftAndRightArrowKeyListener.isLeftRightArrowKeyPressed()) {
           experimentModel.setAmplitude(source.getValue() / (float) 100);
           experimentPanel.getAmplitudeSlider().setBorder(BorderFactory.createTitledBorder("Amplitude [V] = " + experimentModel.getAmplitude()));
         }
       }
     });
-    experimentPanel.getAmplitudeSlider().addKeyListener(this);
+    experimentPanel.getAmplitudeSlider().addKeyListener(leftAndRightArrowKeyListener);
 
     experimentPanel.getFrequencySlider().addChangeListener(new ChangeListener() {
 
@@ -160,14 +160,14 @@ public class ExperimentController implements PropertyChangeListener, KeyListener
       public void stateChanged(ChangeEvent e) {
 
         JSlider source = (JSlider) e.getSource();
-        if (!(source.getValueIsAdjusting()) && !leftRightArrowKeyPressed) {
+        if (!(source.getValueIsAdjusting()) && !leftAndRightArrowKeyListener.isLeftRightArrowKeyPressed()) {
           experimentModel.setFrequency(source.getValue());
           experimentPanel.getFrequencySlider().setBorder(BorderFactory.createTitledBorder("Frequency [Hz] = " + experimentModel.getFrequency()));
           experimentPanel.getFrequencySliderLog().setBorder(BorderFactory.createTitledBorder("Frequency [Hz]"));
         }
       }
     });
-    experimentPanel.getFrequencySlider().addKeyListener(this);
+    experimentPanel.getFrequencySlider().addKeyListener(leftAndRightArrowKeyListener);
 
     experimentPanel.getFrequencySliderLog().addChangeListener(new ChangeListener() {
 
@@ -175,14 +175,14 @@ public class ExperimentController implements PropertyChangeListener, KeyListener
       public void stateChanged(ChangeEvent e) {
 
         JSlider source = (JSlider) e.getSource();
-        if (!(source.getValueIsAdjusting()) && !leftRightArrowKeyPressed) {
+        if (!(source.getValueIsAdjusting()) && !leftAndRightArrowKeyListener.isLeftRightArrowKeyPressed()) {
           experimentModel.setFrequency((int) Math.pow(10, source.getValue()));
           experimentPanel.getFrequencySliderLog().setBorder(BorderFactory.createTitledBorder("Frequency [Hz] = " + experimentModel.getFrequency()));
           experimentPanel.getFrequencySlider().setBorder(BorderFactory.createTitledBorder("Frequency [Hz]"));
         }
       }
     });
-    experimentPanel.getFrequencySliderLog().addKeyListener(this);
+    experimentPanel.getFrequencySliderLog().addKeyListener(leftAndRightArrowKeyListener);
 
     experimentPanel.getSeriesTextField().addKeyListener(new KeyAdapter() {
 
@@ -243,38 +243,6 @@ public class ExperimentController implements PropertyChangeListener, KeyListener
 
       default:
         break;
-    }
-  }
-
-  @Override
-  public void keyTyped(KeyEvent e) {
-
-    if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_LEFT) {
-      leftRightArrowKeyPressed = true;
-    }
-    // System.out.println("Typed");
-  }
-
-  @Override
-  public void keyPressed(KeyEvent e) {
-
-    if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_LEFT) {
-      leftRightArrowKeyPressed = true;
-    }
-    // System.out.println("keyPressed");
-  }
-
-  @Override
-  public void keyReleased(KeyEvent e) {
-
-    if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_LEFT) {
-      leftRightArrowKeyPressed = false;
-    }
-    // System.out.println("keyReleased");
-    JSlider slider = (JSlider) e.getSource();
-    ChangeEvent ce = new ChangeEvent(slider);
-    for (ChangeListener cl : slider.getChangeListeners()) {
-      cl.stateChanged(ce);
     }
   }
 }

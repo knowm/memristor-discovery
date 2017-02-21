@@ -127,8 +127,6 @@ public class HysteresisApp extends App implements PropertyChangeListener {
 
         dwfProxy.setAD2Capturing(false);
 
-        // switchPanel.enableAllDigitalIOCheckBoxes(true);
-        // controlPanel.enableAllChildComponents(true);
         experimentPanel.getStartButton().setEnabled(true);
         experimentPanel.getStopButton().setEnabled(false);
 
@@ -142,7 +140,7 @@ public class HysteresisApp extends App implements PropertyChangeListener {
     plotController = new PlotController(plotPanel, plotModel);
     mainFrameContainer.add(plotPanel, BorderLayout.CENTER);
 
-    ExperimentController hysteresisController = new ExperimentController(experimentPanel, plotPanel, experimentModel, dwfProxy);
+    new ExperimentController(experimentPanel, plotPanel, experimentModel, dwfProxy);
 
     // register this as the listener of the model
     experimentModel.addListener(this);
@@ -305,10 +303,7 @@ public class HysteresisApp extends App implements PropertyChangeListener {
 
           // AnalogOut
           DWF.Waveform dwfWaveform = WaveformUtils.getDWFWaveform(experimentModel.getWaveform());
-          // TODO if this is a good machanism, use it everywhere else. Perhaps create an exception subclass and catch it higher up.
-          if (!dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, experimentModel.getFrequency(), experimentModel.getAmplitude(), experimentModel.getOffset(), 50)) {
-            throw new RuntimeException(dwfProxy.getDwf().FDwfGetLastErrorMsg());
-          }
+          dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, experimentModel.getFrequency(), experimentModel.getAmplitude(), experimentModel.getOffset(), 50);
 
           if (plotPanel.getCaptureButton().isSelected()) {
             plotPanel.switch2CaptureChart();
@@ -336,7 +331,6 @@ public class HysteresisApp extends App implements PropertyChangeListener {
           double sampleFrequency = (double) experimentModel.getFrequency() * HysteresisPreferences.CAPTURE_BUFFER_SIZE / HysteresisPreferences.CAPTURE_PERIOD_COUNT;
           dwfProxy.getDwf().startAnalogCaptureBothChannelsImmediately(sampleFrequency, HysteresisPreferences.CAPTURE_BUFFER_SIZE, AcquisitionMode.ScanShift);
         }
-
         break;
       default:
         break;

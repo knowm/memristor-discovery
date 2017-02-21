@@ -1,14 +1,14 @@
 ## TODO
 
 1. Remove redundant copy-pasta code, abstract stuff
-1. Possibly apply arrow key slider fix as a new object type and use everywhere.
 1. Redo all help files
 1. Redo User Manual
-1. Think about error detection during DWF call and exception handling
 1. Profile app
 
 ## DONE
 
+1. Possibly apply arrow key slider fix as a new object type and use everywhere.
+1. Implement error detection during DWF call and exception handling
 1. Fix issue of pulses less than 5µs not rendering with the correct time width on plot
 1. Put experiment controls in a scrolling panel
 1. test csv export
