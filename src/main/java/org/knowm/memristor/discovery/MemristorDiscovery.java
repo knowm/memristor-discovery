@@ -63,6 +63,7 @@ import org.knowm.memristor.discovery.gui.mvc.footer.FooterController;
 import org.knowm.memristor.discovery.gui.mvc.footer.FooterPanel;
 import org.knowm.memristor.discovery.gui.mvc.header.HeaderController;
 import org.knowm.memristor.discovery.gui.mvc.header.HeaderPanel;
+import org.knowm.waveforms4j.DWFException;
 import org.multibit.platform.GenericApplication;
 import org.multibit.platform.GenericApplicationFactory;
 import org.multibit.platform.GenericApplicationSpecification;
@@ -171,8 +172,11 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
         @Override
         public void actionPerformed(ActionEvent e) {
 
-          dwf.shutdownAD2();
-
+          try {
+            dwf.shutdownAD2();
+          } catch (DWFException e1) {
+            e1.printStackTrace();
+          }
           Container mainFrameContainer = mainFrame.getContentPane();
           mainFrameContainer.removeAll();
           mainFrameContainer.revalidate();
@@ -302,7 +306,11 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
   private void quit() {
 
     // System.out.println("here0");
-    dwf.shutdownAD2();
+    try {
+      dwf.shutdownAD2();
+    } catch (DWFException e) {
+      e.printStackTrace();
+    }
     // dwf.FDwfDeviceCloseAll();
     //
     try {
