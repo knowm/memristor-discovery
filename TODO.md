@@ -4,6 +4,7 @@
 1. Redo all help files
 1. Redo User Manual
 1. Profile app
+1. Include analog switch resistance in current measurement
 
 ## DONE
 

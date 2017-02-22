@@ -54,9 +54,10 @@ public class AppHelpDialog {
 
     JPanel helpPanel = new JPanel();
 
-    JLabel picLabel = new JLabel(Util.createImageIcon("help" + File.separatorChar + appName + ".png"));
+    JLabel picLabel = new JLabel(Util.createImageIcon("help" + File.separatorChar + "Circuit.png"));
     helpPanel.add(picLabel);
 
+    System.out.println("markdownString = " + "help" + File.separatorChar + appName + ".md");
     String markdownString = FileUtils.readFileFromClasspathToString("help" + File.separatorChar + appName + ".md");
     PegDownProcessor processor = new PegDownProcessor();
     String htmlString = processor.markdownToHtml(markdownString);
@@ -77,5 +78,4 @@ public class AppHelpDialog {
     dialog.pack();
     dialog.setVisible(true);
   }
-
 }
