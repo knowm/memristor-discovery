@@ -28,6 +28,8 @@
 package org.knowm.memristor.discovery.gui.mvc.apps.conductance.plot;
 
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.knowm.memristor.discovery.gui.mvc.apps.AppModel;
 import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferences;
@@ -35,20 +37,26 @@ import org.knowm.memristor.discovery.gui.mvc.apps.conductance.ConductancePrefere
 
 public class PlotModel extends AppModel {
 
-  /** Averaging params */
+  /**
+   * Averaging params
+   */
   private double ave = 0;
   private double k;
 
-  /** Min Max params */
+  /**
+   * Min Max params
+   */
   Double yMaxIV = null;
   Double yMinIV = null;
 
   Double yMaxGV = null;
   Double yMinGV = null;
 
+  List<Number> gvData = new ArrayList<>();
+
   /**
    * Here is where the Controller registers itself as a listener to model changes.
-   * 
+   *
    * @param listener
    */
   public void addListener(PropertyChangeListener listener) {
@@ -116,6 +124,11 @@ public class PlotModel extends AppModel {
     this.yMinGV = yMinGV;
   }
 
+  public List<Number> getGvData() {
+
+    return gvData;
+  }
+
   @Override
   public AppPreferences initAppPreferences() {
 
@@ -128,5 +141,4 @@ public class PlotModel extends AppModel {
     k = appPreferences.getDouble(ConductancePreferences.K_INIT_DOUBLE_KEY, ConductancePreferences.K_INIT_DOUBLE_DEFAULT_VALUE);
     swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_PREFERENCES_UPDATE, true, false);
   }
-
 }

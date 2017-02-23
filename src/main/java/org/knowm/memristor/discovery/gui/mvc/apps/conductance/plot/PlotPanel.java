@@ -28,6 +28,8 @@
 package org.knowm.memristor.discovery.gui.mvc.apps.conductance.plot;
 
 import java.awt.BorderLayout;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
