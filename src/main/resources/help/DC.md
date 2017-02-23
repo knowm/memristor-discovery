@@ -1,6 +1,6 @@
-# Hysteresis App
+# Conductance App
 
-This app allows you to drive a memristor in series with a resistor with a sinusoidal or triangle waveform and observe the response as either a time series (V1+/T and V2+/T), I/V or G/V plot, revealing the signature hysteresis behavior of the memristor.
+This app allows you to drive a memristor in series with a resistor with various ramping functions including sawtooth, sawtoothupdown, triangle and triangleupdown. The number of applied ramping signals can be chosen and the response can be observed as either a time series (V1+/T and V2+/T), I/V or G/V plot, revealing the DC behavior of the memristor.
 
 ## Connections
 

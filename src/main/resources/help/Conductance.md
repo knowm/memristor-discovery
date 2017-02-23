@@ -1,6 +1,9 @@
-# Hysteresis App
+# Conductance App
 
-This app allows you to drive a memristor in series with a resistor with a sinusoidal or triangle waveform and observe the response as either a time series (V1+/T and V2+/T), I/V or G/V plot, revealing the signature hysteresis behavior of the memristor.
+This app allows you to drive a memristor in series with a resistor with continual square pulse waveforms until the memristor is set to the desired conductance value. An experiment can also be run that periodically reads the conductance of the memristor below the threshold voltage in order to capture the decay and endurance behavior of the memristors. Before setting the memristor to a desired conductance, make sure to reset the memristor using a negative potential pulse.
+
+The reset response can be observed as either a time series (V1+/T and V2+/T), I-T or G-T plot.
+The set response can be observed as either a G-T plot where the G value is determined programmatically from a below threshold read pulse and plotted as a single point.
 
 ## Connections
 
