@@ -185,6 +185,14 @@ public class PlotController implements PropertyChangeListener {
     plotPanel.getGvChart().updateXYSeries("gv", null, plotModel.getGvData(), null);
   }
 
+  public void updateGVChartReset(double[] v1, double[] conductance, int pulseWidth, double amplitude) {
+
+    plotPanel.getGvChart().getStyler().setYAxisMax(plotModel.getyMaxGV());
+    plotPanel.getGvChart().getStyler().setYAxisMin(0.0);
+    plotPanel.getGvChart().setTitle(getGVChartTitle(amplitude, pulseWidth));
+    plotPanel.getGvChart().updateXYSeries("gv", v1, conductance, null);
+  }
+
   public void repaintVtChart() {
 
     plotPanel.getCaptureChartPanel().revalidate();

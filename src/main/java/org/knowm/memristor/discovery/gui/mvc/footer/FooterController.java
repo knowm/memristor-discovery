@@ -32,10 +32,10 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import eu.hansolo.component.SteelCheckBox;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.apps.AppModel;
-
-import eu.hansolo.component.SteelCheckBox;
+import org.knowm.waveforms4j.DWFException;
 
 public class FooterController implements PropertyChangeListener {
 
@@ -67,10 +67,13 @@ public class FooterController implements PropertyChangeListener {
 
         if (cb.isSelected()) {
           dwf.startupAD2();
-
         }
         else {
-          dwf.shutdownAD2();
+          try {
+            dwf.shutdownAD2();
+          } catch (DWFException e) {
+            e.printStackTrace();
+          }
         }
       }
     });
@@ -81,23 +84,21 @@ public class FooterController implements PropertyChangeListener {
 
     switch (evt.getPropertyName()) {
 
-    case DWFProxy.AD2_STARTUP_CHANGE:
+      case DWFProxy.AD2_STARTUP_CHANGE:
 
-      footerPanel.updateBoardOnOffSwitch((Boolean) evt.getNewValue());
-      break;
+        footerPanel.updateBoardOnOffSwitch((Boolean) evt.getNewValue());
+        break;
 
-    case DWFProxy.DIGITAL_IO_READ:
+      case DWFProxy.DIGITAL_IO_READ:
 
-      break;
+        break;
 
-    case AppModel.EVENT_WAVEFORM_UPDATE:
+      case AppModel.EVENT_WAVEFORM_UPDATE:
 
-      break;
+        break;
 
-    default:
-      break;
+      default:
+        break;
     }
-
   }
-
 }
