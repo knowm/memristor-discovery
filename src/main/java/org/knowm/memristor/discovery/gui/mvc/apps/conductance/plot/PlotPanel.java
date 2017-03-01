@@ -28,16 +28,12 @@
 package org.knowm.memristor.discovery.gui.mvc.apps.conductance.plot;
 
 import java.awt.BorderLayout;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JTextField;
 
 import org.knowm.memristor.discovery.gui.mvc.apps.conductance.ConductancePreferences;
 import org.knowm.xchart.XChartPanel;
@@ -72,8 +68,6 @@ public class PlotPanel extends JPanel {
 
   private final JPanel gvChartControlPanel;
   private final JCheckBox freezeYAxisCheckBoxGV;
-  private final JLabel kLabelGV;
-  private final JTextField kTextFieldGV;
 
   /**
    * Constructor
@@ -156,12 +150,8 @@ public class PlotPanel extends JPanel {
 
     gvChartControlPanel = new JPanel();
     freezeYAxisCheckBoxGV = new JCheckBox("Freeze Y-Axis");
-    kLabelGV = new JLabel("K: ");
-    kTextFieldGV = new JTextField(4);
 
     gvChartControlPanel.add(freezeYAxisCheckBoxGV);
-    gvChartControlPanel.add(kLabelGV);
-    gvChartControlPanel.add(kTextFieldGV);
   }
 
   private void addRadioButtons() {
@@ -259,11 +249,6 @@ public class PlotPanel extends JPanel {
   public JCheckBox getFreezeYAxisCheckBoxGV() {
 
     return freezeYAxisCheckBoxGV;
-  }
-
-  public JTextField getkTextFieldGV() {
-
-    return kTextFieldGV;
   }
 
   public double getIVChartMax() {

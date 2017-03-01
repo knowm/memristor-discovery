@@ -50,9 +50,6 @@ public class PulsePreferences extends AppPreferences {
   public static final String PULSE_WIDTH_INIT_KEY = PREFIX + "PERIOD_INIT_KEY";
   public static final int PULSE_WIDTH_INIT_DEFAULT_VALUE = 5_000;
 
-  public static final String K_INIT_DOUBLE_KEY = PREFIX + "K_INIT_DOUBLE_KEY";
-  public static final double K_INIT_DOUBLE_DEFAULT_VALUE = 0.001;
-
   ///////////////////////////////////////////////////////////////////////////////////////
 
   public static final CurrentUnits CURRENT_UNIT = CurrentUnits.MicroAmps;

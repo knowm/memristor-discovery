@@ -29,14 +29,10 @@ package org.knowm.memristor.discovery.gui.mvc.apps.conductance.plot;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-
-import javax.swing.JTextField;
 
 import org.knowm.memristor.discovery.gui.mvc.apps.AppModel;
 
@@ -73,7 +69,6 @@ public class PlotController implements PropertyChangeListener {
 
   private void initGUIComponentsFromModel() {
 
-    plotPanel.getkTextFieldGV().setText("" + plotModel.getK());
   }
 
   private void setUpViewEvents() {
@@ -132,24 +127,6 @@ public class PlotController implements PropertyChangeListener {
         }
       }
     });
-
-    plotPanel.getkTextFieldGV().addKeyListener(new KeyAdapter() {
-
-      @Override
-      public void keyReleased(KeyEvent e) {
-
-        JTextField textField = (JTextField) e.getSource();
-        String text = textField.getText();
-
-        try {
-          double newKValue = Double.parseDouble(text);
-          plotModel.setK(newKValue);
-        } catch (Exception ex) {
-          // parsing error, default back to previous value
-          plotPanel.getkTextFieldGV().setText(Double.toString(plotModel.getK()));
-        }
-      }
-    });
   }
 
   public void udpateWaveformChart(double[] timeData, double[] waveformAmplitudeData, double amplitude, int pulseWidth) {
@@ -176,7 +153,7 @@ public class PlotController implements PropertyChangeListener {
     plotPanel.getIvChart().updateXYSeries("iv", v1, current, null);
   }
 
-  public void updateGVChart( double[] conductance, int pulseWidth, double amplitude) {
+  public void updateGVChart(double[] conductance, int pulseWidth, double amplitude) {
 
     plotModel.getGvData().add(conductance[0]);
     plotPanel.getGvChart().getStyler().setYAxisMax(plotModel.getyMaxGV());

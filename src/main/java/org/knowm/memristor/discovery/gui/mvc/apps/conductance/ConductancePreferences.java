@@ -51,9 +51,6 @@ public class ConductancePreferences extends AppPreferences {
   public static final String RESET_PULSE_WIDTH_INIT_KEY = PREFIX + "RESET_PULSE_WIDTH_INIT_KEY";
   public static final int RESET_PERIOD_INIT_DEFAULT_VALUE = 5000;
 
-  public static final String K_INIT_DOUBLE_KEY = PREFIX + "K_INIT_DOUBLE_KEY";
-  public static final double K_INIT_DOUBLE_DEFAULT_VALUE = 0.3;
-
   // SET
 
   public static final String SET_CONDUCTANCE_INIT_KEY = PREFIX + "SET_CONDUCTANCE_INIT_KEY";

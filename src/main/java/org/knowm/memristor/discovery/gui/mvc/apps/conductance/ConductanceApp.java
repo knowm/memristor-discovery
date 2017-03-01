@@ -245,10 +245,7 @@ public class ConductanceApp extends App implements PropertyChangeListener {
         double I = V2Trimmed[i] / experimentModel.getSeriesR();
         double G = I / (V1Trimmed[i] - V2Trimmed[i]) * DCPreferences.CONDUCTANCE_UNIT.getDivisor();
         G = G < 0 ? 0 : G;
-
-        double ave = (1 - plotModel.getK()) * (plotModel.getAve()) + plotModel.getK() * (G);
-        plotModel.setAve(ave);
-        conductance[i] = ave;
+        conductance[i] = G;
       }
 
       publish(new double[][]{timeData, V1Trimmed, V2Trimmed, current, conductance});
@@ -315,7 +312,7 @@ public class ConductanceApp extends App implements PropertyChangeListener {
         int sampleFrequencyMultiplier = 200; // adjust this down if you want to capture more pulses as the buffer size is limited.
         double sampleFrequency = experimentModel.getCalculatedFrequency() * sampleFrequencyMultiplier; // adjust this down if you want to capture more pulses as the buffer size is limited.
         dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02 * (experimentModel.getSetAmplitude() > 0 ? 1 : -1));
-        Thread.sleep(10); // Attempt to allow Analog In to get fired up for the next set of pulses
+        Thread.sleep(20); // Attempt to allow Analog In to get fired up for the next set of pulses
 
         //////////////////////////////////
         // Pulse Out /////////////////

@@ -29,14 +29,10 @@ package org.knowm.memristor.discovery.gui.mvc.apps.dc.plot;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-
-import javax.swing.JTextField;
 
 import org.knowm.memristor.discovery.gui.mvc.apps.AppModel;
 
@@ -73,7 +69,6 @@ public class PlotController implements PropertyChangeListener {
 
   private void initGUIComponentsFromModel() {
 
-    plotPanel.getkTextFieldGV().setText("" + plotModel.getK());
   }
 
   private void setUpViewEvents() {
@@ -129,24 +124,6 @@ public class PlotController implements PropertyChangeListener {
         else {
           plotModel.setyMaxGV(null);
           plotModel.setyMinGV(null);
-        }
-      }
-    });
-
-    plotPanel.getkTextFieldGV().addKeyListener(new KeyAdapter() {
-
-      @Override
-      public void keyReleased(KeyEvent e) {
-
-        JTextField textField = (JTextField) e.getSource();
-        String text = textField.getText();
-
-        try {
-          double newKValue = Double.parseDouble(text);
-          plotModel.setK(newKValue);
-        } catch (Exception ex) {
-          // parsing error, default back to previous value
-          plotPanel.getkTextFieldGV().setText(Double.toString(plotModel.getK()));
         }
       }
     });

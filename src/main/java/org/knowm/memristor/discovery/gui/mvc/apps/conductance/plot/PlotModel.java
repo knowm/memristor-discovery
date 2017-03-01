@@ -38,12 +38,6 @@ import org.knowm.memristor.discovery.gui.mvc.apps.conductance.ConductancePrefere
 public class PlotModel extends AppModel {
 
   /**
-   * Averaging params
-   */
-  private double ave = 0;
-  private double k;
-
-  /**
    * Min Max params
    */
   Double yMaxIV = null;
@@ -62,26 +56,6 @@ public class PlotModel extends AppModel {
   public void addListener(PropertyChangeListener listener) {
 
     swingPropertyChangeSupport.addPropertyChangeListener(listener);
-  }
-
-  public double getAve() {
-
-    return ave;
-  }
-
-  public void setAve(double ave) {
-
-    this.ave = ave;
-  }
-
-  public double getK() {
-
-    return k;
-  }
-
-  public void setK(double k) {
-
-    this.k = k;
   }
 
   public Double getyMaxIV() {
@@ -138,7 +112,5 @@ public class PlotModel extends AppModel {
   @Override
   public void loadModelFromPrefs() {
 
-    k = appPreferences.getDouble(ConductancePreferences.K_INIT_DOUBLE_KEY, ConductancePreferences.K_INIT_DOUBLE_DEFAULT_VALUE);
-    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_PREFERENCES_UPDATE, true, false);
   }
 }

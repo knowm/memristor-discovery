@@ -54,7 +54,7 @@ public class HysteresisPreferences extends AppPreferences {
   public static final int SERIES_R_INIT_DEFAULT_VALUE = 5_000;
 
   public static final String K_INIT_DOUBLE_KEY = PREFIX + "K_INIT_DOUBLE_KEY";
-  public static final double K_INIT_DOUBLE_DEFAULT_VALUE = 0.001;
+  public static final double K_INIT_DOUBLE_DEFAULT_VALUE = 1.0;
 
   // /////////////////////////////////////////////////////////////////////////////////////
 

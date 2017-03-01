@@ -228,10 +228,7 @@ public class PulseApp extends App implements PropertyChangeListener {
         double I = V2Trimmed[i] / experimentModel.getSeriesR();
         double G = I / (V1Trimmed[i] - V2Trimmed[i]) * DCPreferences.CONDUCTANCE_UNIT.getDivisor();
         G = G < 0 ? 0 : G;
-
-        double ave = (1 - plotModel.getK()) * (plotModel.getAve()) + plotModel.getK() * (G);
-        plotModel.setAve(ave);
-        conductance[i] = ave;
+        conductance[i] = G;
       }
 
       publish(new double[][]{timeData, V1Trimmed, V2Trimmed, current, conductance});
@@ -245,7 +242,6 @@ public class PulseApp extends App implements PropertyChangeListener {
       if (allowPlotting) {
 
         double[][] newestChunk = chunks.get(chunks.size() - 1);
-
 
         // System.out.println("" + chunks.size());
 

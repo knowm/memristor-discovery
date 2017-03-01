@@ -50,9 +50,6 @@ public class DCPreferences extends AppPreferences {
   public static final String PERIOD_INIT_KEY = PREFIX + "PERIOD_INIT_KEY";
   public static final int PERIOD_INIT_DEFAULT_VALUE = 5000;
 
-  public static final String K_INIT_DOUBLE_KEY = PREFIX + "K_INIT_DOUBLE_KEY";
-  public static final double K_INIT_DOUBLE_DEFAULT_VALUE = 0.3;
-
   ///////////////////////////////////////////////////////////////////////////////////////
 
   public static final CurrentUnits CURRENT_UNIT = CurrentUnits.MicroAmps;
