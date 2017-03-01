@@ -383,7 +383,7 @@ public class ConductanceApp extends App implements PropertyChangeListener {
         if (counter++ > 10) {
           isConductanceReached = true;
         }
-        // 3. Break if conductance reaches desired level.
+        // TODO 3. Break if conductance reaches desired level.
 
       }
       // dwfProxy.setAD2Capturing(false);

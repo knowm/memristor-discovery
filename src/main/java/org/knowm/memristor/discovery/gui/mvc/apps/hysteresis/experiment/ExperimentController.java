@@ -106,12 +106,12 @@ public class ExperimentController implements PropertyChangeListener {
       experimentPanel.getFrequencySlider().setValue(experimentModel.getFrequency());
       experimentPanel.getFrequencySliderLog().setValue((int) Math.log10(experimentModel.getFrequency() + 1));
       experimentPanel.getFrequencySlider().setBorder(BorderFactory.createTitledBorder("Frequency [Hz] = " + experimentModel.getFrequency()));
-      experimentPanel.getFrequencySliderLog().setBorder(BorderFactory.createTitledBorder("Frequency [Hz]"));
+      experimentPanel.getFrequencySliderLog().setBorder(BorderFactory.createTitledBorder("Frequency (Log) [Hz]"));
     }
     else {
       experimentPanel.getFrequencySlider().setValue(experimentModel.getFrequency());
       experimentPanel.getFrequencySliderLog().setValue((int) Math.log10(experimentModel.getFrequency() + 1));
-      experimentPanel.getFrequencySliderLog().setBorder(BorderFactory.createTitledBorder("Frequency [Hz] = " + experimentModel.getFrequency()));
+      experimentPanel.getFrequencySliderLog().setBorder(BorderFactory.createTitledBorder("Frequency (Log) [Hz] = " + experimentModel.getFrequency()));
       experimentPanel.getFrequencySlider().setBorder(BorderFactory.createTitledBorder("Frequency [Hz]"));
     }
     experimentPanel.getSeriesTextField().setText("" + experimentModel.getSeriesR());

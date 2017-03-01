@@ -28,7 +28,6 @@
 package org.knowm.memristor.discovery;
 
 import java.beans.PropertyChangeListener;
-import java.util.Arrays;
 
 import javax.swing.SwingWorker;
 import javax.swing.event.SwingPropertyChangeSupport;
@@ -100,9 +99,8 @@ public class DWFProxy {
       if (isAD2Running) {
 
         // Some device read out stuff
-        System.out.println("Analog Out Custom Waveform Buffer Size Channel 1: "+Arrays.toString(dwf.FDwfAnalogOutNodeDataInfo(DWF.WAVEFORM_CHANNEL_1)));
-        System.out.println("Analog Out Custom Waveform Buffer Size Channel 2: "+Arrays.toString(dwf.FDwfAnalogOutNodeDataInfo(DWF.WAVEFORM_CHANNEL_2)));
-
+        // System.out.println("Analog Out Custom Waveform Buffer Size Channel 1: "+Arrays.toString(dwf.FDwfAnalogOutNodeDataInfo(DWF.WAVEFORM_CHANNEL_1)));
+        // System.out.println("Analog Out Custom Waveform Buffer Size Channel 2: "+Arrays.toString(dwf.FDwfAnalogOutNodeDataInfo(DWF.WAVEFORM_CHANNEL_2)));
 
         /////////////////////////////////////////////////////////////
         // Digital I/O //////////////////////////////////////////////
@@ -136,8 +134,8 @@ public class DWFProxy {
 
         // Set this to false (default=true). Need to call FDwfAnalogOutConfigure(true), FDwfAnalogInConfigure(true) in order for *Set* methods to take effect.
         dwf.FDwfDeviceAutoConfigureSet(false);
-
-      }else{
+      }
+      else {
 
         System.out.println(dwf.FDwfGetLastErrorMsg());
       }
@@ -188,6 +186,7 @@ public class DWFProxy {
     isAD2Running = false;
     dwf.FDwfDeviceCloseAll();
     swingPropertyChangeSupport.firePropertyChange(DWFProxy.AD2_STARTUP_CHANGE, oldValDevice, isAD2Running);
+    setAD2Capturing(false);
 
     // try {
     // Thread.sleep(500);
