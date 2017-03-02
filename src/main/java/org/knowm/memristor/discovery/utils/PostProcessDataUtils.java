@@ -5,26 +5,31 @@ package org.knowm.memristor.discovery.utils;
  */
 public class PostProcessDataUtils {
 
-  public static double[][] trimIdleData(double[] v1, double[] v2) {
+  /**
+   * The data is a bit weird, as what's captured is a long window of "idle" voltage before and after the pulses. We clean that now...
+   *
+   * @param v1
+   * @param v2
+   * @param v1Threshold
+   * @return
+   */
+  public static double[][] trimIdleData(double[] v1, double[] v2, double v1Threshold) {
 
-    // The data is a bit weird, as what's captured is a long window of "idle" voltage before the pulses. We clean that now...
     int startIndex = 0;
     for (int i = 0; i < v1.length; i++) {
-      if (Math.abs(v1[i]) > .02) {
+      if (Math.abs(v1[i]) > v1Threshold) {
         startIndex = i;
         break;
       }
     }
     int endIndex = v1.length - 1;
     for (int i = v1.length - 1; i > 0; i--) {
-      if (Math.abs(v1[i]) > .02) {
+      if (Math.abs(v1[i]) > v1Threshold) {
         endIndex = i;
         break;
       }
     }
     int bufferLength = endIndex - startIndex;
-
-
 
     double[] V1Cleaned = new double[bufferLength];
     double[] V2Cleaned = new double[bufferLength];
@@ -33,5 +38,26 @@ public class PostProcessDataUtils {
       V2Cleaned[i] = v2[i + startIndex];
     }
     return new double[][]{V1Cleaned, V2Cleaned};
+  }
+
+  /**
+   * Set all V2 data to zero where V1 is less than a given threshold
+   *
+   * @param v1
+   * @param v2
+   * @return
+   */
+  public static double[] zeroIdleData(double[] v1, double[] v2, double v1Threshold) {
+
+    double[] V2Zeroed = new double[v1.length];
+    for (int i = 0; i < V2Zeroed.length; i++) {
+      if (v1[i] > v1Threshold) {
+        V2Zeroed[i] = v2[i];
+      }
+      else {
+        V2Zeroed[i] = 0;
+      }
+    }
+    return V2Zeroed;
   }
 }

@@ -220,7 +220,7 @@ public class ConductanceApp extends App implements PropertyChangeListener {
       // Create Chart Data //////
       ///////////////////////////
 
-      double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2);
+      double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, 0.02);
       double[] V1Trimmed = trimmedRawData[0];
       double[] V2Trimmed = trimmedRawData[1];
       int bufferLength = V1Trimmed.length;
@@ -346,7 +346,7 @@ public class ConductanceApp extends App implements PropertyChangeListener {
         // Create Chart Data //////
         ///////////////////////////
 
-        double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2);
+        double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, experimentModel.getSetAmplitude() * .98);
         double[] V1Trimmed = trimmedRawData[0];
         double[] V2Trimmed = trimmedRawData[1];
         int bufferLength = V1Trimmed.length;
@@ -403,15 +403,15 @@ public class ConductanceApp extends App implements PropertyChangeListener {
             .getSetAmplitude());
         plotController.updateGVChart(newestChunk[4], experimentModel.getSetPulseWidth(), experimentModel.getSetAmplitude());
 
-        // if (plotPanel.getCaptureButton().isSelected()) {
-        //   plotController.repaintVtChart();
-        // }
-        // else if (plotPanel.getIVButton().isSelected()) {
-        //   plotController.repaintIVChart();
-        // }
-        // else {
-        plotController.repaintGVChart();
-        // }
+        if (plotPanel.getCaptureButton().isSelected()) {
+          plotController.repaintVtChart();
+        }
+        else if (plotPanel.getIVButton().isSelected()) {
+          plotController.repaintIVChart();
+        }
+        else {
+          plotController.repaintGVChart();
+        }
       }
     }
   }

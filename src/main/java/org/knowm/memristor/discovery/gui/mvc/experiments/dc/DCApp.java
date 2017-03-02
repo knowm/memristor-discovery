@@ -198,7 +198,7 @@ public class DCApp extends App implements PropertyChangeListener {
       // Create Chart Data //////
       ///////////////////////////
 
-      double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2);
+      double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, 0.02);
       double[] V1Trimmed = trimmedRawData[0];
       double[] V2Trimmed = trimmedRawData[1];
       int bufferLength = V1Trimmed.length;

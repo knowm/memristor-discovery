@@ -221,6 +221,9 @@ public class PlotPanel extends JPanel {
       add(gvChartPanel, BorderLayout.CENTER);
       addRadioButtons();
       addChartControlGV();
+      captureButton.setSelected(false);
+      ivButton.setSelected(false);
+      gvButton.setSelected(true);
       revalidate();
       repaint();
     }

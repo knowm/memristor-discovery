@@ -160,6 +160,7 @@ public class PlotController implements PropertyChangeListener {
     plotPanel.getGvChart().getStyler().setYAxisMin(0.0);
     plotPanel.getGvChart().setTitle(getGVChartTitle(amplitude, pulseWidth));
     plotPanel.getGvChart().updateXYSeries("gv", null, plotModel.getGvData(), null);
+    plotPanel.getGvChart().setXAxisTitle("Pulse Number");
   }
 
   public void updateGVChartReset(double[] v1, double[] conductance, int pulseWidth, double amplitude) {
@@ -168,6 +169,7 @@ public class PlotController implements PropertyChangeListener {
     plotPanel.getGvChart().getStyler().setYAxisMin(0.0);
     plotPanel.getGvChart().setTitle(getGVChartTitle(amplitude, pulseWidth));
     plotPanel.getGvChart().updateXYSeries("gv", v1, conductance, null);
+    plotPanel.getGvChart().setXAxisTitle("Volatge [V]");
   }
 
   public void repaintVtChart() {

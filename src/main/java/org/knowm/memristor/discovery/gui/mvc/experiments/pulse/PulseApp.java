@@ -203,9 +203,11 @@ public class PulseApp extends App implements PropertyChangeListener {
       // Create Chart Data //////
       ///////////////////////////
 
-      double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2);
+      double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, experimentModel.getAmplitude() / 2);
       double[] V1Trimmed = trimmedRawData[0];
       double[] V2Trimmed = trimmedRawData[1];
+      double[] V2Zeroed = PostProcessDataUtils.zeroIdleData(V1Trimmed, V2Trimmed, experimentModel.getAmplitude() / 2);
+
       int bufferLength = V1Trimmed.length;
 
       // create time data
@@ -218,20 +220,20 @@ public class PulseApp extends App implements PropertyChangeListener {
       // create current data
       double[] current = new double[bufferLength];
       for (int i = 0; i < bufferLength; i++) {
-        current[i] = V2Trimmed[i] / experimentModel.getSeriesR() * DCPreferences.CURRENT_UNIT.getDivisor();
+        current[i] = V2Zeroed[i] / experimentModel.getSeriesR() * DCPreferences.CURRENT_UNIT.getDivisor();
       }
 
       // create conductance data
       double[] conductance = new double[bufferLength];
       for (int i = 0; i < bufferLength; i++) {
 
-        double I = V2Trimmed[i] / experimentModel.getSeriesR();
-        double G = I / (V1Trimmed[i] - V2Trimmed[i]) * DCPreferences.CONDUCTANCE_UNIT.getDivisor();
+        double I = V2Zeroed[i] / experimentModel.getSeriesR();
+        double G = I / (V1Trimmed[i] - V2Zeroed[i]) * DCPreferences.CONDUCTANCE_UNIT.getDivisor();
         G = G < 0 ? 0 : G;
         conductance[i] = G;
       }
 
-      publish(new double[][]{timeData, V1Trimmed, V2Trimmed, current, conductance});
+      publish(new double[][]{timeData, V1Trimmed, V2Zeroed, current, conductance});
 
       return true;
     }
