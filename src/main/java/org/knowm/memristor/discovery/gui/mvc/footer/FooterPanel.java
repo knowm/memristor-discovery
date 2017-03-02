@@ -44,8 +44,6 @@ public class FooterPanel extends JPanel {
    */
   public FooterPanel() {
 
-    super();
-
     steelCheckbox = new SteelCheckBox("Board On/Off", 0, 150, 26);
     steelCheckbox.setRised(true);
     steelCheckbox.setColored(true);
@@ -54,7 +52,6 @@ public class FooterPanel extends JPanel {
     steelCheckbox.setSelected(false);
     setBackground(warnColor);
     steelCheckbox.setBackground(warnColor);
-
     add(steelCheckbox);
   }
 
@@ -75,5 +72,4 @@ public class FooterPanel extends JPanel {
 
     return steelCheckbox;
   }
-
 }

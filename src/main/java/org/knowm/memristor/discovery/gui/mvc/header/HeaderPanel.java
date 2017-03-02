@@ -27,6 +27,8 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.header;
 
+import java.awt.Color;
+
 import javax.swing.JPanel;
 
 import eu.hansolo.component.SteelCheckBox;
@@ -37,14 +39,12 @@ public class HeaderPanel extends JPanel {
   public final static int SWITCHES_MASK = 0b0000_0000_1111_1111;
   private final SteelCheckBox[] checkBoxes;
 
+  private final Color warnColor = new Color(255, 33, 33);
+
   /**
    * Constructor
-   * 
-   * @param model
    */
   public HeaderPanel() {
-
-    super();
 
     checkBoxes = new SteelCheckBox[NUM_SWITCHES];
     for (int i = 0; i < checkBoxes.length; i++) {
@@ -52,10 +52,12 @@ public class HeaderPanel extends JPanel {
       checkBoxes[i].setColored(true);
       checkBoxes[i].setRised(true);
       checkBoxes[i].setSelected(false);
+      checkBoxes[i].setBackground(warnColor);
       add(checkBoxes[i]);
     }
     /** Set initial state to disabled */
     enableAllDigitalIOCheckBoxes(false);
+    setBackground(warnColor);
   }
 
   public SteelCheckBox[] getCheckBoxes() {
@@ -70,6 +72,13 @@ public class HeaderPanel extends JPanel {
       int bit = (digitalIOStates >> i) & 1;
       // System.out.println("bit: " + bit);
       checkBoxes[i].setSelected(bit > 0);
+      checkBoxes[i].setBackground(null);
+    }
+    if (digitalIOStates == 0) {
+      setBackground(warnColor);
+    }
+    else {
+      setBackground(null);
     }
   }
 
@@ -79,5 +88,4 @@ public class HeaderPanel extends JPanel {
       checkBoxes[i].setEnabled(enabled);
     }
   }
-
 }
