@@ -166,7 +166,6 @@ public class MacApplication implements GenericApplication {
         callNativeMethod(nativeApplication, "setQuitHandler", new Class[]{nativeQuitHandlerClass}, new Object[]{nativeQuitHandler});
 
         log.debug("GenericAboutHandler configured");
-
     }
 
     public void setDockIconImage(Image image){

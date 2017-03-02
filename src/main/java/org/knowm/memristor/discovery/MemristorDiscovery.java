@@ -46,19 +46,19 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.knowm.memristor.discovery.gui.AboutDialog;
-import org.knowm.memristor.discovery.gui.mvc.apps.App;
-import org.knowm.memristor.discovery.gui.mvc.apps.AppHelpDialog;
-import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferencesPanel;
-import org.knowm.memristor.discovery.gui.mvc.apps.conductance.ConductanceApp;
-import org.knowm.memristor.discovery.gui.mvc.apps.conductance.ConductancePreferencesPanel;
-import org.knowm.memristor.discovery.gui.mvc.apps.dc.DCApp;
-import org.knowm.memristor.discovery.gui.mvc.apps.dc.DCPreferencesPanel;
-import org.knowm.memristor.discovery.gui.mvc.apps.hysteresis.HysteresisApp;
-import org.knowm.memristor.discovery.gui.mvc.apps.hysteresis.HysteresisPreferencesPanel;
-import org.knowm.memristor.discovery.gui.mvc.apps.pulse.PulseApp;
-import org.knowm.memristor.discovery.gui.mvc.apps.pulse.PulsePreferencesPanel;
-import org.knowm.memristor.discovery.gui.mvc.apps.qc.QCApp;
-import org.knowm.memristor.discovery.gui.mvc.apps.qc.QCPreferencesPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.App;
+import org.knowm.memristor.discovery.gui.mvc.experiments.AppHelpDialog;
+import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferencesPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.ConductanceApp;
+import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.ConductancePreferencesPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCApp;
+import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCPreferencesPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.HysteresisApp;
+import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.HysteresisPreferencesPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulseApp;
+import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferencesPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.qc.QCApp;
+import org.knowm.memristor.discovery.gui.mvc.experiments.qc.QCPreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.footer.FooterController;
 import org.knowm.memristor.discovery.gui.mvc.footer.FooterPanel;
 import org.knowm.memristor.discovery.gui.mvc.header.HeaderController;
@@ -82,10 +82,10 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
 
   private final DWFProxy dwf = new DWFProxy();
 
-  // private final String[] apps = new String[] { "Hysteresis", "Pulse", "QC" };
+  // private final String[] experiments = new String[] { "Hysteresis", "Pulse", "QC" };
   private final String[] apps = new String[]{"Hysteresis", "Pulse", "DC", "Conductance"};
   private String appID;
-  // private String appID = apps[0];
+  // private String appID = experiments[0];
   private App app;
 
   // Swing Stuff
@@ -162,7 +162,7 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
 
     // app menu
     JMenuBar menuBar = new JMenuBar();
-    JMenu menu = new JMenu("Applications");
+    JMenu menu = new JMenu("Experiments");
     menu.setMnemonic(KeyEvent.VK_A);
     menuBar.add(menu);
     for (int i = 0; i < apps.length; i++) {

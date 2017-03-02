@@ -27,7 +27,7 @@
  */
 package org.knowm.memristor.discovery.utils;
 
-import org.knowm.memristor.discovery.gui.mvc.apps.AppPreferences.Waveform;
+import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferences.Waveform;
 import org.knowm.memristor.discovery.utils.driver.Driver;
 import org.knowm.memristor.discovery.utils.driver.Sawtooth;
 import org.knowm.memristor.discovery.utils.driver.SawtoothUpDown;
