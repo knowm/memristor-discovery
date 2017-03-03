@@ -186,7 +186,7 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
 
           app = null;
           appID = e.getActionCommand();
-          System.out.println(appID);
+          // System.out.println(appID);
 
           switch (e.getActionCommand()) {
             case "Hysteresis":

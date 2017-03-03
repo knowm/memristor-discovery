@@ -177,7 +177,11 @@ public class PulseApp extends App implements PropertyChangeListener {
 
       // custom waveform
       double[] customWaveform = WaveformUtils.generateCustomWaveform(Waveform.Square, experimentModel.getAmplitude(), experimentModel.getCalculatedFrequency());
-      dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, experimentModel.getCalculatedFrequency(), 0, experimentModel.getPulseNumber(), customWaveform);
+      double[] readPulseWaveform = WaveformUtils.generateCustomWaveform(Waveform.Square, 0.2, experimentModel.getCalculatedFrequency());
+      double[] waveformWithReadPulses = WaveformUtils.concat(customWaveform, readPulseWaveform);
+
+      // dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, experimentModel.getCalculatedFrequency(), 0, experimentModel.getPulseNumber(), customWaveform);
+      dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, experimentModel.getCalculatedFrequency(), 0, experimentModel.getPulseNumber() * 2, waveformWithReadPulses);
 
       //////////////////////////////////
       //////////////////////////////////
@@ -208,10 +212,10 @@ public class PulseApp extends App implements PropertyChangeListener {
       // Create Chart Data //////
       ///////////////////////////
 
-      double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, experimentModel.getAmplitude() / 2);
+      double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, 0.1);
       double[] V1Trimmed = trimmedRawData[0];
       double[] V2Trimmed = trimmedRawData[1];
-      double[] V2Zeroed = PostProcessDataUtils.zeroIdleData(V1Trimmed, V2Trimmed, experimentModel.getAmplitude() / 2);
+      double[] V2Zeroed = PostProcessDataUtils.zeroIdleData(V1Trimmed, V2Trimmed, 0.1);
 
       int bufferLength = V1Trimmed.length;
 
