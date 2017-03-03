@@ -198,6 +198,7 @@ public class ConductanceApp extends App implements PropertyChangeListener {
       dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, experimentModel.getCalculatedFrequency(), 0, 1, customWaveform);
 
       // Read In Data
+      int bailCount = 0;
       while (true) {
         byte status = dwfProxy.getDwf().FDwfAnalogInStatus(true);
         // System.out.println("status: " + status);
@@ -207,6 +208,10 @@ public class ConductanceApp extends App implements PropertyChangeListener {
           dwfProxy.setAD2Capturing(false);
           dwfProxy.getDwf().FDwfAnalogOutConfigure(DWF.WAVEFORM_CHANNEL_1, false); // stop function generator
           break;
+        }
+        if (bailCount++ > 10) {
+          System.out.println("Bailed!!!");
+          return false;
         }
       }
 
