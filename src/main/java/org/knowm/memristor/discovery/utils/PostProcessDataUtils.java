@@ -15,16 +15,17 @@ public class PostProcessDataUtils {
    */
   public static double[][] trimIdleData(double[] v1, double[] v2, double v1Threshold) {
 
+    double vThresholdAbs = Math.abs(v1Threshold);
     int startIndex = 0;
     for (int i = 0; i < v1.length; i++) {
-      if (Math.abs(v1[i]) > v1Threshold) {
+      if (Math.abs(v1[i]) > vThresholdAbs) {
         startIndex = i;
         break;
       }
     }
     int endIndex = v1.length - 1;
     for (int i = v1.length - 1; i > 0; i--) {
-      if (Math.abs(v1[i]) > v1Threshold) {
+      if (Math.abs(v1[i]) > vThresholdAbs) {
         endIndex = i;
         break;
       }
@@ -49,9 +50,11 @@ public class PostProcessDataUtils {
    */
   public static double[] zeroIdleData(double[] v1, double[] v2, double v1Threshold) {
 
+    double vThresholdAbs = Math.abs(v1Threshold);
+
     double[] V2Zeroed = new double[v1.length];
     for (int i = 0; i < V2Zeroed.length; i++) {
-      if (v1[i] > v1Threshold) {
+      if (Math.abs(v1[i]) > vThresholdAbs) {
         V2Zeroed[i] = v2[i];
       }
       else {
