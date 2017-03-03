@@ -169,7 +169,7 @@ public class PulseApp extends App implements PropertyChangeListener {
       double sampleFrequency = experimentModel.getCalculatedFrequency() * sampleFrequencyMultiplier; // adjust this down if you want to capture more pulses as the buffer size is limited.
 
       dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02 * (experimentModel.getAmplitude() > 0 ? 1 : -1));
-      Thread.sleep(10); // Attempt to allow Analog In to get fired up for the next set of pulses
+      Thread.sleep(20); // Attempt to allow Analog In to get fired up for the next set of pulses
 
       //////////////////////////////////
       // Pulse Out /////////////////
@@ -183,11 +183,16 @@ public class PulseApp extends App implements PropertyChangeListener {
       //////////////////////////////////
 
       // Read In Data
+      int bailCount = 0;
       while (true) {
         byte status = dwfProxy.getDwf().FDwfAnalogInStatus(true);
         System.out.println("status: " + status);
         if (status == 2) { // done capturing
           break;
+        }
+        if (bailCount++ > 10) {
+          System.out.println("Bailed!!!");
+          return false;
         }
       }
       int validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
