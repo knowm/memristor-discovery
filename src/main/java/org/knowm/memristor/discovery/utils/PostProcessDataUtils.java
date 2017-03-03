@@ -53,12 +53,16 @@ public class PostProcessDataUtils {
     double vThresholdAbs = Math.abs(v1Threshold);
 
     double[] V2Zeroed = new double[v1.length];
-    for (int i = 0; i < V2Zeroed.length; i++) {
+    V2Zeroed[0] = 0;
+    V2Zeroed[V2Zeroed.length - 1] = 0;
+    for (int i = 1; i < V2Zeroed.length - 1; i++) {
       if (Math.abs(v1[i]) > vThresholdAbs) {
         V2Zeroed[i] = v2[i];
       }
       else {
+        V2Zeroed[i - 1] = 0;
         V2Zeroed[i] = 0;
+        V2Zeroed[i + 1] = 0;
       }
     }
     return V2Zeroed;
