@@ -258,12 +258,12 @@ public class PulseApp extends App implements PropertyChangeListener {
           dwfProxy.setAD2Capturing(false);
         }
 
-        System.out.println("capturing read pulse");
+        // System.out.println("capturing read pulse");
         //////////////////////////////////
         // Analog In /////////////////
         //////////////////////////////////
 
-        dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02 * (experimentModel.getAmplitude() > 0 ? 1 : -1));
+        dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02);
         Thread.sleep(20); // Attempt to allow Analog In to get fired up for the next set of pulses
 
         //////////////////////////////////
@@ -278,6 +278,7 @@ public class PulseApp extends App implements PropertyChangeListener {
         success = capturePulseData();
         if (!success) {
           System.out.println("returning false");
+          experimentPanel.getStopButton().doClick();
           return false;
         }
 
