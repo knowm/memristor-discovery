@@ -46,7 +46,7 @@ public class PlotModel extends AppModel {
   Double yMaxGV = null;
   Double yMinGV = null;
 
-  List<Number> gData = new ArrayList<>();
+  List<Double> gData = new ArrayList<>();
 
   /**
    * Here is where the Controller registers itself as a listener to model changes.
@@ -109,7 +109,7 @@ public class PlotModel extends AppModel {
 
   }
 
-  public List<Number> getGData() {
+  public List<Double> getGData() {
 
     return gData;
   }

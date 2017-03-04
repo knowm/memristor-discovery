@@ -36,6 +36,7 @@ import java.util.Hashtable;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -47,6 +48,9 @@ import javax.swing.JTextField;
  * @author timmolter
  */
 public class ExperimentPanel extends JPanel {
+
+
+  private final JCheckBox memristorVoltageCheckBox;
 
   private final JSlider amplitudeSlider;
   private final JSlider pulseWidthSlider;
@@ -71,7 +75,15 @@ public class ExperimentPanel extends JPanel {
     setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
     // setBackground(Color.yellow);
 
-    amplitudeSlider = new JSlider(JSlider.HORIZONTAL, -300, 300, 0);
+    c.gridx = 0;
+    c.gridy++;
+    c.insets = new Insets(0, 0, 0, 0);
+    memristorVoltageCheckBox = new JCheckBox("Memristor Voltage Drop");
+    add(memristorVoltageCheckBox, c);
+
+
+
+    amplitudeSlider = new JSlider(JSlider.HORIZONTAL, -250, 200, 0);
     amplitudeSlider.setBorder(BorderFactory.createTitledBorder("Amplitude [V]"));
     amplitudeSlider.setMajorTickSpacing(50);
     amplitudeSlider.setMinorTickSpacing(10);
@@ -79,13 +91,12 @@ public class ExperimentPanel extends JPanel {
     amplitudeSlider.setPaintLabels(true);
     amplitudeSlider.setSnapToTicks(true);
     Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
-    labelTable.put(-300, new JLabel("-3"));
+    labelTable.put(-250, new JLabel("-2.5"));
     labelTable.put(-200, new JLabel("-2"));
     labelTable.put(-100, new JLabel("-1"));
     labelTable.put(0, new JLabel("0"));
     labelTable.put(100, new JLabel("1"));
     labelTable.put(200, new JLabel("2"));
-    labelTable.put(300, new JLabel("3"));
     amplitudeSlider.setLabelTable(labelTable);
     c.gridx = 0;
     c.gridy++;
@@ -213,4 +224,8 @@ public class ExperimentPanel extends JPanel {
     return stopButton;
   }
 
+  public JCheckBox getMemristorVoltageCheckBox() {
+
+    return memristorVoltageCheckBox;
+  }
 }

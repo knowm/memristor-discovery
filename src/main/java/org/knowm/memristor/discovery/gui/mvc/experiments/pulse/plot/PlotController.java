@@ -161,13 +161,14 @@ public class PlotController implements PropertyChangeListener {
     plotPanel.getGvChart().updateXYSeries("gv", timeData, conductance, null);
   }
 
-  public void updateGChart(double conductance) {
+  public void updateGChart(double conductance, String resistance) {
 
     plotModel.getGData().add(conductance);
     plotPanel.getGChart().getStyler().setYAxisMax(plotModel.getyMaxGV());
     plotPanel.getGChart().getStyler().setYAxisMin(0.0);
-    // plotPanel.getGChart().setTitle(getGVChartTitle(amplitude, pulseWidth));
+    plotPanel.getGChart().setTitle("G (R = " + resistance + ")");
     plotPanel.getGChart().updateXYSeries("g", null, plotModel.getGData(), null);
+    plotPanel.getGChart().updateXYSeries("glast", new double[]{1, plotModel.getGData().size()}, new double[]{conductance, conductance}, null);
   }
 
   public void repaintVtChart() {

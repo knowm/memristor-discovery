@@ -27,11 +27,16 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments;
 
+import java.text.DecimalFormat;
+
 import org.knowm.memristor.discovery.DWFProxy;
 
 public abstract class App {
 
   public final DWFProxy dwfProxy;
+
+  public DecimalFormat ohmFormatter = new DecimalFormat("#,### Ω");
+
 
   public abstract AppModel getExperimentModel();
 
@@ -57,7 +62,7 @@ public abstract class App {
     int bailCount = 0;
     while (true) {
       byte status = dwfProxy.getDwf().FDwfAnalogInStatus(true);
-      System.out.println("status: " + status);
+      // System.out.println("status: " + status);
       if (status == 2) { // done capturing
         return true;
       }
@@ -66,6 +71,5 @@ public abstract class App {
         return false;
       }
     }
-
   }
 }

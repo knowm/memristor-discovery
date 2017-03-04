@@ -127,11 +127,13 @@ public class PlotPanel extends JPanel {
     // G Chart ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    gChart = new XYChartBuilder().width(300).title("G").height(100).xAxisTitle("Pulse Number").yAxisTitle("Conductance [" + PulsePreferences.CONDUCTANCE_UNIT.getLabel() + "]").build();
+    gChart = new XYChartBuilder().width(400).title("G").height(100).xAxisTitle("Pulse Number").yAxisTitle("Conductance [" + PulsePreferences.CONDUCTANCE_UNIT.getLabel() + "]").build();
     gChart.getStyler().setLegendVisible(false);
     gChart.getStyler().setYAxisMin(0.0);
-    gChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);
-    gChart.addSeries("g", new double[]{0}, new double[]{0});
+    series = gChart.addSeries("g", new double[]{0}, new double[]{0});
+    series.setMarker(SeriesMarkers.NONE);
+    series = gChart.addSeries("glast", new double[]{0}, new double[]{0});
+    series.setMarker(SeriesMarkers.NONE);
     gChartPanel = new XChartPanel<>(gChart);
 
     // ///////////////////////////////////////////////////////////

@@ -177,12 +177,19 @@ public class PulseApp extends App implements PropertyChangeListener {
       //////////////////////////////////
 
       // custom waveform
-      double[] customWaveform = WaveformUtils.generateCustomWaveform(Waveform.Square, experimentModel.getAmplitude(), experimentModel.getCalculatedFrequency());
-      // double[] readPulseWaveform = WaveformUtils.generateCustomWaveform(Waveform.Square, 0.2, experimentModel.getCalculatedFrequency());
-      // double[] waveformWithReadPulses = WaveformUtils.concat(customWaveform, readPulseWaveform);
+      double amplitude = experimentModel.getAmplitude();
 
+      // calculate applied voltage
+      if (experimentPanel.getMemristorVoltageCheckBox().isSelected() && plotModel.getGData().size() > 1) {
+
+        double lastResistance = 1.0 / plotModel.getGData().get(plotModel.getGData().size() - 1) * PulsePreferences.CONDUCTANCE_UNIT.getDivisor();
+        // System.out.println("lastResistance = " + lastResistance);
+        amplitude = experimentModel.getAmplitude() / (1 - experimentModel.getSeriesR() / (experimentModel.getSeriesR() + lastResistance));
+      }
+      System.out.println("amplitude = " + amplitude);
+
+      double[] customWaveform = WaveformUtils.generateCustomWaveform(Waveform.Square, amplitude, experimentModel.getCalculatedFrequency());
       dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, experimentModel.getCalculatedFrequency(), 0, experimentModel.getPulseNumber(), customWaveform);
-      // dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, experimentModel.getCalculatedFrequency(), 0, experimentModel.getPulseNumber() * 2, waveformWithReadPulses);
 
       //////////////////////////////////
       //////////////////////////////////
@@ -197,7 +204,7 @@ public class PulseApp extends App implements PropertyChangeListener {
       int validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
       double[] v1 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
       double[] v2 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
-      System.out.println("validSamples: " + validSamples);
+      // System.out.println("validSamples: " + validSamples);
 
       // Stop Analog In and Out
       dwfProxy.getDwf().stopWave(DWF.WAVEFORM_CHANNEL_1);
@@ -345,7 +352,8 @@ public class PulseApp extends App implements PropertyChangeListener {
 
           // update G chart
           // System.out.println("updating G Chart");
-          plotController.updateGChart(newestChunk[5][0]);
+          String resistanceString = ohmFormatter.format(1 / newestChunk[5][0] * PulsePreferences.CONDUCTANCE_UNIT.getDivisor());
+          plotController.updateGChart(newestChunk[5][0], resistanceString);
           plotController.repaintGChart();
         }
       }
