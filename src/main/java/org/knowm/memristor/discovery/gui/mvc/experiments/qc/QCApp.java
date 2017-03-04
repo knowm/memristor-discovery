@@ -58,7 +58,6 @@ import org.knowm.waveforms4j.DWF.AcquisitionMode;
 
 public class QCApp extends App implements PropertyChangeListener {
 
-  private final DWFProxy dwfProxy;
   private final QCModel model = new QCModel();
   private QCControlPanel controlPanel;
   private QCMainPanel mainPanel;
@@ -69,44 +68,15 @@ public class QCApp extends App implements PropertyChangeListener {
 
   private DecimalFormat f = new DecimalFormat("#,###.## kΩ");
 
-  // public static void main(String[] args) {
-  //
-  // List<String> reportLines = new ArrayList<>();
-  //
-  // reportLines.add("first line");
-  // reportLines.add("secondLine");
-  //
-  // String fileName = "/Users/alexnugent/Desktop/QC/4/report.md";
-  // Path filePath = Paths.get(fileName);
-  //
-  // Path parentDir = filePath.getParent();
-  // if (!Files.exists(parentDir)) {
-  // try {
-  // Files.createDirectories(parentDir);
-  // } catch (IOException e) {
-  // // TODO Auto-generated catch block
-  // e.printStackTrace();
-  // }
-  // }
-  //
-  // try {
-  // Files.write(filePath, reportLines, Charset.forName("UTF-8"));
-  // } catch (IOException e) {
-  // // TODO Auto-generated catch block
-  // e.printStackTrace();
-  // }
-  //
-  // }
-
   /**
    * Constructor
    *
-   * @param dwf
+   * @param dwfProxy
    * @param mainFrameContainer
    */
-  public QCApp(DWFProxy dwf, Container mainFrameContainer) {
+  public QCApp(DWFProxy dwfProxy, Container mainFrameContainer) {
 
-    this.dwfProxy = dwf;
+    super(dwfProxy);
     createAndShowGUI(mainFrameContainer);
   }
 
@@ -145,7 +115,6 @@ public class QCApp extends App implements PropertyChangeListener {
             JOptionPane.showMessageDialog(mainFrameContainer, "Folder for this serial number already exixts!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
           }
-
         } catch (IOException ioException) {
 
           JOptionPane.showMessageDialog(mainFrameContainer, e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -186,7 +155,6 @@ public class QCApp extends App implements PropertyChangeListener {
 
         // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
         captureWorker.cancel(true);
-
       }
     });
 
@@ -256,8 +224,11 @@ public class QCApp extends App implements PropertyChangeListener {
               dwfProxy.setAD2Capturing(false);
             }
 
-            byte status = dwfProxy.getDwf().FDwfAnalogInStatus(true);
-            // System.out.println("status: " + status);
+            // Read In Data
+            boolean success = capturePulseData();
+            if (!success) {
+              continue;
+            }
 
             int validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
             // System.out.println("validSamples: " + validSamples);
@@ -287,7 +258,7 @@ public class QCApp extends App implements PropertyChangeListener {
                 }
               }
 
-              publish(new double[][] { rawdata1, voltage, current });
+              publish(new double[][]{rawdata1, voltage, current});
 
               // System.out.println("voltage: " + Arrays.toString(voltage));
               // System.out.println("current: " + Arrays.toString(current));
@@ -303,7 +274,6 @@ public class QCApp extends App implements PropertyChangeListener {
                   else if (voltage[i] < minV * QCPreferences.P_BELOW_MAX_MIN_V) {
                     resistance.add(Math.abs(voltage[i] / (rawdata2[i] / model.getSeriesR())));
                   }
-
                 }
 
                 if (resistance.size() > 0) {
@@ -311,9 +281,7 @@ public class QCApp extends App implements PropertyChangeListener {
                   high_resistance_measurments.add((double) maxMinVar.getMax());
                   low_resistance_measurments.add((double) maxMinVar.getMin());
                 }
-
               }
-
             }
 
             // go to next memristor
@@ -338,7 +306,6 @@ public class QCApp extends App implements PropertyChangeListener {
                 }
 
                 reportLines.add("|" + (j) + "|" + f.format(lrs.getAve() / 1000.0) + "|" + f.format(hrs.getAve() / 1000.0) + "|" + q + "|" + (pass ? "PASS" : "FAIL") + "|");
-
               }
               else {
                 reportLines.add("|" + (j) + "| null | null | null | null |");
@@ -353,10 +320,8 @@ public class QCApp extends App implements PropertyChangeListener {
               dwfProxy.setAllIOStates(0b0000_0000);
 
               break;
-
             }
           }
-
         }
         controlPanel.getStopButton().doClick();
 
@@ -405,13 +370,11 @@ public class QCApp extends App implements PropertyChangeListener {
               ex.printStackTrace();
             }
           }
-
         }
 
         (new SaveReportThread()).start();
 
         JOptionPane.showMessageDialog(null, "Classification: " + classification);
-
       } catch (Exception e) {
         e.printStackTrace();
       }
@@ -454,29 +417,29 @@ public class QCApp extends App implements PropertyChangeListener {
 
     switch (propName) {
 
-    case AppModel.EVENT_WAVEFORM_UPDATE:
+      case AppModel.EVENT_WAVEFORM_UPDATE:
 
-      if (dwfProxy.isAD2Capturing()) {
+        if (dwfProxy.isAD2Capturing()) {
 
-        // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
-        captureWorker.cancel(true);
+          // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
+          captureWorker.cancel(true);
 
-        try {
-          Thread.sleep(10);
-        } catch (InterruptedException e) {
-          e.printStackTrace();
+          try {
+            Thread.sleep(10);
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+
+          // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
+          captureWorker = new QCCaptureWorker();
+          captureWorker.execute();
+
+          mainPanel.switch2IVChart();
         }
+        break;
 
-        // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
-        captureWorker = new QCCaptureWorker();
-        captureWorker.execute();
-
-        mainPanel.switch2IVChart();
-      }
-      break;
-
-    default:
-      break;
+      default:
+        break;
     }
   }
 

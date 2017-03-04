@@ -28,6 +28,8 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.pulse.plot;
 
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.AppModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferences;
@@ -43,6 +45,8 @@ public class PlotModel extends AppModel {
 
   Double yMaxGV = null;
   Double yMinGV = null;
+
+  List<Number> gData = new ArrayList<>();
 
   /**
    * Here is where the Controller registers itself as a listener to model changes.
@@ -103,5 +107,10 @@ public class PlotModel extends AppModel {
   @Override
   public void loadModelFromPrefs() {
 
+  }
+
+  public List<Number> getGData() {
+
+    return gData;
   }
 }

@@ -64,6 +64,9 @@ public class PlotPanel extends JPanel {
   XYChart gvChart;
   XChartPanel<XYChart> gvChartPanel;
 
+  XYChart gChart;
+  XChartPanel<XYChart> gChartPanel;
+
   private final JCheckBox freezeYAxisCheckBoxIV;
 
   private final JPanel gvChartControlPanel;
@@ -86,7 +89,6 @@ public class PlotPanel extends JPanel {
     XYSeries series = waveformChart.addSeries("waveform", new double[]{0}, new double[]{0});
     series.setMarker(SeriesMarkers.NONE); // waveformChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
     waveformChartPanel = new XChartPanel<>(waveformChart);
-    add(waveformChartPanel, BorderLayout.CENTER);
 
     // ///////////////////////////////////////////////////////////
     // Capture Chart ////////////////////////////////////////////
@@ -94,13 +96,10 @@ public class PlotPanel extends JPanel {
 
     captureChart = new XYChartBuilder().width(600).title("Capture").height(400).yAxisTitle("Voltage [V]").xAxisTitle("Time [µs]").build();
     captureChart.getStyler().setLegendPosition(LegendPosition.InsideNE);
-
     series = captureChart.addSeries("V1", new double[]{0}, new double[]{0});
     series.setMarker(SeriesMarkers.NONE);
-
     series = captureChart.addSeries("V2", new double[]{0}, new double[]{0});
     series.setMarker(SeriesMarkers.NONE);
-
     captureChartPanel = new XChartPanel<>(captureChart);
 
     // ///////////////////////////////////////////////////////////
@@ -110,9 +109,7 @@ public class PlotPanel extends JPanel {
     ivChart = new XYChartBuilder().width(600).title("I-T").height(400).yAxisTitle("Current [" + PulsePreferences.CURRENT_UNIT.getLabel() + "]").xAxisTitle("Time [µs]").build();
     ivChart.getStyler().setLegendVisible(false);
     ivChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);
-
-    series = ivChart.addSeries("iv", new double[]{0}, new double[]{0});
-
+    ivChart.addSeries("iv", new double[]{0}, new double[]{0});
     ivChartPanel = new XChartPanel<>(ivChart);
 
     // ///////////////////////////////////////////////////////////
@@ -122,14 +119,20 @@ public class PlotPanel extends JPanel {
     gvChart = new XYChartBuilder().width(100).title("G-T").height(100).yAxisTitle("Conductance [" + PulsePreferences.CONDUCTANCE_UNIT.getLabel() + "]").xAxisTitle("Time [µs]").build();
     gvChart.getStyler().setLegendVisible(false);
     gvChart.getStyler().setYAxisMin(0.0);
-
-    // rvChart.getStyler().setYAxisMax(200.0);
-
     gvChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);
-
-    series = gvChart.addSeries("gv", new double[]{0}, new double[]{0});
-
+    gvChart.addSeries("gv", new double[]{0}, new double[]{0});
     gvChartPanel = new XChartPanel<>(gvChart);
+
+    // ///////////////////////////////////////////////////////////
+    // G Chart ////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////////
+
+    gChart = new XYChartBuilder().width(300).title("G").height(100).xAxisTitle("Pulse Number").yAxisTitle("Conductance [" + PulsePreferences.CONDUCTANCE_UNIT.getLabel() + "]").build();
+    gChart.getStyler().setLegendVisible(false);
+    gChart.getStyler().setYAxisMin(0.0);
+    gChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);
+    gChart.addSeries("g", new double[]{0}, new double[]{0});
+    gChartPanel = new XChartPanel<>(gChart);
 
     // ///////////////////////////////////////////////////////////
     // Radio Buttons ////////////////////////////////////////////
@@ -182,6 +185,7 @@ public class PlotPanel extends JPanel {
       // System.out.println("switch2WaveformChart");
       removeAll();
       add(waveformChartPanel, BorderLayout.CENTER);
+      add(gChartPanel, BorderLayout.EAST);
       addRadioButtons();
       revalidate();
       repaint();
@@ -194,6 +198,7 @@ public class PlotPanel extends JPanel {
       // System.out.println("switch2CaptureChart");
       removeAll();
       add(captureChartPanel, BorderLayout.CENTER);
+      add(gChartPanel, BorderLayout.EAST);
       addRadioButtons();
       revalidate();
       repaint();
@@ -206,6 +211,7 @@ public class PlotPanel extends JPanel {
       // System.out.println("switch2IVChart");
       removeAll();
       add(ivChartPanel, BorderLayout.CENTER);
+      add(gChartPanel, BorderLayout.EAST);
       addRadioButtons();
       addYAxisFreezeCheckBoxIV();
       revalidate();
@@ -219,6 +225,7 @@ public class PlotPanel extends JPanel {
       // System.out.println("switch2GVChart");
       removeAll();
       add(gvChartPanel, BorderLayout.CENTER);
+      add(gChartPanel, BorderLayout.EAST);
       addRadioButtons();
       addChartControlGV();
       revalidate();
@@ -250,7 +257,6 @@ public class PlotPanel extends JPanel {
 
     return freezeYAxisCheckBoxGV;
   }
-
 
   public double getIVChartMax() {
 
@@ -315,5 +321,15 @@ public class PlotPanel extends JPanel {
   public XChartPanel<XYChart> getGvChartPanel() {
 
     return gvChartPanel;
+  }
+
+  public XYChart getGChart() {
+
+    return gChart;
+  }
+
+  public XChartPanel<XYChart> getGChartPanel() {
+
+    return gChartPanel;
   }
 }

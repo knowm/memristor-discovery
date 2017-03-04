@@ -44,6 +44,7 @@ import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.App;
 import org.knowm.memristor.discovery.gui.mvc.experiments.AppModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferences.Waveform;
+import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.ConductancePreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.experiment.ExperimentController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.experiment.ExperimentModel;
@@ -56,8 +57,6 @@ import org.knowm.memristor.discovery.utils.WaveformUtils;
 import org.knowm.waveforms4j.DWF;
 
 public class PulseApp extends App implements PropertyChangeListener {
-
-  private final DWFProxy dwfProxy;
 
   private final ExperimentModel experimentModel = new ExperimentModel();
   private ExperimentPanel experimentPanel;
@@ -77,7 +76,7 @@ public class PulseApp extends App implements PropertyChangeListener {
    */
   public PulseApp(DWFProxy dwfProxy, Container mainFrameContainer) {
 
-    this.dwfProxy = dwfProxy;
+    super(dwfProxy);
 
     experimentPanel = new ExperimentPanel();
     JScrollPane jScrollPane = new JScrollPane(experimentPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -152,6 +151,8 @@ public class PulseApp extends App implements PropertyChangeListener {
     propertyChange(evt);
   }
 
+  boolean initialPulseTrainCaptured = false;
+
   private class CaptureWorker extends SwingWorker<Boolean, double[][]> {
 
     @Override
@@ -177,36 +178,31 @@ public class PulseApp extends App implements PropertyChangeListener {
 
       // custom waveform
       double[] customWaveform = WaveformUtils.generateCustomWaveform(Waveform.Square, experimentModel.getAmplitude(), experimentModel.getCalculatedFrequency());
-      double[] readPulseWaveform = WaveformUtils.generateCustomWaveform(Waveform.Square, 0.2, experimentModel.getCalculatedFrequency());
-      double[] waveformWithReadPulses = WaveformUtils.concat(customWaveform, readPulseWaveform);
+      // double[] readPulseWaveform = WaveformUtils.generateCustomWaveform(Waveform.Square, 0.2, experimentModel.getCalculatedFrequency());
+      // double[] waveformWithReadPulses = WaveformUtils.concat(customWaveform, readPulseWaveform);
 
-      // dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, experimentModel.getCalculatedFrequency(), 0, experimentModel.getPulseNumber(), customWaveform);
-      dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, experimentModel.getCalculatedFrequency(), 0, experimentModel.getPulseNumber() * 2, waveformWithReadPulses);
+      dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, experimentModel.getCalculatedFrequency(), 0, experimentModel.getPulseNumber(), customWaveform);
+      // dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, experimentModel.getCalculatedFrequency(), 0, experimentModel.getPulseNumber() * 2, waveformWithReadPulses);
 
       //////////////////////////////////
       //////////////////////////////////
 
       // Read In Data
-      int bailCount = 0;
-      while (true) {
-        byte status = dwfProxy.getDwf().FDwfAnalogInStatus(true);
-        System.out.println("status: " + status);
-        if (status == 2) { // done capturing
-          break;
-        }
-        if (bailCount++ > 10) {
-          System.out.println("Bailed!!!");
-          return false;
-        }
+      boolean success = capturePulseData();
+      if (!success) {
+        System.out.println("here");
+        return false;
       }
+
       int validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
       double[] v1 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
       double[] v2 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
-      // System.out.println("validSamples: " + validSamples);
+      System.out.println("validSamples: " + validSamples);
 
-      dwfProxy.getDwf().FDwfAnalogInConfigure(false, false);
+      // Stop Analog In and Out
+      dwfProxy.getDwf().stopWave(DWF.WAVEFORM_CHANNEL_1);
+      dwfProxy.getDwf().stopAnalogCaptureBothChannels();
       dwfProxy.setAD2Capturing(false);
-      dwfProxy.getDwf().FDwfAnalogOutConfigure(DWF.WAVEFORM_CHANNEL_1, false); // stop function generator
 
       ///////////////////////////
       // Create Chart Data //////
@@ -242,8 +238,77 @@ public class PulseApp extends App implements PropertyChangeListener {
         conductance[i] = G;
       }
 
-      publish(new double[][]{timeData, V1Trimmed, V2Zeroed, current, conductance});
+      publish(new double[][]{timeData, V1Trimmed, V2Zeroed, current, conductance, null});
 
+      // New addition: Loop and capture read data (0.1V) until stop is pushed.
+
+      while (!initialPulseTrainCaptured) {
+        System.out.println("Waiting...");
+        Thread.sleep(50); // Attempt to allow Analog In to get fired up for the next set of pulses
+      }
+
+      while (!isCancelled()) {
+
+        try {
+          Thread.sleep(500); // TODO change this to variable amount
+        } catch (InterruptedException e) {
+          // eat it. caught when interrupt is called
+          dwfProxy.getDwf().stopWave(DWF.WAVEFORM_CHANNEL_1);
+          dwfProxy.getDwf().stopAnalogCaptureBothChannels();
+          dwfProxy.setAD2Capturing(false);
+        }
+
+        System.out.println("capturing read pulse");
+        //////////////////////////////////
+        // Analog In /////////////////
+        //////////////////////////////////
+
+        dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02 * (experimentModel.getAmplitude() > 0 ? 1 : -1));
+        Thread.sleep(20); // Attempt to allow Analog In to get fired up for the next set of pulses
+
+        //////////////////////////////////
+        // Pulse Out /////////////////
+        //////////////////////////////////
+
+        // custom waveform
+        customWaveform = WaveformUtils.generateCustomWaveform(Waveform.Square, 0.1, experimentModel.getCalculatedFrequency());
+        dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, experimentModel.getCalculatedFrequency(), 0, 1, customWaveform);
+
+        // Read In Data
+        success = capturePulseData();
+        if (!success) {
+          System.out.println("returning false");
+          return false;
+        }
+
+        // Get Raw Data from Oscilloscope
+        validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
+        v1 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
+        v2 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
+        // System.out.println("validSamples: " + validSamples);
+
+        ///////////////////////////
+        // Create Chart Data //////
+        ///////////////////////////
+
+        trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, 0.05);
+        V1Trimmed = trimmedRawData[0];
+        V2Trimmed = trimmedRawData[1];
+        bufferLength = V1Trimmed.length;
+
+        // create conductance data - a single number equal to the average of all points in the trimmed data
+        double runningTotal = 0.0;
+        for (int i = 3; i < bufferLength - 3; i++) {
+          double I = V2Trimmed[i] / experimentModel.getSeriesR();
+          double G = I / (V1Trimmed[i] - V2Trimmed[i]);
+          G = G < 0 ? 0 : G;
+          runningTotal += G;
+        }
+        // conductance value packed in a one-element array
+        double[] conductanceAve = new double[]{runningTotal / (bufferLength - 6) * ConductancePreferences.CONDUCTANCE_UNIT.getDivisor()};
+
+        publish(new double[][]{null, null, null, null, null, conductanceAve});
+      }
       return true;
     }
 
@@ -254,28 +319,36 @@ public class PulseApp extends App implements PropertyChangeListener {
 
         double[][] newestChunk = chunks.get(chunks.size() - 1);
 
-        // System.out.println("" + chunks.size());
+        if (newestChunk[5] == null) {
+          // System.out.println("" + chunks.size());
+          initialPulseTrainCaptured = true;
 
-        // Messages received from the doInBackground() (when invoking the publish() method). See: http://www.javacreed.com/swing-worker-example/
+          plotController.udpateVtChart(newestChunk[0], newestChunk[1], newestChunk[2], experimentModel.getPulseWidth(), experimentModel
+              .getAmplitude());
+          plotController.udpateIVChart(newestChunk[0], newestChunk[3], experimentModel.getPulseWidth(), experimentModel
+              .getAmplitude());
+          plotController.updateGVChart(newestChunk[0], newestChunk[4], experimentModel.getPulseWidth(), experimentModel
+              .getAmplitude());
 
-        plotController.udpateVtChart(newestChunk[0], newestChunk[1], newestChunk[2], experimentModel.getPulseWidth(), experimentModel
-            .getAmplitude());
-        plotController.udpateIVChart(newestChunk[0], newestChunk[3], experimentModel.getPulseWidth(), experimentModel
-            .getAmplitude());
-        plotController.updateGVChart(newestChunk[0], newestChunk[4], experimentModel.getPulseWidth(), experimentModel
-            .getAmplitude());
-
-        if (plotPanel.getCaptureButton().isSelected()) {
-          plotController.repaintVtChart();
-        }
-        else if (plotPanel.getIVButton().isSelected()) {
-          plotController.repaintItChart();
+          if (plotPanel.getCaptureButton().isSelected()) {
+            plotController.repaintVtChart();
+          }
+          else if (plotPanel.getIVButton().isSelected()) {
+            plotController.repaintItChart();
+          }
+          else {
+            plotController.repaintRtChart();
+          }
         }
         else {
-          plotController.repaintRtChart();
+
+          // update G chart
+          // System.out.println("updating G Chart");
+          plotController.updateGChart(newestChunk[5][0]);
+          plotController.repaintGChart();
         }
       }
-      experimentPanel.getStopButton().doClick();
+      // experimentPanel.getStopButton().doClick();
     }
   }
 

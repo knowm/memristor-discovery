@@ -264,21 +264,17 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
 
     // app = new HysteresisApp(dwf, mainFrameContainer);
     // appID = "Hysteresis";
-    // mainFrame.setTitle(FRAME_TITLE_BASE + "Hysteresis");
 
     // app = new DCApp(dwf, mainFrameContainer);
     // appID = "DC";
-    // mainFrame.setTitle(FRAME_TITLE_BASE + "DC");
-
-    app = new ConductanceApp(dwf, mainFrameContainer);
-    appID = "Conductance";
-    mainFrame.setTitle(FRAME_TITLE_BASE + "Conductance");
 
     // app = new ConductanceApp(dwf, mainFrameContainer);
-    // appID = "Pulse2";
-    // mainFrame.setTitle(FRAME_TITLE_BASE + appID);
+    // appID = "Conductance";
 
-    // app = new QCApp(dwf, mainFrameContainer);
+    app = new PulseApp(dwf, mainFrameContainer);
+    appID = "Pulse";
+
+    mainFrame.setTitle(FRAME_TITLE_BASE + appID);
 
     // Display the window.
     mainFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);

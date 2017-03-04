@@ -55,8 +55,6 @@ import org.knowm.waveforms4j.DWF;
 
 public class DCApp extends App implements PropertyChangeListener {
 
-  private final DWFProxy dwfProxy;
-
   private final ExperimentModel experimentModel = new ExperimentModel();
   private ExperimentPanel experimentPanel;
 
@@ -75,7 +73,7 @@ public class DCApp extends App implements PropertyChangeListener {
    */
   public DCApp(DWFProxy dwfProxy, Container mainFrameContainer) {
 
-    this.dwfProxy = dwfProxy;
+    super(dwfProxy);
 
     experimentPanel = new ExperimentPanel();
     JScrollPane jScrollPane = new JScrollPane(experimentPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -176,21 +174,9 @@ public class DCApp extends App implements PropertyChangeListener {
       //////////////////////////////////
 
       // Read In Data
-      int bailCount = 0;
-      while (true) {
-        byte status = dwfProxy.getDwf().FDwfAnalogInStatus(true);
-        System.out.println("status: " + status);
-        if (status == 2) { // done capturing
-          // Stop Analog In and Out
-          dwfProxy.getDwf().FDwfAnalogInConfigure(false, false);
-          dwfProxy.setAD2Capturing(false);
-          dwfProxy.getDwf().FDwfAnalogOutConfigure(DWF.WAVEFORM_CHANNEL_1, false); // stop function generator
-          break;
-        }
-        if (bailCount++ > 10) {
-          System.out.println("Bailed!!!");
-          return false;
-        }
+      boolean success = capturePulseData();
+      if (!success) {
+        return false;
       }
 
       // Get Raw Data from Oscilloscope

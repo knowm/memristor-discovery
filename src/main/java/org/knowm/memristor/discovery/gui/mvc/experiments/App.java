@@ -27,11 +27,23 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments;
 
+import org.knowm.memristor.discovery.DWFProxy;
+
 public abstract class App {
+
+  public final DWFProxy dwfProxy;
 
   public abstract AppModel getExperimentModel();
 
   public abstract AppModel getPlotModel();
+
+  /**
+   * @param dwfProxy
+   */
+  public App(DWFProxy dwfProxy) {
+
+    this.dwfProxy = dwfProxy;
+  }
 
   public void refreshModelFromPreferences() {
 
@@ -39,4 +51,21 @@ public abstract class App {
     getPlotModel().loadModelFromPrefs();
   }
 
+  public boolean capturePulseData() {
+
+    // Read In Data
+    int bailCount = 0;
+    while (true) {
+      byte status = dwfProxy.getDwf().FDwfAnalogInStatus(true);
+      System.out.println("status: " + status);
+      if (status == 2) { // done capturing
+        return true;
+      }
+      if (bailCount++ > 10) {
+        System.out.println("Bailed!!!");
+        return false;
+      }
+    }
+
+  }
 }

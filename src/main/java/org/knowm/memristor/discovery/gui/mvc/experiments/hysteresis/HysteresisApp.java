@@ -55,8 +55,6 @@ import org.knowm.waveforms4j.DWF.AcquisitionMode;
 
 public class HysteresisApp extends App implements PropertyChangeListener {
 
-  private final DWFProxy dwfProxy;
-
   private final ExperimentModel experimentModel = new ExperimentModel();
   private final ExperimentPanel experimentPanel;
 
@@ -75,7 +73,7 @@ public class HysteresisApp extends App implements PropertyChangeListener {
    */
   public HysteresisApp(DWFProxy dwfProxy, Container mainFrameContainer) {
 
-    this.dwfProxy = dwfProxy;
+    super(dwfProxy);
 
     experimentPanel = new ExperimentPanel();
     JScrollPane jScrollPane = new JScrollPane(experimentPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -164,28 +162,21 @@ public class HysteresisApp extends App implements PropertyChangeListener {
       dwfProxy.getDwf().startAnalogCaptureBothChannelsImmediately(sampleFrequency, HysteresisPreferences.CAPTURE_BUFFER_SIZE, AcquisitionMode.ScanShift);
 
       dwfProxy.setAD2Capturing(true);
-
       while (!isCancelled()) {
 
         try {
           Thread.sleep(50);
         } catch (InterruptedException e) {
           // eat it. caught when interrupt is called
-
-          // AnalogOut
           dwfProxy.getDwf().stopWave(DWF.WAVEFORM_CHANNEL_1);
-
-          // Analog In
           dwfProxy.getDwf().stopAnalogCaptureBothChannels();
-
           dwfProxy.setAD2Capturing(false);
-
-          // System.out.println("capture worker shut down.");
         }
 
+        // Read In Data
         byte status = dwfProxy.getDwf().FDwfAnalogInStatus(true);
-        // System.out.println("status: " + status);
-
+        // System.out.println("status = " + status);
+        
         int validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
         // System.out.println("validSamples: " + validSamples);
 

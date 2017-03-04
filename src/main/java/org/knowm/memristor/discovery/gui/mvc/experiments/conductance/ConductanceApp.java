@@ -50,14 +50,11 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.experiment.
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.plot.PlotController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.plot.PlotModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.plot.PlotPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCPreferences;
 import org.knowm.memristor.discovery.utils.PostProcessDataUtils;
 import org.knowm.memristor.discovery.utils.WaveformUtils;
 import org.knowm.waveforms4j.DWF;
 
 public class ConductanceApp extends App implements PropertyChangeListener {
-
-  private final DWFProxy dwfProxy;
 
   private final ExperimentModel experimentModel = new ExperimentModel();
   private ExperimentPanel experimentPanel;
@@ -78,7 +75,7 @@ public class ConductanceApp extends App implements PropertyChangeListener {
    */
   public ConductanceApp(DWFProxy dwfProxy, Container mainFrameContainer) {
 
-    this.dwfProxy = dwfProxy;
+    super(dwfProxy);
 
     experimentPanel = new ExperimentPanel();
     JScrollPane jScrollPane = new JScrollPane(experimentPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -198,21 +195,9 @@ public class ConductanceApp extends App implements PropertyChangeListener {
       dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, experimentModel.getCalculatedFrequency(), 0, 1, customWaveform);
 
       // Read In Data
-      int bailCount = 0;
-      while (true) {
-        byte status = dwfProxy.getDwf().FDwfAnalogInStatus(true);
-        // System.out.println("status: " + status);
-        if (status == 2) { // done capturing
-          // Stop Analog In and Out
-          dwfProxy.getDwf().FDwfAnalogInConfigure(false, false);
-          dwfProxy.setAD2Capturing(false);
-          dwfProxy.getDwf().FDwfAnalogOutConfigure(DWF.WAVEFORM_CHANNEL_1, false); // stop function generator
-          break;
-        }
-        if (bailCount++ > 10) {
-          System.out.println("Bailed!!!");
-          return false;
-        }
+      boolean success = capturePulseData();
+      if (!success) {
+        return false;
       }
 
       // Get Raw Data from Oscilloscope
@@ -232,7 +217,7 @@ public class ConductanceApp extends App implements PropertyChangeListener {
 
       // create time data
       double[] timeData = new double[bufferLength];
-      double timeStep = 1 / sampleFrequency * DCPreferences.TIME_UNIT.getDivisor();
+      double timeStep = 1 / sampleFrequency * ConductancePreferences.TIME_UNIT.getDivisor();
       for (int i = 0; i < bufferLength; i++) {
         timeData[i] = i * timeStep;
       }
@@ -240,7 +225,7 @@ public class ConductanceApp extends App implements PropertyChangeListener {
       // create current data
       double[] current = new double[bufferLength];
       for (int i = 0; i < bufferLength; i++) {
-        current[i] = V2Trimmed[i] / experimentModel.getSeriesR() * DCPreferences.CURRENT_UNIT.getDivisor();
+        current[i] = V2Trimmed[i] / experimentModel.getSeriesR() * ConductancePreferences.CURRENT_UNIT.getDivisor();
       }
 
       // create conductance data
@@ -248,7 +233,7 @@ public class ConductanceApp extends App implements PropertyChangeListener {
       for (int i = 0; i < bufferLength; i++) {
 
         double I = V2Trimmed[i] / experimentModel.getSeriesR();
-        double G = I / (V1Trimmed[i] - V2Trimmed[i]) * DCPreferences.CONDUCTANCE_UNIT.getDivisor();
+        double G = I / (V1Trimmed[i] - V2Trimmed[i]) * ConductancePreferences.CONDUCTANCE_UNIT.getDivisor();
         G = G < 0 ? 0 : G;
         conductance[i] = G;
       }
@@ -264,13 +249,11 @@ public class ConductanceApp extends App implements PropertyChangeListener {
       if (allowPlotting) {
 
         double[][] newestChunk = chunks.get(chunks.size() - 1);
-
         // System.out.println("" + chunks.size());
 
         plotController.udpateVtChart(newestChunk[0], newestChunk[1], newestChunk[2], experimentModel.getResetPulseWidth(), experimentModel
             .getResetAmplitude());
         plotController.udpateIVChart(newestChunk[1], newestChunk[3], experimentModel.getResetPulseWidth(), experimentModel.getResetAmplitude());
-        // plotController.updateGVChart(newestChunk[4], experimentModel.getResetPulseWidth(), experimentModel.getResetAmplitude());
         plotController.updateGVChartReset(newestChunk[1], newestChunk[4], experimentModel.getResetPulseWidth(), experimentModel
             .getResetAmplitude());
 
@@ -293,19 +276,15 @@ public class ConductanceApp extends App implements PropertyChangeListener {
     @Override
     protected Boolean doInBackground() throws Exception {
 
-      boolean isConductanceReached = false;
-
-      int counter = 0;
-      while (!isCancelled() || !isConductanceReached) {
+      while (!isCancelled()) {
 
         try {
           Thread.sleep(100); // TODO change this to a small amount after debugged and working app
         } catch (InterruptedException e) {
           // eat it. caught when interrupt is called
-
-          dwfProxy.getDwf().FDwfAnalogInConfigure(false, false);
+          dwfProxy.getDwf().stopWave(DWF.WAVEFORM_CHANNEL_1);
+          dwfProxy.getDwf().stopAnalogCaptureBothChannels();
           dwfProxy.setAD2Capturing(false);
-          dwfProxy.getDwf().FDwfAnalogOutConfigure(DWF.WAVEFORM_CHANNEL_1, false); // stop function generator
         }
 
         // 1. set pulse
@@ -327,20 +306,6 @@ public class ConductanceApp extends App implements PropertyChangeListener {
         double[] customWaveform = WaveformUtils.generateCustomWaveform(Waveform.Square, experimentModel.getSetAmplitude(), experimentModel.getCalculatedFrequency());
         dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, experimentModel.getCalculatedFrequency(), 0, 1, customWaveform);
 
-        // Read In Data
-        while (true) {
-          byte status = dwfProxy.getDwf().FDwfAnalogInStatus(true);
-          // System.out.println("status: " + status);
-          if (status == 2) { // done capturing
-            // Stop Analog In and Out
-            dwfProxy.getDwf().FDwfAnalogInConfigure(false, false);
-            dwfProxy.getDwf().FDwfAnalogOutConfigure(DWF.WAVEFORM_CHANNEL_1, false); // stop function generator
-            break;
-          }
-        }
-
-        // 2. Generate plot data
-
         // Get Raw Data from Oscilloscope
         int validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
         double[] v1 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
@@ -358,7 +323,7 @@ public class ConductanceApp extends App implements PropertyChangeListener {
 
         // create time data
         double[] timeData = new double[bufferLength];
-        double timeStep = 1 / sampleFrequency * DCPreferences.TIME_UNIT.getDivisor();
+        double timeStep = 1 / sampleFrequency * ConductancePreferences.TIME_UNIT.getDivisor();
         for (int i = 0; i < bufferLength; i++) {
           timeData[i] = i * timeStep;
         }
@@ -366,29 +331,23 @@ public class ConductanceApp extends App implements PropertyChangeListener {
         // create current data
         double[] current = new double[bufferLength];
         for (int i = 0; i < bufferLength; i++) {
-          current[i] = V2Trimmed[i] / experimentModel.getSeriesR() * DCPreferences.CURRENT_UNIT.getDivisor();
+          current[i] = V2Trimmed[i] / experimentModel.getSeriesR() * ConductancePreferences.CURRENT_UNIT.getDivisor();
         }
 
-        // create conductance data - a single number equal to the averag eof all points in the trimmed data
+        // create conductance data - a single number equal to the average of all points in the trimmed data
         double runningTotal = 0.0;
         for (int i = 3; i < bufferLength - 3; i++) {
-
           double I = V2Trimmed[i] / experimentModel.getSeriesR();
-          double G = I / (V1Trimmed[i] - V2Trimmed[i]) * DCPreferences.CONDUCTANCE_UNIT.getDivisor();
+          double G = I / (V1Trimmed[i] - V2Trimmed[i]);
           G = G < 0 ? 0 : G;
           runningTotal += G;
         }
-        double[] conductance = new double[]{runningTotal / (bufferLength - 6)};
+        // conductance value packed in a one-element array
+        double[] conductance = new double[]{runningTotal / (bufferLength - 6) * ConductancePreferences.CONDUCTANCE_UNIT.getDivisor()};
 
         publish(new double[][]{timeData, V1Trimmed, V2Trimmed, current, conductance});
-
-        if (counter++ > 10) {
-          isConductanceReached = true;
-        }
-        // TODO 3. Break if conductance reaches desired level.
-
       }
-      // dwfProxy.setAD2Capturing(false);
+
       experimentPanel.getStopButton().doClick();
       return true;
     }
