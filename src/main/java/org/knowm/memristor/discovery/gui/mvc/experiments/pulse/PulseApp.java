@@ -238,7 +238,7 @@ public class PulseApp extends App implements PropertyChangeListener {
       // New addition: Loop and capture read data (0.1V) until stop is pushed.
 
       while (!initialPulseTrainCaptured) {
-        System.out.println("Waiting...");
+        // System.out.println("Waiting...");
         Thread.sleep(50);
       }
 
