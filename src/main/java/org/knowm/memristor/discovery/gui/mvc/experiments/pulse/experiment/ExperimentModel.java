@@ -232,11 +232,16 @@ public class ExperimentModel extends AppModel {
   public void updateEnergyData() {
 
     // calculate applied voltage
-    if (isMemristorVoltageDropSelected && lastG > 0.0) {
+    if (lastG > 0.0) {
+      if (isMemristorVoltageDropSelected) {
 
-      this.appliedAmplitude = amplitude / (1 - seriesResistance / (seriesResistance + getLastR()));
-      this.appliedCurrent = appliedAmplitude / (lastG + seriesResistance)* PulsePreferences.CURRENT_UNIT.getDivisor();
-      this.appliedEnergy = appliedAmplitude * appliedAmplitude / (lastG + seriesResistance) * pulseNumber * pulseWidth ;
+        this.appliedAmplitude = amplitude / (1 - seriesResistance / (seriesResistance + getLastR()));
+      }
+      else {
+        this.appliedAmplitude = amplitude;
+      }
+      this.appliedCurrent = appliedAmplitude / (lastG + seriesResistance) * PulsePreferences.CURRENT_UNIT.getDivisor();
+      this.appliedEnergy = appliedAmplitude * appliedAmplitude / (lastG + seriesResistance) * pulseNumber * pulseWidth;
     }
   }
 }

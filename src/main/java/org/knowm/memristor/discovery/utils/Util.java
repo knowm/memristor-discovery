@@ -28,6 +28,8 @@
 package org.knowm.memristor.discovery.utils;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Properties;
 
 import javax.swing.ImageIcon;
@@ -86,5 +88,15 @@ public class Util {
       logger.error("Could not find file: " + path);
       return null;
     }
+  }
+
+  public static  double round(double value, int places) {
+
+    if (places < 0)
+      throw new IllegalArgumentException();
+
+    BigDecimal bd = new BigDecimal(value);
+    bd = bd.setScale(places, RoundingMode.HALF_UP);
+    return bd.doubleValue();
   }
 }

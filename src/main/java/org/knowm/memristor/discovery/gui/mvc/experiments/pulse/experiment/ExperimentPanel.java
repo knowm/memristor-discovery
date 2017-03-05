@@ -43,6 +43,7 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferences;
+import org.knowm.memristor.discovery.utils.Util;
 
 /**
  * Provides controls for running the experiment
@@ -78,7 +79,6 @@ public class ExperimentPanel extends JPanel {
     GridBagConstraints c = new GridBagConstraints();
     c.fill = GridBagConstraints.HORIZONTAL;
     setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
-    // setBackground(Color.yellow);
 
     c.gridx = 0;
 
@@ -214,9 +214,9 @@ public class ExperimentPanel extends JPanel {
     // System.out.println("Applied Current = " + appliedCurrent + " " + PulsePreferences.CURRENT_UNIT.getLabel());
     // System.out.println("Applied Energy = " + appliedEnergy + " nJ");
     // System.out.println("==============");
-    appliedAmplitudeLabel.setText("Applied Amplitude [V]: " + appliedAmplitude);
-    currentLabel.setText("Current [" + PulsePreferences.CURRENT_UNIT.getLabel() + "]: " + appliedCurrent);
-    energyLabel.setText("Energy [nJ]: " + appliedEnergy);
+    appliedAmplitudeLabel.setText("Applied Amplitude [V]: " + Util.round(appliedAmplitude, 2));
+    currentLabel.setText("Current [" + PulsePreferences.CURRENT_UNIT.getLabel() + "]: " + Util.round(appliedCurrent, 2));
+    energyLabel.setText("Energy [nJ]: " + Util.round(appliedEnergy, 2));
   }
 
   public JSlider getAmplitudeSlider() {

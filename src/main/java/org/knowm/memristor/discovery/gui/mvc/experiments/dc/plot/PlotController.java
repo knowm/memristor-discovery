@@ -31,10 +31,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.AppModel;
+import org.knowm.memristor.discovery.utils.Util;
 
 public class PlotController implements PropertyChangeListener {
 
@@ -206,17 +205,7 @@ public class PlotController implements PropertyChangeListener {
 
   private double getFormattedAmplitude(double amplitude) {
 
-    return round(amplitude, 2);
-  }
-
-  public double round(double value, int places) {
-
-    if (places < 0)
-      throw new IllegalArgumentException();
-
-    BigDecimal bd = new BigDecimal(value);
-    bd = bd.setScale(places, RoundingMode.HALF_UP);
-    return bd.doubleValue();
+    return Util.round(amplitude, 2);
   }
 
   /**

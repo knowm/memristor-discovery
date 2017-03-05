@@ -33,13 +33,12 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 import javax.swing.JTextField;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.AppModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.HysteresisPreferences;
+import org.knowm.memristor.discovery.utils.Util;
 
 public class PlotController implements PropertyChangeListener {
 
@@ -224,21 +223,9 @@ public class PlotController implements PropertyChangeListener {
     return "Amplitude = " + getFormattedAmplitude(amplitude) + " V, Frequency = " + frequency + " Hz, Offset = " + getFormattedAmplitude(offset) + " V";
   }
 
-  // TODO move to utils class
   private double getFormattedAmplitude(double amplitude) {
 
-    return round(amplitude, 2);
-  }
-
-  // TODO move to utils class
-  public double round(double value, int places) {
-
-    if (places < 0)
-      throw new IllegalArgumentException();
-
-    BigDecimal bd = new BigDecimal(value);
-    bd = bd.setScale(places, RoundingMode.HALF_UP);
-    return bd.doubleValue();
+    return Util.round(amplitude, 2);
   }
 
   /**
