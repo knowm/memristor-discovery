@@ -81,6 +81,7 @@ public class PlotController implements PropertyChangeListener {
         plotPanel.switch2CaptureChart();
       }
     });
+
     plotPanel.getIVButton().addActionListener(new ActionListener() {
 
       @Override

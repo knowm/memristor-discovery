@@ -141,7 +141,7 @@ public class PulseApp extends App implements PropertyChangeListener {
     plotController = new PlotController(plotPanel, plotModel);
     mainFrameContainer.add(plotPanel, BorderLayout.CENTER);
 
-    new ExperimentController(experimentPanel, plotPanel, experimentModel, dwfProxy);
+    new ExperimentController(experimentPanel, experimentModel, dwfProxy);
 
     // register this as the listener of the experimentModel
     experimentModel.addListener(this);
@@ -176,19 +176,7 @@ public class PulseApp extends App implements PropertyChangeListener {
       // Pulse Out /////////////////
       //////////////////////////////////
 
-      // custom waveform
-      double amplitude = experimentModel.getAmplitude();
-
-      // calculate applied voltage
-      if (experimentPanel.getMemristorVoltageCheckBox().isSelected() && plotModel.getGData().size() > 1) {
-
-        double lastResistance = 1.0 / plotModel.getGData().get(plotModel.getGData().size() - 1) * PulsePreferences.CONDUCTANCE_UNIT.getDivisor();
-        // System.out.println("lastResistance = " + lastResistance);
-        amplitude = experimentModel.getAmplitude() / (1 - experimentModel.getSeriesR() / (experimentModel.getSeriesR() + lastResistance));
-      }
-      System.out.println("amplitude = " + amplitude);
-
-      double[] customWaveform = WaveformUtils.generateCustomWaveform(Waveform.Square, amplitude, experimentModel.getCalculatedFrequency());
+      double[] customWaveform = WaveformUtils.generateCustomWaveform(Waveform.Square, experimentModel.getAppliedAmplitude(), experimentModel.getCalculatedFrequency());
       dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, experimentModel.getCalculatedFrequency(), 0, experimentModel.getPulseNumber(), customWaveform);
 
       //////////////////////////////////
@@ -352,9 +340,12 @@ public class PulseApp extends App implements PropertyChangeListener {
 
           // update G chart
           // System.out.println("updating G Chart");
-          String resistanceString = ohmFormatter.format(1 / newestChunk[5][0] * PulsePreferences.CONDUCTANCE_UNIT.getDivisor());
-          plotController.updateGChart(newestChunk[5][0], resistanceString);
+          experimentModel.setLastG(newestChunk[5][0]);
+          plotController.updateGChart(experimentModel.getLastG(), experimentModel.getLastRAsString());
           plotController.repaintGChart();
+
+          experimentModel.updateEnergyData();
+          experimentPanel.updateEnergyGUI(experimentModel.getAppliedAmplitude(), experimentModel.getAppliedCurrent(), experimentModel.getAppliedEnergy());
         }
       }
       // experimentPanel.getStopButton().doClick();
@@ -405,6 +396,7 @@ public class PulseApp extends App implements PropertyChangeListener {
           plotPanel.switch2WaveformChart();
           plotController.udpateWaveformChart(experimentModel.getWaveformTimeData(), experimentModel.getWaveformAmplitudeData(), experimentModel.getAmplitude(), experimentModel.getPulseWidth());
         }
+
         break;
 
       default:
@@ -421,7 +413,6 @@ public class PulseApp extends App implements PropertyChangeListener {
   @Override
   public AppModel getPlotModel() {
 
-    // TODO Auto-generated method stub
-    return null;
+    return plotModel;
   }
 }

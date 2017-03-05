@@ -28,6 +28,7 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.pulse.experiment;
 
 import java.beans.PropertyChangeListener;
+import java.text.DecimalFormat;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.AppModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferences;
@@ -44,14 +45,18 @@ public class ExperimentModel extends AppModel {
   /**
    * Waveform
    */
+  private boolean isMemristorVoltageDropSelected = false;
   private float amplitude;
   private int pulseWidth; // model store pulse width in nanoseconds
-  private int pulseNumber=1;
+  private int pulseNumber = 1;
+  private double appliedAmplitude;
+  private double appliedCurrent;
+  private double appliedEnergy;
 
-  /**
-   * Shunt
-   */
   private int seriesResistance;
+
+  private double lastG;
+  public DecimalFormat ohmFormatter = new DecimalFormat("#,### Ω");
 
   private final double[] waveformTimeData = new double[PulsePreferences.CAPTURE_BUFFER_SIZE];
   private final double[] waveformAmplitudeData = new double[PulsePreferences.CAPTURE_BUFFER_SIZE];
@@ -70,8 +75,13 @@ public class ExperimentModel extends AppModel {
     // load model from prefs
     seriesResistance = appPreferences.getInteger(PulsePreferences.SERIES_R_INIT_KEY, PulsePreferences.SERIES_R_INIT_DEFAULT_VALUE);
     amplitude = appPreferences.getFloat(PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY, PulsePreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
+    appliedAmplitude = amplitude;
     pulseWidth = appPreferences.getInteger(PulsePreferences.PULSE_WIDTH_INIT_KEY, PulsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
     swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_PREFERENCES_UPDATE, true, false);
+  }
+
+  public void updateEnergyValues(boolean isMemristorVoltageDropChecked) {
+
   }
 
   /**
@@ -167,9 +177,66 @@ public class ExperimentModel extends AppModel {
     this.seriesResistance = seriesResistance;
   }
 
+  public boolean isMemristorVoltageDropSelected() {
+
+    return isMemristorVoltageDropSelected;
+  }
+
+  public void setMemristorVoltageDropSelected(boolean memristorVoltageDropSelected) {
+
+    isMemristorVoltageDropSelected = memristorVoltageDropSelected;
+    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
+  }
+
+  public double getAppliedAmplitude() {
+
+    return appliedAmplitude;
+  }
+
+  public double getLastG() {
+
+    return lastG;
+  }
+
+  public void setLastG(double lastG) {
+
+    this.lastG = lastG;
+  }
+
+  public double getLastR() {
+
+    return 1.0 / lastG * PulsePreferences.CONDUCTANCE_UNIT.getDivisor();
+  }
+
+  public double getAppliedCurrent() {
+
+    return appliedCurrent;
+  }
+
+  public double getAppliedEnergy() {
+
+    return appliedEnergy;
+  }
+
+  public String getLastRAsString() {
+
+    return ohmFormatter.format(getLastR());
+  }
+
   @Override
   public AppPreferences initAppPreferences() {
 
     return new PulsePreferences();
+  }
+
+  public void updateEnergyData() {
+
+    // calculate applied voltage
+    if (isMemristorVoltageDropSelected && lastG > 0.0) {
+
+      this.appliedAmplitude = amplitude / (1 - seriesResistance / (seriesResistance + getLastR()));
+      this.appliedCurrent = appliedAmplitude / (lastG + seriesResistance)* PulsePreferences.CURRENT_UNIT.getDivisor();
+      this.appliedEnergy = appliedAmplitude * appliedAmplitude / (lastG + seriesResistance) * pulseNumber * pulseWidth ;
+    }
   }
 }

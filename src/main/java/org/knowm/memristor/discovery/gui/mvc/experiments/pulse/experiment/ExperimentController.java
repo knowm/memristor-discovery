@@ -34,6 +34,7 @@ import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
@@ -42,27 +43,22 @@ import javax.swing.event.ChangeListener;
 
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.AppModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.plot.PlotPanel;
 
 public class ExperimentController implements PropertyChangeListener {
 
   private final ExperimentPanel experimentPanel;
   private final ExperimentModel experimentModel;
 
-  private final PlotPanel plotPanel;
-
   /**
    * Constructor
    *
    * @param experimentPanel
-   * @param plotPanel
    * @param experimentModel
    * @param dwf
    */
-  public ExperimentController(ExperimentPanel experimentPanel, PlotPanel plotPanel, ExperimentModel experimentModel, DWFProxy dwf) {
+  public ExperimentController(ExperimentPanel experimentPanel, ExperimentModel experimentModel, DWFProxy dwf) {
 
     this.experimentPanel = experimentPanel;
-    this.plotPanel = plotPanel;
     this.experimentModel = experimentModel;
     dwf.addListener(this);
 
@@ -71,9 +67,6 @@ public class ExperimentController implements PropertyChangeListener {
 
     // register the controller as the listener of the experimentModel
     experimentModel.addListener(this);
-
-    // init waveform chart
-    plotPanel.switch2WaveformChart();
   }
 
   private void initGUIComponents() {
@@ -178,15 +171,17 @@ public class ExperimentController implements PropertyChangeListener {
         }
       }
     });
-    plotPanel.getCaptureButton().addActionListener(new ActionListener() {
+    experimentPanel.getMemristorVoltageCheckBox().addActionListener(new ActionListener() {
 
       @Override
-      public void actionPerformed(ActionEvent e) {
+      public void actionPerformed(ActionEvent actionEvent) {
 
-        plotPanel.switch2CaptureChart();
+        AbstractButton abstractButton = (AbstractButton) actionEvent.getSource();
+        boolean selected = abstractButton.getModel().isSelected();
+        // System.out.println("selected = " + selected);
+        experimentModel.setMemristorVoltageDropSelected(selected);
       }
     });
-
   }
 
   /**
@@ -198,24 +193,25 @@ public class ExperimentController implements PropertyChangeListener {
 
     switch (evt.getPropertyName()) {
 
-    case DWFProxy.AD2_STARTUP_CHANGE:
+      case DWFProxy.AD2_STARTUP_CHANGE:
 
-      experimentPanel.enableAllChildComponents((Boolean) evt.getNewValue());
-      break;
+        experimentPanel.enableAllChildComponents((Boolean) evt.getNewValue());
+        break;
 
-    case AppModel.EVENT_PREFERENCES_UPDATE:
+      case AppModel.EVENT_PREFERENCES_UPDATE:
 
-      initGUIComponentsFromModel();
-      break;
+        initGUIComponentsFromModel();
+        break;
 
-    case AppModel.EVENT_WAVEFORM_UPDATE:
+      case AppModel.EVENT_WAVEFORM_UPDATE:
 
-      experimentModel.updateWaveformChartData();
-      break;
+        experimentModel.updateWaveformChartData();
+        experimentModel.updateEnergyData();
+        experimentPanel.updateEnergyGUI(experimentModel.getAppliedAmplitude(), experimentModel.getAppliedCurrent(), experimentModel.getAppliedEnergy());
+        break;
 
-    default:
-      break;
+      default:
+        break;
     }
-
   }
 }

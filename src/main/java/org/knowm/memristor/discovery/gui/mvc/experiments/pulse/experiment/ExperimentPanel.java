@@ -42,13 +42,18 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 
+import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferences;
+
 /**
  * Provides controls for running the experiment
- * 
+ *
  * @author timmolter
  */
 public class ExperimentPanel extends JPanel {
 
+  private final JLabel appliedAmplitudeLabel;
+  private final JLabel currentLabel;
+  private final JLabel energyLabel;
 
   private final JCheckBox memristorVoltageCheckBox;
 
@@ -76,12 +81,29 @@ public class ExperimentPanel extends JPanel {
     // setBackground(Color.yellow);
 
     c.gridx = 0;
+
+    appliedAmplitudeLabel = new JLabel("Applied Amplitude [V]: ");
+    appliedAmplitudeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.gridy++;
+    c.insets = new Insets(0, 10, 4, 0);
+    add(appliedAmplitudeLabel, c);
+
+    currentLabel = new JLabel("Current [" + PulsePreferences.CURRENT_UNIT.getLabel() + "]: ");
+    currentLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.gridy++;
+    c.insets = new Insets(0, 10, 4, 0);
+    add(currentLabel, c);
+
+    energyLabel = new JLabel("Energy [nJ]: ");
+    energyLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.gridy++;
+    c.insets = new Insets(0, 10, 4, 0);
+    add(energyLabel, c);
+
     c.gridy++;
     c.insets = new Insets(0, 0, 0, 0);
     memristorVoltageCheckBox = new JCheckBox("Memristor Voltage Drop");
     add(memristorVoltageCheckBox, c);
-
-
 
     amplitudeSlider = new JSlider(JSlider.HORIZONTAL, -250, 200, 0);
     amplitudeSlider.setBorder(BorderFactory.createTitledBorder("Amplitude [V]"));
@@ -98,7 +120,6 @@ public class ExperimentPanel extends JPanel {
     labelTable.put(100, new JLabel("1"));
     labelTable.put(200, new JLabel("2"));
     amplitudeSlider.setLabelTable(labelTable);
-    c.gridx = 0;
     c.gridy++;
     c.insets = new Insets(0, 6, 4, 6);
     amplitudeSlider.setPreferredSize(new Dimension(300, 80));
@@ -120,7 +141,7 @@ public class ExperimentPanel extends JPanel {
 
     pulseWidthSliderNs = new JSlider(JSlider.HORIZONTAL, 500, 5000, 5000);
     pulseWidthSliderNs.setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
-    pulseWidthSliderNs.setMinorTickSpacing(250);
+    pulseWidthSliderNs.setMinorTickSpacing(500);
     pulseWidthSliderNs.setPaintTicks(true);
     pulseWidthSliderNs.setPaintLabels(true);
     pulseWidthSliderNs.setSnapToTicks(true);
@@ -163,8 +184,6 @@ public class ExperimentPanel extends JPanel {
     c.insets = new Insets(0, 5, 14, 5);
     add(seriesTextField, c);
 
-
-
     startButton = new JButton("Start");
     startButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     // startButton.setSize(128, 28);
@@ -187,6 +206,17 @@ public class ExperimentPanel extends JPanel {
     seriesTextField.setEnabled(enabled);
     startButton.setEnabled(enabled);
     stopButton.setEnabled(false);
+  }
+
+  public void updateEnergyGUI(double appliedAmplitude, double appliedCurrent, double appliedEnergy) {
+
+    // System.out.println("Applied Amplitude = " + appliedAmplitude);
+    // System.out.println("Applied Current = " + appliedCurrent + " " + PulsePreferences.CURRENT_UNIT.getLabel());
+    // System.out.println("Applied Energy = " + appliedEnergy + " nJ");
+    // System.out.println("==============");
+    appliedAmplitudeLabel.setText("Applied Amplitude [V]: " + appliedAmplitude);
+    currentLabel.setText("Current [" + PulsePreferences.CURRENT_UNIT.getLabel() + "]: " + appliedCurrent);
+    energyLabel.setText("Energy [nJ]: " + appliedEnergy);
   }
 
   public JSlider getAmplitudeSlider() {

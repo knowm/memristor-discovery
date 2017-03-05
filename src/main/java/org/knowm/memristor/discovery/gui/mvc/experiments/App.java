@@ -35,7 +35,6 @@ public abstract class App {
 
   public final DWFProxy dwfProxy;
 
-  public DecimalFormat ohmFormatter = new DecimalFormat("#,### Ω");
 
 
   public abstract AppModel getExperimentModel();
@@ -66,7 +65,7 @@ public abstract class App {
       if (status == 2) { // done capturing
         return true;
       }
-      if (bailCount++ > 10) {
+      if (bailCount++ > 100) {
         System.out.println("Bailed!!!");
         return false;
       }
