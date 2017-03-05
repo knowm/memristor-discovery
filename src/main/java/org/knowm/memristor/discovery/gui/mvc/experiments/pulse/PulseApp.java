@@ -239,7 +239,7 @@ public class PulseApp extends App implements PropertyChangeListener {
 
       while (!initialPulseTrainCaptured) {
         System.out.println("Waiting...");
-        Thread.sleep(50); // Attempt to allow Analog In to get fired up for the next set of pulses
+        Thread.sleep(50);
       }
 
       while (!isCancelled()) {
@@ -253,21 +253,21 @@ public class PulseApp extends App implements PropertyChangeListener {
           dwfProxy.setAD2Capturing(false);
         }
 
-        // System.out.println("capturing read pulse");
         //////////////////////////////////
         // Analog In /////////////////
         //////////////////////////////////
 
-        dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02);
+        // trigger on half the rising .1 V read pulse
+        dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.05);
         Thread.sleep(20); // Attempt to allow Analog In to get fired up for the next set of pulses
 
         //////////////////////////////////
         // Pulse Out /////////////////
         //////////////////////////////////
 
-        // custom waveform
+        // read pulse: 0.1 V, 10 us pulse width
         customWaveform = WaveformUtils.generateCustomWaveform(Waveform.Square, 0.1, experimentModel.getCalculatedFrequency());
-        dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, experimentModel.getCalculatedFrequency(), 0, 1, customWaveform);
+        dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, 100_000, 0, 1, customWaveform);
 
         // Read In Data
         success = capturePulseData();

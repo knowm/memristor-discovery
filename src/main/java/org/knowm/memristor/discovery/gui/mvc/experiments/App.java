@@ -27,8 +27,6 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments;
 
-import java.text.DecimalFormat;
-
 import org.knowm.memristor.discovery.DWFProxy;
 
 public abstract class App {
@@ -63,9 +61,10 @@ public abstract class App {
       byte status = dwfProxy.getDwf().FDwfAnalogInStatus(true);
       // System.out.println("status: " + status);
       if (status == 2) { // done capturing
+        System.out.println("bailCount = " + bailCount);
         return true;
       }
-      if (bailCount++ > 100) {
+      if (bailCount++ > 1000) {
         System.out.println("Bailed!!!");
         return false;
       }
