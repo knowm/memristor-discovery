@@ -158,10 +158,6 @@ public class PulseApp extends App implements PropertyChangeListener {
     @Override
     protected Boolean doInBackground() throws Exception {
 
-      // System.out.println("experimentModel.getCalculatedFrequency(): " + experimentModel.getCalculatedFrequency());
-
-      // System.out.println("Arbitrary Wave Buffer Size Min and Max: " + Arrays.toString(dwfProxy.getDwf().FDwfAnalogOutNodeDataInfo(DWF.WAVEFORM_CHANNEL_1)));
-
       //////////////////////////////////
       // Analog In /////////////////
       //////////////////////////////////
@@ -176,7 +172,7 @@ public class PulseApp extends App implements PropertyChangeListener {
       // Pulse Out /////////////////
       //////////////////////////////////
 
-      double[] customWaveform = WaveformUtils.generateCustomWaveform(Waveform.Square, experimentModel.getAppliedAmplitude(), experimentModel.getCalculatedFrequency());
+      double[] customWaveform = WaveformUtils.generateCustomWaveform(Waveform.QuarterSine, experimentModel.getAppliedAmplitude(), experimentModel.getCalculatedFrequency());
       dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, experimentModel.getCalculatedFrequency(), 0, experimentModel.getPulseNumber(), customWaveform);
 
       //////////////////////////////////
@@ -235,7 +231,7 @@ public class PulseApp extends App implements PropertyChangeListener {
 
       publish(new double[][]{timeData, V1Trimmed, V2Zeroed, current, conductance, null});
 
-      // New addition: Loop and capture read data (0.1V) until stop is pushed.
+      // New addition: Loop and capture read data (0.1V, 10µs) until stop is pushed.
 
       while (!initialPulseTrainCaptured) {
         // System.out.println("Waiting...");

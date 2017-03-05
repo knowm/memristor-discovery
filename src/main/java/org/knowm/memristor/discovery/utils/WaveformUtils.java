@@ -29,6 +29,7 @@ package org.knowm.memristor.discovery.utils;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferences.Waveform;
 import org.knowm.memristor.discovery.utils.driver.Driver;
+import org.knowm.memristor.discovery.utils.driver.QuarterSine;
 import org.knowm.memristor.discovery.utils.driver.Sawtooth;
 import org.knowm.memristor.discovery.utils.driver.SawtoothUpDown;
 import org.knowm.memristor.discovery.utils.driver.Square;
@@ -82,6 +83,9 @@ public class WaveformUtils {
       case SquareUpDown:
         driver = new Square("SquareUpDown", 0, 0, amplitude, frequency);
         break;
+      case QuarterSine:
+        driver = new QuarterSine("QuarterSine", 0, 0, amplitude, frequency);
+        break;
       default:
         driver = new SawtoothUpDown("SawtoothUpDown", 0, 0, amplitude, frequency);
         break;
@@ -119,13 +123,12 @@ public class WaveformUtils {
   }
 
   public static double[] concat(double[] a, double[] b) {
+
     int aLen = a.length;
     int bLen = b.length;
-    double[] c= new double[aLen+bLen];
+    double[] c = new double[aLen + bLen];
     System.arraycopy(a, 0, c, 0, aLen);
     System.arraycopy(b, 0, c, aLen, bLen);
     return c;
   }
-
-
 }

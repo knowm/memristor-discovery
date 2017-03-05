@@ -34,7 +34,7 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.AppModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferences;
 import org.knowm.memristor.discovery.utils.driver.Driver;
-import org.knowm.memristor.discovery.utils.driver.Square;
+import org.knowm.memristor.discovery.utils.driver.QuarterSine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,7 +89,8 @@ public class ExperimentModel extends AppModel {
    */
   void updateWaveformChartData() {
 
-    Driver driver = new Square("Square", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
+    // Driver driver = new Square("Square", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
+    Driver driver = new QuarterSine("QuarterSine", 0 , 0, appliedAmplitude , getCalculatedFrequency());
 
     double stopTime = 1 / getCalculatedFrequency() * pulseNumber;
     double timeStep = 1 / getCalculatedFrequency() / PulsePreferences.CAPTURE_BUFFER_SIZE * pulseNumber;
