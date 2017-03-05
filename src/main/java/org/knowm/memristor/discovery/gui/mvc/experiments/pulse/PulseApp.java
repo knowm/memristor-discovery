@@ -272,9 +272,11 @@ public class PulseApp extends App implements PropertyChangeListener {
         // Read In Data
         success = capturePulseData();
         if (!success) {
-          System.out.println("returning false");
-          experimentPanel.getStopButton().doClick();
-          return false;
+          // System.out.println("returning false");
+          // experimentPanel.getStopButton().doClick();
+          // return false;
+          System.out.println("continuing...");
+          continue;
         }
 
         // Get Raw Data from Oscilloscope

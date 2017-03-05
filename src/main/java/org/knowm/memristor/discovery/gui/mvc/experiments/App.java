@@ -33,8 +33,6 @@ public abstract class App {
 
   public final DWFProxy dwfProxy;
 
-
-
   public abstract AppModel getExperimentModel();
 
   public abstract AppModel getPlotModel();
@@ -61,7 +59,7 @@ public abstract class App {
       byte status = dwfProxy.getDwf().FDwfAnalogInStatus(true);
       // System.out.println("status: " + status);
       if (status == 2) { // done capturing
-        System.out.println("bailCount = " + bailCount);
+        // System.out.println("bailCount = " + bailCount);
         return true;
       }
       if (bailCount++ > 1000) {
