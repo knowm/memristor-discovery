@@ -84,54 +84,49 @@ public class PulseApp extends App implements PropertyChangeListener {
     mainFrameContainer.add(jScrollPane, BorderLayout.WEST);
 
     // ///////////////////////////////////////////////////////////
-    // START BUTTON ////////////////////////////////////////////
+    // START/STOP BUTTON ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    experimentPanel.getStartButton().addActionListener(new ActionListener() {
+    experimentPanel.getStartStopButton().addActionListener(new ActionListener() {
 
       @Override
       public void actionPerformed(ActionEvent e) {
 
-        allowPlotting = true;
-        dwfProxy.setAD2Capturing(true);
+        if (experimentModel.isStartToggled()) {
 
-        experimentPanel.getStartButton().setEnabled(false);
-        experimentPanel.getStopButton().setEnabled(true);
+          experimentModel.setStartToggled(false);
+          experimentPanel.getStartStopButton().setText("Stop");
 
-        // switch to capture view
-        if (plotPanel.getCaptureButton().isSelected()) {
-          plotPanel.switch2CaptureChart();
-        }
-        else if (plotPanel.getIVButton().isSelected()) {
-          plotPanel.switch2IVChart();
+          allowPlotting = true;
+          dwfProxy.setAD2Capturing(true);
+
+          // switch to capture view
+          if (plotPanel.getCaptureButton().isSelected()) {
+            plotPanel.switch2CaptureChart();
+          }
+          else if (plotPanel.getIVButton().isSelected()) {
+            plotPanel.switch2IVChart();
+          }
+          else {
+            plotPanel.switch2GVChart();
+          }
+
+          // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
+          captureWorker = new CaptureWorker();
+          captureWorker.execute();
         }
         else {
-          plotPanel.switch2GVChart();
+
+          experimentModel.setStartToggled(true);
+          experimentPanel.getStartStopButton().setText("Start");
+
+          // TODO move this to dwf proxy itself
+          dwfProxy.setAD2Capturing(false);
+
+          // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
+          allowPlotting = false;
+          captureWorker.cancel(true);
         }
-
-        // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
-        captureWorker = new CaptureWorker();
-        captureWorker.execute();
-      }
-    });
-
-    // ///////////////////////////////////////////////////////////
-    // STOP BUTTON //////////////////////////////////////////////
-    // ///////////////////////////////////////////////////////////
-
-    experimentPanel.getStopButton().addActionListener(new ActionListener() {
-
-      @Override
-      public void actionPerformed(ActionEvent e) {
-
-        dwfProxy.setAD2Capturing(false);
-
-        experimentPanel.getStartButton().setEnabled(true);
-        experimentPanel.getStopButton().setEnabled(false);
-
-        // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
-        allowPlotting = false;
-        captureWorker.cancel(true);
       }
     });
 

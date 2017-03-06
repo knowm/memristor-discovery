@@ -62,6 +62,8 @@ public class ExperimentModel extends AppModel {
   private final double[] waveformTimeData = new double[PulsePreferences.CAPTURE_BUFFER_SIZE];
   private final double[] waveformAmplitudeData = new double[PulsePreferences.CAPTURE_BUFFER_SIZE];
 
+  private boolean isStartToggled = true;
+
   /**
    * Constructor
    */
@@ -223,6 +225,16 @@ public class ExperimentModel extends AppModel {
   public String getLastRAsString() {
 
     return ohmFormatter.format(getLastR());
+  }
+
+  public boolean isStartToggled() {
+
+    return isStartToggled;
+  }
+
+  public void setStartToggled(boolean isStartToggled) {
+
+    this.isStartToggled = isStartToggled;
   }
 
   @Override

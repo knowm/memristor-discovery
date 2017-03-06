@@ -71,7 +71,6 @@ public class ExperimentController implements PropertyChangeListener {
 
   private void initGUIComponents() {
 
-    experimentPanel.getStopButton().setEnabled(false);
     initGUIComponentsFromModel();
   }
 

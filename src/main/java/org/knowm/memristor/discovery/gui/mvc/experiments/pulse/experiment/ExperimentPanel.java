@@ -67,8 +67,7 @@ public class ExperimentPanel extends JPanel {
 
   private final JSlider pulseNumberSlider;
 
-  private final JButton startButton;
-  private final JButton stopButton;
+  private final JButton startStopButton;
 
   /**
    * Constructor
@@ -182,18 +181,12 @@ public class ExperimentPanel extends JPanel {
     c.insets = new Insets(0, 5, 14, 5);
     add(seriesTextField, c);
 
-    startButton = new JButton("Start");
-    startButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-    // startButton.setSize(128, 28);
+    startStopButton = new JButton("Start");
+    startStopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    // startStopButton.setSize(128, 28);
     c.gridy++;
     c.insets = new Insets(0, 0, 0, 0);
-    add(startButton, c);
-
-    stopButton = new JButton("Stop");
-    stopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-    c.gridy++;
-
-    add(stopButton, c);
+    add(startStopButton, c);
   }
 
   public void enableAllChildComponents(boolean enabled) {
@@ -202,8 +195,7 @@ public class ExperimentPanel extends JPanel {
     pulseWidthSlider.setEnabled(enabled);
     pulseWidthSliderNs.setEnabled(enabled);
     seriesTextField.setEnabled(enabled);
-    startButton.setEnabled(enabled);
-    stopButton.setEnabled(false);
+    startStopButton.setEnabled(enabled);
   }
 
   public void updateEnergyGUI(double appliedAmplitude, double appliedCurrent, double appliedEnergy) {
@@ -242,14 +234,9 @@ public class ExperimentPanel extends JPanel {
     return seriesTextField;
   }
 
-  public JButton getStartButton() {
+  public JButton getStartStopButton() {
 
-    return startButton;
-  }
-
-  public JButton getStopButton() {
-
-    return stopButton;
+    return startStopButton;
   }
 
   public JCheckBox getMemristorVoltageCheckBox() {
