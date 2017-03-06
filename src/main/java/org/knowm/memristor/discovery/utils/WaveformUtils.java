@@ -29,6 +29,7 @@ package org.knowm.memristor.discovery.utils;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferences.Waveform;
 import org.knowm.memristor.discovery.utils.driver.Driver;
+import org.knowm.memristor.discovery.utils.driver.HalfSine;
 import org.knowm.memristor.discovery.utils.driver.QuarterSine;
 import org.knowm.memristor.discovery.utils.driver.Sawtooth;
 import org.knowm.memristor.discovery.utils.driver.SawtoothUpDown;
@@ -85,6 +86,9 @@ public class WaveformUtils {
         break;
       case QuarterSine:
         driver = new QuarterSine("QuarterSine", 0, 0, amplitude, frequency);
+        break;
+      case HalfSine:
+        driver = new HalfSine("HalfSine", 0, 0, amplitude, frequency);
         break;
       default:
         driver = new SawtoothUpDown("SawtoothUpDown", 0, 0, amplitude, frequency);

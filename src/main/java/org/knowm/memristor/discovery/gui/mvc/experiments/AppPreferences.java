@@ -45,7 +45,7 @@ public abstract class AppPreferences {
 
   public enum Waveform {
 
-    Sine, Triangle, TriangleUpDown, Square, SquareUpDown, SawtoothUpDown, Sawtooth, QuarterSine;
+    Sine, Triangle, TriangleUpDown, Square, SquareUpDown, SawtoothUpDown, Sawtooth, QuarterSine, HalfSine;
   }
 
   public enum CurrentUnits {
@@ -119,6 +119,7 @@ public abstract class AppPreferences {
       return label;
     }
   }
+
   public enum TimeUnits {
 
     Seconds(1, "s"), MilliSeconds(1000, "ms"), MicroSeconds(1_000_000, "µs");
@@ -142,6 +143,7 @@ public abstract class AppPreferences {
       return label;
     }
   }
+
   public void setString(String key, String value) {
 
     this.preferences.put(key, value.trim());
