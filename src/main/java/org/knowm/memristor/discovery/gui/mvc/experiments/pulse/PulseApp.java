@@ -126,8 +126,6 @@ public class PulseApp extends App implements PropertyChangeListener {
 
         dwfProxy.setAD2Capturing(false);
 
-        // switchPanel.enableAllDigitalIOCheckBoxes(true);
-        // experimentPanel.enableAllChildComponents(true);
         experimentPanel.getStartButton().setEnabled(true);
         experimentPanel.getStopButton().setEnabled(false);
 
@@ -162,7 +160,7 @@ public class PulseApp extends App implements PropertyChangeListener {
       // Analog In /////////////////
       //////////////////////////////////
 
-      int sampleFrequencyMultiplier = 200; // adjust this down if you want to capture more pulses as the buffer size is limited.
+      int sampleFrequencyMultiplier = 300; // adjust this down if you want to capture more pulses as the buffer size is limited.
       double sampleFrequency = experimentModel.getCalculatedFrequency() * sampleFrequencyMultiplier; // adjust this down if you want to capture more pulses as the buffer size is limited.
 
       dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02 * (experimentModel.getAmplitude() > 0 ? 1 : -1));
@@ -171,6 +169,8 @@ public class PulseApp extends App implements PropertyChangeListener {
       //////////////////////////////////
       // Pulse Out /////////////////
       //////////////////////////////////
+
+      System.out.println("experimentModel.getAppliedAmplitude() = " + experimentModel.getAppliedAmplitude());
 
       double[] customWaveform = WaveformUtils.generateCustomWaveform(Waveform.QuarterSine, experimentModel.getAppliedAmplitude(), experimentModel.getCalculatedFrequency());
       dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, experimentModel.getCalculatedFrequency(), 0, experimentModel.getPulseNumber(), customWaveform);
@@ -199,10 +199,10 @@ public class PulseApp extends App implements PropertyChangeListener {
       // Create Chart Data //////
       ///////////////////////////
 
-      double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, 0.1);
+      double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, 0.05);
       double[] V1Trimmed = trimmedRawData[0];
       double[] V2Trimmed = trimmedRawData[1];
-      double[] V2Zeroed = PostProcessDataUtils.zeroIdleData(V1Trimmed, V2Trimmed, 0.1);
+      double[] V2Zeroed = PostProcessDataUtils.zeroIdleData(V1Trimmed, V2Trimmed, 0.05);
 
       int bufferLength = V1Trimmed.length;
 

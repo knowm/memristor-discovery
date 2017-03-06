@@ -236,7 +236,6 @@ public class ExperimentModel extends AppModel {
     // calculate applied voltage
     if (lastG > 0.0) {
       if (isMemristorVoltageDropSelected) {
-
         this.appliedAmplitude = amplitude / (1 - seriesResistance / (seriesResistance + getLastR() + Util.getSwitchesSeriesResistance()));
       }
       else {
@@ -244,6 +243,9 @@ public class ExperimentModel extends AppModel {
       }
       this.appliedCurrent = appliedAmplitude / (getLastR() + seriesResistance + Util.getSwitchesSeriesResistance()) * PulsePreferences.CURRENT_UNIT.getDivisor();
       this.appliedEnergy = appliedAmplitude * appliedAmplitude / (getLastR() + seriesResistance + Util.getSwitchesSeriesResistance()) * pulseNumber * pulseWidth / 2;// divided by two to guestimate the energy savings of a quarter sine wave vs a square wave.
+    }
+    else {
+      this.appliedAmplitude = amplitude;
     }
   }
 }
