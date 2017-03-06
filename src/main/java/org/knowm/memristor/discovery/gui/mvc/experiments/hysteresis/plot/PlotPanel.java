@@ -54,17 +54,17 @@ public class PlotPanel extends JPanel {
   private final JRadioButton ivButton;
   private final JRadioButton gvButton;
 
-  XYChart waveformChart;
-  XChartPanel<XYChart> waveformChartPanel;
+  private XYChart waveformChart;
+  private XChartPanel<XYChart> waveformChartPanel;
 
-  XYChart captureChart;
-  XChartPanel<XYChart> captureChartPanel;
+  private XYChart captureChart;
+  private XChartPanel<XYChart> captureChartPanel;
 
-  XYChart ivChart;
-  XChartPanel<XYChart> ivChartPanel;
+  private XYChart ivChart;
+  private XChartPanel<XYChart> ivChartPanel;
 
-  XYChart gvChart;
-  XChartPanel<XYChart> gvChartPanel;
+  private XYChart gvChart;
+  private XChartPanel<XYChart> gvChartPanel;
 
   private final JCheckBox freezeYAxisCheckBoxIV;
 
@@ -126,14 +126,12 @@ public class PlotPanel extends JPanel {
     gvChart = new XYChartBuilder().width(100).title("G-V").height(100).xAxisTitle("Voltage [V]").yAxisTitle("Conductance [" + HysteresisPreferences.CONDUCTANCE_UNIT.getLabel() + "]").build();
     gvChart.getStyler().setLegendVisible(false);
     gvChart.getStyler().setYAxisMin(0.0);
-
-    // rvChart.getStyler().setYAxisMax(200.0);
-
     gvChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);
-
-    series = gvChart.addSeries("gv", new double[]{0}, new double[]{0});
-    series = gvChart.addSeries("gv_m", new double[]{0}, new double[]{0});
-
+    gvChart.addSeries("gv", new double[]{0}, new double[]{0});
+    gvChart.addSeries("gv_m", new double[]{0}, new double[]{0});
+    gvChart.getStyler().setYAxisMin(0.0);
+    gvChart.getStyler().setXAxisMin(-2.0);
+    gvChart.getStyler().setXAxisMax(1.0);
     gvChartPanel = new XChartPanel<>(gvChart);
 
     // ///////////////////////////////////////////////////////////

@@ -99,16 +99,18 @@ public class ExperimentPanel extends JPanel {
     c.insets = new Insets(0, 6, 4, 6);
     add(waveformRadioButtonBox, c);
 
-    offsetSlider = new JSlider(JSlider.HORIZONTAL, -100, 100, 0);
+    offsetSlider = new JSlider(JSlider.HORIZONTAL, -200, 100, 0);
     offsetSlider.setBorder(BorderFactory.createTitledBorder("Offset [V]"));
-    offsetSlider.setMajorTickSpacing(10);
-    offsetSlider.setMinorTickSpacing(5);
+    offsetSlider.setMajorTickSpacing(20);
+    offsetSlider.setMinorTickSpacing(10);
     offsetSlider.setPaintTicks(true);
     offsetSlider.setPaintLabels(true);
     offsetSlider.setSnapToTicks(true);
     Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
     // labelTable.put(new Integer(-200), new JLabel("-2"));
     // labelTable.put(new Integer(-150), new JLabel("-1.5"));
+    labelTable.put(new Integer(-200), new JLabel("-2"));
+    labelTable.put(new Integer(-150), new JLabel("-1.5"));
     labelTable.put(new Integer(-100), new JLabel("-1"));
     labelTable.put(new Integer(-75), new JLabel("-.75"));
     labelTable.put(new Integer(-50), new JLabel("-.5"));
