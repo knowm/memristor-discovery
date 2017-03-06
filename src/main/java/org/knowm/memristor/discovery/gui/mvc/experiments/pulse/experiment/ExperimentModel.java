@@ -33,6 +33,7 @@ import java.text.DecimalFormat;
 import org.knowm.memristor.discovery.gui.mvc.experiments.AppModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferences;
+import org.knowm.memristor.discovery.utils.Util;
 import org.knowm.memristor.discovery.utils.driver.Driver;
 import org.knowm.memristor.discovery.utils.driver.QuarterSine;
 import org.slf4j.Logger;
@@ -90,7 +91,7 @@ public class ExperimentModel extends AppModel {
   void updateWaveformChartData() {
 
     // Driver driver = new Square("Square", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
-    Driver driver = new QuarterSine("QuarterSine", 0 , 0, appliedAmplitude , getCalculatedFrequency());
+    Driver driver = new QuarterSine("QuarterSine", 0, 0, appliedAmplitude, getCalculatedFrequency());
 
     double stopTime = 1 / getCalculatedFrequency() * pulseNumber;
     double timeStep = 1 / getCalculatedFrequency() / PulsePreferences.CAPTURE_BUFFER_SIZE * pulseNumber;
@@ -236,13 +237,13 @@ public class ExperimentModel extends AppModel {
     if (lastG > 0.0) {
       if (isMemristorVoltageDropSelected) {
 
-        this.appliedAmplitude = amplitude / (1 - seriesResistance / (seriesResistance + getLastR()));
+        this.appliedAmplitude = amplitude / (1 - seriesResistance / (seriesResistance + getLastR() + Util.getSwitchesSeriesResistance()));
       }
       else {
         this.appliedAmplitude = amplitude;
       }
-      this.appliedCurrent = appliedAmplitude / (lastG + seriesResistance) * PulsePreferences.CURRENT_UNIT.getDivisor();
-      this.appliedEnergy = appliedAmplitude * appliedAmplitude / (lastG + seriesResistance) * pulseNumber * pulseWidth;
+      this.appliedCurrent = appliedAmplitude / (getLastR() + seriesResistance + Util.getSwitchesSeriesResistance()) * PulsePreferences.CURRENT_UNIT.getDivisor();
+      this.appliedEnergy = appliedAmplitude * appliedAmplitude / (getLastR() + seriesResistance + Util.getSwitchesSeriesResistance()) * pulseNumber * pulseWidth / 2;// divided by two to guestimate the energy savings of a quarter sine wave vs a square wave.
     }
   }
 }

@@ -176,13 +176,12 @@ public class HysteresisApp extends App implements PropertyChangeListener {
         // Read In Data
         byte status = dwfProxy.getDwf().FDwfAnalogInStatus(true);
         // System.out.println("status = " + status);
-        
+
         int validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
         // System.out.println("validSamples: " + validSamples);
 
         if (validSamples > 0) {
 
-          // captureAmplitudeData = dwf.FDwfAnalogInStatusData(OSCILLOSCOPE_CHANNEL_1, validSamples);
           double[] rawdata1 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
           double[] rawdata2 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
 

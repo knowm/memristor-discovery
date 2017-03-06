@@ -46,7 +46,7 @@ public class Util {
 
   /**
    * Get the version number specified in the version.properties file.
-   * 
+   *
    * @return
    */
   public static String getVersionNumber() {
@@ -90,7 +90,7 @@ public class Util {
     }
   }
 
-  public static  double round(double value, int places) {
+  public static double round(double value, int places) {
 
     if (places < 0)
       throw new IllegalArgumentException();
@@ -98,5 +98,15 @@ public class Util {
     BigDecimal bd = new BigDecimal(value);
     bd = bd.setScale(places, RoundingMode.HALF_UP);
     return bd.doubleValue();
+  }
+
+  public static double calculateCurrent() {
+
+    return 0.0;
+  }
+
+  public static double getSwitchesSeriesResistance() {
+
+    return 100.0; // 50 + 50 Ohm Vishay 445DY switches
   }
 }
