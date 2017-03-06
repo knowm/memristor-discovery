@@ -137,11 +137,12 @@ public class PlotController implements PropertyChangeListener {
     plotPanel.getWaveformChartPanel().repaint();
   }
 
-  public void udpateVtChart(double[] timeData, double[] captureAmplitudeData1, double[] captureAmplitudeData2, int pulseWidth, double amplitude) {
+  public void udpateVtChart(double[] timeData, double[] captureAmplitudeData1, double[] captureAmplitudeData2,double[] v1Minusv2, int pulseWidth, double amplitude) {
 
     plotPanel.getCaptureChart().setTitle(getVtChartTitle(amplitude, pulseWidth));
     plotPanel.getCaptureChart().updateXYSeries("V1", timeData, captureAmplitudeData1, null);
     plotPanel.getCaptureChart().updateXYSeries("V2", timeData, captureAmplitudeData2, null);
+    plotPanel.getCaptureChart().updateXYSeries("V1-V2", timeData, v1Minusv2, null);
   }
 
   public void udpateIVChart(double[] timeData, double[] current, int pulseWidth, double amplitude) {

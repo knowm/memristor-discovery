@@ -170,8 +170,6 @@ public class PulseApp extends App implements PropertyChangeListener {
       // Pulse Out /////////////////
       //////////////////////////////////
 
-      System.out.println("experimentModel.getAppliedAmplitude() = " + experimentModel.getAppliedAmplitude());
-
       double[] customWaveform = WaveformUtils.generateCustomWaveform(Waveform.QuarterSine, experimentModel.getAppliedAmplitude(), experimentModel.getCalculatedFrequency());
       dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, experimentModel.getCalculatedFrequency(), 0, experimentModel.getPulseNumber(), customWaveform);
 
@@ -202,7 +200,8 @@ public class PulseApp extends App implements PropertyChangeListener {
       double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, 0.05);
       double[] V1Trimmed = trimmedRawData[0];
       double[] V2Trimmed = trimmedRawData[1];
-      double[] V2Zeroed = PostProcessDataUtils.zeroIdleData(V1Trimmed, V2Trimmed, 0.05);
+      // double[] V2Zeroed = PostProcessDataUtils.zeroIdleData(V1Trimmed, V2Trimmed, 0.05);
+      double[] V2MinusV1 = PostProcessDataUtils.getV2MinusV1(V1Trimmed, V2Trimmed);
 
       int bufferLength = V1Trimmed.length;
 
@@ -216,20 +215,20 @@ public class PulseApp extends App implements PropertyChangeListener {
       // create current data
       double[] current = new double[bufferLength];
       for (int i = 0; i < bufferLength; i++) {
-        current[i] = V2Zeroed[i] / experimentModel.getSeriesR() * DCPreferences.CURRENT_UNIT.getDivisor();
+        current[i] = V2Trimmed[i] / experimentModel.getSeriesR() * DCPreferences.CURRENT_UNIT.getDivisor();
       }
 
       // create conductance data
       double[] conductance = new double[bufferLength];
       for (int i = 0; i < bufferLength; i++) {
 
-        double I = V2Zeroed[i] / experimentModel.getSeriesR();
-        double G = I / (V1Trimmed[i] - V2Zeroed[i]) * DCPreferences.CONDUCTANCE_UNIT.getDivisor();
+        double I = V2Trimmed[i] / experimentModel.getSeriesR();
+        double G = I / (V1Trimmed[i] - V2Trimmed[i]) * DCPreferences.CONDUCTANCE_UNIT.getDivisor();
         G = G < 0 ? 0 : G;
         conductance[i] = G;
       }
 
-      publish(new double[][]{timeData, V1Trimmed, V2Zeroed, current, conductance, null});
+      publish(new double[][]{timeData, V1Trimmed, V2Trimmed, V2MinusV1, current, conductance, null});
 
       // New addition: Loop and capture read data (0.1V, 10µs) until stop is pushed.
 
@@ -285,7 +284,7 @@ public class PulseApp extends App implements PropertyChangeListener {
         // Create Chart Data //////
         ///////////////////////////
 
-        trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, 0.05);
+        trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, 0.02);
         V1Trimmed = trimmedRawData[0];
         V2Trimmed = trimmedRawData[1];
         bufferLength = V1Trimmed.length;
@@ -301,7 +300,7 @@ public class PulseApp extends App implements PropertyChangeListener {
         // conductance value packed in a one-element array
         double[] conductanceAve = new double[]{runningTotal / (bufferLength - 6) * ConductancePreferences.CONDUCTANCE_UNIT.getDivisor()};
 
-        publish(new double[][]{null, null, null, null, null, conductanceAve});
+        publish(new double[][]{null, null, null, null, null, null, conductanceAve});
       }
       return true;
     }
@@ -313,15 +312,17 @@ public class PulseApp extends App implements PropertyChangeListener {
 
         double[][] newestChunk = chunks.get(chunks.size() - 1);
 
-        if (newestChunk[5] == null) {
+        if (newestChunk[6] == null) {
           // System.out.println("" + chunks.size());
           initialPulseTrainCaptured = true;
 
-          plotController.udpateVtChart(newestChunk[0], newestChunk[1], newestChunk[2], experimentModel.getPulseWidth(), experimentModel
+          // publish(new double[][]{timeData, V1Trimmed, V2Zeroed, V2MinusV1, current, conductance, null});
+
+          plotController.udpateVtChart(newestChunk[0], newestChunk[1], newestChunk[2], newestChunk[3], experimentModel.getPulseWidth(), experimentModel
               .getAmplitude());
-          plotController.udpateIVChart(newestChunk[0], newestChunk[3], experimentModel.getPulseWidth(), experimentModel
+          plotController.udpateIVChart(newestChunk[0], newestChunk[4], experimentModel.getPulseWidth(), experimentModel
               .getAmplitude());
-          plotController.updateGVChart(newestChunk[0], newestChunk[4], experimentModel.getPulseWidth(), experimentModel
+          plotController.updateGVChart(newestChunk[0], newestChunk[5], experimentModel.getPulseWidth(), experimentModel
               .getAmplitude());
 
           if (plotPanel.getCaptureButton().isSelected()) {
@@ -338,7 +339,7 @@ public class PulseApp extends App implements PropertyChangeListener {
 
           // update G chart
           // System.out.println("updating G Chart");
-          experimentModel.setLastG(newestChunk[5][0]);
+          experimentModel.setLastG(newestChunk[6][0]);
           plotController.updateGChart(experimentModel.getLastG(), experimentModel.getLastRAsString());
           plotController.repaintGChart();
 
