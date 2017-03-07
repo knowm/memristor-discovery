@@ -19,14 +19,14 @@ public class PostProcessDataUtils {
     int startIndex = 0;
     for (int i = 0; i < v1.length; i++) {
       if (Math.abs(v1[i]) > vThresholdAbs) {
-        startIndex = i;
+        startIndex = i-10;
         break;
       }
     }
     int endIndex = v1.length - 1;
     for (int i = v1.length - 1; i > 0; i--) {
       if (Math.abs(v1[i]) > vThresholdAbs) {
-        endIndex = i;
+        endIndex = i+10;
         break;
       }
     }
