@@ -37,7 +37,9 @@ import org.knowm.memristor.discovery.utils.Util;
 import org.knowm.memristor.discovery.utils.driver.Driver;
 import org.knowm.memristor.discovery.utils.driver.HalfSine;
 import org.knowm.memristor.discovery.utils.driver.QuarterSine;
+import org.knowm.memristor.discovery.utils.driver.Sawtooth;
 import org.knowm.memristor.discovery.utils.driver.Square;
+import org.knowm.memristor.discovery.utils.driver.SquareSmooth;
 import org.knowm.memristor.discovery.utils.driver.Triangle;
 
 public class ExperimentModel extends AppModel {
@@ -93,7 +95,7 @@ public class ExperimentModel extends AppModel {
     Driver driver;
     switch (waveform) {
       case Sawtooth:
-        driver = new Square("Square", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
+        driver = new Sawtooth("Sawtooth", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
         break;
       case QuarterSine:
         driver = new QuarterSine("QuarterSine", 0, 0, amplitude, getCalculatedFrequency());
@@ -102,15 +104,15 @@ public class ExperimentModel extends AppModel {
         driver = new Triangle("Triangle", 0, 0, amplitude, getCalculatedFrequency());
         break;
       case Square:
-        driver = new Square("Square", 0, 0, amplitude, getCalculatedFrequency());
+        driver = new Square("Square", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
+        break;
+      case SquareSmooth:
+        driver = new SquareSmooth("SquareSmooth", 0, 0, amplitude, getCalculatedFrequency());
         break;
       default:
         driver = new HalfSine("HalfSine", 0, 0, amplitude, getCalculatedFrequency());
         break;
     }
-
-    // Driver driver = new Square("Square", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
-    // Driver driver = new QuarterSine("QuarterSine", 0, 0, appliedAmplitude, getCalculatedFrequency());
 
     double stopTime = 1 / getCalculatedFrequency() * pulseNumber;
     double timeStep = 1 / getCalculatedFrequency() / PulsePreferences.CAPTURE_BUFFER_SIZE * pulseNumber;

@@ -93,6 +93,9 @@ public class ExperimentController implements PropertyChangeListener {
       case Square:
         experimentPanel.getSquareRadioButton().setSelected(true);
         break;
+      case SquareSmooth:
+        experimentPanel.getSquareSmoothRadioButton().setSelected(true);
+        break;
       default:
         experimentPanel.getQuarterSineRadioButton().setSelected(true);
         break;
@@ -123,6 +126,7 @@ public class ExperimentController implements PropertyChangeListener {
 
     experimentPanel.getQuarterSineRadioButton().addActionListener(waveformRadioButtonActionListener);
     experimentPanel.getSquareRadioButton().addActionListener(waveformRadioButtonActionListener);
+    experimentPanel.getSquareSmoothRadioButton().addActionListener(waveformRadioButtonActionListener);
     experimentPanel.getTriangleRadioButton().addActionListener(waveformRadioButtonActionListener);
     experimentPanel.getHalfSineRadioButton().addActionListener(waveformRadioButtonActionListener);
 

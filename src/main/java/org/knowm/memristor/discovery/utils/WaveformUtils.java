@@ -34,6 +34,7 @@ import org.knowm.memristor.discovery.utils.driver.QuarterSine;
 import org.knowm.memristor.discovery.utils.driver.Sawtooth;
 import org.knowm.memristor.discovery.utils.driver.SawtoothUpDown;
 import org.knowm.memristor.discovery.utils.driver.Square;
+import org.knowm.memristor.discovery.utils.driver.SquareSmooth;
 import org.knowm.memristor.discovery.utils.driver.Triangle;
 import org.knowm.memristor.discovery.utils.driver.TriangleUpDown;
 import org.knowm.waveforms4j.DWF;
@@ -89,6 +90,9 @@ public class WaveformUtils {
         break;
       case HalfSine:
         driver = new HalfSine("HalfSine", 0, 0, amplitude, frequency);
+        break;
+      case SquareSmooth:
+        driver = new SquareSmooth("SquareSmooth", 0, 0, amplitude, frequency);
         break;
       default:
         driver = new SawtoothUpDown("SawtoothUpDown", 0, 0, amplitude, frequency);

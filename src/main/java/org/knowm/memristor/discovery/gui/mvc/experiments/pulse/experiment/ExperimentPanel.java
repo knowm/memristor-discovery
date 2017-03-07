@@ -63,6 +63,7 @@ public class ExperimentPanel extends JPanel {
   private final ButtonGroup pulseFormRadioButtonGroup;
   private final JRadioButton quarterSineRadioButton;
   private final JRadioButton squareRadioButton;
+  private final JRadioButton squareSmoothRadioButton;
   private final JRadioButton triangleRadioButton;
   private final JRadioButton halfSineRadioButton;
 
@@ -111,21 +112,25 @@ public class ExperimentPanel extends JPanel {
 
     quarterSineRadioButton = new JRadioButton("QuarterSine");
     squareRadioButton = new JRadioButton("Square");
+    squareSmoothRadioButton = new JRadioButton("SquareSmooth");
     triangleRadioButton = new JRadioButton("Triangle");
     halfSineRadioButton = new JRadioButton("HalfSine");
     pulseFormRadioButtonGroup = new ButtonGroup();
     pulseFormRadioButtonGroup.add(quarterSineRadioButton);
     pulseFormRadioButtonGroup.add(squareRadioButton);
+    pulseFormRadioButtonGroup.add(squareSmoothRadioButton);
     pulseFormRadioButtonGroup.add(triangleRadioButton);
     pulseFormRadioButtonGroup.add(halfSineRadioButton);
     add(quarterSineRadioButton);
     add(squareRadioButton);
+    add(squareSmoothRadioButton);
     add(triangleRadioButton);
     add(halfSineRadioButton);
     pulseFormRadioButtonBox = Box.createVerticalBox();
     pulseFormRadioButtonBox.setBorder(BorderFactory.createTitledBorder("Waveform"));
     pulseFormRadioButtonBox.add(quarterSineRadioButton);
     pulseFormRadioButtonBox.add(squareRadioButton);
+    pulseFormRadioButtonBox.add(squareSmoothRadioButton);
     pulseFormRadioButtonBox.add(triangleRadioButton);
     pulseFormRadioButtonBox.add(halfSineRadioButton);
     c.gridy++;
@@ -234,8 +239,8 @@ public class ExperimentPanel extends JPanel {
   public void updateEnergyGUI(double appliedAmplitude, double appliedCurrent, double appliedEnergy) {
 
     appliedAmplitudeLabel.setText("Applied Amplitude [V]: " + Util.round(appliedAmplitude, 2));
-    currentLabel.setText("Current [" + PulsePreferences.CURRENT_UNIT.getLabel() + "]: " + Util.round(appliedCurrent, 2));
-    energyLabel.setText("Energy [nJ]: " + Util.round(appliedEnergy, 2));
+    currentLabel.setText("Current [" + PulsePreferences.CURRENT_UNIT.getLabel() + "]: " + Util.round(appliedCurrent, 3));
+    energyLabel.setText("Energy [nJ]: " + Util.round(appliedEnergy, 3));
   }
 
   public ButtonGroup getPulseFormRadioButtonGroup() {
@@ -246,6 +251,11 @@ public class ExperimentPanel extends JPanel {
   public JRadioButton getSquareRadioButton() {
 
     return squareRadioButton;
+  }
+
+  public JRadioButton getSquareSmoothRadioButton() {
+
+    return squareSmoothRadioButton;
   }
 
   public JRadioButton getTriangleRadioButton() {

@@ -45,7 +45,7 @@ public abstract class AppPreferences {
 
   public enum Waveform {
 
-    Sine, Triangle, TriangleUpDown, Square, SquareUpDown, SawtoothUpDown, Sawtooth, QuarterSine, HalfSine;
+    Sine, Triangle, TriangleUpDown, Square, SquareUpDown, SawtoothUpDown, Sawtooth, QuarterSine, HalfSine, SquareSmooth;
   }
 
   public enum CurrentUnits {
