@@ -46,8 +46,8 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control.ControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.plot.PlotController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.plot.PlotControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.plot.PlotController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.plot.PlotPanel;
 import org.knowm.memristor.discovery.utils.WaveformUtils;
 import org.knowm.waveforms4j.DWF;
@@ -330,11 +330,5 @@ public class HysteresisExperiment extends Experiment implements PropertyChangeLi
   public ExperimentControlModel getControlModel() {
 
     return controlModel;
-  }
-
-  @Override
-  public ExperimentControlModel getPlotModel() {
-
-    return plotModel;
   }
 }

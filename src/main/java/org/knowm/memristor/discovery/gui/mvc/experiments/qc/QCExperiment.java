@@ -447,11 +447,4 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
 
     return model;
   }
-
-  @Override
-  public ExperimentControlModel getPlotModel() {
-
-    // TODO Auto-generated method stub
-    return null;
-  }
 }

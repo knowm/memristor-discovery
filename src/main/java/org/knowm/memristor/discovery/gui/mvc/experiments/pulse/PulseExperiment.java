@@ -49,8 +49,8 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.control.ControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.plot.PlotController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.plot.PlotControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.plot.PlotController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.plot.PlotPanel;
 import org.knowm.memristor.discovery.utils.PostProcessDataUtils;
 import org.knowm.memristor.discovery.utils.WaveformUtils;
@@ -345,11 +345,5 @@ public class PulseExperiment extends Experiment implements PropertyChangeListene
   public ExperimentControlModel getControlModel() {
 
     return controlModel;
-  }
-
-  @Override
-  public ExperimentControlModel getPlotModel() {
-
-    return plotModel;
   }
 }

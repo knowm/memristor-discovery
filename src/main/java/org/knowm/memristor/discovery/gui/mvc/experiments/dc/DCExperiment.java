@@ -308,9 +308,4 @@ public class DCExperiment extends Experiment implements PropertyChangeListener {
     return controlModel;
   }
 
-  @Override
-  public ExperimentControlModel getPlotModel() {
-
-    return plotModel;
-  }
 }

@@ -47,8 +47,8 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.W
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.control.ControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.plot.PlotController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.plot.PlotControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.plot.PlotController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.plot.PlotPanel;
 import org.knowm.memristor.discovery.utils.PostProcessDataUtils;
 import org.knowm.memristor.discovery.utils.WaveformUtils;
@@ -210,7 +210,7 @@ public class ConductanceExperiment extends Experiment implements PropertyChangeL
       // Create Chart Data //////
       ///////////////////////////
 
-      double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, 0.02,10);
+      double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, 0.02, 10);
       double[] V1Trimmed = trimmedRawData[0];
       double[] V2Trimmed = trimmedRawData[1];
       int bufferLength = V1Trimmed.length;
@@ -316,7 +316,7 @@ public class ConductanceExperiment extends Experiment implements PropertyChangeL
         // Create Chart Data //////
         ///////////////////////////
 
-        double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, controlModel.getSetAmplitude() * .98,0);
+        double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, controlModel.getSetAmplitude() * .98, 0);
         double[] V1Trimmed = trimmedRawData[0];
         double[] V2Trimmed = trimmedRawData[1];
         int bufferLength = V1Trimmed.length;
@@ -415,11 +415,5 @@ public class ConductanceExperiment extends Experiment implements PropertyChangeL
   public ExperimentControlModel getControlModel() {
 
     return controlModel;
-  }
-
-  @Override
-  public ExperimentControlModel getPlotModel() {
-
-    return plotModel;
   }
 }

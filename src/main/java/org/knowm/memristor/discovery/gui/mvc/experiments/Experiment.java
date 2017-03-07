@@ -35,8 +35,6 @@ public abstract class Experiment {
 
   public abstract ExperimentControlModel getControlModel();
 
-  public abstract ExperimentControlModel getPlotModel();
-
   /**
    * @param dwfProxy
    */
@@ -48,7 +46,6 @@ public abstract class Experiment {
   public void refreshModelFromPreferences() {
 
     getControlModel().loadModelFromPrefs();
-    getPlotModel().loadModelFromPrefs();
   }
 
   public boolean capturePulseData() {
