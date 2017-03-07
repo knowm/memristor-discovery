@@ -25,55 +25,37 @@
  * If you have any questions regarding our licensing policy, please
  * contact us at `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.plot;
+package org.knowm.memristor.discovery.gui.mvc.experiments.pulse.plot;
 
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
-import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.HysteresisPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferences;
 
-public class PlotModel extends AppModel {
+public class PlotControlModel extends ExperimentControlModel {
 
-  /** Averaging params */
-  private double ave = 0;
-  private double k;
-
-  /** Min Max params */
+  /**
+   * Min Max params
+   */
   Double yMaxIV = null;
   Double yMinIV = null;
 
   Double yMaxGV = null;
   Double yMinGV = null;
 
+  List<Double> gData = new ArrayList<>();
+
   /**
    * Here is where the Controller registers itself as a listener to model changes.
-   * 
+   *
    * @param listener
    */
   public void addListener(PropertyChangeListener listener) {
 
     swingPropertyChangeSupport.addPropertyChangeListener(listener);
-  }
-
-  public double getAve() {
-
-    return ave;
-  }
-
-  public void setAve(double ave) {
-
-    this.ave = ave;
-  }
-
-  public double getK() {
-
-    return k;
-  }
-
-  public void setK(double k) {
-
-    this.k = k;
   }
 
   public Double getyMaxIV() {
@@ -119,14 +101,16 @@ public class PlotModel extends AppModel {
   @Override
   public ExperimentPreferences initAppPreferences() {
 
-    return new HysteresisPreferences();
+    return new PulsePreferences();
   }
 
   @Override
   public void loadModelFromPrefs() {
 
-    k = experimentPreferences.getDouble(HysteresisPreferences.K_INIT_DOUBLE_KEY, HysteresisPreferences.K_INIT_DOUBLE_DEFAULT_VALUE);
-    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
+  public List<Double> getGData() {
+
+    return gData;
+  }
 }

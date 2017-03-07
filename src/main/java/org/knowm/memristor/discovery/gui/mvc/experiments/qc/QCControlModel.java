@@ -30,7 +30,7 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.qc;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.utils.driver.Driver;
 import org.knowm.memristor.discovery.utils.driver.Sine;
@@ -39,9 +39,9 @@ import org.knowm.waveforms4j.DWF.Waveform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class QCModel extends AppModel {
+public class QCControlModel extends ExperimentControlModel {
 
-  private final Logger logger = LoggerFactory.getLogger(QCModel.class);
+  private final Logger logger = LoggerFactory.getLogger(QCControlModel.class);
 
   /** Save Path */
   private String savePath;
@@ -67,7 +67,7 @@ public class QCModel extends AppModel {
   /**
    * Constructor
    */
-  public QCModel() {
+  public QCControlModel() {
 
     updateWaveformChartData();
   }
@@ -81,7 +81,7 @@ public class QCModel extends AppModel {
     offset = experimentPreferences.getFloat(QCPreferences.OFFSET_INIT_FLOAT_KEY, QCPreferences.OFFSET_INIT_FLOAT_DEFAULT_VALUE);
     frequency = experimentPreferences.getInteger(QCPreferences.FREQUENCY_INIT_KEY, QCPreferences.FREQUENCY_INIT_DEFAULT_VALUE);
     savePath = experimentPreferences.getString(QCPreferences.REPORT_DIRECTORY_PATH_KEY, QCPreferences.REPORT_DIRECTORY_PATH_DEFAULT_VALUE);
-    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_PREFERENCES_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
   /**
@@ -131,7 +131,7 @@ public class QCModel extends AppModel {
   public void setAmplitude(float amplitude) {
 
     this.amplitude = amplitude;
-    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   /**
@@ -148,7 +148,7 @@ public class QCModel extends AppModel {
   public void setOffset(float offset) {
 
     this.offset = offset;
-    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public int getFrequency() {
@@ -159,7 +159,7 @@ public class QCModel extends AppModel {
   public void setFrequency(int frequency) {
 
     this.frequency = frequency;
-    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public double[] getWaveformTimeData() {

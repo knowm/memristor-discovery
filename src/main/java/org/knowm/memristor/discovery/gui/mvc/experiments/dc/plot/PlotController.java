@@ -32,13 +32,13 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.utils.Util;
 
 public class PlotController implements PropertyChangeListener {
 
   private final PlotPanel plotPanel;
-  private final PlotModel plotModel;
+  private final PlotControlModel plotModel;
 
   /**
    * Constructor
@@ -46,7 +46,7 @@ public class PlotController implements PropertyChangeListener {
    * @param plotPanel
    * @param plotModel
    */
-  public PlotController(PlotPanel plotPanel, PlotModel plotModel) {
+  public PlotController(PlotPanel plotPanel, PlotControlModel plotModel) {
 
     this.plotPanel = plotPanel;
     this.plotModel = plotModel;
@@ -217,7 +217,7 @@ public class PlotController implements PropertyChangeListener {
 
     switch (evt.getPropertyName()) {
 
-      case AppModel.EVENT_PREFERENCES_UPDATE:
+      case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
 
         initGUIComponentsFromModel();
         break;

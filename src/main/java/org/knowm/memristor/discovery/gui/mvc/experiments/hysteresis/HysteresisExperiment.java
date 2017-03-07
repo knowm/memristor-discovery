@@ -42,12 +42,12 @@ import javax.swing.SwingWorker;
 
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control.ControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.plot.PlotController;
-import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.plot.PlotModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.plot.PlotControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.plot.PlotPanel;
 import org.knowm.memristor.discovery.utils.WaveformUtils;
 import org.knowm.waveforms4j.DWF;
@@ -59,7 +59,7 @@ public class HysteresisExperiment extends Experiment implements PropertyChangeLi
   private final ControlPanel controlPanel;
 
   private final PlotPanel plotPanel;
-  private final PlotModel plotModel = new PlotModel();
+  private final PlotControlModel plotModel = new PlotControlModel();
   private final PlotController plotController;
 
   private HysteresisCaptureWorker captureWorker;
@@ -144,7 +144,7 @@ public class HysteresisExperiment extends Experiment implements PropertyChangeLi
     controlModel.addListener(this);
 
     // trigger plot of waveform
-    PropertyChangeEvent evt = new PropertyChangeEvent(this, AppModel.EVENT_WAVEFORM_UPDATE, true, false);
+    PropertyChangeEvent evt = new PropertyChangeEvent(this, ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
     propertyChange(evt);
   }
 
@@ -287,7 +287,7 @@ public class HysteresisExperiment extends Experiment implements PropertyChangeLi
 
     switch (propName) {
 
-      case AppModel.EVENT_WAVEFORM_UPDATE:
+      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
 
         if (dwfProxy.isAD2Capturing()) {
 
@@ -311,7 +311,7 @@ public class HysteresisExperiment extends Experiment implements PropertyChangeLi
               controlModel.getOffset());
         }
         break;
-      case AppModel.EVENT_FREQUENCY_UPDATE:
+      case ExperimentControlModel.EVENT_FREQUENCY_UPDATE:
 
         // a special case when the frequency is changed. Not only does the analog out need to change (above), the capture frequency rate must also be changed.
 
@@ -327,13 +327,13 @@ public class HysteresisExperiment extends Experiment implements PropertyChangeLi
     }
   }
 
-  public AppModel getControlModel() {
+  public ExperimentControlModel getControlModel() {
 
     return controlModel;
   }
 
   @Override
-  public AppModel getPlotModel() {
+  public ExperimentControlModel getPlotModel() {
 
     return plotModel;
   }

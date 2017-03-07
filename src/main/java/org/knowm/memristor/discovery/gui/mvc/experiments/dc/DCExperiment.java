@@ -42,12 +42,12 @@ import javax.swing.SwingWorker;
 
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.control.ControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.plot.PlotController;
-import org.knowm.memristor.discovery.gui.mvc.experiments.dc.plot.PlotModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.dc.plot.PlotControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.plot.PlotPanel;
 import org.knowm.memristor.discovery.utils.PostProcessDataUtils;
 import org.knowm.memristor.discovery.utils.WaveformUtils;
@@ -59,7 +59,7 @@ public class DCExperiment extends Experiment implements PropertyChangeListener {
   private ControlPanel controlPanel;
 
   private PlotPanel plotPanel;
-  private final PlotModel plotModel = new PlotModel();
+  private final PlotControlModel plotModel = new PlotControlModel();
   private final PlotController plotController;
 
   private CaptureWorker captureWorker;
@@ -144,7 +144,7 @@ public class DCExperiment extends Experiment implements PropertyChangeListener {
     controlModel.addListener(this);
 
     // trigger plot of waveform
-    PropertyChangeEvent evt = new PropertyChangeEvent(this, AppModel.EVENT_WAVEFORM_UPDATE, true, false);
+    PropertyChangeEvent evt = new PropertyChangeEvent(this, ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
     propertyChange(evt);
   }
 
@@ -265,7 +265,7 @@ public class DCExperiment extends Experiment implements PropertyChangeListener {
 
     switch (propName) {
 
-      case AppModel.EVENT_WAVEFORM_UPDATE:
+      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
 
         if (dwfProxy.isAD2Capturing()) {
 
@@ -303,13 +303,13 @@ public class DCExperiment extends Experiment implements PropertyChangeListener {
     }
   }
 
-  public AppModel getControlModel() {
+  public ExperimentControlModel getControlModel() {
 
     return controlModel;
   }
 
   @Override
-  public AppModel getPlotModel() {
+  public ExperimentControlModel getPlotModel() {
 
     return plotModel;
   }

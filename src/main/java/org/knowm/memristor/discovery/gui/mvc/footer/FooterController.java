@@ -34,7 +34,7 @@ import java.beans.PropertyChangeListener;
 
 import eu.hansolo.component.SteelCheckBox;
 import org.knowm.memristor.discovery.DWFProxy;
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.waveforms4j.DWFException;
 
 public class FooterController implements PropertyChangeListener {
@@ -93,7 +93,7 @@ public class FooterController implements PropertyChangeListener {
 
         break;
 
-      case AppModel.EVENT_WAVEFORM_UPDATE:
+      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
 
         break;
 

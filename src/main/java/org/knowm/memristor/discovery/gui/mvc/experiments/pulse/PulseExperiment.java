@@ -42,7 +42,7 @@ import javax.swing.SwingWorker;
 
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.ConductancePreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCPreferences;
@@ -50,7 +50,7 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.control.ControlCo
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.control.ControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.plot.PlotController;
-import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.plot.PlotModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.plot.PlotControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.plot.PlotPanel;
 import org.knowm.memristor.discovery.utils.PostProcessDataUtils;
 import org.knowm.memristor.discovery.utils.WaveformUtils;
@@ -62,7 +62,7 @@ public class PulseExperiment extends Experiment implements PropertyChangeListene
   private ControlPanel controlPanel;
 
   private PlotPanel plotPanel;
-  private final PlotModel plotModel = new PlotModel();
+  private final PlotControlModel plotModel = new PlotControlModel();
   private final PlotController plotController;
 
   private CaptureWorker captureWorker;
@@ -121,7 +121,7 @@ public class PulseExperiment extends Experiment implements PropertyChangeListene
     controlModel.addListener(this);
 
     // trigger plot of waveform
-    PropertyChangeEvent evt = new PropertyChangeEvent(this, AppModel.EVENT_WAVEFORM_UPDATE, true, false);
+    PropertyChangeEvent evt = new PropertyChangeEvent(this, ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
     propertyChange(evt);
   }
 
@@ -330,7 +330,7 @@ public class PulseExperiment extends Experiment implements PropertyChangeListene
 
     switch (propName) {
 
-      case AppModel.EVENT_WAVEFORM_UPDATE:
+      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
 
         plotPanel.switch2WaveformChart();
         plotController.udpateWaveformChart(controlModel.getWaveformTimeData(), controlModel.getWaveformAmplitudeData(), controlModel.getAmplitude(), controlModel.getPulseWidth());
@@ -342,13 +342,13 @@ public class PulseExperiment extends Experiment implements PropertyChangeListene
     }
   }
 
-  public AppModel getControlModel() {
+  public ExperimentControlModel getControlModel() {
 
     return controlModel;
   }
 
   @Override
-  public AppModel getPlotModel() {
+  public ExperimentControlModel getPlotModel() {
 
     return plotModel;
   }

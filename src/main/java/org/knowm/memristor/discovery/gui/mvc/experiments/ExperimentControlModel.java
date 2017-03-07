@@ -29,9 +29,17 @@ package org.knowm.memristor.discovery.gui.mvc.experiments;
 
 import javax.swing.event.SwingPropertyChangeSupport;
 
-public abstract class AppModel {
+public abstract class ExperimentControlModel {
 
-  /** Events */
+  /**
+   * runtime variables
+   */
+  public int seriesResistance;
+  public boolean isStartToggled = true; // TODO set this to false
+
+  /**
+   * Events
+   */
   public static final String EVENT_WAVEFORM_UPDATE = "EVENT_WAVEFORM_UPDATE";
   public static final String EVENT_FREQUENCY_UPDATE = "EVENT_FREQUENCY_UPDATE";
   public static final String EVENT_PREFERENCES_UPDATE = "EVENT_PREFERENCES_UPDATE";
@@ -46,10 +54,20 @@ public abstract class AppModel {
   /**
    * Constructor
    */
-  public AppModel() {
+  public ExperimentControlModel() {
 
     swingPropertyChangeSupport = new SwingPropertyChangeSupport(this);
     this.experimentPreferences = initAppPreferences();
     loadModelFromPrefs();
+  }
+
+  public int getSeriesR() {
+
+    return seriesResistance;
+  }
+
+  public void setSeriesR(int seriesResistance) {
+
+    this.seriesResistance = seriesResistance;
   }
 }

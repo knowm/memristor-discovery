@@ -44,7 +44,7 @@ import javax.swing.event.ChangeListener;
 
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.LeftAndRightArrowKeyListener;
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.plot.PlotPanel;
 
 public class ControlController implements PropertyChangeListener {
@@ -231,12 +231,12 @@ public class ControlController implements PropertyChangeListener {
         controlPanel.enableAllChildComponents((Boolean) evt.getNewValue());
         break;
 
-      case AppModel.EVENT_PREFERENCES_UPDATE:
+      case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
 
         initGUIComponentsFromModel();
         break;
 
-      case AppModel.EVENT_WAVEFORM_UPDATE:
+      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
 
         controlModel.updateWaveformChartData();
         break;

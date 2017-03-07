@@ -33,9 +33,9 @@ public abstract class Experiment {
 
   public final DWFProxy dwfProxy;
 
-  public abstract AppModel getControlModel();
+  public abstract ExperimentControlModel getControlModel();
 
-  public abstract AppModel getPlotModel();
+  public abstract ExperimentControlModel getPlotModel();
 
   /**
    * @param dwfProxy

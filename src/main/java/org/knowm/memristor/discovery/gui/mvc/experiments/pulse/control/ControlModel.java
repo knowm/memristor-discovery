@@ -30,7 +30,7 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.pulse.control;
 import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
 
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferences;
 import org.knowm.memristor.discovery.utils.Util;
@@ -42,7 +42,7 @@ import org.knowm.memristor.discovery.utils.driver.Square;
 import org.knowm.memristor.discovery.utils.driver.SquareSmooth;
 import org.knowm.memristor.discovery.utils.driver.Triangle;
 
-public class ControlModel extends AppModel {
+public class ControlModel extends ExperimentControlModel {
 
   /**
    * Waveform
@@ -57,15 +57,11 @@ public class ControlModel extends AppModel {
   private double appliedCurrent;
   private double appliedEnergy;
 
-  private int seriesResistance;
-
   private double lastG;
   public DecimalFormat ohmFormatter = new DecimalFormat("#,### Ω");
 
   private final double[] waveformTimeData = new double[PulsePreferences.CAPTURE_BUFFER_SIZE];
   private final double[] waveformAmplitudeData = new double[PulsePreferences.CAPTURE_BUFFER_SIZE];
-
-  private boolean isStartToggled = true;
 
   /**
    * Constructor
@@ -84,7 +80,7 @@ public class ControlModel extends AppModel {
     appliedAmplitude = amplitude;
     pulseWidth = experimentPreferences.getInteger(PulsePreferences.PULSE_WIDTH_INIT_KEY, PulsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
     pulseNumber = experimentPreferences.getInteger(PulsePreferences.NUM_PULSES_INIT_KEY, PulsePreferences.NUM_PULSES_INIT_DEFAULT_VALUE);
-    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_PREFERENCES_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
   /**
@@ -149,7 +145,7 @@ public class ControlModel extends AppModel {
   public void setAmplitude(float amplitude) {
 
     this.amplitude = amplitude;
-    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public int getPulseWidth() {
@@ -166,7 +162,7 @@ public class ControlModel extends AppModel {
   public void setPulseWidth(int pulseWidth) {
 
     this.pulseWidth = pulseWidth;
-    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public double[] getWaveformTimeData() {
@@ -187,17 +183,7 @@ public class ControlModel extends AppModel {
   public void setPulseNumber(int pulseNumber) {
 
     this.pulseNumber = pulseNumber;
-    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
-  }
-
-  public int getSeriesR() {
-
-    return seriesResistance;
-  }
-
-  public void setSeriesR(int seriesResistance) {
-
-    this.seriesResistance = seriesResistance;
+    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public boolean isMemristorVoltageDropSelected() {
@@ -208,7 +194,7 @@ public class ControlModel extends AppModel {
   public void setMemristorVoltageDropSelected(boolean memristorVoltageDropSelected) {
 
     isMemristorVoltageDropSelected = memristorVoltageDropSelected;
-    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public double getAppliedAmplitude() {
@@ -224,13 +210,13 @@ public class ControlModel extends AppModel {
   public void setWaveform(PulsePreferences.Waveform waveform) {
 
     this.waveform = waveform;
-    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public void setWaveform(String text) {
 
     waveform = Enum.valueOf(PulsePreferences.Waveform.class, text);
-    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public double getLastG() {

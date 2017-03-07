@@ -42,13 +42,13 @@ import javax.swing.SwingWorker;
 
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.control.ControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.plot.PlotController;
-import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.plot.PlotModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.plot.PlotControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.plot.PlotPanel;
 import org.knowm.memristor.discovery.utils.PostProcessDataUtils;
 import org.knowm.memristor.discovery.utils.WaveformUtils;
@@ -60,7 +60,7 @@ public class ConductanceExperiment extends Experiment implements PropertyChangeL
   private ControlPanel controlPanel;
 
   private PlotPanel plotPanel;
-  private final PlotModel plotModel = new PlotModel();
+  private final PlotControlModel plotModel = new PlotControlModel();
   private final PlotController plotController;
 
   private ResetCaptureWorker resetCaptureWorker;
@@ -166,7 +166,7 @@ public class ConductanceExperiment extends Experiment implements PropertyChangeL
     controlModel.addListener(this);
 
     // trigger plot of resetWaveform
-    PropertyChangeEvent evt = new PropertyChangeEvent(this, AppModel.EVENT_WAVEFORM_UPDATE, true, false);
+    PropertyChangeEvent evt = new PropertyChangeEvent(this, ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
     propertyChange(evt);
   }
 
@@ -393,7 +393,7 @@ public class ConductanceExperiment extends Experiment implements PropertyChangeL
 
     switch (propName) {
 
-      case AppModel.EVENT_WAVEFORM_UPDATE:
+      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
 
         if (dwfProxy.isAD2Capturing()) {
 
@@ -412,13 +412,13 @@ public class ConductanceExperiment extends Experiment implements PropertyChangeL
     }
   }
 
-  public AppModel getControlModel() {
+  public ExperimentControlModel getControlModel() {
 
     return controlModel;
   }
 
   @Override
-  public AppModel getPlotModel() {
+  public ExperimentControlModel getPlotModel() {
 
     return plotModel;
   }

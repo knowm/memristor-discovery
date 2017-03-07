@@ -29,7 +29,7 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control;
 
 import java.beans.PropertyChangeListener;
 
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.HysteresisPreferences;
 import org.knowm.memristor.discovery.utils.driver.Driver;
@@ -39,7 +39,7 @@ import org.knowm.memristor.discovery.utils.driver.Triangle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ControlModel extends AppModel {
+public class ControlModel extends ExperimentControlModel {
 
   private final Logger logger = LoggerFactory.getLogger(ControlModel.class);
 
@@ -54,11 +54,6 @@ public class ControlModel extends AppModel {
   private final double[] waveformAmplitudeData = new double[HysteresisPreferences.CAPTURE_BUFFER_SIZE];
 
   /**
-   * Series R
-   */
-  private int seriesR;
-
-  /**
    * Constructor
    */
   public ControlModel() {
@@ -71,11 +66,11 @@ public class ControlModel extends AppModel {
 
     // load model from prefs
     waveform = HysteresisPreferences.Waveform.valueOf(experimentPreferences.getString(HysteresisPreferences.WAVEFORM_INIT_STRING_KEY, HysteresisPreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
-    seriesR = experimentPreferences.getInteger(HysteresisPreferences.SERIES_R_INIT_KEY, HysteresisPreferences.SERIES_R_INIT_DEFAULT_VALUE);
+    seriesResistance = experimentPreferences.getInteger(HysteresisPreferences.SERIES_R_INIT_KEY, HysteresisPreferences.SERIES_R_INIT_DEFAULT_VALUE);
     offset = experimentPreferences.getFloat(HysteresisPreferences.OFFSET_INIT_FLOAT_KEY, HysteresisPreferences.OFFSET_INIT_FLOAT_DEFAULT_VALUE);
     amplitude = experimentPreferences.getFloat(HysteresisPreferences.AMPLITUDE_INIT_FLOAT_KEY, HysteresisPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
     frequency = experimentPreferences.getInteger(HysteresisPreferences.FREQUENCY_INIT_KEY, HysteresisPreferences.FREQUENCY_INIT_DEFAULT_VALUE);
-    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_PREFERENCES_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
   /**
@@ -134,13 +129,13 @@ public class ControlModel extends AppModel {
   public void setWaveform(HysteresisPreferences.Waveform waveform) {
 
     this.waveform = waveform;
-    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public void setWaveform(String text) {
 
     waveform = Enum.valueOf(HysteresisPreferences.Waveform.class, text);
-    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public float getOffset() {
@@ -151,7 +146,7 @@ public class ControlModel extends AppModel {
   public void setOffset(float offset) {
 
     this.offset = offset;
-    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public float getAmplitude() {
@@ -162,7 +157,7 @@ public class ControlModel extends AppModel {
   public void setAmplitude(float amplitude) {
 
     this.amplitude = amplitude;
-    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public int getFrequency() {
@@ -175,8 +170,8 @@ public class ControlModel extends AppModel {
     int oldFreq = this.frequency;
 
     this.frequency = frequency;
-    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
-    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_FREQUENCY_UPDATE, oldFreq, frequency);
+    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_FREQUENCY_UPDATE, oldFreq, frequency);
   }
 
   public double[] getWaveformTimeData() {
@@ -189,15 +184,6 @@ public class ControlModel extends AppModel {
     return waveformAmplitudeData;
   }
 
-  public int getSeriesR() {
-
-    return seriesR;
-  }
-
-  public void setSeriesR(int seriesR) {
-
-    this.seriesR = seriesR;
-  }
 
   @Override
   public ExperimentPreferences initAppPreferences() {

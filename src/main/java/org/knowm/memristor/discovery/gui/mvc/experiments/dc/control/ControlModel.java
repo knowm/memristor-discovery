@@ -29,7 +29,7 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.dc.control;
 
 import java.beans.PropertyChangeListener;
 
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCPreferences;
 import org.knowm.memristor.discovery.utils.driver.Driver;
@@ -38,13 +38,12 @@ import org.knowm.memristor.discovery.utils.driver.SawtoothUpDown;
 import org.knowm.memristor.discovery.utils.driver.Triangle;
 import org.knowm.memristor.discovery.utils.driver.TriangleUpDown;
 
-public class ControlModel extends AppModel {
+public class ControlModel extends ExperimentControlModel {
 
   public DCPreferences.Waveform waveform;
   private float amplitude;
   private int period; // model store period in nanoseconds
-  private int pulseNumber ;
-  private int seriesResistance;
+  private int pulseNumber;
 
   private final double[] waveformTimeData = new double[DCPreferences.CAPTURE_BUFFER_SIZE];
   private final double[] waveformAmplitudeData = new double[DCPreferences.CAPTURE_BUFFER_SIZE];
@@ -65,14 +64,13 @@ public class ControlModel extends AppModel {
     amplitude = experimentPreferences.getFloat(DCPreferences.AMPLITUDE_INIT_FLOAT_KEY, DCPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
     period = experimentPreferences.getInteger(DCPreferences.PERIOD_INIT_KEY, DCPreferences.PERIOD_INIT_DEFAULT_VALUE);
     pulseNumber = experimentPreferences.getInteger(DCPreferences.NUM_PULSES_INIT_KEY, DCPreferences.NUM_PULSES_INIT_DEFAULT_VALUE);
-    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_PREFERENCES_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
   /**
    * Given the state of the model, update the waveform x and y axis data arrays.
    */
   void updateWaveformChartData() {
-
 
     Driver driver;
     switch (waveform) {
@@ -101,7 +99,6 @@ public class ControlModel extends AppModel {
       waveformTimeData[counter] = time * 1_000_000;
       waveformAmplitudeData[counter] = driver.getSignal(time);
     } while (++counter < DCPreferences.CAPTURE_BUFFER_SIZE);
-
   }
 
   /**
@@ -126,13 +123,13 @@ public class ControlModel extends AppModel {
   public void setWaveform(DCPreferences.Waveform waveform) {
 
     this.waveform = waveform;
-    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public void setWaveform(String text) {
 
     waveform = Enum.valueOf(DCPreferences.Waveform.class, text);
-    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public float getAmplitude() {
@@ -143,7 +140,7 @@ public class ControlModel extends AppModel {
   public void setAmplitude(float amplitude) {
 
     this.amplitude = amplitude;
-    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public int getPeriod() {
@@ -161,7 +158,7 @@ public class ControlModel extends AppModel {
   public void setPeriod(int period) {
 
     this.period = period;
-    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public double[] getWaveformTimeData() {
@@ -182,18 +179,9 @@ public class ControlModel extends AppModel {
   public void setPulseNumber(int pulseNumber) {
 
     this.pulseNumber = pulseNumber;
-    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
-  public int getSeriesR() {
-
-    return seriesResistance;
-  }
-
-  public void setSeriesR(int seriesResistance) {
-
-    this.seriesResistance = seriesResistance;
-  }
 
   @Override
   public ExperimentPreferences initAppPreferences() {

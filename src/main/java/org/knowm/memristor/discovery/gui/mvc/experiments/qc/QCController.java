@@ -40,14 +40,14 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.knowm.memristor.discovery.DWFProxy;
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.qc.QCModel.ChipType;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.qc.QCControlModel.ChipType;
 
 public class QCController implements PropertyChangeListener {
 
   private final QCControlPanel controlPanel;
   private final QCMainPanel plotPanel;
-  private final QCModel model;
+  private final QCControlModel model;
   private final DWFProxy dwf;
 
   /**
@@ -58,7 +58,7 @@ public class QCController implements PropertyChangeListener {
    * @param model
    * @param dwf
    */
-  public QCController(QCControlPanel controlPanel, QCMainPanel mainPanel, QCModel model, DWFProxy dwf) {
+  public QCController(QCControlPanel controlPanel, QCMainPanel mainPanel, QCControlModel model, DWFProxy dwf) {
 
     this.controlPanel = controlPanel;
     this.plotPanel = mainPanel;
@@ -226,12 +226,12 @@ public class QCController implements PropertyChangeListener {
       controlPanel.enableAllChildComponents((Boolean) evt.getNewValue());
       break;
 
-    case AppModel.EVENT_PREFERENCES_UPDATE:
+    case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
 
       initGUIComponentsFromModel();
       break;
 
-    case AppModel.EVENT_WAVEFORM_UPDATE:
+    case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
 
       model.updateWaveformChartData();
       if (!dwf.isAD2Capturing()) {

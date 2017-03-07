@@ -31,11 +31,11 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.ConductancePreferences;
 
-public class PlotModel extends AppModel {
+public class PlotControlModel extends ExperimentControlModel {
 
   /**
    * Min Max params
