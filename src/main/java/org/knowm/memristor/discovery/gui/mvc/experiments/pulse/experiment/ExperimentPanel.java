@@ -192,7 +192,6 @@ public class ExperimentPanel extends JPanel {
 
     startStopButton = new JButton("Start");
     startStopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-    // startStopButton.setSize(128, 28);
     c.gridy++;
     c.insets = new Insets(0, 0, 0, 0);
     add(startStopButton, c);

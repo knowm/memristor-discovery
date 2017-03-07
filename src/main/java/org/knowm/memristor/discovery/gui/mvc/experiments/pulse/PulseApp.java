@@ -120,9 +120,6 @@ public class PulseApp extends App implements PropertyChangeListener {
           experimentModel.setStartToggled(true);
           experimentPanel.getStartStopButton().setText("Start");
 
-          // TODO move this to dwf proxy itself
-          dwfProxy.setAD2Capturing(false);
-
           // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
           allowPlotting = false;
           captureWorker.cancel(true);
@@ -174,7 +171,6 @@ public class PulseApp extends App implements PropertyChangeListener {
       // Read In Data
       boolean success = capturePulseData();
       if (!success) {
-        System.out.println("here");
         return false;
       }
 
@@ -235,7 +231,7 @@ public class PulseApp extends App implements PropertyChangeListener {
       while (!isCancelled()) {
 
         try {
-          Thread.sleep(500); // TODO change this to variable amount
+          Thread.sleep(500);
         } catch (InterruptedException e) {
           // eat it. caught when interrupt is called
           dwfProxy.getDwf().stopWave(DWF.WAVEFORM_CHANNEL_1);
