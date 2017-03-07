@@ -43,17 +43,17 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 /**
- * App Preferences
+ * Experiment Preferences
  * 
  * @author timmolter
  */
-public abstract class AppPreferencesPanel extends JDialog {
+public abstract class ExperimentPreferencesPanel extends JDialog {
 
   public abstract void doCreateAndShowGUI(JPanel preferencesPanel);
 
   public abstract void doSavePreferences();
 
-  public abstract AppPreferences initAppPreferences();
+  public abstract ExperimentPreferences initAppPreferences();
 
   public abstract String getAppName();
 
@@ -61,17 +61,17 @@ public abstract class AppPreferencesPanel extends JDialog {
   public static final int ID_CANCEL = 0;
   private int exitCode = ID_CANCEL;
 
-  protected AppPreferences appPreferences;
+  protected ExperimentPreferences experimentPreferences;
 
   /**
    * Constructor
    *
    * @param owner
    */
-  public AppPreferencesPanel(JFrame owner) {
+  public ExperimentPreferencesPanel(JFrame owner) {
 
     super(owner);
-    this.appPreferences = initAppPreferences();
+    this.experimentPreferences = initAppPreferences();
     createAndShowGUI();
   }
 
@@ -102,8 +102,8 @@ public abstract class AppPreferencesPanel extends JDialog {
       public void actionPerformed(ActionEvent arg0) {
 
         exitCode = ID_CANCEL;
-        AppPreferencesPanel.this.setVisible(false);
-        AppPreferencesPanel.this.dispatchEvent(new WindowEvent(AppPreferencesPanel.this, WindowEvent.WINDOW_CLOSING));
+        ExperimentPreferencesPanel.this.setVisible(false);
+        ExperimentPreferencesPanel.this.dispatchEvent(new WindowEvent(ExperimentPreferencesPanel.this, WindowEvent.WINDOW_CLOSING));
       }
     });
     buttonPane.add(cancelButton);
@@ -123,8 +123,8 @@ public abstract class AppPreferencesPanel extends JDialog {
         }
 
         exitCode = ID_OK;
-        AppPreferencesPanel.this.setVisible(false);
-        AppPreferencesPanel.this.dispatchEvent(new WindowEvent(AppPreferencesPanel.this, WindowEvent.WINDOW_CLOSING));
+        ExperimentPreferencesPanel.this.setVisible(false);
+        ExperimentPreferencesPanel.this.dispatchEvent(new WindowEvent(ExperimentPreferencesPanel.this, WindowEvent.WINDOW_CLOSING));
       }
     });
     buttonPane.add(okButton);

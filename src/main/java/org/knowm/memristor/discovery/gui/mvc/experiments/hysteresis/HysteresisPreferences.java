@@ -27,14 +27,14 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis;
 
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 
 /**
  * Stores various operational preferences
  *
  * @author timmolter
  */
-public class HysteresisPreferences extends AppPreferences {
+public class HysteresisPreferences extends ExperimentPreferences {
 
   private static final String PREFIX = "HYSTERESIS_";
 

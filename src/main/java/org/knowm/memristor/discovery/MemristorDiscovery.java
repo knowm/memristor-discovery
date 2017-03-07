@@ -46,18 +46,18 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.knowm.memristor.discovery.gui.AboutDialog;
-import org.knowm.memristor.discovery.gui.mvc.experiments.App;
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppHelpDialog;
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferencesPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.ConductanceApp;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentHelpDialog;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferencesPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.ConductanceExperiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.ConductancePreferencesPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCApp;
+import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCExperiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCPreferencesPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.HysteresisApp;
+import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.HysteresisExperiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.HysteresisPreferencesPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulseApp;
+import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulseExperiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferencesPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.qc.QCApp;
+import org.knowm.memristor.discovery.gui.mvc.experiments.qc.QCExperiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.qc.QCPreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.footer.FooterController;
 import org.knowm.memristor.discovery.gui.mvc.footer.FooterPanel;
@@ -86,7 +86,7 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
   private final String[] apps = new String[]{"Hysteresis", "Pulse", "DC", "Conductance"};
   private String appID;
   // private String appID = experiments[0];
-  private App app;
+  private Experiment experiment;
 
   // Swing Stuff
   private JFrame mainFrame;
@@ -160,7 +160,7 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
     ImageIcon icon = new ImageIcon(iconURL);
     mainFrame.setIconImage(icon.getImage());
 
-    // app menu
+    // control menu
     JMenuBar menuBar = new JMenuBar();
     JMenu menu = new JMenu("Experiments");
     menu.setMnemonic(KeyEvent.VK_A);
@@ -184,25 +184,25 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
           mainFrameContainer.add(headerPanel, BorderLayout.NORTH);
           mainFrameContainer.add(footerPanel, BorderLayout.SOUTH);
 
-          app = null;
+          experiment = null;
           appID = e.getActionCommand();
           // System.out.println(appID);
 
           switch (e.getActionCommand()) {
             case "Hysteresis":
-              app = new HysteresisApp(dwf, mainFrame.getContentPane());
+              experiment = new HysteresisExperiment(dwf, mainFrame.getContentPane());
               break;
             case "Pulse":
-              app = new PulseApp(dwf, mainFrame.getContentPane());
+              experiment = new PulseExperiment(dwf, mainFrame.getContentPane());
               break;
             case "DC":
-              app = new DCApp(dwf, mainFrame.getContentPane());
+              experiment = new DCExperiment(dwf, mainFrame.getContentPane());
               break;
             case "Conductance":
-              app = new ConductanceApp(dwf, mainFrame.getContentPane());
+              experiment = new ConductanceExperiment(dwf, mainFrame.getContentPane());
               break;
             case "QC":
-              app = new QCApp(dwf, mainFrame.getContentPane());
+              experiment = new QCExperiment(dwf, mainFrame.getContentPane());
               break;
 
             default:
@@ -228,7 +228,7 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
       @Override
       public void actionPerformed(ActionEvent e) {
 
-        new AppHelpDialog(mainFrame, appID);
+        new ExperimentHelpDialog(mainFrame, appID);
       }
     });
     helpMenuItem.setActionCommand(helpMenuItem.getName());
@@ -260,18 +260,18 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
     new FooterController(footerPanel, dwf);
     new HeaderController(headerPanel, dwf);
 
-    // default app injected here
+    // default control injected here
 
-    // app = new HysteresisApp(dwf, mainFrameContainer);
+    // control = new HysteresisExperiment(dwf, mainFrameContainer);
     // appID = "Hysteresis";
 
-    // app = new DCApp(dwf, mainFrameContainer);
+    // control = new DCExperiment(dwf, mainFrameContainer);
     // appID = "DC";
 
-    // app = new ConductanceApp(dwf, mainFrameContainer);
+    // control = new ConductanceExperiment(dwf, mainFrameContainer);
     // appID = "Conductance";
 
-    app = new PulseApp(dwf, mainFrameContainer);
+    experiment = new PulseExperiment(dwf, mainFrameContainer);
     appID = "Pulse";
 
     mainFrame.setTitle(FRAME_TITLE_BASE + appID);
@@ -349,8 +349,8 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
       default:
         break;
     }
-    if (result == AppPreferencesPanel.ID_OK) {
-      app.refreshModelFromPreferences();
+    if (result == ExperimentPreferencesPanel.ID_OK) {
+      experiment.refreshModelFromPreferences();
     }
   }
 

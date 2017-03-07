@@ -29,7 +29,7 @@ package org.knowm.memristor.discovery.gui.mvc.experiments;
 
 import java.util.prefs.Preferences;
 
-public abstract class AppPreferences {
+public abstract class ExperimentPreferences {
 
   protected Preferences preferences;
 
@@ -38,7 +38,7 @@ public abstract class AppPreferences {
    *
    * @param c
    */
-  public AppPreferences(Class<?> c) {
+  public ExperimentPreferences(Class<?> c) {
 
     preferences = Preferences.userNodeForPackage(c);
   }

@@ -35,10 +35,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferences;
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferencesPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferencesPanel;
 
-public class PulsePreferencesPanel extends AppPreferencesPanel {
+public class PulsePreferencesPanel extends ExperimentPreferencesPanel {
 
   private JLabel shuntResistorLabel;
   private JTextField shuntResistorTextField;
@@ -73,7 +73,7 @@ public class PulsePreferencesPanel extends AppPreferencesPanel {
 
     gc.gridx = 1;
     this.shuntResistorTextField = new JTextField(12);
-    this.shuntResistorTextField.setText(String.valueOf(appPreferences.getInteger(PulsePreferences.SERIES_R_INIT_KEY, PulsePreferences.SERIES_R_INIT_DEFAULT_VALUE)));
+    this.shuntResistorTextField.setText(String.valueOf(experimentPreferences.getInteger(PulsePreferences.SERIES_R_INIT_KEY, PulsePreferences.SERIES_R_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(shuntResistorTextField, gc);
 
     gc.gridy++;
@@ -84,7 +84,7 @@ public class PulsePreferencesPanel extends AppPreferencesPanel {
 
     gc.gridx = 1;
     this.amplitudeTextField = new JTextField(12);
-    this.amplitudeTextField.setText(String.valueOf(appPreferences.getFloat(PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY, PulsePreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
+    this.amplitudeTextField.setText(String.valueOf(experimentPreferences.getFloat(PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY, PulsePreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
     preferencesPanel.add(amplitudeTextField, gc);
 
     gc.gridy++;
@@ -95,7 +95,7 @@ public class PulsePreferencesPanel extends AppPreferencesPanel {
 
     gc.gridx = 1;
     this.pulseWidthTextField = new JTextField(12);
-    this.pulseWidthTextField.setText(String.valueOf(appPreferences.getInteger(PulsePreferences.PULSE_WIDTH_INIT_KEY, PulsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE)));
+    this.pulseWidthTextField.setText(String.valueOf(experimentPreferences.getInteger(PulsePreferences.PULSE_WIDTH_INIT_KEY, PulsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(pulseWidthTextField, gc);
   }
 
@@ -103,14 +103,14 @@ public class PulsePreferencesPanel extends AppPreferencesPanel {
   public void doSavePreferences() {
 
     // TODO add num pulses prefs.
-    // appPreferences.setInteger(PulsePreferences.NUM_PULSES_INIT_KEY, Integer.parseInt(shuntResistorTextField.getText()));
-    appPreferences.setInteger(PulsePreferences.SERIES_R_INIT_KEY, Integer.parseInt(shuntResistorTextField.getText()));
-    appPreferences.setFloat(PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(amplitudeTextField.getText()));
-    appPreferences.setInteger(PulsePreferences.PULSE_WIDTH_INIT_KEY, Integer.parseInt(pulseWidthTextField.getText()));
+    // experimentPreferences.setInteger(PulsePreferences.NUM_PULSES_INIT_KEY, Integer.parseInt(shuntResistorTextField.getText()));
+    experimentPreferences.setInteger(PulsePreferences.SERIES_R_INIT_KEY, Integer.parseInt(shuntResistorTextField.getText()));
+    experimentPreferences.setFloat(PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(amplitudeTextField.getText()));
+    experimentPreferences.setInteger(PulsePreferences.PULSE_WIDTH_INIT_KEY, Integer.parseInt(pulseWidthTextField.getText()));
   }
 
   @Override
-  public AppPreferences initAppPreferences() {
+  public ExperimentPreferences initAppPreferences() {
 
     return new PulsePreferences();
   }

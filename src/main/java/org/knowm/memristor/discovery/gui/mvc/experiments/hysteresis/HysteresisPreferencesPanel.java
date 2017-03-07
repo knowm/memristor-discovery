@@ -37,11 +37,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferences;
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferences.Waveform;
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferencesPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferencesPanel;
 
-public class HysteresisPreferencesPanel extends AppPreferencesPanel {
+public class HysteresisPreferencesPanel extends ExperimentPreferencesPanel {
 
   private JLabel waveformLabel;
   private JComboBox<HysteresisPreferences.Waveform> waveformComboBox;
@@ -86,7 +86,7 @@ public class HysteresisPreferencesPanel extends AppPreferencesPanel {
     gc.gridx = 1;
     this.waveformComboBox = new JComboBox<>();
     this.waveformComboBox.setModel(new DefaultComboBoxModel<>(new Waveform[]{Waveform.Sine, Waveform.Triangle}));
-    HysteresisPreferences.Waveform waveform = HysteresisPreferences.Waveform.valueOf(appPreferences.getString(HysteresisPreferences.WAVEFORM_INIT_STRING_KEY,
+    HysteresisPreferences.Waveform waveform = HysteresisPreferences.Waveform.valueOf(experimentPreferences.getString(HysteresisPreferences.WAVEFORM_INIT_STRING_KEY,
         HysteresisPreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
     this.waveformComboBox.setSelectedItem(waveform);
     preferencesPanel.add(waveformComboBox, gc);
@@ -100,7 +100,7 @@ public class HysteresisPreferencesPanel extends AppPreferencesPanel {
 
     gc.gridx = 1;
     this.offsetTextField = new JTextField(12);
-    this.offsetTextField.setText(String.valueOf(appPreferences.getFloat(HysteresisPreferences.OFFSET_INIT_FLOAT_KEY, HysteresisPreferences.OFFSET_INIT_FLOAT_DEFAULT_VALUE)));
+    this.offsetTextField.setText(String.valueOf(experimentPreferences.getFloat(HysteresisPreferences.OFFSET_INIT_FLOAT_KEY, HysteresisPreferences.OFFSET_INIT_FLOAT_DEFAULT_VALUE)));
     preferencesPanel.add(offsetTextField, gc);
 
     /////////////////////////////////////////////////////////
@@ -112,7 +112,7 @@ public class HysteresisPreferencesPanel extends AppPreferencesPanel {
 
     gc.gridx = 1;
     this.amplitudeTextField = new JTextField(12);
-    this.amplitudeTextField.setText(String.valueOf(appPreferences.getFloat(HysteresisPreferences.AMPLITUDE_INIT_FLOAT_KEY, HysteresisPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
+    this.amplitudeTextField.setText(String.valueOf(experimentPreferences.getFloat(HysteresisPreferences.AMPLITUDE_INIT_FLOAT_KEY, HysteresisPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
     preferencesPanel.add(amplitudeTextField, gc);
 
     /////////////////////////////////////////////////////////
@@ -124,7 +124,7 @@ public class HysteresisPreferencesPanel extends AppPreferencesPanel {
 
     gc.gridx = 1;
     this.frequencyTextField = new JTextField(12);
-    this.frequencyTextField.setText(String.valueOf(appPreferences.getInteger(HysteresisPreferences.FREQUENCY_INIT_KEY, HysteresisPreferences.FREQUENCY_INIT_DEFAULT_VALUE)));
+    this.frequencyTextField.setText(String.valueOf(experimentPreferences.getInteger(HysteresisPreferences.FREQUENCY_INIT_KEY, HysteresisPreferences.FREQUENCY_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(frequencyTextField, gc);
 
     /////////////////////////////////////////////////////////
@@ -136,7 +136,7 @@ public class HysteresisPreferencesPanel extends AppPreferencesPanel {
 
     gc.gridx = 1;
     this.seriesResistorTextField = new JTextField(12);
-    this.seriesResistorTextField.setText(String.valueOf(appPreferences.getInteger(HysteresisPreferences.SERIES_R_INIT_KEY, HysteresisPreferences.SERIES_R_INIT_DEFAULT_VALUE)));
+    this.seriesResistorTextField.setText(String.valueOf(experimentPreferences.getInteger(HysteresisPreferences.SERIES_R_INIT_KEY, HysteresisPreferences.SERIES_R_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(seriesResistorTextField, gc);
 
     /////////////////////////////////////////////////////////
@@ -148,23 +148,23 @@ public class HysteresisPreferencesPanel extends AppPreferencesPanel {
 
     gc.gridx = 1;
     this.kTextField = new JTextField(12);
-    this.kTextField.setText(String.valueOf(appPreferences.getDouble(HysteresisPreferences.K_INIT_DOUBLE_KEY, HysteresisPreferences.K_INIT_DOUBLE_DEFAULT_VALUE)));
+    this.kTextField.setText(String.valueOf(experimentPreferences.getDouble(HysteresisPreferences.K_INIT_DOUBLE_KEY, HysteresisPreferences.K_INIT_DOUBLE_DEFAULT_VALUE)));
     preferencesPanel.add(kTextField, gc);
   }
 
   @Override
   public void doSavePreferences() {
 
-    appPreferences.setString(HysteresisPreferences.WAVEFORM_INIT_STRING_KEY, waveformComboBox.getSelectedItem().toString().trim());
-    appPreferences.setFloat(HysteresisPreferences.OFFSET_INIT_FLOAT_KEY, Float.parseFloat(offsetTextField.getText()));
-    appPreferences.setFloat(HysteresisPreferences.AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(amplitudeTextField.getText()));
-    appPreferences.setInteger(HysteresisPreferences.FREQUENCY_INIT_KEY, Integer.parseInt(frequencyTextField.getText()));
-    appPreferences.setInteger(HysteresisPreferences.SERIES_R_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
-    appPreferences.setDouble(HysteresisPreferences.K_INIT_DOUBLE_KEY, Double.parseDouble(kTextField.getText()));
+    experimentPreferences.setString(HysteresisPreferences.WAVEFORM_INIT_STRING_KEY, waveformComboBox.getSelectedItem().toString().trim());
+    experimentPreferences.setFloat(HysteresisPreferences.OFFSET_INIT_FLOAT_KEY, Float.parseFloat(offsetTextField.getText()));
+    experimentPreferences.setFloat(HysteresisPreferences.AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(amplitudeTextField.getText()));
+    experimentPreferences.setInteger(HysteresisPreferences.FREQUENCY_INIT_KEY, Integer.parseInt(frequencyTextField.getText()));
+    experimentPreferences.setInteger(HysteresisPreferences.SERIES_R_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
+    experimentPreferences.setDouble(HysteresisPreferences.K_INIT_DOUBLE_KEY, Double.parseDouble(kTextField.getText()));
   }
 
   @Override
-  public AppPreferences initAppPreferences() {
+  public ExperimentPreferences initAppPreferences() {
 
     return new HysteresisPreferences();
   }

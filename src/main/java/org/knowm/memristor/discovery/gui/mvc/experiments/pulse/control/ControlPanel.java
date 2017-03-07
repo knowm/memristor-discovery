@@ -25,7 +25,7 @@
  * If you have any questions regarding our licensing policy, please
  * contact us at `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.experiments.dc.experiment;
+package org.knowm.memristor.discovery.gui.mvc.experiments.pulse.control;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -35,79 +35,85 @@ import java.awt.Insets;
 import java.util.Hashtable;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
+import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferences;
 import org.knowm.memristor.discovery.utils.Util;
 
 /**
- * Provides controls for running the experiment
+ * Provides controls for running the control
  *
  * @author timmolter
  */
-public class ExperimentPanel extends JPanel {
+public class ControlPanel extends JPanel {
 
-  private final Box waveformRadioButtonBox;
-  private final ButtonGroup waveformRadioButtonGroup;
-  private final JRadioButton sawToothRadioButton;
-  private final JRadioButton sawtoothUpDownRadioButton;
-  private final JRadioButton triangleRadioButton;
-  private final JRadioButton triangleUpDownRadioButton;
+  private final JLabel appliedAmplitudeLabel;
+  private final JLabel currentLabel;
+  private final JLabel energyLabel;
+
+  private JComboBox<Waveform> waveformComboBox;
+
+  private final JCheckBox memristorVoltageCheckBox;
 
   private final JSlider amplitudeSlider;
-  private final JSlider periodSlider;
-  private final JSlider periodSliderNs;
+  private final JSlider pulseWidthSlider;
+  private final JSlider pulseWidthSliderNs;
 
   private final JLabel seriesLabel;
   private final JTextField seriesTextField;
 
   private final JSlider pulseNumberSlider;
 
-  private final JButton startButton;
-  private final JButton stopButton;
+  private final JButton startStopButton;
 
   /**
    * Constructor
    */
-  public ExperimentPanel() {
+  public ControlPanel() {
 
     setLayout(new GridBagLayout());
     GridBagConstraints c = new GridBagConstraints();
     c.fill = GridBagConstraints.HORIZONTAL;
     setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
-    // setBackground(Color.yellow);
 
-    sawToothRadioButton = new JRadioButton("Sawtooth");
-    sawtoothUpDownRadioButton = new JRadioButton("SawtoothUpDown");
-    triangleRadioButton = new JRadioButton("Triangle");
-    triangleUpDownRadioButton = new JRadioButton("TriangleUpDown");
-    waveformRadioButtonGroup = new ButtonGroup();
-    waveformRadioButtonGroup.add(sawToothRadioButton);
-    waveformRadioButtonGroup.add(sawtoothUpDownRadioButton);
-    waveformRadioButtonGroup.add(triangleRadioButton);
-    waveformRadioButtonGroup.add(triangleUpDownRadioButton);
-    add(sawToothRadioButton);
-    add(sawtoothUpDownRadioButton);
-    add(triangleRadioButton);
-    add(triangleUpDownRadioButton);
-    waveformRadioButtonBox = Box.createVerticalBox();
-    waveformRadioButtonBox.setBorder(BorderFactory.createTitledBorder("Waveform"));
-    waveformRadioButtonBox.add(sawToothRadioButton);
-    waveformRadioButtonBox.add(sawtoothUpDownRadioButton);
-    waveformRadioButtonBox.add(triangleRadioButton);
-    waveformRadioButtonBox.add(triangleUpDownRadioButton);
     c.gridx = 0;
-    c.gridy++;
-    c.insets = new Insets(0, 6, 4, 6);
-    add(waveformRadioButtonBox, c);
 
-    amplitudeSlider = new JSlider(JSlider.HORIZONTAL, -300, 300, 0);
+    appliedAmplitudeLabel = new JLabel("Applied Amplitude [V]: ");
+    appliedAmplitudeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.gridy++;
+    c.insets = new Insets(0, 10, 4, 0);
+    add(appliedAmplitudeLabel, c);
+
+    currentLabel = new JLabel("Current [" + PulsePreferences.CURRENT_UNIT.getLabel() + "]: ");
+    currentLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.gridy++;
+    c.insets = new Insets(0, 10, 4, 0);
+    add(currentLabel, c);
+
+    energyLabel = new JLabel("Energy [nJ]: ");
+    energyLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.gridy++;
+    c.insets = new Insets(0, 10, 4, 0);
+    add(energyLabel, c);
+
+    this.waveformComboBox = new JComboBox<>();
+    c.gridy++;
+    c.insets = new Insets(0, 0, 4, 6);
+    add(waveformComboBox, c);
+
+    c.gridy++;
+    c.insets = new Insets(0, 0, 0, 0);
+    memristorVoltageCheckBox = new JCheckBox("Memristor Voltage Drop");
+    add(memristorVoltageCheckBox, c);
+
+    amplitudeSlider = new JSlider(JSlider.HORIZONTAL, -250, 200, 0);
     amplitudeSlider.setBorder(BorderFactory.createTitledBorder("Amplitude [V]"));
     amplitudeSlider.setMajorTickSpacing(50);
     amplitudeSlider.setMinorTickSpacing(10);
@@ -115,39 +121,38 @@ public class ExperimentPanel extends JPanel {
     amplitudeSlider.setPaintLabels(true);
     amplitudeSlider.setSnapToTicks(true);
     Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
-    labelTable.put(-300, new JLabel("-3"));
+    labelTable.put(-250, new JLabel("-2.5"));
     labelTable.put(-200, new JLabel("-2"));
     labelTable.put(-100, new JLabel("-1"));
     labelTable.put(0, new JLabel("0"));
     labelTable.put(100, new JLabel("1"));
     labelTable.put(200, new JLabel("2"));
-    labelTable.put(300, new JLabel("3"));
     amplitudeSlider.setLabelTable(labelTable);
     c.gridy++;
     c.insets = new Insets(0, 6, 4, 6);
     amplitudeSlider.setPreferredSize(new Dimension(300, 80));
     add(amplitudeSlider, c);
 
-    periodSlider = new JSlider(JSlider.HORIZONTAL, 5000, 100000, 5000);
-    periodSlider.setBorder(BorderFactory.createTitledBorder("Period [µs]"));
-    periodSlider.setMinorTickSpacing(5000);
-    periodSlider.setPaintTicks(true);
-    periodSlider.setPaintLabels(true);
-    periodSlider.setSnapToTicks(true);
+    pulseWidthSlider = new JSlider(JSlider.HORIZONTAL, 5000, 100000, 5000);
+    pulseWidthSlider.setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
+    pulseWidthSlider.setMinorTickSpacing(5000);
+    pulseWidthSlider.setPaintTicks(true);
+    pulseWidthSlider.setPaintLabels(true);
+    pulseWidthSlider.setSnapToTicks(true);
     labelTable = new Hashtable<>();
     labelTable.put(5000, new JLabel("5"));
     labelTable.put(50000, new JLabel("50"));
     labelTable.put(100000, new JLabel("100"));
-    periodSlider.setLabelTable(labelTable);
+    pulseWidthSlider.setLabelTable(labelTable);
     c.gridy++;
-    add(periodSlider, c);
+    add(pulseWidthSlider, c);
 
-    periodSliderNs = new JSlider(JSlider.HORIZONTAL, 500, 5000, 5000);
-    periodSliderNs.setBorder(BorderFactory.createTitledBorder("Period [µs]"));
-    periodSliderNs.setMinorTickSpacing(250);
-    periodSliderNs.setPaintTicks(true);
-    periodSliderNs.setPaintLabels(true);
-    periodSliderNs.setSnapToTicks(true);
+    pulseWidthSliderNs = new JSlider(JSlider.HORIZONTAL, 500, 5000, 5000);
+    pulseWidthSliderNs.setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
+    pulseWidthSliderNs.setMinorTickSpacing(500);
+    pulseWidthSliderNs.setPaintTicks(true);
+    pulseWidthSliderNs.setPaintLabels(true);
+    pulseWidthSliderNs.setSnapToTicks(true);
     labelTable = new Hashtable<>();
     labelTable.put(500, new JLabel(".5"));
     labelTable.put(1000, new JLabel("1"));
@@ -155,11 +160,11 @@ public class ExperimentPanel extends JPanel {
     labelTable.put(3000, new JLabel("3"));
     labelTable.put(4000, new JLabel("4"));
     labelTable.put(5000, new JLabel("5"));
-    periodSliderNs.setLabelTable(labelTable);
+    pulseWidthSliderNs.setLabelTable(labelTable);
     c.gridy++;
-    add(periodSliderNs, c);
+    add(pulseWidthSliderNs, c);
 
-    pulseNumberSlider = new JSlider(JSlider.HORIZONTAL, 1, 20, 1);
+    pulseNumberSlider = new JSlider(JSlider.HORIZONTAL, 1, 10, 1);
     pulseNumberSlider.setBorder(BorderFactory.createTitledBorder("Pulse Number"));
     pulseNumberSlider.setMinorTickSpacing(1);
     pulseNumberSlider.setPaintTicks(true);
@@ -169,8 +174,6 @@ public class ExperimentPanel extends JPanel {
     labelTable.put(1, new JLabel("1"));
     labelTable.put(5, new JLabel("5"));
     labelTable.put(10, new JLabel("10"));
-    labelTable.put(15, new JLabel("15"));
-    labelTable.put(20, new JLabel("20"));
     pulseNumberSlider.setLabelTable(labelTable);
     c.gridy++;
     add(pulseNumberSlider, c);
@@ -187,17 +190,11 @@ public class ExperimentPanel extends JPanel {
     c.insets = new Insets(0, 5, 14, 5);
     add(seriesTextField, c);
 
-    startButton = new JButton("Start");
-    startButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-    // startButton.setSize(128, 28);
+    startStopButton = new JButton("Start");
+    startStopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.gridy++;
     c.insets = new Insets(0, 0, 0, 0);
-    add(startButton, c);
-
-    stopButton = new JButton("Stop");
-    stopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-    c.gridy++;
-    add(stopButton, c);
+    add(startStopButton, c);
 
     c.gridy++;
     JLabel logoLabel = new JLabel(Util.createImageIcon("img/logo_200.png"));
@@ -206,41 +203,26 @@ public class ExperimentPanel extends JPanel {
 
   public void enableAllChildComponents(boolean enabled) {
 
-    sawToothRadioButton.setEnabled(enabled);
-    sawtoothUpDownRadioButton.setEnabled(enabled);
-    triangleRadioButton.setEnabled(enabled);
-    triangleUpDownRadioButton.setEnabled(enabled);
+    waveformComboBox.setEnabled(enabled);
+    memristorVoltageCheckBox.setEnabled(enabled);
     amplitudeSlider.setEnabled(enabled);
-    periodSlider.setEnabled(enabled);
-    periodSliderNs.setEnabled(enabled);
+    pulseWidthSlider.setEnabled(enabled);
+    pulseWidthSliderNs.setEnabled(enabled);
+    pulseNumberSlider.setEnabled(enabled);
     seriesTextField.setEnabled(enabled);
-    startButton.setEnabled(enabled);
-    stopButton.setEnabled(false);
+    startStopButton.setEnabled(enabled);
   }
 
-  public ButtonGroup getWaveformRadioButtonGroup() {
+  public void updateEnergyGUI(double appliedAmplitude, double appliedCurrent, double appliedEnergy) {
 
-    return waveformRadioButtonGroup;
+    appliedAmplitudeLabel.setText("Applied Amplitude [V]: " + Util.round(appliedAmplitude, 2));
+    currentLabel.setText("Current [" + PulsePreferences.CURRENT_UNIT.getLabel() + "]: " + Util.round(appliedCurrent, 3));
+    energyLabel.setText("Energy [nJ]: " + Util.round(appliedEnergy, 3));
   }
 
-  public JRadioButton getSawtoothUpDownRadioButton() {
+  public JComboBox<Waveform> getWaveformComboBox() {
 
-    return sawtoothUpDownRadioButton;
-  }
-
-  public JRadioButton getTriangleRadioButton() {
-
-    return triangleRadioButton;
-  }
-
-  public JRadioButton getTriangleUpDownRadioButton() {
-
-    return triangleUpDownRadioButton;
-  }
-
-  public JRadioButton getSawToothRadioButton() {
-
-    return sawToothRadioButton;
+    return waveformComboBox;
   }
 
   public JSlider getAmplitudeSlider() {
@@ -248,14 +230,14 @@ public class ExperimentPanel extends JPanel {
     return amplitudeSlider;
   }
 
-  public JSlider getPeriodSlider() {
+  public JSlider getPulseWidthSlider() {
 
-    return periodSlider;
+    return pulseWidthSlider;
   }
 
-  public JSlider getPeriodSliderNs() {
+  public JSlider getPulseWidthSliderNs() {
 
-    return periodSliderNs;
+    return pulseWidthSliderNs;
   }
 
   public JSlider getPulseNumberSlider() {
@@ -268,13 +250,13 @@ public class ExperimentPanel extends JPanel {
     return seriesTextField;
   }
 
-  public JButton getStartButton() {
+  public JButton getStartStopButton() {
 
-    return startButton;
+    return startStopButton;
   }
 
-  public JButton getStopButton() {
+  public JCheckBox getMemristorVoltageCheckBox() {
 
-    return stopButton;
+    return memristorVoltageCheckBox;
   }
 }

@@ -27,14 +27,14 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.dc;
 
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 
 /**
  * Stores various operational preferences
  *
  * @author timmolter
  */
-public class DCPreferences extends AppPreferences {
+public class DCPreferences extends ExperimentPreferences {
 
   private static final String PREFIX = "DC_";
 

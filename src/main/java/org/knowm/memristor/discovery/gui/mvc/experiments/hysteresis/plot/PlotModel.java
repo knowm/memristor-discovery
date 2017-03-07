@@ -30,7 +30,7 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.plot;
 import java.beans.PropertyChangeListener;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.AppModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.HysteresisPreferences;
 
 public class PlotModel extends AppModel {
@@ -117,7 +117,7 @@ public class PlotModel extends AppModel {
   }
 
   @Override
-  public AppPreferences initAppPreferences() {
+  public ExperimentPreferences initAppPreferences() {
 
     return new HysteresisPreferences();
   }
@@ -125,7 +125,7 @@ public class PlotModel extends AppModel {
   @Override
   public void loadModelFromPrefs() {
 
-    k = appPreferences.getDouble(HysteresisPreferences.K_INIT_DOUBLE_KEY, HysteresisPreferences.K_INIT_DOUBLE_DEFAULT_VALUE);
+    k = experimentPreferences.getDouble(HysteresisPreferences.K_INIT_DOUBLE_KEY, HysteresisPreferences.K_INIT_DOUBLE_DEFAULT_VALUE);
     swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_PREFERENCES_UPDATE, true, false);
   }
 

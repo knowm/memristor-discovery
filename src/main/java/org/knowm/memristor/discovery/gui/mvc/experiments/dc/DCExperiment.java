@@ -41,11 +41,11 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
 
 import org.knowm.memristor.discovery.DWFProxy;
-import org.knowm.memristor.discovery.gui.mvc.experiments.App;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.AppModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.dc.experiment.ExperimentController;
-import org.knowm.memristor.discovery.gui.mvc.experiments.dc.experiment.ExperimentModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.dc.experiment.ExperimentPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.dc.control.ControlController;
+import org.knowm.memristor.discovery.gui.mvc.experiments.dc.control.ControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.dc.control.ControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.plot.PlotController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.plot.PlotModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.plot.PlotPanel;
@@ -53,10 +53,10 @@ import org.knowm.memristor.discovery.utils.PostProcessDataUtils;
 import org.knowm.memristor.discovery.utils.WaveformUtils;
 import org.knowm.waveforms4j.DWF;
 
-public class DCApp extends App implements PropertyChangeListener {
+public class DCExperiment extends Experiment implements PropertyChangeListener {
 
-  private final ExperimentModel experimentModel = new ExperimentModel();
-  private ExperimentPanel experimentPanel;
+  private final ControlModel controlModel = new ControlModel();
+  private ControlPanel controlPanel;
 
   private PlotPanel plotPanel;
   private final PlotModel plotModel = new PlotModel();
@@ -71,12 +71,12 @@ public class DCApp extends App implements PropertyChangeListener {
    * @param dwfProxy
    * @param mainFrameContainer
    */
-  public DCApp(DWFProxy dwfProxy, Container mainFrameContainer) {
+  public DCExperiment(DWFProxy dwfProxy, Container mainFrameContainer) {
 
     super(dwfProxy);
 
-    experimentPanel = new ExperimentPanel();
-    JScrollPane jScrollPane = new JScrollPane(experimentPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    controlPanel = new ControlPanel();
+    JScrollPane jScrollPane = new JScrollPane(controlPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     jScrollPane.setBorder(createEmptyBorder());
     mainFrameContainer.add(jScrollPane, BorderLayout.WEST);
 
@@ -84,7 +84,7 @@ public class DCApp extends App implements PropertyChangeListener {
     // START BUTTON ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    experimentPanel.getStartButton().addActionListener(new ActionListener() {
+    controlPanel.getStartButton().addActionListener(new ActionListener() {
 
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -92,8 +92,8 @@ public class DCApp extends App implements PropertyChangeListener {
         allowPlotting = true;
         dwfProxy.setAD2Capturing(true);
 
-        experimentPanel.getStartButton().setEnabled(false);
-        experimentPanel.getStopButton().setEnabled(true);
+        controlPanel.getStartButton().setEnabled(false);
+        controlPanel.getStopButton().setEnabled(true);
 
         // switch to capture view
         if (plotPanel.getCaptureButton().isSelected()) {
@@ -116,7 +116,7 @@ public class DCApp extends App implements PropertyChangeListener {
     // STOP BUTTON //////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    experimentPanel.getStopButton().addActionListener(new ActionListener() {
+    controlPanel.getStopButton().addActionListener(new ActionListener() {
 
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -124,9 +124,9 @@ public class DCApp extends App implements PropertyChangeListener {
         dwfProxy.setAD2Capturing(false);
 
         // switchPanel.enableAllDigitalIOCheckBoxes(true);
-        // experimentPanel.enableAllChildComponents(true);
-        experimentPanel.getStartButton().setEnabled(true);
-        experimentPanel.getStopButton().setEnabled(false);
+        // controlPanel.enableAllChildComponents(true);
+        controlPanel.getStartButton().setEnabled(true);
+        controlPanel.getStopButton().setEnabled(false);
 
         // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
         allowPlotting = false;
@@ -138,10 +138,10 @@ public class DCApp extends App implements PropertyChangeListener {
     plotController = new PlotController(plotPanel, plotModel);
     mainFrameContainer.add(plotPanel, BorderLayout.CENTER);
 
-    new ExperimentController(experimentPanel, plotPanel, experimentModel, dwfProxy);
+    new ControlController(controlPanel, plotPanel, controlModel, dwfProxy);
 
-    // register this as the listener of the experimentModel
-    experimentModel.addListener(this);
+    // register this as the listener of the controlModel
+    controlModel.addListener(this);
 
     // trigger plot of waveform
     PropertyChangeEvent evt = new PropertyChangeEvent(this, AppModel.EVENT_WAVEFORM_UPDATE, true, false);
@@ -158,8 +158,8 @@ public class DCApp extends App implements PropertyChangeListener {
       //////////////////////////////////
 
       int sampleFrequencyMultiplier = 200; // adjust this down if you want to capture more pulses as the buffer size is limited.
-      double sampleFrequency = experimentModel.getCalculatedFrequency() * sampleFrequencyMultiplier; // adjust this down if you want to capture more pulses as the buffer size is limited.
-      dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02 * (experimentModel.getAmplitude() > 0 ? 1 : -1));
+      double sampleFrequency = controlModel.getCalculatedFrequency() * sampleFrequencyMultiplier; // adjust this down if you want to capture more pulses as the buffer size is limited.
+      dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02 * (controlModel.getAmplitude() > 0 ? 1 : -1));
       Thread.sleep(20); // Attempt to allow Analog In to get fired up for the next set of pulses
 
       //////////////////////////////////
@@ -167,8 +167,8 @@ public class DCApp extends App implements PropertyChangeListener {
       //////////////////////////////////
 
       // custom waveform
-      double[] customWaveform = WaveformUtils.generateCustomWaveform(experimentModel.getWaveform(), experimentModel.getAmplitude(), experimentModel.getCalculatedFrequency());
-      dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, experimentModel.getCalculatedFrequency(), 0, experimentModel.getPulseNumber(), customWaveform);
+      double[] customWaveform = WaveformUtils.generateCustomWaveform(controlModel.getWaveform(), controlModel.getAmplitude(), controlModel.getCalculatedFrequency());
+      dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, controlModel.getPulseNumber(), customWaveform);
 
       //////////////////////////////////
       //////////////////////////////////
@@ -204,14 +204,14 @@ public class DCApp extends App implements PropertyChangeListener {
       // create current data
       double[] current = new double[bufferLength];
       for (int i = 0; i < bufferLength; i++) {
-        current[i] = V2Trimmed[i] / experimentModel.getSeriesR() * DCPreferences.CURRENT_UNIT.getDivisor();
+        current[i] = V2Trimmed[i] / controlModel.getSeriesR() * DCPreferences.CURRENT_UNIT.getDivisor();
       }
 
       // create conductance data
       double[] conductance = new double[bufferLength];
       for (int i = 0; i < bufferLength; i++) {
 
-        double I = V2Trimmed[i] / experimentModel.getSeriesR();
+        double I = V2Trimmed[i] / controlModel.getSeriesR();
         double G = I / (V1Trimmed[i] - V2Trimmed[i]) * DCPreferences.CONDUCTANCE_UNIT.getDivisor();
         G = G < 0 ? 0 : G;
         conductance[i] = G;
@@ -231,11 +231,11 @@ public class DCApp extends App implements PropertyChangeListener {
 
         // System.out.println("" + chunks.size());
 
-        plotController.udpateVtChart(newestChunk[0], newestChunk[1], newestChunk[2], experimentModel.getPeriod(), experimentModel
+        plotController.udpateVtChart(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getPeriod(), controlModel
             .getAmplitude());
-        plotController.udpateIVChart(newestChunk[1], newestChunk[3], experimentModel.getPeriod(), experimentModel
+        plotController.udpateIVChart(newestChunk[1], newestChunk[3], controlModel.getPeriod(), controlModel
             .getAmplitude());
-        plotController.updateGVChart(newestChunk[1], newestChunk[4], experimentModel.getPeriod(), experimentModel
+        plotController.updateGVChart(newestChunk[1], newestChunk[4], controlModel.getPeriod(), controlModel
             .getAmplitude());
 
         if (plotPanel.getCaptureButton().isSelected()) {
@@ -248,12 +248,12 @@ public class DCApp extends App implements PropertyChangeListener {
           plotController.repaintRtChart();
         }
       }
-      experimentPanel.getStopButton().doClick();
+      controlPanel.getStopButton().doClick();
     }
   }
 
   /**
-   * These property change events are triggered in the experimentModel in the case where the underlying experimentModel is updated. Here, the controller can respond to those events and make sure the corresponding GUI
+   * These property change events are triggered in the controlModel in the case where the underlying controlModel is updated. Here, the controller can respond to those events and make sure the corresponding GUI
    * components get updated.
    */
   @Override
@@ -294,7 +294,7 @@ public class DCApp extends App implements PropertyChangeListener {
         }
         else {
           plotPanel.switch2WaveformChart();
-          plotController.udpateWaveformChart(experimentModel.getWaveformTimeData(), experimentModel.getWaveformAmplitudeData(), experimentModel.getAmplitude(), experimentModel.getPeriod());
+          plotController.udpateWaveformChart(controlModel.getWaveformTimeData(), controlModel.getWaveformAmplitudeData(), controlModel.getAmplitude(), controlModel.getPeriod());
         }
         break;
 
@@ -303,10 +303,9 @@ public class DCApp extends App implements PropertyChangeListener {
     }
   }
 
-  @Override
-  public AppModel getExperimentModel() {
+  public AppModel getControlModel() {
 
-    return experimentModel;
+    return controlModel;
   }
 
   @Override

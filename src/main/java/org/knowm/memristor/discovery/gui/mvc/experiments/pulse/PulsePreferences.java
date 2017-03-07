@@ -27,14 +27,14 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.pulse;
 
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 
 /**
  * Stores various operational preferences
  *
  * @author timmolter
  */
-public class PulsePreferences extends AppPreferences {
+public class PulsePreferences extends ExperimentPreferences {
 
   private static final String PREFIX = "PULSE_";
 

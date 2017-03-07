@@ -41,11 +41,11 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
 
 import org.knowm.memristor.discovery.DWFProxy;
-import org.knowm.memristor.discovery.gui.mvc.experiments.App;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.AppModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.experiment.ExperimentController;
-import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.experiment.ExperimentModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.experiment.ExperimentPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control.ControlController;
+import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control.ControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control.ControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.plot.PlotController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.plot.PlotModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.plot.PlotPanel;
@@ -53,10 +53,10 @@ import org.knowm.memristor.discovery.utils.WaveformUtils;
 import org.knowm.waveforms4j.DWF;
 import org.knowm.waveforms4j.DWF.AcquisitionMode;
 
-public class HysteresisApp extends App implements PropertyChangeListener {
+public class HysteresisExperiment extends Experiment implements PropertyChangeListener {
 
-  private final ExperimentModel experimentModel = new ExperimentModel();
-  private final ExperimentPanel experimentPanel;
+  private final ControlModel controlModel = new ControlModel();
+  private final ControlPanel controlPanel;
 
   private final PlotPanel plotPanel;
   private final PlotModel plotModel = new PlotModel();
@@ -71,12 +71,12 @@ public class HysteresisApp extends App implements PropertyChangeListener {
    * @param dwfProxy
    * @param mainFrameContainer
    */
-  public HysteresisApp(DWFProxy dwfProxy, Container mainFrameContainer) {
+  public HysteresisExperiment(DWFProxy dwfProxy, Container mainFrameContainer) {
 
     super(dwfProxy);
 
-    experimentPanel = new ExperimentPanel();
-    JScrollPane jScrollPane = new JScrollPane(experimentPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    controlPanel = new ControlPanel();
+    JScrollPane jScrollPane = new JScrollPane(controlPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     jScrollPane.setBorder(createEmptyBorder());
     mainFrameContainer.add(jScrollPane, BorderLayout.WEST);
 
@@ -84,7 +84,7 @@ public class HysteresisApp extends App implements PropertyChangeListener {
     // START BUTTON ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    experimentPanel.getStartButton().addActionListener(new ActionListener() {
+    controlPanel.getStartButton().addActionListener(new ActionListener() {
 
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -94,8 +94,8 @@ public class HysteresisApp extends App implements PropertyChangeListener {
 
         // switchPanel.enableAllDigitalIOCheckBoxes(false);
         // controlPanel.enableAllChildComponents(false);
-        experimentPanel.getStartButton().setEnabled(false);
-        experimentPanel.getStopButton().setEnabled(true);
+        controlPanel.getStartButton().setEnabled(false);
+        controlPanel.getStopButton().setEnabled(true);
 
         // switch to capture view
         if (plotPanel.getCaptureButton().isSelected()) {
@@ -118,15 +118,15 @@ public class HysteresisApp extends App implements PropertyChangeListener {
     // STOP BUTTON //////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    experimentPanel.getStopButton().addActionListener(new ActionListener() {
+    controlPanel.getStopButton().addActionListener(new ActionListener() {
 
       @Override
       public void actionPerformed(ActionEvent e) {
 
         dwfProxy.setAD2Capturing(false);
 
-        experimentPanel.getStartButton().setEnabled(true);
-        experimentPanel.getStopButton().setEnabled(false);
+        controlPanel.getStartButton().setEnabled(true);
+        controlPanel.getStopButton().setEnabled(false);
 
         // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
         allowPlotting = false;
@@ -138,10 +138,10 @@ public class HysteresisApp extends App implements PropertyChangeListener {
     plotController = new PlotController(plotPanel, plotModel);
     mainFrameContainer.add(plotPanel, BorderLayout.CENTER);
 
-    new ExperimentController(experimentPanel, plotPanel, experimentModel, dwfProxy);
+    new ControlController(controlPanel, plotPanel, controlModel, dwfProxy);
 
     // register this as the listener of the model
-    experimentModel.addListener(this);
+    controlModel.addListener(this);
 
     // trigger plot of waveform
     PropertyChangeEvent evt = new PropertyChangeEvent(this, AppModel.EVENT_WAVEFORM_UPDATE, true, false);
@@ -154,11 +154,11 @@ public class HysteresisApp extends App implements PropertyChangeListener {
     protected Boolean doInBackground() throws Exception {
 
       // AnalogOut
-      DWF.Waveform dwfWaveform = WaveformUtils.getDWFWaveform(experimentModel.getWaveform());
-      dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, experimentModel.getFrequency(), experimentModel.getAmplitude(), experimentModel.getOffset(), 50);
+      DWF.Waveform dwfWaveform = WaveformUtils.getDWFWaveform(controlModel.getWaveform());
+      dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, controlModel.getFrequency(), controlModel.getAmplitude(), controlModel.getOffset(), 50);
 
       // Analog In
-      double sampleFrequency = (double) experimentModel.getFrequency() * HysteresisPreferences.CAPTURE_BUFFER_SIZE / HysteresisPreferences.CAPTURE_PERIOD_COUNT;
+      double sampleFrequency = (double) controlModel.getFrequency() * HysteresisPreferences.CAPTURE_BUFFER_SIZE / HysteresisPreferences.CAPTURE_PERIOD_COUNT;
       dwfProxy.getDwf().startAnalogCaptureBothChannelsImmediately(sampleFrequency, HysteresisPreferences.CAPTURE_BUFFER_SIZE, AcquisitionMode.ScanShift);
 
       dwfProxy.setAD2Capturing(true);
@@ -189,7 +189,7 @@ public class HysteresisApp extends App implements PropertyChangeListener {
 
             // Calculate time data
             double[] timeData = new double[rawdata1.length];
-            double timeStep = 1 / (double) experimentModel.getFrequency() * HysteresisPreferences.CAPTURE_PERIOD_COUNT / HysteresisPreferences.CAPTURE_BUFFER_SIZE;
+            double timeStep = 1 / (double) controlModel.getFrequency() * HysteresisPreferences.CAPTURE_PERIOD_COUNT / HysteresisPreferences.CAPTURE_BUFFER_SIZE;
             for (int i = 0; i < timeData.length; i++) {
               timeData[i] = i * timeStep;
             }
@@ -201,7 +201,7 @@ public class HysteresisApp extends App implements PropertyChangeListener {
             double[] current = new double[rawdata2.length];
             double[] voltage = new double[rawdata1.length];
             for (int i = 0; i < current.length; i++) {
-              current[i] = rawdata2[i] / experimentModel.getSeriesR() * HysteresisPreferences.CURRENT_UNIT.getDivisor();
+              current[i] = rawdata2[i] / controlModel.getSeriesR() * HysteresisPreferences.CURRENT_UNIT.getDivisor();
             }
             if (!HysteresisPreferences.IS_VIN) {
               for (int i = 0; i < current.length; i++) {
@@ -217,7 +217,7 @@ public class HysteresisApp extends App implements PropertyChangeListener {
 
             for (int i = 0; i < conductance.length; i++) {
 
-              double I = rawdata2[i] / experimentModel.getSeriesR();
+              double I = rawdata2[i] / controlModel.getSeriesR();
 
               double G = I / (rawdata1[i] - rawdata2[i]) * HysteresisPreferences.CONDUCTANCE_UNIT.getDivisor();
 
@@ -251,16 +251,16 @@ public class HysteresisApp extends App implements PropertyChangeListener {
         // Messages received from the doInBackground() (when invoking the publish() method). See: http://www.javacreed.com/swing-worker-example/
 
         if (plotPanel.getCaptureButton().isSelected()) {
-          plotController.udpateVtChart(newestChunk[0], newestChunk[1], newestChunk[2], experimentModel.getFrequency(), experimentModel
-              .getAmplitude(), experimentModel.getOffset());
+          plotController.udpateVtChart(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getFrequency(), controlModel
+              .getAmplitude(), controlModel.getOffset());
         }
         else if (plotPanel.getIVButton().isSelected()) {
-          plotController.udpateIVChart(newestChunk[0], newestChunk[1], newestChunk[2], experimentModel.getFrequency(), experimentModel
-              .getAmplitude(), experimentModel.getOffset());
+          plotController.udpateIVChart(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getFrequency(), controlModel
+              .getAmplitude(), controlModel.getOffset());
         }
         else {
-          plotController.updateGVChart(newestChunk[0], newestChunk[1], newestChunk[2], experimentModel.getFrequency(), experimentModel
-              .getAmplitude(), experimentModel.getOffset());
+          plotController.updateGVChart(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getFrequency(), controlModel
+              .getAmplitude(), controlModel.getOffset());
         }
       }
 
@@ -292,8 +292,8 @@ public class HysteresisApp extends App implements PropertyChangeListener {
         if (dwfProxy.isAD2Capturing()) {
 
           // AnalogOut
-          DWF.Waveform dwfWaveform = WaveformUtils.getDWFWaveform(experimentModel.getWaveform());
-          dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, experimentModel.getFrequency(), experimentModel.getAmplitude(), experimentModel.getOffset(), 50);
+          DWF.Waveform dwfWaveform = WaveformUtils.getDWFWaveform(controlModel.getWaveform());
+          dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, controlModel.getFrequency(), controlModel.getAmplitude(), controlModel.getOffset(), 50);
 
           if (plotPanel.getCaptureButton().isSelected()) {
             plotPanel.switch2CaptureChart();
@@ -307,8 +307,8 @@ public class HysteresisApp extends App implements PropertyChangeListener {
         }
         else {
           plotPanel.switch2WaveformChart();
-          plotController.udpateWaveformChart(experimentModel.getWaveformTimeData(), experimentModel.getWaveformAmplitudeData(), experimentModel.getAmplitude(), experimentModel.getFrequency(),
-              experimentModel.getOffset());
+          plotController.udpateWaveformChart(controlModel.getWaveformTimeData(), controlModel.getWaveformAmplitudeData(), controlModel.getAmplitude(), controlModel.getFrequency(),
+              controlModel.getOffset());
         }
         break;
       case AppModel.EVENT_FREQUENCY_UPDATE:
@@ -318,7 +318,7 @@ public class HysteresisApp extends App implements PropertyChangeListener {
         if (dwfProxy.isAD2Capturing()) {
 
           // Analog In
-          double sampleFrequency = (double) experimentModel.getFrequency() * HysteresisPreferences.CAPTURE_BUFFER_SIZE / HysteresisPreferences.CAPTURE_PERIOD_COUNT;
+          double sampleFrequency = (double) controlModel.getFrequency() * HysteresisPreferences.CAPTURE_BUFFER_SIZE / HysteresisPreferences.CAPTURE_PERIOD_COUNT;
           dwfProxy.getDwf().startAnalogCaptureBothChannelsImmediately(sampleFrequency, HysteresisPreferences.CAPTURE_BUFFER_SIZE, AcquisitionMode.ScanShift);
         }
         break;
@@ -327,10 +327,9 @@ public class HysteresisApp extends App implements PropertyChangeListener {
     }
   }
 
-  @Override
-  public AppModel getExperimentModel() {
+  public AppModel getControlModel() {
 
-    return experimentModel;
+    return controlModel;
   }
 
   @Override

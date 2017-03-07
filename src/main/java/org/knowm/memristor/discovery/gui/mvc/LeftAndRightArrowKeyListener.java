@@ -10,7 +10,7 @@ import javax.swing.event.ChangeListener;
 /**
  * Created by timmolter on 2/21/17.
  *
- * This is a hack around a bug in the JDK, which doesn't properly detect held-down lefft and righht arrow keys. Use this for experiments that continuously run and when slider values change the AD2 needs to stopped and started again. See HysteresisApp.java for example.
+ * This is a hack around a bug in the JDK, which doesn't properly detect held-down lefft and righht arrow keys. Use this for experiments that continuously run and when slider values change the AD2 needs to stopped and started again. See HysteresisExperiment.java for example.
  */
 public class LeftAndRightArrowKeyListener implements KeyListener {
 

@@ -36,11 +36,11 @@ public abstract class AppModel {
   public static final String EVENT_FREQUENCY_UPDATE = "EVENT_FREQUENCY_UPDATE";
   public static final String EVENT_PREFERENCES_UPDATE = "EVENT_PREFERENCES_UPDATE";
 
-  public abstract AppPreferences initAppPreferences();
+  public abstract ExperimentPreferences initAppPreferences();
 
   public abstract void loadModelFromPrefs();
 
-  protected AppPreferences appPreferences;
+  protected ExperimentPreferences experimentPreferences;
   protected SwingPropertyChangeSupport swingPropertyChangeSupport;
 
   /**
@@ -49,7 +49,7 @@ public abstract class AppModel {
   public AppModel() {
 
     swingPropertyChangeSupport = new SwingPropertyChangeSupport(this);
-    this.appPreferences = initAppPreferences();
+    this.experimentPreferences = initAppPreferences();
     loadModelFromPrefs();
   }
 }

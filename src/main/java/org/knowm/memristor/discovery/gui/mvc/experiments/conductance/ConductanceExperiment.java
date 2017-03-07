@@ -41,12 +41,12 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
 
 import org.knowm.memristor.discovery.DWFProxy;
-import org.knowm.memristor.discovery.gui.mvc.experiments.App;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.AppModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferences.Waveform;
-import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.experiment.ExperimentController;
-import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.experiment.ExperimentModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.experiment.ExperimentPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
+import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.control.ControlController;
+import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.control.ControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.control.ControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.plot.PlotController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.plot.PlotModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.plot.PlotPanel;
@@ -54,10 +54,10 @@ import org.knowm.memristor.discovery.utils.PostProcessDataUtils;
 import org.knowm.memristor.discovery.utils.WaveformUtils;
 import org.knowm.waveforms4j.DWF;
 
-public class ConductanceApp extends App implements PropertyChangeListener {
+public class ConductanceExperiment extends Experiment implements PropertyChangeListener {
 
-  private final ExperimentModel experimentModel = new ExperimentModel();
-  private ExperimentPanel experimentPanel;
+  private final ControlModel controlModel = new ControlModel();
+  private ControlPanel controlPanel;
 
   private PlotPanel plotPanel;
   private final PlotModel plotModel = new PlotModel();
@@ -73,12 +73,12 @@ public class ConductanceApp extends App implements PropertyChangeListener {
    * @param dwfProxy
    * @param mainFrameContainer
    */
-  public ConductanceApp(DWFProxy dwfProxy, Container mainFrameContainer) {
+  public ConductanceExperiment(DWFProxy dwfProxy, Container mainFrameContainer) {
 
     super(dwfProxy);
 
-    experimentPanel = new ExperimentPanel();
-    JScrollPane jScrollPane = new JScrollPane(experimentPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    controlPanel = new ControlPanel();
+    JScrollPane jScrollPane = new JScrollPane(controlPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     jScrollPane.setBorder(createEmptyBorder());
     mainFrameContainer.add(jScrollPane, BorderLayout.WEST);
 
@@ -86,7 +86,7 @@ public class ConductanceApp extends App implements PropertyChangeListener {
     // RESET BUTTON ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    experimentPanel.getResetButton().addActionListener(new ActionListener() {
+    controlPanel.getResetButton().addActionListener(new ActionListener() {
 
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -114,7 +114,7 @@ public class ConductanceApp extends App implements PropertyChangeListener {
     // START BUTTON ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    experimentPanel.getStartButton().addActionListener(new ActionListener() {
+    controlPanel.getStartButton().addActionListener(new ActionListener() {
 
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -122,8 +122,8 @@ public class ConductanceApp extends App implements PropertyChangeListener {
         allowPlotting = true;
         dwfProxy.setAD2Capturing(true);
 
-        experimentPanel.getStartButton().setEnabled(false);
-        experimentPanel.getStopButton().setEnabled(true);
+        controlPanel.getStartButton().setEnabled(false);
+        controlPanel.getStopButton().setEnabled(true);
 
         // switch to G-V view
         plotPanel.switch2GVChart();
@@ -138,7 +138,7 @@ public class ConductanceApp extends App implements PropertyChangeListener {
     // STOP BUTTON ///////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    experimentPanel.getStopButton().addActionListener(new ActionListener() {
+    controlPanel.getStopButton().addActionListener(new ActionListener() {
 
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -146,9 +146,9 @@ public class ConductanceApp extends App implements PropertyChangeListener {
         dwfProxy.setAD2Capturing(false);
 
         // switchPanel.enableAllDigitalIOCheckBoxes(true);
-        // experimentPanel.enableAllChildComponents(true);
-        experimentPanel.getStartButton().setEnabled(true);
-        experimentPanel.getStopButton().setEnabled(false);
+        // controlPanel.enableAllChildComponents(true);
+        controlPanel.getStartButton().setEnabled(true);
+        controlPanel.getStopButton().setEnabled(false);
 
         // stop AD2 resetWaveform 1 and stop AD2 capture on channel 1 and 2
         allowPlotting = false;
@@ -160,10 +160,10 @@ public class ConductanceApp extends App implements PropertyChangeListener {
     plotController = new PlotController(plotPanel, plotModel);
     mainFrameContainer.add(plotPanel, BorderLayout.CENTER);
 
-    new ExperimentController(experimentPanel, plotPanel, experimentModel, dwfProxy);
+    new ControlController(controlPanel, plotPanel, controlModel, dwfProxy);
 
-    // register this as the listener of the experimentModel
-    experimentModel.addListener(this);
+    // register this as the listener of the controlModel
+    controlModel.addListener(this);
 
     // trigger plot of resetWaveform
     PropertyChangeEvent evt = new PropertyChangeEvent(this, AppModel.EVENT_WAVEFORM_UPDATE, true, false);
@@ -182,8 +182,8 @@ public class ConductanceApp extends App implements PropertyChangeListener {
       //////////////////////////////////
 
       int sampleFrequencyMultiplier = 200; // adjust this down if you want to capture more pulses as the buffer size is limited.
-      double sampleFrequency = experimentModel.getCalculatedFrequency() * sampleFrequencyMultiplier; // adjust this down if you want to capture more pulses as the buffer size is limited.
-      dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02 * (experimentModel.getResetAmplitude() > 0 ? 1 : -1));
+      double sampleFrequency = controlModel.getCalculatedFrequency() * sampleFrequencyMultiplier; // adjust this down if you want to capture more pulses as the buffer size is limited.
+      dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02 * (controlModel.getResetAmplitude() > 0 ? 1 : -1));
       Thread.sleep(10); // Attempt to allow Analog In to get fired up for the next set of pulses
 
       //////////////////////////////////
@@ -191,8 +191,8 @@ public class ConductanceApp extends App implements PropertyChangeListener {
       //////////////////////////////////
 
       // custom waveform
-      double[] customWaveform = WaveformUtils.generateCustomWaveform(experimentModel.getResetPulseType(), experimentModel.getResetAmplitude(), experimentModel.getCalculatedFrequency());
-      dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, experimentModel.getCalculatedFrequency(), 0, 1, customWaveform);
+      double[] customWaveform = WaveformUtils.generateCustomWaveform(controlModel.getResetPulseType(), controlModel.getResetAmplitude(), controlModel.getCalculatedFrequency());
+      dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, 1, customWaveform);
 
       // Read In Data
       boolean success = capturePulseData();
@@ -225,14 +225,14 @@ public class ConductanceApp extends App implements PropertyChangeListener {
       // create current data
       double[] current = new double[bufferLength];
       for (int i = 0; i < bufferLength; i++) {
-        current[i] = V2Trimmed[i] / experimentModel.getSeriesR() * ConductancePreferences.CURRENT_UNIT.getDivisor();
+        current[i] = V2Trimmed[i] / controlModel.getSeriesR() * ConductancePreferences.CURRENT_UNIT.getDivisor();
       }
 
       // create conductance data
       double[] conductance = new double[bufferLength];
       for (int i = 0; i < bufferLength; i++) {
 
-        double I = V2Trimmed[i] / experimentModel.getSeriesR();
+        double I = V2Trimmed[i] / controlModel.getSeriesR();
         double G = I / (V1Trimmed[i] - V2Trimmed[i]) * ConductancePreferences.CONDUCTANCE_UNIT.getDivisor();
         G = G < 0 ? 0 : G;
         conductance[i] = G;
@@ -251,10 +251,10 @@ public class ConductanceApp extends App implements PropertyChangeListener {
         double[][] newestChunk = chunks.get(chunks.size() - 1);
         // System.out.println("" + chunks.size());
 
-        plotController.udpateVtChart(newestChunk[0], newestChunk[1], newestChunk[2], experimentModel.getResetPulseWidth(), experimentModel
+        plotController.udpateVtChart(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getResetPulseWidth(), controlModel
             .getResetAmplitude());
-        plotController.udpateIVChart(newestChunk[1], newestChunk[3], experimentModel.getResetPulseWidth(), experimentModel.getResetAmplitude());
-        plotController.updateGVChartReset(newestChunk[1], newestChunk[4], experimentModel.getResetPulseWidth(), experimentModel
+        plotController.udpateIVChart(newestChunk[1], newestChunk[3], controlModel.getResetPulseWidth(), controlModel.getResetAmplitude());
+        plotController.updateGVChartReset(newestChunk[1], newestChunk[4], controlModel.getResetPulseWidth(), controlModel
             .getResetAmplitude());
 
         if (plotPanel.getCaptureButton().isSelected()) {
@@ -267,7 +267,7 @@ public class ConductanceApp extends App implements PropertyChangeListener {
           plotController.repaintGVChart();
         }
       }
-      experimentPanel.getStopButton().doClick();
+      controlPanel.getStopButton().doClick();
     }
   }
 
@@ -294,8 +294,8 @@ public class ConductanceApp extends App implements PropertyChangeListener {
         //////////////////////////////////
 
         int sampleFrequencyMultiplier = 200; // adjust this down if you want to capture more pulses as the buffer size is limited.
-        double sampleFrequency = experimentModel.getCalculatedFrequency() * sampleFrequencyMultiplier; // adjust this down if you want to capture more pulses as the buffer size is limited.
-        dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02 * (experimentModel.getSetAmplitude() > 0 ? 1 : -1));
+        double sampleFrequency = controlModel.getCalculatedFrequency() * sampleFrequencyMultiplier; // adjust this down if you want to capture more pulses as the buffer size is limited.
+        dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02 * (controlModel.getSetAmplitude() > 0 ? 1 : -1));
         Thread.sleep(20); // Attempt to allow Analog In to get fired up for the next set of pulses
 
         //////////////////////////////////
@@ -303,8 +303,8 @@ public class ConductanceApp extends App implements PropertyChangeListener {
         //////////////////////////////////
 
         // custom waveform
-        double[] customWaveform = WaveformUtils.generateCustomWaveform(Waveform.Square, experimentModel.getSetAmplitude(), experimentModel.getCalculatedFrequency());
-        dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, experimentModel.getCalculatedFrequency(), 0, 1, customWaveform);
+        double[] customWaveform = WaveformUtils.generateCustomWaveform(Waveform.Square, controlModel.getSetAmplitude(), controlModel.getCalculatedFrequency());
+        dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, 1, customWaveform);
 
         // Get Raw Data from Oscilloscope
         int validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
@@ -316,7 +316,7 @@ public class ConductanceApp extends App implements PropertyChangeListener {
         // Create Chart Data //////
         ///////////////////////////
 
-        double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, experimentModel.getSetAmplitude() * .98,0);
+        double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, controlModel.getSetAmplitude() * .98,0);
         double[] V1Trimmed = trimmedRawData[0];
         double[] V2Trimmed = trimmedRawData[1];
         int bufferLength = V1Trimmed.length;
@@ -331,13 +331,13 @@ public class ConductanceApp extends App implements PropertyChangeListener {
         // create current data
         double[] current = new double[bufferLength];
         for (int i = 0; i < bufferLength; i++) {
-          current[i] = V2Trimmed[i] / experimentModel.getSeriesR() * ConductancePreferences.CURRENT_UNIT.getDivisor();
+          current[i] = V2Trimmed[i] / controlModel.getSeriesR() * ConductancePreferences.CURRENT_UNIT.getDivisor();
         }
 
         // create conductance data - a single number equal to the average of all points in the trimmed data
         double runningTotal = 0.0;
         for (int i = 3; i < bufferLength - 3; i++) {
-          double I = V2Trimmed[i] / experimentModel.getSeriesR();
+          double I = V2Trimmed[i] / controlModel.getSeriesR();
           double G = I / (V1Trimmed[i] - V2Trimmed[i]);
           G = G < 0 ? 0 : G;
           runningTotal += G;
@@ -348,7 +348,7 @@ public class ConductanceApp extends App implements PropertyChangeListener {
         publish(new double[][]{timeData, V1Trimmed, V2Trimmed, current, conductance});
       }
 
-      experimentPanel.getStopButton().doClick();
+      controlPanel.getStopButton().doClick();
       return true;
     }
 
@@ -361,11 +361,11 @@ public class ConductanceApp extends App implements PropertyChangeListener {
 
         // System.out.println("" + chunks.size());
 
-        plotController.udpateVtChart(newestChunk[0], newestChunk[1], newestChunk[2], experimentModel.getSetPulseWidth(), experimentModel
+        plotController.udpateVtChart(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getSetPulseWidth(), controlModel
             .getSetAmplitude());
-        plotController.udpateIVChart(newestChunk[1], newestChunk[3], experimentModel.getSetPulseWidth(), experimentModel
+        plotController.udpateIVChart(newestChunk[1], newestChunk[3], controlModel.getSetPulseWidth(), controlModel
             .getSetAmplitude());
-        plotController.updateGVChart(newestChunk[4], experimentModel.getSetPulseWidth(), experimentModel.getSetAmplitude());
+        plotController.updateGVChart(newestChunk[4], controlModel.getSetPulseWidth(), controlModel.getSetAmplitude());
 
         if (plotPanel.getCaptureButton().isSelected()) {
           plotController.repaintVtChart();
@@ -381,7 +381,7 @@ public class ConductanceApp extends App implements PropertyChangeListener {
   }
 
   /**
-   * These property change events are triggered in the experimentModel in the case where the underlying experimentModel is updated. Here, the controller can respond to those events and make sure the corresponding GUI
+   * These property change events are triggered in the controlModel in the case where the underlying controlModel is updated. Here, the controller can respond to those events and make sure the corresponding GUI
    * components get updated.
    */
   @Override
@@ -397,13 +397,13 @@ public class ConductanceApp extends App implements PropertyChangeListener {
 
         if (dwfProxy.isAD2Capturing()) {
 
-          double[] customWaveform = WaveformUtils.generateCustomWaveform(Waveform.Square, experimentModel.getSetAmplitude(), experimentModel.getCalculatedFrequency());
-          dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, experimentModel.getCalculatedFrequency(), 0, 1, customWaveform);
+          double[] customWaveform = WaveformUtils.generateCustomWaveform(Waveform.Square, controlModel.getSetAmplitude(), controlModel.getCalculatedFrequency());
+          dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, 1, customWaveform);
         }
         else {
 
           plotPanel.switch2WaveformChart();
-          plotController.udpateWaveformChart(experimentModel.getWaveformTimeData(), experimentModel.getWaveformAmplitudeData(), experimentModel.getResetAmplitude(), experimentModel.getResetPulseWidth());
+          plotController.udpateWaveformChart(controlModel.getWaveformTimeData(), controlModel.getWaveformAmplitudeData(), controlModel.getResetAmplitude(), controlModel.getResetPulseWidth());
         }
         break;
 
@@ -412,10 +412,9 @@ public class ConductanceApp extends App implements PropertyChangeListener {
     }
   }
 
-  @Override
-  public AppModel getExperimentModel() {
+  public AppModel getControlModel() {
 
-    return experimentModel;
+    return controlModel;
   }
 
   @Override

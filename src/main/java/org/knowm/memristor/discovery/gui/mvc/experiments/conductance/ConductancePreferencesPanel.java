@@ -37,11 +37,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferences;
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferences.Waveform;
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferencesPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferencesPanel;
 
-public class ConductancePreferencesPanel extends AppPreferencesPanel {
+public class ConductancePreferencesPanel extends ExperimentPreferencesPanel {
 
   // RESET
   private JLabel resetPulseTypeLabel;
@@ -95,7 +95,7 @@ public class ConductancePreferencesPanel extends AppPreferencesPanel {
     gc.gridx = 1;
     this.resetPulseTypeComboBox = new JComboBox<>();
     this.resetPulseTypeComboBox.setModel(new DefaultComboBoxModel<>(new Waveform[]{Waveform.Sawtooth, Waveform.Square}));
-    ConductancePreferences.Waveform waveform = ConductancePreferences.Waveform.valueOf(appPreferences.getString(ConductancePreferences.RESET_PULSE_TYPE_INIT_STRING_KEY,
+    ConductancePreferences.Waveform waveform = ConductancePreferences.Waveform.valueOf(experimentPreferences.getString(ConductancePreferences.RESET_PULSE_TYPE_INIT_STRING_KEY,
         ConductancePreferences.RESET_PULSE_TYPE_INIT_STRING_DEFAULT_VALUE));
     this.resetPulseTypeComboBox.setSelectedItem(waveform);
     preferencesPanel.add(resetPulseTypeComboBox, gc);
@@ -107,7 +107,7 @@ public class ConductancePreferencesPanel extends AppPreferencesPanel {
 
     gc.gridx = 1;
     this.resetAmplitudeTextField = new JTextField(12);
-    this.resetAmplitudeTextField.setText(String.valueOf(appPreferences.getFloat(ConductancePreferences.RESET_AMPLITUDE_INIT_FLOAT_KEY, ConductancePreferences.RESET_AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
+    this.resetAmplitudeTextField.setText(String.valueOf(experimentPreferences.getFloat(ConductancePreferences.RESET_AMPLITUDE_INIT_FLOAT_KEY, ConductancePreferences.RESET_AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
     preferencesPanel.add(resetAmplitudeTextField, gc);
 
     gc.gridy++;
@@ -117,7 +117,7 @@ public class ConductancePreferencesPanel extends AppPreferencesPanel {
 
     gc.gridx = 1;
     this.resetPulseWidthTextField = new JTextField(12);
-    this.resetPulseWidthTextField.setText(String.valueOf(appPreferences.getInteger(ConductancePreferences.RESET_PULSE_WIDTH_INIT_KEY, ConductancePreferences.RESET_PERIOD_INIT_DEFAULT_VALUE)));
+    this.resetPulseWidthTextField.setText(String.valueOf(experimentPreferences.getInteger(ConductancePreferences.RESET_PULSE_WIDTH_INIT_KEY, ConductancePreferences.RESET_PERIOD_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(resetPulseWidthTextField, gc);
 
     // SET
@@ -129,7 +129,7 @@ public class ConductancePreferencesPanel extends AppPreferencesPanel {
 
     gc.gridx = 1;
     this.setConductanceTextField = new JTextField(12);
-    this.setConductanceTextField.setText(String.valueOf(appPreferences.getFloat(ConductancePreferences.SET_CONDUCTANCE_INIT_KEY, ConductancePreferences.SET_CONDUCTANCE_INIT_DEFAULT_VALUE)));
+    this.setConductanceTextField.setText(String.valueOf(experimentPreferences.getFloat(ConductancePreferences.SET_CONDUCTANCE_INIT_KEY, ConductancePreferences.SET_CONDUCTANCE_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(setConductanceTextField, gc);
 
     gc.gridy++;
@@ -139,7 +139,7 @@ public class ConductancePreferencesPanel extends AppPreferencesPanel {
 
     gc.gridx = 1;
     this.setAmplitudeTextField = new JTextField(12);
-    this.setAmplitudeTextField.setText(String.valueOf(appPreferences.getFloat(ConductancePreferences.SET_AMPLITUDE_INIT_FLOAT_KEY, ConductancePreferences.SET_AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
+    this.setAmplitudeTextField.setText(String.valueOf(experimentPreferences.getFloat(ConductancePreferences.SET_AMPLITUDE_INIT_FLOAT_KEY, ConductancePreferences.SET_AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
     preferencesPanel.add(setAmplitudeTextField, gc);
 
     gc.gridy++;
@@ -149,7 +149,7 @@ public class ConductancePreferencesPanel extends AppPreferencesPanel {
 
     gc.gridx = 1;
     this.setPulseWidthTextField = new JTextField(12);
-    this.setPulseWidthTextField.setText(String.valueOf(appPreferences.getInteger(ConductancePreferences.SET_PULSE_WIDTH_INIT_KEY, ConductancePreferences.SET_PERIOD_INIT_DEFAULT_VALUE)));
+    this.setPulseWidthTextField.setText(String.valueOf(experimentPreferences.getInteger(ConductancePreferences.SET_PULSE_WIDTH_INIT_KEY, ConductancePreferences.SET_PERIOD_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(setPulseWidthTextField, gc);
 
     gc.gridy++;
@@ -159,25 +159,25 @@ public class ConductancePreferencesPanel extends AppPreferencesPanel {
 
     gc.gridx = 1;
     this.seriesResistorTextField = new JTextField(12);
-    this.seriesResistorTextField.setText(String.valueOf(appPreferences.getInteger(ConductancePreferences.SERIES_R_INIT_KEY, ConductancePreferences.SERIES_R_INIT_DEFAULT_VALUE)));
+    this.seriesResistorTextField.setText(String.valueOf(experimentPreferences.getInteger(ConductancePreferences.SERIES_R_INIT_KEY, ConductancePreferences.SERIES_R_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(seriesResistorTextField, gc);
   }
 
   @Override
   public void doSavePreferences() {
 
-    appPreferences.setString(ConductancePreferences.RESET_PULSE_TYPE_INIT_STRING_KEY, resetPulseTypeComboBox.getSelectedItem().toString().trim());
-    appPreferences.setFloat(ConductancePreferences.RESET_AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(resetAmplitudeTextField.getText()));
-    appPreferences.setInteger(ConductancePreferences.RESET_PULSE_WIDTH_INIT_KEY, Integer.parseInt(resetPulseWidthTextField.getText()));
+    experimentPreferences.setString(ConductancePreferences.RESET_PULSE_TYPE_INIT_STRING_KEY, resetPulseTypeComboBox.getSelectedItem().toString().trim());
+    experimentPreferences.setFloat(ConductancePreferences.RESET_AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(resetAmplitudeTextField.getText()));
+    experimentPreferences.setInteger(ConductancePreferences.RESET_PULSE_WIDTH_INIT_KEY, Integer.parseInt(resetPulseWidthTextField.getText()));
 
     // SET
 
-    appPreferences.setFloat(ConductancePreferences.SET_CONDUCTANCE_INIT_KEY, Float.parseFloat(setConductanceTextField.getText()));
-    appPreferences.setInteger(ConductancePreferences.SERIES_R_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
+    experimentPreferences.setFloat(ConductancePreferences.SET_CONDUCTANCE_INIT_KEY, Float.parseFloat(setConductanceTextField.getText()));
+    experimentPreferences.setInteger(ConductancePreferences.SERIES_R_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
   }
 
   @Override
-  public AppPreferences initAppPreferences() {
+  public ExperimentPreferences initAppPreferences() {
 
     return new ConductancePreferences();
   }

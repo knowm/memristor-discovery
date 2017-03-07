@@ -44,7 +44,7 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 
 /**
- * Provides controls for running the experiment
+ * Provides controls for running the control
  *
  * @author timmolter
  */

@@ -30,7 +30,7 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.dc.plot;
 import java.beans.PropertyChangeListener;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.AppModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCPreferences;
 
 public class PlotModel extends AppModel {
@@ -95,7 +95,7 @@ public class PlotModel extends AppModel {
   }
 
   @Override
-  public AppPreferences initAppPreferences() {
+  public ExperimentPreferences initAppPreferences() {
 
     return new DCPreferences();
   }

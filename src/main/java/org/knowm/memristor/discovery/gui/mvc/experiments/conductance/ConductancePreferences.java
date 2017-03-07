@@ -27,7 +27,7 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.conductance;
 
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.waveforms4j.DWF;
 
 /**
@@ -35,7 +35,7 @@ import org.knowm.waveforms4j.DWF;
  *
  * @author timmolter
  */
-public class ConductancePreferences extends AppPreferences {
+public class ConductancePreferences extends ExperimentPreferences {
 
   private static final String PREFIX = "CONDUCTANCE_";
 

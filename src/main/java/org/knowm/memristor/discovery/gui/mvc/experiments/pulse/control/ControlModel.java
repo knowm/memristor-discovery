@@ -25,13 +25,13 @@
  * If you have any questions regarding our licensing policy, please
  * contact us at `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.experiments.pulse.experiment;
+package org.knowm.memristor.discovery.gui.mvc.experiments.pulse.control;
 
 import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.AppModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferences;
 import org.knowm.memristor.discovery.utils.Util;
 import org.knowm.memristor.discovery.utils.driver.Driver;
@@ -42,7 +42,7 @@ import org.knowm.memristor.discovery.utils.driver.Square;
 import org.knowm.memristor.discovery.utils.driver.SquareSmooth;
 import org.knowm.memristor.discovery.utils.driver.Triangle;
 
-public class ExperimentModel extends AppModel {
+public class ControlModel extends AppModel {
 
   /**
    * Waveform
@@ -70,7 +70,7 @@ public class ExperimentModel extends AppModel {
   /**
    * Constructor
    */
-  public ExperimentModel() {
+  public ControlModel() {
 
     updateWaveformChartData();
   }
@@ -78,12 +78,12 @@ public class ExperimentModel extends AppModel {
   @Override
   public void loadModelFromPrefs() {
 
-    waveform = PulsePreferences.Waveform.valueOf(appPreferences.getString(PulsePreferences.WAVEFORM_INIT_STRING_KEY, PulsePreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
-    seriesResistance = appPreferences.getInteger(PulsePreferences.SERIES_R_INIT_KEY, PulsePreferences.SERIES_R_INIT_DEFAULT_VALUE);
-    amplitude = appPreferences.getFloat(PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY, PulsePreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
+    waveform = PulsePreferences.Waveform.valueOf(experimentPreferences.getString(PulsePreferences.WAVEFORM_INIT_STRING_KEY, PulsePreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
+    seriesResistance = experimentPreferences.getInteger(PulsePreferences.SERIES_R_INIT_KEY, PulsePreferences.SERIES_R_INIT_DEFAULT_VALUE);
+    amplitude = experimentPreferences.getFloat(PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY, PulsePreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
     appliedAmplitude = amplitude;
-    pulseWidth = appPreferences.getInteger(PulsePreferences.PULSE_WIDTH_INIT_KEY, PulsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
-    pulseNumber = appPreferences.getInteger(PulsePreferences.NUM_PULSES_INIT_KEY, PulsePreferences.NUM_PULSES_INIT_DEFAULT_VALUE);
+    pulseWidth = experimentPreferences.getInteger(PulsePreferences.PULSE_WIDTH_INIT_KEY, PulsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
+    pulseNumber = experimentPreferences.getInteger(PulsePreferences.NUM_PULSES_INIT_KEY, PulsePreferences.NUM_PULSES_INIT_DEFAULT_VALUE);
     swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
@@ -274,7 +274,7 @@ public class ExperimentModel extends AppModel {
   }
 
   @Override
-  public AppPreferences initAppPreferences() {
+  public ExperimentPreferences initAppPreferences() {
 
     return new PulsePreferences();
   }

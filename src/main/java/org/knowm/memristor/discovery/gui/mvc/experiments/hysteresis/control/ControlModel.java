@@ -25,12 +25,12 @@
  * If you have any questions regarding our licensing policy, please
  * contact us at `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.experiment;
+package org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control;
 
 import java.beans.PropertyChangeListener;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.AppModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.HysteresisPreferences;
 import org.knowm.memristor.discovery.utils.driver.Driver;
 import org.knowm.memristor.discovery.utils.driver.Sine;
@@ -39,9 +39,9 @@ import org.knowm.memristor.discovery.utils.driver.Triangle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ExperimentModel extends AppModel {
+public class ControlModel extends AppModel {
 
-  private final Logger logger = LoggerFactory.getLogger(ExperimentModel.class);
+  private final Logger logger = LoggerFactory.getLogger(ControlModel.class);
 
   /**
    * Waveform
@@ -61,7 +61,7 @@ public class ExperimentModel extends AppModel {
   /**
    * Constructor
    */
-  public ExperimentModel() {
+  public ControlModel() {
 
     updateWaveformChartData();
   }
@@ -70,11 +70,11 @@ public class ExperimentModel extends AppModel {
   public void loadModelFromPrefs() {
 
     // load model from prefs
-    waveform = HysteresisPreferences.Waveform.valueOf(appPreferences.getString(HysteresisPreferences.WAVEFORM_INIT_STRING_KEY, HysteresisPreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
-    seriesR = appPreferences.getInteger(HysteresisPreferences.SERIES_R_INIT_KEY, HysteresisPreferences.SERIES_R_INIT_DEFAULT_VALUE);
-    offset = appPreferences.getFloat(HysteresisPreferences.OFFSET_INIT_FLOAT_KEY, HysteresisPreferences.OFFSET_INIT_FLOAT_DEFAULT_VALUE);
-    amplitude = appPreferences.getFloat(HysteresisPreferences.AMPLITUDE_INIT_FLOAT_KEY, HysteresisPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
-    frequency = appPreferences.getInteger(HysteresisPreferences.FREQUENCY_INIT_KEY, HysteresisPreferences.FREQUENCY_INIT_DEFAULT_VALUE);
+    waveform = HysteresisPreferences.Waveform.valueOf(experimentPreferences.getString(HysteresisPreferences.WAVEFORM_INIT_STRING_KEY, HysteresisPreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
+    seriesR = experimentPreferences.getInteger(HysteresisPreferences.SERIES_R_INIT_KEY, HysteresisPreferences.SERIES_R_INIT_DEFAULT_VALUE);
+    offset = experimentPreferences.getFloat(HysteresisPreferences.OFFSET_INIT_FLOAT_KEY, HysteresisPreferences.OFFSET_INIT_FLOAT_DEFAULT_VALUE);
+    amplitude = experimentPreferences.getFloat(HysteresisPreferences.AMPLITUDE_INIT_FLOAT_KEY, HysteresisPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
+    frequency = experimentPreferences.getInteger(HysteresisPreferences.FREQUENCY_INIT_KEY, HysteresisPreferences.FREQUENCY_INIT_DEFAULT_VALUE);
     swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
@@ -200,7 +200,7 @@ public class ExperimentModel extends AppModel {
   }
 
   @Override
-  public AppPreferences initAppPreferences() {
+  public ExperimentPreferences initAppPreferences() {
 
     return new HysteresisPreferences();
   }

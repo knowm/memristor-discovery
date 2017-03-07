@@ -29,25 +29,25 @@ package org.knowm.memristor.discovery.gui.mvc.experiments;
 
 import org.knowm.memristor.discovery.DWFProxy;
 
-public abstract class App {
+public abstract class Experiment {
 
   public final DWFProxy dwfProxy;
 
-  public abstract AppModel getExperimentModel();
+  public abstract AppModel getControlModel();
 
   public abstract AppModel getPlotModel();
 
   /**
    * @param dwfProxy
    */
-  public App(DWFProxy dwfProxy) {
+  public Experiment(DWFProxy dwfProxy) {
 
     this.dwfProxy = dwfProxy;
   }
 
   public void refreshModelFromPreferences() {
 
-    getExperimentModel().loadModelFromPrefs();
+    getControlModel().loadModelFromPrefs();
     getPlotModel().loadModelFromPrefs();
   }
 

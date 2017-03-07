@@ -31,7 +31,7 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.AppModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.utils.driver.Driver;
 import org.knowm.memristor.discovery.utils.driver.Sine;
 import org.knowm.waveforms4j.DWF;
@@ -76,11 +76,11 @@ public class QCModel extends AppModel {
   public void loadModelFromPrefs() {
 
     // load model from prefs
-    seriesR = appPreferences.getInteger(QCPreferences.SERIES_R_INIT_KEY, QCPreferences.SERIES_R_INIT_DEFAULT_VALUE);
-    amplitude = appPreferences.getFloat(QCPreferences.AMPLITUDE_INIT_FLOAT_KEY, QCPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
-    offset = appPreferences.getFloat(QCPreferences.OFFSET_INIT_FLOAT_KEY, QCPreferences.OFFSET_INIT_FLOAT_DEFAULT_VALUE);
-    frequency = appPreferences.getInteger(QCPreferences.FREQUENCY_INIT_KEY, QCPreferences.FREQUENCY_INIT_DEFAULT_VALUE);
-    savePath = appPreferences.getString(QCPreferences.REPORT_DIRECTORY_PATH_KEY, QCPreferences.REPORT_DIRECTORY_PATH_DEFAULT_VALUE);
+    seriesR = experimentPreferences.getInteger(QCPreferences.SERIES_R_INIT_KEY, QCPreferences.SERIES_R_INIT_DEFAULT_VALUE);
+    amplitude = experimentPreferences.getFloat(QCPreferences.AMPLITUDE_INIT_FLOAT_KEY, QCPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
+    offset = experimentPreferences.getFloat(QCPreferences.OFFSET_INIT_FLOAT_KEY, QCPreferences.OFFSET_INIT_FLOAT_DEFAULT_VALUE);
+    frequency = experimentPreferences.getInteger(QCPreferences.FREQUENCY_INIT_KEY, QCPreferences.FREQUENCY_INIT_DEFAULT_VALUE);
+    savePath = experimentPreferences.getString(QCPreferences.REPORT_DIRECTORY_PATH_KEY, QCPreferences.REPORT_DIRECTORY_PATH_DEFAULT_VALUE);
     swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
@@ -216,7 +216,7 @@ public class QCModel extends AppModel {
   }
 
   @Override
-  public AppPreferences initAppPreferences() {
+  public ExperimentPreferences initAppPreferences() {
 
     return new QCPreferences();
 

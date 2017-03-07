@@ -37,11 +37,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferences;
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferences.Waveform;
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferencesPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferencesPanel;
 
-public class DCPreferencesPanel extends AppPreferencesPanel {
+public class DCPreferencesPanel extends ExperimentPreferencesPanel {
 
   private JLabel waveformLabel;
   private JComboBox<Waveform> waveformComboBox;
@@ -81,7 +81,7 @@ public class DCPreferencesPanel extends AppPreferencesPanel {
     gc.gridx = 1;
     this.waveformComboBox = new JComboBox<>();
     this.waveformComboBox.setModel(new DefaultComboBoxModel<>(new Waveform[]{Waveform.Sawtooth, Waveform.SawtoothUpDown, Waveform.Triangle, Waveform.TriangleUpDown}));
-    DCPreferences.Waveform waveform = DCPreferences.Waveform.valueOf(appPreferences.getString(DCPreferences.WAVEFORM_INIT_STRING_KEY,
+    DCPreferences.Waveform waveform = DCPreferences.Waveform.valueOf(experimentPreferences.getString(DCPreferences.WAVEFORM_INIT_STRING_KEY,
         DCPreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
     this.waveformComboBox.setSelectedItem(waveform);
     preferencesPanel.add(waveformComboBox, gc);
@@ -95,7 +95,7 @@ public class DCPreferencesPanel extends AppPreferencesPanel {
 
     gc.gridx = 1;
     this.seriesResistorTextField = new JTextField(12);
-    this.seriesResistorTextField.setText(String.valueOf(appPreferences.getInteger(DCPreferences.SERIES_R_INIT_KEY, DCPreferences.SERIES_R_INIT_DEFAULT_VALUE)));
+    this.seriesResistorTextField.setText(String.valueOf(experimentPreferences.getInteger(DCPreferences.SERIES_R_INIT_KEY, DCPreferences.SERIES_R_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(seriesResistorTextField, gc);
 
     gc.gridy++;
@@ -106,7 +106,7 @@ public class DCPreferencesPanel extends AppPreferencesPanel {
 
     gc.gridx = 1;
     this.amplitudeTextField = new JTextField(12);
-    this.amplitudeTextField.setText(String.valueOf(appPreferences.getFloat(DCPreferences.AMPLITUDE_INIT_FLOAT_KEY, DCPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
+    this.amplitudeTextField.setText(String.valueOf(experimentPreferences.getFloat(DCPreferences.AMPLITUDE_INIT_FLOAT_KEY, DCPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
     preferencesPanel.add(amplitudeTextField, gc);
 
     gc.gridy++;
@@ -117,21 +117,21 @@ public class DCPreferencesPanel extends AppPreferencesPanel {
 
     gc.gridx = 1;
     this.periodTextField = new JTextField(12);
-    this.periodTextField.setText(String.valueOf(appPreferences.getInteger(DCPreferences.PERIOD_INIT_KEY, DCPreferences.PERIOD_INIT_DEFAULT_VALUE)));
+    this.periodTextField.setText(String.valueOf(experimentPreferences.getInteger(DCPreferences.PERIOD_INIT_KEY, DCPreferences.PERIOD_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(periodTextField, gc);
   }
 
   @Override
   public void doSavePreferences() {
 
-    appPreferences.setString(DCPreferences.WAVEFORM_INIT_STRING_KEY, waveformComboBox.getSelectedItem().toString().trim());
-    appPreferences.setInteger(DCPreferences.SERIES_R_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
-    appPreferences.setFloat(DCPreferences.AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(amplitudeTextField.getText()));
-    appPreferences.setInteger(DCPreferences.PERIOD_INIT_KEY, Integer.parseInt(periodTextField.getText()));
+    experimentPreferences.setString(DCPreferences.WAVEFORM_INIT_STRING_KEY, waveformComboBox.getSelectedItem().toString().trim());
+    experimentPreferences.setInteger(DCPreferences.SERIES_R_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
+    experimentPreferences.setFloat(DCPreferences.AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(amplitudeTextField.getText()));
+    experimentPreferences.setInteger(DCPreferences.PERIOD_INIT_KEY, Integer.parseInt(periodTextField.getText()));
   }
 
   @Override
-  public AppPreferences initAppPreferences() {
+  public ExperimentPreferences initAppPreferences() {
 
     return new DCPreferences();
   }

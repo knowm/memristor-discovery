@@ -42,7 +42,7 @@ import org.knowm.memristor.discovery.utils.FileUtils;
 import org.knowm.memristor.discovery.utils.Util;
 import org.pegdown.PegDownProcessor;
 
-public class AppHelpDialog {
+public class ExperimentHelpDialog {
 
   /**
    * Constructor
@@ -50,7 +50,7 @@ public class AppHelpDialog {
    * @param parentFrame
    * @param appName
    */
-  public AppHelpDialog(JFrame parentFrame, String appName) {
+  public ExperimentHelpDialog(JFrame parentFrame, String appName) {
 
     JPanel helpPanel = new JPanel();
 

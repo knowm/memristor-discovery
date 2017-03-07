@@ -50,13 +50,13 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
 
 import org.knowm.memristor.discovery.DWFProxy;
-import org.knowm.memristor.discovery.gui.mvc.experiments.App;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.AppModel;
 import org.knowm.memristor.discovery.utils.AveMaxMinVar;
 import org.knowm.waveforms4j.DWF;
 import org.knowm.waveforms4j.DWF.AcquisitionMode;
 
-public class QCApp extends App implements PropertyChangeListener {
+public class QCExperiment extends Experiment implements PropertyChangeListener {
 
   private final QCModel model = new QCModel();
   private QCControlPanel controlPanel;
@@ -74,7 +74,7 @@ public class QCApp extends App implements PropertyChangeListener {
    * @param dwfProxy
    * @param mainFrameContainer
    */
-  public QCApp(DWFProxy dwfProxy, Container mainFrameContainer) {
+  public QCExperiment(DWFProxy dwfProxy, Container mainFrameContainer) {
 
     super(dwfProxy);
     createAndShowGUI(mainFrameContainer);
@@ -443,8 +443,7 @@ public class QCApp extends App implements PropertyChangeListener {
     }
   }
 
-  @Override
-  public AppModel getExperimentModel() {
+  public AppModel getControlModel() {
 
     return model;
   }

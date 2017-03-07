@@ -25,19 +25,19 @@
  * If you have any questions regarding our licensing policy, please
  * contact us at `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.experiments.conductance.experiment;
+package org.knowm.memristor.discovery.gui.mvc.experiments.conductance.control;
 
 import java.beans.PropertyChangeListener;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.AppModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferences;
-import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferences.Waveform;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.ConductancePreferences;
 import org.knowm.memristor.discovery.utils.driver.Driver;
 import org.knowm.memristor.discovery.utils.driver.Sawtooth;
 import org.knowm.memristor.discovery.utils.driver.Triangle;
 
-public class ExperimentModel extends AppModel {
+public class ControlModel extends AppModel {
 
   // RESET
   private Waveform resetPulseType;
@@ -57,7 +57,7 @@ public class ExperimentModel extends AppModel {
   /**
    * Constructor
    */
-  public ExperimentModel() {
+  public ControlModel() {
 
     updateWaveformChartData();
   }
@@ -66,17 +66,17 @@ public class ExperimentModel extends AppModel {
   public void loadModelFromPrefs() {
 
     // RESET
-    resetPulseType = ConductancePreferences.Waveform.valueOf(appPreferences.getString(ConductancePreferences.RESET_PULSE_TYPE_INIT_STRING_KEY, ConductancePreferences.RESET_PULSE_TYPE_INIT_STRING_DEFAULT_VALUE));
-    resetAmplitude = appPreferences.getFloat(ConductancePreferences.RESET_AMPLITUDE_INIT_FLOAT_KEY, ConductancePreferences.RESET_AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
-    resetPulseWidth = appPreferences.getInteger(ConductancePreferences.RESET_PULSE_WIDTH_INIT_KEY, ConductancePreferences.RESET_PERIOD_INIT_DEFAULT_VALUE);
+    resetPulseType = ConductancePreferences.Waveform.valueOf(experimentPreferences.getString(ConductancePreferences.RESET_PULSE_TYPE_INIT_STRING_KEY, ConductancePreferences.RESET_PULSE_TYPE_INIT_STRING_DEFAULT_VALUE));
+    resetAmplitude = experimentPreferences.getFloat(ConductancePreferences.RESET_AMPLITUDE_INIT_FLOAT_KEY, ConductancePreferences.RESET_AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
+    resetPulseWidth = experimentPreferences.getInteger(ConductancePreferences.RESET_PULSE_WIDTH_INIT_KEY, ConductancePreferences.RESET_PERIOD_INIT_DEFAULT_VALUE);
 
     // SET
-    setConductance = appPreferences.getFloat(ConductancePreferences.SET_CONDUCTANCE_INIT_KEY, ConductancePreferences.SET_CONDUCTANCE_INIT_DEFAULT_VALUE);
-    setAmplitude = appPreferences.getFloat(ConductancePreferences.SET_AMPLITUDE_INIT_FLOAT_KEY, ConductancePreferences.SET_AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
-    setPulseWidth = appPreferences.getInteger(ConductancePreferences.SET_PULSE_WIDTH_INIT_KEY, ConductancePreferences.SET_PERIOD_INIT_DEFAULT_VALUE);
+    setConductance = experimentPreferences.getFloat(ConductancePreferences.SET_CONDUCTANCE_INIT_KEY, ConductancePreferences.SET_CONDUCTANCE_INIT_DEFAULT_VALUE);
+    setAmplitude = experimentPreferences.getFloat(ConductancePreferences.SET_AMPLITUDE_INIT_FLOAT_KEY, ConductancePreferences.SET_AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
+    setPulseWidth = experimentPreferences.getInteger(ConductancePreferences.SET_PULSE_WIDTH_INIT_KEY, ConductancePreferences.SET_PERIOD_INIT_DEFAULT_VALUE);
 
     swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_PREFERENCES_UPDATE, true, false);
-    seriesResistance = appPreferences.getInteger(ConductancePreferences.SERIES_R_INIT_KEY, ConductancePreferences.SERIES_R_INIT_DEFAULT_VALUE);
+    seriesResistance = experimentPreferences.getInteger(ConductancePreferences.SERIES_R_INIT_KEY, ConductancePreferences.SERIES_R_INIT_DEFAULT_VALUE);
   }
 
   /**
@@ -219,7 +219,7 @@ public class ExperimentModel extends AppModel {
   }
 
   @Override
-  public AppPreferences initAppPreferences() {
+  public ExperimentPreferences initAppPreferences() {
 
     return new ConductancePreferences();
   }

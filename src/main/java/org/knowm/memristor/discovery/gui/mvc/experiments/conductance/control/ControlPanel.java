@@ -25,7 +25,7 @@
  * If you have any questions regarding our licensing policy, please
  * contact us at `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.experiments.conductance.experiment;
+package org.knowm.memristor.discovery.gui.mvc.experiments.conductance.control;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -47,11 +47,11 @@ import javax.swing.JTextField;
 import org.knowm.memristor.discovery.utils.Util;
 
 /**
- * Provides controls for running the experiment
+ * Provides controls for running the control
  *
  * @author timmolter
  */
-public class ExperimentPanel extends JPanel {
+public class ControlPanel extends JPanel {
 
   // RESET
   private final Box resetPulseTypeRadioButtonBox;
@@ -77,7 +77,7 @@ public class ExperimentPanel extends JPanel {
   /**
    * Constructor
    */
-  public ExperimentPanel() {
+  public ControlPanel() {
 
     setLayout(new GridBagLayout());
     GridBagConstraints c = new GridBagConstraints();
