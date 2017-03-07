@@ -309,9 +309,8 @@ public class PulseApp extends App implements PropertyChangeListener {
       else {
 
         // update G chart
-        // System.out.println("updating G Chart");
         experimentModel.setLastG(newestChunk[6][0]);
-        plotController.updateGChart(experimentModel.getLastG(), experimentModel.getLastRAsString());
+        plotController.updateGChartData(experimentModel.getLastG(), experimentModel.getLastRAsString());
         plotController.repaintGChart();
 
         experimentModel.updateEnergyData();
