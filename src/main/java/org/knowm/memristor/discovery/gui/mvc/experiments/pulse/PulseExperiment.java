@@ -80,8 +80,6 @@ public class PulseExperiment extends Experiment {
   public void doCreateAndShowGUI() {
 
     mainFrameContainer.add(plotPanel, BorderLayout.CENTER);
-
-    controlModel.addListener(this);
   }
 
   boolean initialPulseTrainCaptured = false;

@@ -27,6 +27,8 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments;
 
+import java.beans.PropertyChangeListener;
+
 import javax.swing.event.SwingPropertyChangeSupport;
 
 public abstract class ExperimentControlModel {
@@ -79,5 +81,15 @@ public abstract class ExperimentControlModel {
   public void setStartToggled(boolean isStartToggled) {
 
     this.isStartToggled = isStartToggled;
+  }
+
+  /**
+   * Here is where the Controller registers itself as a listener to model changes.
+   *
+   * @param listener
+   */
+  public void addListener(PropertyChangeListener listener) {
+
+    swingPropertyChangeSupport.addPropertyChangeListener(listener);
   }
 }

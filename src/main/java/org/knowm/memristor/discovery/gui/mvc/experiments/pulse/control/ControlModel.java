@@ -123,15 +123,7 @@ public class ControlModel extends ExperimentControlModel {
     }
   }
 
-  /**
-   * Here is where the Controller registers itself as a listener to model changes.
-   *
-   * @param listener
-   */
-  public void addListener(PropertyChangeListener listener) {
 
-    swingPropertyChangeSupport.addPropertyChangeListener(listener);
-  }
 
   /////////////////////////////////////////////////////////////
   // GETTERS AND SETTERS //////////////////////////////////////

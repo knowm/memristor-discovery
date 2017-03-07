@@ -80,6 +80,10 @@ public abstract class Experiment implements PropertyChangeListener {
     PropertyChangeEvent evt = new PropertyChangeEvent(this, ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
     propertyChange(evt);
 
+    getControlModel().addListener(this);
+
+
+
     getControlPanel().getStartStopButton().addActionListener(new ActionListener() {
 
       @Override

@@ -14,4 +14,6 @@ public abstract class ExperimentControlPanel extends JPanel {
 
     return startStopButton;
   }
+
+
 }
