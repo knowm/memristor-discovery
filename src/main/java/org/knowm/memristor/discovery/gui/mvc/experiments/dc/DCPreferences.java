@@ -41,6 +41,9 @@ public class DCPreferences extends AppPreferences {
   public static final String WAVEFORM_INIT_STRING_KEY = PREFIX + "WAVEFORM_INIT_STRING_KEY";
   public static final String WAVEFORM_INIT_STRING_DEFAULT_VALUE = "SawtoothUpDown";
 
+  public static final String NUM_PULSES_INIT_KEY = PREFIX + "NUM_PULSES_INIT_KEY";
+  public static final int NUM_PULSES_INIT_DEFAULT_VALUE = 2;
+
   public static final String SERIES_R_INIT_KEY = PREFIX + "SERIES_R_INIT_KEY";
   public static final int SERIES_R_INIT_DEFAULT_VALUE = 5_000;
 

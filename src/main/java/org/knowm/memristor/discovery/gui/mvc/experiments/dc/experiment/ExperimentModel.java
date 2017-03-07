@@ -43,7 +43,7 @@ public class ExperimentModel extends AppModel {
   public DCPreferences.Waveform waveform;
   private float amplitude;
   private int period; // model store period in nanoseconds
-  private int pulseNumber = 1;
+  private int pulseNumber ;
   private int seriesResistance;
 
   private final double[] waveformTimeData = new double[DCPreferences.CAPTURE_BUFFER_SIZE];
@@ -64,6 +64,7 @@ public class ExperimentModel extends AppModel {
     seriesResistance = appPreferences.getInteger(DCPreferences.SERIES_R_INIT_KEY, DCPreferences.SERIES_R_INIT_DEFAULT_VALUE);
     amplitude = appPreferences.getFloat(DCPreferences.AMPLITUDE_INIT_FLOAT_KEY, DCPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
     period = appPreferences.getInteger(DCPreferences.PERIOD_INIT_KEY, DCPreferences.PERIOD_INIT_DEFAULT_VALUE);
+    pulseNumber = appPreferences.getInteger(DCPreferences.NUM_PULSES_INIT_KEY, DCPreferences.NUM_PULSES_INIT_DEFAULT_VALUE);
     swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_PREFERENCES_UPDATE, true, false);
   }
 

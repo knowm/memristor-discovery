@@ -210,7 +210,7 @@ public class ConductanceApp extends App implements PropertyChangeListener {
       // Create Chart Data //////
       ///////////////////////////
 
-      double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, 0.02);
+      double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, 0.02,10);
       double[] V1Trimmed = trimmedRawData[0];
       double[] V2Trimmed = trimmedRawData[1];
       int bufferLength = V1Trimmed.length;
@@ -316,7 +316,7 @@ public class ConductanceApp extends App implements PropertyChangeListener {
         // Create Chart Data //////
         ///////////////////////////
 
-        double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, experimentModel.getSetAmplitude() * .98);
+        double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, experimentModel.getSetAmplitude() * .98,0);
         double[] V1Trimmed = trimmedRawData[0];
         double[] V2Trimmed = trimmedRawData[1];
         int bufferLength = V1Trimmed.length;

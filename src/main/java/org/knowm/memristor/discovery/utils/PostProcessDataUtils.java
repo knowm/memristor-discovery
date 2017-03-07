@@ -11,22 +11,23 @@ public class PostProcessDataUtils {
    * @param v1
    * @param v2
    * @param v1Threshold
+   * @param windowBuffer - how many data points outside the window should be included
    * @return
    */
-  public static double[][] trimIdleData(double[] v1, double[] v2, double v1Threshold) {
+  public static double[][] trimIdleData(double[] v1, double[] v2, double v1Threshold, int windowBuffer) {
 
     double vThresholdAbs = Math.abs(v1Threshold);
     int startIndex = 0;
     for (int i = 0; i < v1.length; i++) {
       if (Math.abs(v1[i]) > vThresholdAbs) {
-        startIndex = i-10;
+        startIndex = i - windowBuffer;
         break;
       }
     }
     int endIndex = v1.length - 1;
     for (int i = v1.length - 1; i > 0; i--) {
       if (Math.abs(v1[i]) > vThresholdAbs) {
-        endIndex = i+10;
+        endIndex = i + windowBuffer;
         break;
       }
     }

@@ -204,9 +204,12 @@ public class ExperimentPanel extends JPanel {
 
   public void enableAllChildComponents(boolean enabled) {
 
+    waveformComboBox.setEnabled(enabled);
+    memristorVoltageCheckBox.setEnabled(enabled);
     amplitudeSlider.setEnabled(enabled);
     pulseWidthSlider.setEnabled(enabled);
     pulseWidthSliderNs.setEnabled(enabled);
+    pulseNumberSlider.setEnabled(enabled);
     seriesTextField.setEnabled(enabled);
     startStopButton.setEnabled(enabled);
   }

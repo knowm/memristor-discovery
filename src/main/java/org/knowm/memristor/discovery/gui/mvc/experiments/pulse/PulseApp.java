@@ -192,7 +192,7 @@ public class PulseApp extends App implements PropertyChangeListener {
       // Create Chart Data //////
       ///////////////////////////
 
-      double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, 0.05);
+      double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, 0.05, 10);
       double[] V1Trimmed = trimmedRawData[0];
       double[] V2Trimmed = trimmedRawData[1];
       // double[] V2Zeroed = PostProcessDataUtils.zeroIdleData(V1Trimmed, V2Trimmed, 0.05);
@@ -279,7 +279,7 @@ public class PulseApp extends App implements PropertyChangeListener {
         // Create Chart Data //////
         ///////////////////////////
 
-        trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, 0.02);
+        trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, 0.02, 0);
         V1Trimmed = trimmedRawData[0];
         V2Trimmed = trimmedRawData[1];
         bufferLength = V1Trimmed.length;
@@ -310,8 +310,6 @@ public class PulseApp extends App implements PropertyChangeListener {
         if (newestChunk[6] == null) {
           // System.out.println("" + chunks.size());
           initialPulseTrainCaptured = true;
-
-          // publish(new double[][]{timeData, V1Trimmed, V2Zeroed, V2MinusV1, current, conductance, null});
 
           plotController.udpateVtChart(newestChunk[0], newestChunk[1], newestChunk[2], newestChunk[3], experimentModel.getPulseWidth(), experimentModel
               .getAmplitude());
