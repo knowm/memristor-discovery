@@ -100,6 +100,7 @@ public class ExperimentController implements PropertyChangeListener {
       experimentPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + experimentModel.getPulseWidth() / 1000));
     }
     experimentPanel.getPulseNumberSlider().setBorder(BorderFactory.createTitledBorder("Pulse Number = " + experimentModel.getPulseNumber()));
+    experimentPanel.getPulseNumberSlider().setValue((int) (experimentModel.getPulseNumber()));
   }
 
   /**
