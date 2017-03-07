@@ -196,6 +196,10 @@ public class ExperimentPanel extends JPanel {
     c.gridy++;
     c.insets = new Insets(0, 0, 0, 0);
     add(startStopButton, c);
+
+    c.gridy++;
+    JLabel logoLabel = new JLabel(Util.createImageIcon("img/logo_200.png"));
+    add(logoLabel, c);
   }
 
   public void enableAllChildComponents(boolean enabled) {

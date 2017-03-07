@@ -44,6 +44,8 @@ import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 
+import org.knowm.memristor.discovery.utils.Util;
+
 /**
  * Provides controls for running the experiment
  *
@@ -195,8 +197,11 @@ public class ExperimentPanel extends JPanel {
     stopButton = new JButton("Stop");
     stopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.gridy++;
-
     add(stopButton, c);
+
+    c.gridy++;
+    JLabel logoLabel = new JLabel(Util.createImageIcon("img/logo_200.png"));
+    add(logoLabel, c);
   }
 
   public void enableAllChildComponents(boolean enabled) {
