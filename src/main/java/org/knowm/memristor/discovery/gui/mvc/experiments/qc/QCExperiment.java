@@ -52,6 +52,7 @@ import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
 import org.knowm.memristor.discovery.utils.AveMaxMinVar;
 import org.knowm.waveforms4j.DWF;
 import org.knowm.waveforms4j.DWF.AcquisitionMode;
@@ -76,7 +77,7 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
    */
   public QCExperiment(DWFProxy dwfProxy, Container mainFrameContainer) {
 
-    super(dwfProxy);
+    super(dwfProxy, mainFrameContainer);
     createAndShowGUI(mainFrameContainer);
   }
 
@@ -446,5 +447,22 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
   public ExperimentControlModel getControlModel() {
 
     return model;
+  }
+
+  @Override
+  public ExperimentControlPanel getControlPanel() {
+
+    return controlPanel;
+  }
+
+  @Override
+  public SwingWorker getCaptureWorker() {
+
+    return new QCCaptureWorker();
+  }
+
+  @Override
+  public void doCreateAndShowGUI() {
+
   }
 }

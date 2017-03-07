@@ -43,6 +43,7 @@ import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control.ControlPanel;
@@ -73,7 +74,7 @@ public class HysteresisExperiment extends Experiment implements PropertyChangeLi
    */
   public HysteresisExperiment(DWFProxy dwfProxy, Container mainFrameContainer) {
 
-    super(dwfProxy);
+    super(dwfProxy, mainFrameContainer);
 
     controlPanel = new ControlPanel();
     JScrollPane jScrollPane = new JScrollPane(controlPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -146,6 +147,11 @@ public class HysteresisExperiment extends Experiment implements PropertyChangeLi
     // trigger plot of waveform
     PropertyChangeEvent evt = new PropertyChangeEvent(this, ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
     propertyChange(evt);
+  }
+
+  @Override
+  public void doCreateAndShowGUI() {
+
   }
 
   private class HysteresisCaptureWorker extends SwingWorker<Boolean, double[][]> {
@@ -330,5 +336,17 @@ public class HysteresisExperiment extends Experiment implements PropertyChangeLi
   public ExperimentControlModel getControlModel() {
 
     return controlModel;
+  }
+
+  @Override
+  public ExperimentControlPanel getControlPanel() {
+
+    return controlPanel;
+  }
+
+  @Override
+  public SwingWorker getCaptureWorker() {
+
+    return new HysteresisCaptureWorker();
   }
 }

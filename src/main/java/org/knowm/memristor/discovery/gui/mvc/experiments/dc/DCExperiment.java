@@ -43,11 +43,12 @@ import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.control.ControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.dc.plot.PlotController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.plot.PlotControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.dc.plot.PlotController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.plot.PlotPanel;
 import org.knowm.memristor.discovery.utils.PostProcessDataUtils;
 import org.knowm.memristor.discovery.utils.WaveformUtils;
@@ -73,7 +74,7 @@ public class DCExperiment extends Experiment implements PropertyChangeListener {
    */
   public DCExperiment(DWFProxy dwfProxy, Container mainFrameContainer) {
 
-    super(dwfProxy);
+    super(dwfProxy, mainFrameContainer);
 
     controlPanel = new ControlPanel();
     JScrollPane jScrollPane = new JScrollPane(controlPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -146,6 +147,11 @@ public class DCExperiment extends Experiment implements PropertyChangeListener {
     // trigger plot of waveform
     PropertyChangeEvent evt = new PropertyChangeEvent(this, ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
     propertyChange(evt);
+  }
+
+  @Override
+  public void doCreateAndShowGUI() {
+
   }
 
   private class CaptureWorker extends SwingWorker<Boolean, double[][]> {
@@ -308,4 +314,15 @@ public class DCExperiment extends Experiment implements PropertyChangeListener {
     return controlModel;
   }
 
+  @Override
+  public ExperimentControlPanel getControlPanel() {
+
+    return controlPanel;
+  }
+
+  @Override
+  public SwingWorker getCaptureWorker() {
+
+    return new CaptureWorker();
+  }
 }

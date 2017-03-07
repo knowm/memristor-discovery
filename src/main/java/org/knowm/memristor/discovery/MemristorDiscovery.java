@@ -208,6 +208,7 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
             default:
               break;
           }
+          experiment.createAndShowGUI();
 
           dwf.startupAD2();
 
@@ -272,6 +273,7 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
     // appID = "Conductance";
 
     experiment = new PulseExperiment(dwf, mainFrameContainer);
+    experiment.createAndShowGUI();
     appID = "Pulse";
 
     mainFrame.setTitle(FRAME_TITLE_BASE + appID);

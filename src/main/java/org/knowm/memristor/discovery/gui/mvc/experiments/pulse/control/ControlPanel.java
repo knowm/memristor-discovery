@@ -39,10 +39,10 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferences;
 import org.knowm.memristor.discovery.utils.Util;
@@ -52,7 +52,7 @@ import org.knowm.memristor.discovery.utils.Util;
  *
  * @author timmolter
  */
-public class ControlPanel extends JPanel {
+public class ControlPanel extends ExperimentControlPanel {
 
   private final JLabel appliedAmplitudeLabel;
   private final JLabel currentLabel;
@@ -71,7 +71,6 @@ public class ControlPanel extends JPanel {
 
   private final JSlider pulseNumberSlider;
 
-  private final JButton startStopButton;
 
   /**
    * Constructor
@@ -104,6 +103,7 @@ public class ControlPanel extends JPanel {
     add(energyLabel, c);
 
     this.waveformComboBox = new JComboBox<>();
+    waveformComboBox.setFocusable(false);
     c.gridy++;
     c.insets = new Insets(0, 0, 4, 6);
     add(waveformComboBox, c);
@@ -250,10 +250,7 @@ public class ControlPanel extends JPanel {
     return seriesTextField;
   }
 
-  public JButton getStartStopButton() {
 
-    return startStopButton;
-  }
 
   public JCheckBox getMemristorVoltageCheckBox() {
 

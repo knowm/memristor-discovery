@@ -27,22 +27,17 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.pulse;
 
-import static javax.swing.BorderFactory.createEmptyBorder;
-
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.List;
 
-import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
 
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.ConductancePreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCPreferences;
@@ -56,7 +51,7 @@ import org.knowm.memristor.discovery.utils.PostProcessDataUtils;
 import org.knowm.memristor.discovery.utils.WaveformUtils;
 import org.knowm.waveforms4j.DWF;
 
-public class PulseExperiment extends Experiment implements PropertyChangeListener {
+public class PulseExperiment extends Experiment {
 
   private final ControlModel controlModel = new ControlModel();
   private ControlPanel controlPanel;
@@ -64,8 +59,6 @@ public class PulseExperiment extends Experiment implements PropertyChangeListene
   private PlotPanel plotPanel;
   private final PlotControlModel plotModel = new PlotControlModel();
   private final PlotController plotController;
-
-  private CaptureWorker captureWorker;
 
   /**
    * Constructor
@@ -75,54 +68,20 @@ public class PulseExperiment extends Experiment implements PropertyChangeListene
    */
   public PulseExperiment(DWFProxy dwfProxy, Container mainFrameContainer) {
 
-    super(dwfProxy);
+    super(dwfProxy, mainFrameContainer);
 
     controlPanel = new ControlPanel();
-    JScrollPane jScrollPane = new JScrollPane(controlPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-    jScrollPane.setBorder(createEmptyBorder());
-    mainFrameContainer.add(jScrollPane, BorderLayout.WEST);
-
-    // ///////////////////////////////////////////////////////////
-    // START/STOP BUTTON ////////////////////////////////////////////
-    // ///////////////////////////////////////////////////////////
-
-    controlPanel.getStartStopButton().addActionListener(new ActionListener() {
-
-      @Override
-      public void actionPerformed(ActionEvent e) {
-
-        if (controlModel.isStartToggled()) {
-
-          controlModel.setStartToggled(false);
-          controlPanel.getStartStopButton().setText("Stop");
-
-          // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
-          captureWorker = new CaptureWorker();
-          captureWorker.execute();
-        }
-        else {
-
-          controlModel.setStartToggled(true);
-          controlPanel.getStartStopButton().setText("Start");
-
-          // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
-          captureWorker.cancel(true);
-        }
-      }
-    });
-
     plotPanel = new PlotPanel();
     plotController = new PlotController(plotPanel, plotModel);
+    new ControlController(controlPanel, controlModel, dwfProxy);
+  }
+
+  @Override
+  public void doCreateAndShowGUI() {
+
     mainFrameContainer.add(plotPanel, BorderLayout.CENTER);
 
-    new ControlController(controlPanel, controlModel, dwfProxy);
-
-    // register this as the listener of the controlModel
     controlModel.addListener(this);
-
-    // trigger plot of waveform
-    PropertyChangeEvent evt = new PropertyChangeEvent(this, ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
-    propertyChange(evt);
   }
 
   boolean initialPulseTrainCaptured = false;
@@ -345,5 +304,17 @@ public class PulseExperiment extends Experiment implements PropertyChangeListene
   public ExperimentControlModel getControlModel() {
 
     return controlModel;
+  }
+
+  @Override
+  public ExperimentControlPanel getControlPanel() {
+
+    return controlPanel;
+  }
+
+  @Override
+  public SwingWorker getCaptureWorker() {
+
+    return new CaptureWorker();
   }
 }

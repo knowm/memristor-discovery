@@ -38,17 +38,18 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
+
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
 
 /**
  * Provides controls for running the control
  *
  * @author timmolter
  */
-public class QCControlPanel extends JPanel {
+public class QCControlPanel extends ExperimentControlPanel {
 
   private final JLabel memristorTypeLabel;
   private final ButtonGroup memristorTypeButtonGroup;
@@ -219,7 +220,6 @@ public class QCControlPanel extends JPanel {
     c.gridy++;
 
     add(stopButton, c);
-
   }
 
   public void enableAllChildComponents(boolean enabled) {
@@ -305,5 +305,4 @@ public class QCControlPanel extends JPanel {
 
     return cTypeMemristor;
   }
-
 }

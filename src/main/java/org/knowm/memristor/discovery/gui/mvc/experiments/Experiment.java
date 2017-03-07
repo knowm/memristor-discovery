@@ -27,20 +27,83 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments;
 
+import static javax.swing.BorderFactory.createEmptyBorder;
+
+import java.awt.BorderLayout;
+import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
+import javax.swing.JScrollPane;
+import javax.swing.SwingWorker;
+
 import org.knowm.memristor.discovery.DWFProxy;
 
-public abstract class Experiment {
+public abstract class Experiment implements PropertyChangeListener {
 
   public final DWFProxy dwfProxy;
 
+  public final Container mainFrameContainer;
+
+  private SwingWorker experimentCaptureWorker;
+
   public abstract ExperimentControlModel getControlModel();
 
+  public abstract ExperimentControlPanel getControlPanel();
+
+  public abstract SwingWorker getCaptureWorker();
+
+  public abstract void doCreateAndShowGUI();
+
   /**
+   * Constructor
+   *
    * @param dwfProxy
    */
-  public Experiment(DWFProxy dwfProxy) {
+  public Experiment(DWFProxy dwfProxy, Container mainFrameContainer) {
 
     this.dwfProxy = dwfProxy;
+    this.mainFrameContainer = mainFrameContainer;
+  }
+
+  public void createAndShowGUI() {
+
+    doCreateAndShowGUI();
+
+    JScrollPane jScrollPane = new JScrollPane(getControlPanel(), JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    jScrollPane.setBorder(createEmptyBorder());
+    mainFrameContainer.add(jScrollPane, BorderLayout.WEST);
+
+    // trigger plot of waveform
+    PropertyChangeEvent evt = new PropertyChangeEvent(this, ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    propertyChange(evt);
+
+    getControlPanel().getStartStopButton().addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+
+        if (getControlModel().isStartToggled()) {
+
+          getControlModel().setStartToggled(false);
+          getControlPanel().getStartStopButton().setText("Stop");
+
+          // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
+          experimentCaptureWorker = getCaptureWorker();
+          experimentCaptureWorker.execute();
+        }
+        else {
+
+          getControlModel().setStartToggled(true);
+          getControlPanel().getStartStopButton().setText("Start");
+
+          // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
+          experimentCaptureWorker.cancel(true);
+        }
+      }
+    });
   }
 
   public void refreshModelFromPreferences() {
