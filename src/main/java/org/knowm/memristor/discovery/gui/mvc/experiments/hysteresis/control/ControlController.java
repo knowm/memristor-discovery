@@ -114,7 +114,7 @@ public class ControlController implements PropertyChangeListener {
       controlPanel.getFrequencySliderLog().setBorder(BorderFactory.createTitledBorder("Frequency (Log) [Hz] = " + controlModel.getFrequency()));
       controlPanel.getFrequencySlider().setBorder(BorderFactory.createTitledBorder("Frequency [Hz]"));
     }
-    controlPanel.getSeriesTextField().setText("" + controlModel.getSeriesR());
+    controlPanel.getSeriesTextField().setText("" + controlModel.getSeriesResistance());
   }
 
   /**
@@ -194,10 +194,10 @@ public class ControlController implements PropertyChangeListener {
 
         try {
           int newShuntValue = Integer.parseInt(text);
-          controlModel.setSeriesR(newShuntValue);
+          controlModel.setSeriesResistance(newShuntValue);
         } catch (Exception ex) {
           // parsing error, default back to previous value
-          textField.setText(Integer.toString(controlModel.getSeriesR()));
+          textField.setText(Integer.toString(controlModel.getSeriesResistance()));
         }
       }
     });

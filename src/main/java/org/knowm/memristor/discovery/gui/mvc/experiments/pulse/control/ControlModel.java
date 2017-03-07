@@ -249,15 +249,6 @@ public class ControlModel extends ExperimentControlModel {
     return ohmFormatter.format(getLastR());
   }
 
-  public boolean isStartToggled() {
-
-    return isStartToggled;
-  }
-
-  public void setStartToggled(boolean isStartToggled) {
-
-    this.isStartToggled = isStartToggled;
-  }
 
   @Override
   public ExperimentPreferences initAppPreferences() {

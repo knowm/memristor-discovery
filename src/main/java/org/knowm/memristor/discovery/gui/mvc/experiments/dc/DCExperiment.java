@@ -204,14 +204,14 @@ public class DCExperiment extends Experiment implements PropertyChangeListener {
       // create current data
       double[] current = new double[bufferLength];
       for (int i = 0; i < bufferLength; i++) {
-        current[i] = V2Trimmed[i] / controlModel.getSeriesR() * DCPreferences.CURRENT_UNIT.getDivisor();
+        current[i] = V2Trimmed[i] / controlModel.getSeriesResistance() * DCPreferences.CURRENT_UNIT.getDivisor();
       }
 
       // create conductance data
       double[] conductance = new double[bufferLength];
       for (int i = 0; i < bufferLength; i++) {
 
-        double I = V2Trimmed[i] / controlModel.getSeriesR();
+        double I = V2Trimmed[i] / controlModel.getSeriesResistance();
         double G = I / (V1Trimmed[i] - V2Trimmed[i]) * DCPreferences.CONDUCTANCE_UNIT.getDivisor();
         G = G < 0 ? 0 : G;
         conductance[i] = G;

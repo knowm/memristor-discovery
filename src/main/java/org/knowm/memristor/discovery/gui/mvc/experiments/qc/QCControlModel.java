@@ -172,12 +172,12 @@ public class QCControlModel extends ExperimentControlModel {
     return waveformAmplitudeData;
   }
 
-  public int getSeriesR() {
+  public int getSeriesResistance() {
 
     return seriesR;
   }
 
-  public void setSeriesR(int seriesR) {
+  public void setSeriesResistance(int seriesR) {
 
     this.seriesR = seriesR;
   }

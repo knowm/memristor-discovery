@@ -86,7 +86,7 @@ public class QCController implements PropertyChangeListener {
 
   private void initGUIComponentsFromModel() {
 
-    controlPanel.getSeriesTextField().setText("" + model.getSeriesR());
+    controlPanel.getSeriesTextField().setText("" + model.getSeriesResistance());
     controlPanel.getAmplitudeSlider().setValue((int) (model.getAmplitude() * 100));
     controlPanel.getOffsetSlider().setValue((int) (model.getOffset() * 100));
 
@@ -202,10 +202,10 @@ public class QCController implements PropertyChangeListener {
 
         try {
           int newShuntValue = Integer.parseInt(text);
-          model.setSeriesR(newShuntValue);
+          model.setSeriesResistance(newShuntValue);
         } catch (Exception ex) {
           // parsing error, default back to previous value
-          textField.setText(Integer.toString(model.getSeriesR()));
+          textField.setText(Integer.toString(model.getSeriesResistance()));
         }
       }
     });

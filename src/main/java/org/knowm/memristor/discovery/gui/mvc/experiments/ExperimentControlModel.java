@@ -61,13 +61,23 @@ public abstract class ExperimentControlModel {
     loadModelFromPrefs();
   }
 
-  public int getSeriesR() {
+  public int getSeriesResistance() {
 
     return seriesResistance;
   }
 
-  public void setSeriesR(int seriesResistance) {
+  public void setSeriesResistance(int seriesResistance) {
 
     this.seriesResistance = seriesResistance;
+  }
+
+  public boolean isStartToggled() {
+
+    return isStartToggled;
+  }
+
+  public void setStartToggled(boolean isStartToggled) {
+
+    this.isStartToggled = isStartToggled;
   }
 }

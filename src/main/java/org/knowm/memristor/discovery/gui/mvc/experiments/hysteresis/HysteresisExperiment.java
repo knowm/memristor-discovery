@@ -201,7 +201,7 @@ public class HysteresisExperiment extends Experiment implements PropertyChangeLi
             double[] current = new double[rawdata2.length];
             double[] voltage = new double[rawdata1.length];
             for (int i = 0; i < current.length; i++) {
-              current[i] = rawdata2[i] / controlModel.getSeriesR() * HysteresisPreferences.CURRENT_UNIT.getDivisor();
+              current[i] = rawdata2[i] / controlModel.getSeriesResistance() * HysteresisPreferences.CURRENT_UNIT.getDivisor();
             }
             if (!HysteresisPreferences.IS_VIN) {
               for (int i = 0; i < current.length; i++) {
@@ -217,7 +217,7 @@ public class HysteresisExperiment extends Experiment implements PropertyChangeLi
 
             for (int i = 0; i < conductance.length; i++) {
 
-              double I = rawdata2[i] / controlModel.getSeriesR();
+              double I = rawdata2[i] / controlModel.getSeriesResistance();
 
               double G = I / (rawdata1[i] - rawdata2[i]) * HysteresisPreferences.CONDUCTANCE_UNIT.getDivisor();
 

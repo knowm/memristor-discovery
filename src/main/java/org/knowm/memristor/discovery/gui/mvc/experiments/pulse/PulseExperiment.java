@@ -188,14 +188,14 @@ public class PulseExperiment extends Experiment implements PropertyChangeListene
       // create current data
       double[] current = new double[bufferLength];
       for (int i = 0; i < bufferLength; i++) {
-        current[i] = V2Trimmed[i] / controlModel.getSeriesR() * DCPreferences.CURRENT_UNIT.getDivisor();
+        current[i] = V2Trimmed[i] / controlModel.getSeriesResistance() * DCPreferences.CURRENT_UNIT.getDivisor();
       }
 
       // create conductance data
       double[] conductance = new double[bufferLength];
       for (int i = 0; i < bufferLength; i++) {
 
-        double I = V2Trimmed[i] / controlModel.getSeriesR();
+        double I = V2Trimmed[i] / controlModel.getSeriesResistance();
         double G = I / (V1Trimmed[i] - V2Trimmed[i]) * DCPreferences.CONDUCTANCE_UNIT.getDivisor();
         G = G < 0 ? 0 : G;
         conductance[i] = G;
@@ -264,7 +264,7 @@ public class PulseExperiment extends Experiment implements PropertyChangeListene
         // create conductance data - a single number equal to the average of all points in the trimmed data
         double runningTotal = 0.0;
         for (int i = 3; i < bufferLength - 3; i++) {
-          double I = V2Trimmed[i] / controlModel.getSeriesR();
+          double I = V2Trimmed[i] / controlModel.getSeriesResistance();
           double G = I / (V1Trimmed[i] - V2Trimmed[i]);
           G = G < 0 ? 0 : G;
           runningTotal += G;

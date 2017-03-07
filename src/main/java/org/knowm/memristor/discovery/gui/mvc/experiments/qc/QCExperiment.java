@@ -184,7 +184,7 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
         reportLines.add("## Testing Conditions");
         reportLines.add("|Waveform|Amplitude|Offset|Frequency|Series Resistor|");
         reportLines.add("|:--:|:--:|:--:|:--:|");
-        reportLines.add("|" + model.getWaveform() + "|" + model.getAmplitude() + "V|" + model.getOffset() + " V|" + model.getFrequency() + " Hz|" + f.format(model.getSeriesR() / 1000.0) + "|");
+        reportLines.add("|" + model.getWaveform() + "|" + model.getAmplitude() + "V|" + model.getOffset() + " V|" + model.getFrequency() + " Hz|" + f.format(model.getSeriesResistance() / 1000.0) + "|");
         reportLines.add("");
 
         reportLines.add("## Test Result");
@@ -244,7 +244,7 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
               double[] voltage = new double[rawdata1.length];
 
               for (int i = 0; i < current.length; i++) {
-                current[i] = rawdata2[i] / model.getSeriesR() * QCPreferences.CURRENT_UNIT_DEFAULT_VALUE.getDivisor();
+                current[i] = rawdata2[i] / model.getSeriesResistance() * QCPreferences.CURRENT_UNIT_DEFAULT_VALUE.getDivisor();
               }
 
               double maxV = 0;
@@ -269,10 +269,10 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
                 for (int i = 0; i < current.length; i++) {
 
                   if (voltage[i] > maxV * QCPreferences.P_BELOW_MAX_MIN_V) {
-                    resistance.add(Math.abs(voltage[i] / (rawdata2[i] / model.getSeriesR())));
+                    resistance.add(Math.abs(voltage[i] / (rawdata2[i] / model.getSeriesResistance())));
                   }
                   else if (voltage[i] < minV * QCPreferences.P_BELOW_MAX_MIN_V) {
-                    resistance.add(Math.abs(voltage[i] / (rawdata2[i] / model.getSeriesR())));
+                    resistance.add(Math.abs(voltage[i] / (rawdata2[i] / model.getSeriesResistance())));
                   }
                 }
 

@@ -104,7 +104,7 @@ public class ControlController implements PropertyChangeListener {
         break;
     }
 
-    controlPanel.getSeriesTextField().setText("" + controlModel.getSeriesR());
+    controlPanel.getSeriesTextField().setText("" + controlModel.getSeriesResistance());
     controlPanel.getAmplitudeSlider().setValue((int) (controlModel.getAmplitude() * 100));
     controlPanel.getAmplitudeSlider().setBorder(BorderFactory.createTitledBorder("Amplitude [V] = " + controlModel.getAmplitude()));
     if (controlModel.getPeriod() >= 5000) {
@@ -196,10 +196,10 @@ public class ControlController implements PropertyChangeListener {
 
         try {
           int newShuntValue = Integer.parseInt(text);
-          controlModel.setSeriesR(newShuntValue);
+          controlModel.setSeriesResistance(newShuntValue);
         } catch (Exception ex) {
           // parsing error, default back to previous value
-          textField.setText(Integer.toString(controlModel.getSeriesR()));
+          textField.setText(Integer.toString(controlModel.getSeriesResistance()));
         }
       }
     });
