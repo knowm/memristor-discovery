@@ -96,17 +96,6 @@ public class PulseApp extends App implements PropertyChangeListener {
           experimentModel.setStartToggled(false);
           experimentPanel.getStartStopButton().setText("Stop");
 
-          // switch to capture view
-          if (plotPanel.getCaptureButton().isSelected()) {
-            plotPanel.switch2CaptureChart();
-          }
-          else if (plotPanel.getIVButton().isSelected()) {
-            plotPanel.switch2IVChart();
-          }
-          else {
-            plotPanel.switch2GVChart();
-          }
-
           // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
           captureWorker = new CaptureWorker();
           captureWorker.execute();
@@ -297,21 +286,24 @@ public class PulseApp extends App implements PropertyChangeListener {
         // System.out.println("" + chunks.size());
         initialPulseTrainCaptured = true;
 
-        plotController.udpateVtChart(newestChunk[0], newestChunk[1], newestChunk[2], newestChunk[3], experimentModel.getPulseWidth(), experimentModel
+        plotController.udpateVtChartData(newestChunk[0], newestChunk[1], newestChunk[2], newestChunk[3], experimentModel.getPulseWidth(), experimentModel
             .getAmplitude());
-        plotController.udpateIVChart(newestChunk[0], newestChunk[4], experimentModel.getPulseWidth(), experimentModel
+        plotController.udpateIVChartData(newestChunk[0], newestChunk[4], experimentModel.getPulseWidth(), experimentModel
             .getAmplitude());
-        plotController.updateGVChart(newestChunk[0], newestChunk[5], experimentModel.getPulseWidth(), experimentModel
+        plotController.updateGVChartData(newestChunk[0], newestChunk[5], experimentModel.getPulseWidth(), experimentModel
             .getAmplitude());
 
         if (plotPanel.getCaptureButton().isSelected()) {
+          plotPanel.switch2CaptureChart();
           plotController.repaintVtChart();
         }
         else if (plotPanel.getIVButton().isSelected()) {
+          plotPanel.switch2IVChart();
           plotController.repaintItChart();
         }
         else {
-          plotController.repaintRtChart();
+          plotPanel.switch2GVChart();
+          plotController.repaintGVChart();
         }
       }
       else {
