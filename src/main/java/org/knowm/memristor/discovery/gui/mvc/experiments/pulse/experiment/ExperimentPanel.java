@@ -35,16 +35,15 @@ import java.awt.Insets;
 import java.util.Hashtable;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 
+import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferences.Waveform;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferences;
 import org.knowm.memristor.discovery.utils.Util;
 
@@ -59,13 +58,7 @@ public class ExperimentPanel extends JPanel {
   private final JLabel currentLabel;
   private final JLabel energyLabel;
 
-  private final Box pulseFormRadioButtonBox;
-  private final ButtonGroup pulseFormRadioButtonGroup;
-  private final JRadioButton quarterSineRadioButton;
-  private final JRadioButton squareRadioButton;
-  private final JRadioButton squareSmoothRadioButton;
-  private final JRadioButton triangleRadioButton;
-  private final JRadioButton halfSineRadioButton;
+  private JComboBox<Waveform> waveformComboBox;
 
   private final JCheckBox memristorVoltageCheckBox;
 
@@ -110,32 +103,10 @@ public class ExperimentPanel extends JPanel {
     c.insets = new Insets(0, 10, 4, 0);
     add(energyLabel, c);
 
-    quarterSineRadioButton = new JRadioButton("QuarterSine");
-    squareRadioButton = new JRadioButton("Square");
-    squareSmoothRadioButton = new JRadioButton("SquareSmooth");
-    triangleRadioButton = new JRadioButton("Triangle");
-    halfSineRadioButton = new JRadioButton("HalfSine");
-    pulseFormRadioButtonGroup = new ButtonGroup();
-    pulseFormRadioButtonGroup.add(quarterSineRadioButton);
-    pulseFormRadioButtonGroup.add(squareRadioButton);
-    pulseFormRadioButtonGroup.add(squareSmoothRadioButton);
-    pulseFormRadioButtonGroup.add(triangleRadioButton);
-    pulseFormRadioButtonGroup.add(halfSineRadioButton);
-    add(quarterSineRadioButton);
-    add(squareRadioButton);
-    add(squareSmoothRadioButton);
-    add(triangleRadioButton);
-    add(halfSineRadioButton);
-    pulseFormRadioButtonBox = Box.createVerticalBox();
-    pulseFormRadioButtonBox.setBorder(BorderFactory.createTitledBorder("Waveform"));
-    pulseFormRadioButtonBox.add(quarterSineRadioButton);
-    pulseFormRadioButtonBox.add(squareRadioButton);
-    pulseFormRadioButtonBox.add(squareSmoothRadioButton);
-    pulseFormRadioButtonBox.add(triangleRadioButton);
-    pulseFormRadioButtonBox.add(halfSineRadioButton);
+    this.waveformComboBox = new JComboBox<>();
     c.gridy++;
-    c.insets = new Insets(0, 6, 4, 6);
-    add(pulseFormRadioButtonBox, c);
+    c.insets = new Insets(0, 0, 4, 6);
+    add(waveformComboBox, c);
 
     c.gridy++;
     c.insets = new Insets(0, 0, 0, 0);
@@ -243,34 +214,9 @@ public class ExperimentPanel extends JPanel {
     energyLabel.setText("Energy [nJ]: " + Util.round(appliedEnergy, 3));
   }
 
-  public ButtonGroup getPulseFormRadioButtonGroup() {
+  public JComboBox<Waveform> getWaveformComboBox() {
 
-    return pulseFormRadioButtonGroup;
-  }
-
-  public JRadioButton getSquareRadioButton() {
-
-    return squareRadioButton;
-  }
-
-  public JRadioButton getSquareSmoothRadioButton() {
-
-    return squareSmoothRadioButton;
-  }
-
-  public JRadioButton getTriangleRadioButton() {
-
-    return triangleRadioButton;
-  }
-
-  public JRadioButton getHalfSineRadioButton() {
-
-    return halfSineRadioButton;
-  }
-
-  public JRadioButton getQuarterSineRadioButton() {
-
-    return quarterSineRadioButton;
+    return waveformComboBox;
   }
 
   public JSlider getAmplitudeSlider() {

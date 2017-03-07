@@ -33,11 +33,11 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Enumeration;
 
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
@@ -47,6 +47,7 @@ import javax.swing.event.ChangeListener;
 
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.AppModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferences.Waveform;
 
 public class ExperimentController implements PropertyChangeListener {
 
@@ -80,26 +81,8 @@ public class ExperimentController implements PropertyChangeListener {
 
   private void initGUIComponentsFromModel() {
 
-    switch (experimentModel.getWaveform()) {
-      case QuarterSine:
-        experimentPanel.getQuarterSineRadioButton().setSelected(true);
-        break;
-      case HalfSine:
-        experimentPanel.getHalfSineRadioButton().setSelected(true);
-        break;
-      case Triangle:
-        experimentPanel.getTriangleRadioButton().setSelected(true);
-        break;
-      case Square:
-        experimentPanel.getSquareRadioButton().setSelected(true);
-        break;
-      case SquareSmooth:
-        experimentPanel.getSquareSmoothRadioButton().setSelected(true);
-        break;
-      default:
-        experimentPanel.getQuarterSineRadioButton().setSelected(true);
-        break;
-    }
+    experimentPanel.getWaveformComboBox().setSelectedItem(experimentModel.getWaveform());
+    experimentPanel.getWaveformComboBox().setModel(new DefaultComboBoxModel<>(new Waveform[]{Waveform.QuarterSine, Waveform.SquareSmooth, Waveform.Square, Waveform.Triangle, Waveform.HalfSine}));
 
     experimentPanel.getSeriesTextField().setText("" + experimentModel.getSeriesR());
     experimentPanel.getAmplitudeSlider().setValue((int) (experimentModel.getAmplitude() * 100));
@@ -124,11 +107,13 @@ public class ExperimentController implements PropertyChangeListener {
    */
   private void setUpViewEvents() {
 
-    experimentPanel.getQuarterSineRadioButton().addActionListener(waveformRadioButtonActionListener);
-    experimentPanel.getSquareRadioButton().addActionListener(waveformRadioButtonActionListener);
-    experimentPanel.getSquareSmoothRadioButton().addActionListener(waveformRadioButtonActionListener);
-    experimentPanel.getTriangleRadioButton().addActionListener(waveformRadioButtonActionListener);
-    experimentPanel.getHalfSineRadioButton().addActionListener(waveformRadioButtonActionListener);
+    experimentPanel.getWaveformComboBox().addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+
+        experimentModel.setWaveform(experimentPanel.getWaveformComboBox().getSelectedItem().toString());
+      }
+    });
 
     experimentPanel.getAmplitudeSlider().addChangeListener(new ChangeListener() {
 
@@ -223,20 +208,6 @@ public class ExperimentController implements PropertyChangeListener {
     })
     ;
   }
-
-  ActionListener waveformRadioButtonActionListener = new ActionListener() {
-
-    @Override
-    public void actionPerformed(ActionEvent actionEvent) {
-
-      for (Enumeration<AbstractButton> buttons = experimentPanel.getPulseFormRadioButtonGroup().getElements(); buttons.hasMoreElements(); ) {
-        AbstractButton button = buttons.nextElement();
-        if (button.isSelected()) {
-          experimentModel.setWaveform(button.getText());
-        }
-      }
-    }
-  };
 
   /**
    * These property change events are triggered in the experimentModel in the case where the underlying experimentModel is updated. Here, the controller can respond to those events and make sure the corresponding GUI

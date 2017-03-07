@@ -83,7 +83,6 @@ public class DCPreferencesPanel extends AppPreferencesPanel {
     this.waveformComboBox.setModel(new DefaultComboBoxModel<>(new Waveform[]{Waveform.Sawtooth, Waveform.SawtoothUpDown, Waveform.Triangle, Waveform.TriangleUpDown}));
     DCPreferences.Waveform waveform = DCPreferences.Waveform.valueOf(appPreferences.getString(DCPreferences.WAVEFORM_INIT_STRING_KEY,
         DCPreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
-    // DCPreferences.Waveform waveform =  Waveform.Sawtooth;
     this.waveformComboBox.setSelectedItem(waveform);
     preferencesPanel.add(waveformComboBox, gc);
 
