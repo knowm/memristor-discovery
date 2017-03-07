@@ -256,7 +256,7 @@ public class PulseApp extends App implements PropertyChangeListener {
         //////////////////////////////////
 
         // read pulse: 0.1 V, 10 us pulse width
-        customWaveform = WaveformUtils.generateCustomWaveform(Waveform.Square, 0.1, experimentModel.getCalculatedFrequency());
+        customWaveform = WaveformUtils.generateCustomWaveform(Waveform.SquareSmooth, 0.1, experimentModel.getCalculatedFrequency());
         dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, 100_000, 0, 1, customWaveform);
 
         // Read In Data
