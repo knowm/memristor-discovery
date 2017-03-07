@@ -35,10 +35,13 @@ import java.awt.Insets;
 import java.util.Hashtable;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 
@@ -55,6 +58,13 @@ public class ExperimentPanel extends JPanel {
   private final JLabel appliedAmplitudeLabel;
   private final JLabel currentLabel;
   private final JLabel energyLabel;
+
+  private final Box pulseFormRadioButtonBox;
+  private final ButtonGroup pulseFormRadioButtonGroup;
+  private final JRadioButton quarterSineRadioButton;
+  private final JRadioButton squareRadioButton;
+  private final JRadioButton triangleRadioButton;
+  private final JRadioButton halfSineRadioButton;
 
   private final JCheckBox memristorVoltageCheckBox;
 
@@ -98,6 +108,29 @@ public class ExperimentPanel extends JPanel {
     c.gridy++;
     c.insets = new Insets(0, 10, 4, 0);
     add(energyLabel, c);
+
+    quarterSineRadioButton = new JRadioButton("QuarterSine");
+    squareRadioButton = new JRadioButton("Square");
+    triangleRadioButton = new JRadioButton("Triangle");
+    halfSineRadioButton = new JRadioButton("HalfSine");
+    pulseFormRadioButtonGroup = new ButtonGroup();
+    pulseFormRadioButtonGroup.add(quarterSineRadioButton);
+    pulseFormRadioButtonGroup.add(squareRadioButton);
+    pulseFormRadioButtonGroup.add(triangleRadioButton);
+    pulseFormRadioButtonGroup.add(halfSineRadioButton);
+    add(quarterSineRadioButton);
+    add(squareRadioButton);
+    add(triangleRadioButton);
+    add(halfSineRadioButton);
+    pulseFormRadioButtonBox = Box.createVerticalBox();
+    pulseFormRadioButtonBox.setBorder(BorderFactory.createTitledBorder("Waveform"));
+    pulseFormRadioButtonBox.add(quarterSineRadioButton);
+    pulseFormRadioButtonBox.add(squareRadioButton);
+    pulseFormRadioButtonBox.add(triangleRadioButton);
+    pulseFormRadioButtonBox.add(halfSineRadioButton);
+    c.gridy++;
+    c.insets = new Insets(0, 6, 4, 6);
+    add(pulseFormRadioButtonBox, c);
 
     c.gridy++;
     c.insets = new Insets(0, 0, 0, 0);
@@ -200,13 +233,34 @@ public class ExperimentPanel extends JPanel {
 
   public void updateEnergyGUI(double appliedAmplitude, double appliedCurrent, double appliedEnergy) {
 
-    // System.out.println("Applied Amplitude = " + appliedAmplitude);
-    // System.out.println("Applied Current = " + appliedCurrent + " " + PulsePreferences.CURRENT_UNIT.getLabel());
-    // System.out.println("Applied Energy = " + appliedEnergy + " nJ");
-    // System.out.println("==============");
     appliedAmplitudeLabel.setText("Applied Amplitude [V]: " + Util.round(appliedAmplitude, 2));
     currentLabel.setText("Current [" + PulsePreferences.CURRENT_UNIT.getLabel() + "]: " + Util.round(appliedCurrent, 2));
     energyLabel.setText("Energy [nJ]: " + Util.round(appliedEnergy, 2));
+  }
+
+  public ButtonGroup getPulseFormRadioButtonGroup() {
+
+    return pulseFormRadioButtonGroup;
+  }
+
+  public JRadioButton getSquareRadioButton() {
+
+    return squareRadioButton;
+  }
+
+  public JRadioButton getTriangleRadioButton() {
+
+    return triangleRadioButton;
+  }
+
+  public JRadioButton getHalfSineRadioButton() {
+
+    return halfSineRadioButton;
+  }
+
+  public JRadioButton getQuarterSineRadioButton() {
+
+    return quarterSineRadioButton;
   }
 
   public JSlider getAmplitudeSlider() {

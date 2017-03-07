@@ -33,6 +33,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Enumeration;
 
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
@@ -79,6 +80,24 @@ public class ExperimentController implements PropertyChangeListener {
 
   private void initGUIComponentsFromModel() {
 
+    switch (experimentModel.getWaveform()) {
+      case QuarterSine:
+        experimentPanel.getQuarterSineRadioButton().setSelected(true);
+        break;
+      case HalfSine:
+        experimentPanel.getHalfSineRadioButton().setSelected(true);
+        break;
+      case Triangle:
+        experimentPanel.getTriangleRadioButton().setSelected(true);
+        break;
+      case Square:
+        experimentPanel.getSquareRadioButton().setSelected(true);
+        break;
+      default:
+        experimentPanel.getQuarterSineRadioButton().setSelected(true);
+        break;
+    }
+
     experimentPanel.getSeriesTextField().setText("" + experimentModel.getSeriesR());
     experimentPanel.getAmplitudeSlider().setValue((int) (experimentModel.getAmplitude() * 100));
     experimentPanel.getAmplitudeSlider().setBorder(BorderFactory.createTitledBorder("Amplitude [V] = " + experimentModel.getAmplitude()));
@@ -101,6 +120,11 @@ public class ExperimentController implements PropertyChangeListener {
    * Here, all the action listeners are attached to the GUI components
    */
   private void setUpViewEvents() {
+
+    experimentPanel.getQuarterSineRadioButton().addActionListener(waveformRadioButtonActionListener);
+    experimentPanel.getSquareRadioButton().addActionListener(waveformRadioButtonActionListener);
+    experimentPanel.getTriangleRadioButton().addActionListener(waveformRadioButtonActionListener);
+    experimentPanel.getHalfSineRadioButton().addActionListener(waveformRadioButtonActionListener);
 
     experimentPanel.getAmplitudeSlider().addChangeListener(new ChangeListener() {
 
@@ -195,6 +219,20 @@ public class ExperimentController implements PropertyChangeListener {
     })
     ;
   }
+
+  ActionListener waveformRadioButtonActionListener = new ActionListener() {
+
+    @Override
+    public void actionPerformed(ActionEvent actionEvent) {
+
+      for (Enumeration<AbstractButton> buttons = experimentPanel.getPulseFormRadioButtonGroup().getElements(); buttons.hasMoreElements(); ) {
+        AbstractButton button = buttons.nextElement();
+        if (button.isSelected()) {
+          experimentModel.setWaveform(button.getText());
+        }
+      }
+    }
+  };
 
   /**
    * These property change events are triggered in the experimentModel in the case where the underlying experimentModel is updated. Here, the controller can respond to those events and make sure the corresponding GUI

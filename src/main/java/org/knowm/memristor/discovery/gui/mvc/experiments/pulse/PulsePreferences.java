@@ -38,6 +38,9 @@ public class PulsePreferences extends AppPreferences {
 
   private static final String PREFIX = "PULSE_";
 
+  public static final String WAVEFORM_INIT_STRING_KEY = PREFIX + "WAVEFORM_INIT_STRING_KEY";
+  public static final String WAVEFORM_INIT_STRING_DEFAULT_VALUE = "QuarterSine";
+
   public static final String NUM_PULSES_INIT_KEY = PREFIX + "NUM_PULSES_INIT_KEY";
   public static final int NUM_PULSES_INIT_DEFAULT_VALUE = 2;
 

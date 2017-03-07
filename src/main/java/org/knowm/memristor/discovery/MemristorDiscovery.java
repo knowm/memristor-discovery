@@ -301,7 +301,7 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
 
   private void quit() {
 
-    System.out.println("here0");
+    // System.out.println("here0");
     try {
       dwf.shutdownAD2();
     } catch (DWFException e) {
@@ -314,7 +314,7 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
-    System.out.println("here1");
+    // System.out.println("here1");
     // mainFrame.dispose();
     System.exit(0);
   }

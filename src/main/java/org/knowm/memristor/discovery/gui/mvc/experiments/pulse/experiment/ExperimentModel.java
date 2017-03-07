@@ -35,21 +35,22 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.AppPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferences;
 import org.knowm.memristor.discovery.utils.Util;
 import org.knowm.memristor.discovery.utils.driver.Driver;
+import org.knowm.memristor.discovery.utils.driver.HalfSine;
 import org.knowm.memristor.discovery.utils.driver.QuarterSine;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.knowm.memristor.discovery.utils.driver.Square;
+import org.knowm.memristor.discovery.utils.driver.Triangle;
 
 public class ExperimentModel extends AppModel {
-
-  private final Logger logger = LoggerFactory.getLogger(ExperimentModel.class);
 
   /**
    * Waveform
    */
+  public PulsePreferences.Waveform waveform;
+
   private boolean isMemristorVoltageDropSelected = false;
   private float amplitude;
   private int pulseWidth; // model store pulse width in nanoseconds
-  private int pulseNumber = 1;
+  private int pulseNumber;
   private double appliedAmplitude;
   private double appliedCurrent;
   private double appliedEnergy;
@@ -75,16 +76,13 @@ public class ExperimentModel extends AppModel {
   @Override
   public void loadModelFromPrefs() {
 
-    // load model from prefs
+    waveform = PulsePreferences.Waveform.valueOf(appPreferences.getString(PulsePreferences.WAVEFORM_INIT_STRING_KEY, PulsePreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
     seriesResistance = appPreferences.getInteger(PulsePreferences.SERIES_R_INIT_KEY, PulsePreferences.SERIES_R_INIT_DEFAULT_VALUE);
     amplitude = appPreferences.getFloat(PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY, PulsePreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
     appliedAmplitude = amplitude;
     pulseWidth = appPreferences.getInteger(PulsePreferences.PULSE_WIDTH_INIT_KEY, PulsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
+    pulseNumber = appPreferences.getInteger(PulsePreferences.NUM_PULSES_INIT_KEY, PulsePreferences.NUM_PULSES_INIT_DEFAULT_VALUE);
     swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_PREFERENCES_UPDATE, true, false);
-  }
-
-  public void updateEnergyValues(boolean isMemristorVoltageDropChecked) {
-
   }
 
   /**
@@ -92,8 +90,27 @@ public class ExperimentModel extends AppModel {
    */
   void updateWaveformChartData() {
 
+    Driver driver;
+    switch (waveform) {
+      case Sawtooth:
+        driver = new Square("Square", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
+        break;
+      case QuarterSine:
+        driver = new QuarterSine("QuarterSine", 0, 0, amplitude, getCalculatedFrequency());
+        break;
+      case Triangle:
+        driver = new Triangle("Triangle", 0, 0, amplitude, getCalculatedFrequency());
+        break;
+      case Square:
+        driver = new Square("Square", 0, 0, amplitude, getCalculatedFrequency());
+        break;
+      default:
+        driver = new HalfSine("HalfSine", 0, 0, amplitude, getCalculatedFrequency());
+        break;
+    }
+
     // Driver driver = new Square("Square", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
-    Driver driver = new QuarterSine("QuarterSine", 0, 0, appliedAmplitude, getCalculatedFrequency());
+    // Driver driver = new QuarterSine("QuarterSine", 0, 0, appliedAmplitude, getCalculatedFrequency());
 
     double stopTime = 1 / getCalculatedFrequency() * pulseNumber;
     double timeStep = 1 / getCalculatedFrequency() / PulsePreferences.CAPTURE_BUFFER_SIZE * pulseNumber;
@@ -195,6 +212,23 @@ public class ExperimentModel extends AppModel {
   public double getAppliedAmplitude() {
 
     return appliedAmplitude;
+  }
+
+  public PulsePreferences.Waveform getWaveform() {
+
+    return waveform;
+  }
+
+  public void setWaveform(PulsePreferences.Waveform waveform) {
+
+    this.waveform = waveform;
+    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
+  }
+
+  public void setWaveform(String text) {
+
+    waveform = Enum.valueOf(PulsePreferences.Waveform.class, text);
+    swingPropertyChangeSupport.firePropertyChange(AppModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public double getLastG() {
