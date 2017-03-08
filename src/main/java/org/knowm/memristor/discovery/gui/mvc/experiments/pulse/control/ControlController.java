@@ -206,8 +206,7 @@ public class ControlController implements PropertyChangeListener {
 
         controlPanel.getStartStopButton().doClick();
       }
-    })
-    ;
+    });
   }
 
   /**
