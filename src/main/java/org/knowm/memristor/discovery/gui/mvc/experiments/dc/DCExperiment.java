@@ -95,16 +95,7 @@ public class DCExperiment extends Experiment {
       // Thread.sleep(200); // Attempt to allow Analog In to get fired up for the next set of pulses
       // System.out.println("sampleFrequency = " + sampleFrequency);
 
-      long startTime = System.currentTimeMillis();
-      while (true) {
-        byte status = dwfProxy.getDwf().FDwfAnalogInStatus(true);
-        // System.out.println("status: " + status);
-        if (status == 1) { // armed
-          // System.out.println("armed.");
-          break;
-        }
-      }
-      // System.out.println("time = " + (System.currentTimeMillis() - startTime));
+      waitUntilArmed();
 
       //////////////////////////////////
       // Pulse Out /////////////////

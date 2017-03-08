@@ -129,10 +129,25 @@ public abstract class Experiment implements PropertyChangeListener {
         // System.out.println("bailCount = " + bailCount);
         return true;
       }
-      if (bailCount++ > 10000) {
+      if (bailCount++ > 1000) {
         System.out.println("Bailed!!!");
         return false;
       }
     }
+  }
+
+  public void waitUntilArmed() {
+
+    // long startTime = System.currentTimeMillis();
+    while (true) {
+      byte status = dwfProxy.getDwf().FDwfAnalogInStatus(true);
+      // System.out.println("status: " + status);
+      if (status == 1) { // armed
+        // System.out.println("armed.");
+        break;
+      }
+    }
+    // System.out.println("time = " + (System.currentTimeMillis() - startTime));
+
   }
 }
