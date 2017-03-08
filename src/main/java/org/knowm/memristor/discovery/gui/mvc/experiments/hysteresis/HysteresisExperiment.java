@@ -80,60 +80,6 @@ public class HysteresisExperiment extends Experiment implements PropertyChangeLi
     jScrollPane.setBorder(createEmptyBorder());
     mainFrameContainer.add(jScrollPane, BorderLayout.WEST);
 
-    // // ///////////////////////////////////////////////////////////
-    // // START BUTTON ////////////////////////////////////////////
-    // // ///////////////////////////////////////////////////////////
-    //
-    // controlPanel.getStartButton().addActionListener(new ActionListener() {
-    //
-    //   @Override
-    //   public void actionPerformed(ActionEvent e) {
-    //
-    //     allowPlotting = true;
-    //     dwfProxy.setAD2Capturing(true);
-    //
-    //     // switchPanel.enableAllDigitalIOCheckBoxes(false);
-    //     // controlPanel.enableAllChildComponents(false);
-    //     controlPanel.getStartButton().setEnabled(false);
-    //     controlPanel.getStopButton().setEnabled(true);
-    //
-    //     // switch to capture view
-    //     if (plotPanel.getCaptureButton().isSelected()) {
-    //       plotPanel.switch2CaptureChart();
-    //     }
-    //     else if (plotPanel.getIVButton().isSelected()) {
-    //       plotPanel.switch2IVChart();
-    //     }
-    //     else {
-    //       plotPanel.switch2GVChart();
-    //     }
-    //
-    //     // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
-    //     captureWorker = new CaptureWorker();
-    //     captureWorker.execute();
-    //   }
-    // });
-
-    // ///////////////////////////////////////////////////////////
-    // STOP BUTTON //////////////////////////////////////////////
-    // ///////////////////////////////////////////////////////////
-
-    // controlPanel.getStopButton().addActionListener(new ActionListener() {
-    //
-    //   @Override
-    //   public void actionPerformed(ActionEvent e) {
-    //
-    //     dwfProxy.setAD2Capturing(false);
-    //
-    //     controlPanel.getStartButton().setEnabled(true);
-    //     controlPanel.getStopButton().setEnabled(false);
-    //
-    //     // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
-    //     allowPlotting = false;
-    //     captureWorker.cancel(true);
-    //   }
-    // });
-
     plotPanel = new PlotPanel();
     plotController = new PlotController(plotPanel, plotModel);
     mainFrameContainer.add(plotPanel, BorderLayout.CENTER);
@@ -256,16 +202,19 @@ public class HysteresisExperiment extends Experiment implements PropertyChangeLi
         // Messages received from the doInBackground() (when invoking the publish() method). See: http://www.javacreed.com/swing-worker-example/
 
         if (plotPanel.getCaptureButton().isSelected()) {
-          plotController.udpateVtChart(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getFrequency(), controlModel
+          plotController.udpateVtChartData(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getFrequency(), controlModel
               .getAmplitude(), controlModel.getOffset());
+          plotPanel.switch2CaptureChart();
         }
         else if (plotPanel.getIVButton().isSelected()) {
-          plotController.udpateIVChart(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getFrequency(), controlModel
+          plotController.udpateIVChartData(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getFrequency(), controlModel
               .getAmplitude(), controlModel.getOffset());
+          plotPanel.switch2IVChart();
         }
         else {
-          plotController.updateGVChart(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getFrequency(), controlModel
+          plotController.updateGVChartData(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getFrequency(), controlModel
               .getAmplitude(), controlModel.getOffset());
+          plotPanel.switch2GVChart();
         }
       }
 

@@ -160,7 +160,7 @@ public class PlotController implements PropertyChangeListener {
     plotPanel.getWaveformChartPanel().repaint();
   }
 
-  public void udpateVtChart(double[] captureAmplitudeData1, double[] captureAmplitudeData2, double[] timeData, int frequency, double amplitude, double offset) {
+  public void udpateVtChartData(double[] captureAmplitudeData1, double[] captureAmplitudeData2, double[] timeData, int frequency, double amplitude, double offset) {
 
     plotPanel.getCaptureChart().setTitle(getVtChartTitle(amplitude, frequency, offset));
     plotPanel.getCaptureChart().updateXYSeries("V1", timeData, captureAmplitudeData1, null);
@@ -169,7 +169,7 @@ public class PlotController implements PropertyChangeListener {
     plotPanel.getCaptureChartPanel().repaint();
   }
 
-  public void udpateIVChart(double[] captureAmplitudeData1, double[] vMemristor, double[] current, int frequency, double amplitude, double offset) {
+  public void udpateIVChartData(double[] captureAmplitudeData1, double[] vMemristor, double[] current, int frequency, double amplitude, double offset) {
 
     plotPanel.getIvChart().getStyler().setYAxisMax(plotModel.getyMaxIV());
     plotPanel.getIvChart().getStyler().setYAxisMin(plotModel.getyMinIV());
@@ -185,7 +185,7 @@ public class PlotController implements PropertyChangeListener {
     plotPanel.getIvChartPanel().repaint();
   }
 
-  public void updateGVChart(double[] captureAmplitudeData1, double[] vMemristor, double[] conductance, int frequency, double amplitude, double offset) {
+  public void updateGVChartData(double[] captureAmplitudeData1, double[] vMemristor, double[] conductance, int frequency, double amplitude, double offset) {
 
     plotPanel.getGvChart().getStyler().setYAxisMax(plotModel.getyMaxGV());
     plotPanel.getGvChart().setTitle(getGVChartTitle(amplitude, frequency, offset));
