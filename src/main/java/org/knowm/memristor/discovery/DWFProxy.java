@@ -71,7 +71,7 @@ public class DWFProxy {
   /////////////////////////////////////////////////////////////
 
   private boolean isAD2Running = false;
-  private boolean isAD2Capturing = false;
+  private boolean isAD2Capturing = false; // TODO get rid of this in favor of controlModel.isStartToggled()
   private int digitalIOStates = 0;
 
   /////////////////////////////////////////////////////////////

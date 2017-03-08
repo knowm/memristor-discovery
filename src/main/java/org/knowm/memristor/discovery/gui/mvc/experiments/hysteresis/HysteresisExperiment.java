@@ -27,15 +27,11 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis;
 
-import static javax.swing.BorderFactory.createEmptyBorder;
-
-import java.awt.BorderLayout;
 import java.awt.Container;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
-import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
 
 import org.knowm.memristor.discovery.DWFProxy;
@@ -73,22 +69,9 @@ public class HysteresisExperiment extends Experiment implements PropertyChangeLi
     super(dwfProxy, mainFrameContainer);
 
     controlPanel = new ControlPanel();
-    JScrollPane jScrollPane = new JScrollPane(controlPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-    jScrollPane.setBorder(createEmptyBorder());
-    mainFrameContainer.add(jScrollPane, BorderLayout.WEST);
-
     plotPanel = new PlotPanel();
     plotController = new PlotController(plotPanel, plotModel);
-    mainFrameContainer.add(plotPanel, BorderLayout.CENTER);
-
     new ControlController(controlPanel, controlModel, dwfProxy);
-
-    // register this as the listener of the model
-    controlModel.addListener(this);
-
-    // trigger plot of waveform
-    PropertyChangeEvent evt = new PropertyChangeEvent(this, ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
-    propertyChange(evt);
   }
 
   @Override
@@ -228,29 +211,14 @@ public class HysteresisExperiment extends Experiment implements PropertyChangeLi
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
 
-    String propName = evt.getPropertyName();
-
-    // System.out.println("propName: " + propName);
-
-    switch (propName) {
+    switch (evt.getPropertyName()) {
 
       case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
 
-        if (dwfProxy.isAD2Capturing()) {
-
+        if (controlModel.isStartToggled()) {
           // AnalogOut
           DWF.Waveform dwfWaveform = WaveformUtils.getDWFWaveform(controlModel.getWaveform());
           dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, controlModel.getFrequency(), controlModel.getAmplitude(), controlModel.getOffset(), 50);
-
-          if (plotPanel.getCaptureButton().isSelected()) {
-            plotPanel.switch2CaptureChart();
-          }
-          else if (plotPanel.getIVButton().isSelected()) {
-            plotPanel.switch2IVChart();
-          }
-          else {
-            plotPanel.switch2GVChart();
-          }
         }
         else {
           plotPanel.switch2WaveformChart();
@@ -262,7 +230,7 @@ public class HysteresisExperiment extends Experiment implements PropertyChangeLi
 
         // a special case when the frequency is changed. Not only does the analog out need to change (above), the capture frequency rate must also be changed.
 
-        if (dwfProxy.isAD2Capturing()) {
+        if (controlModel.isStartToggled()) {
 
           // Analog In
           double sampleFrequency = (double) controlModel.getFrequency() * HysteresisPreferences.CAPTURE_BUFFER_SIZE / HysteresisPreferences.CAPTURE_PERIOD_COUNT;
