@@ -53,6 +53,8 @@ public abstract class Experiment implements PropertyChangeListener {
 
   public abstract ExperimentControlPanel getControlPanel();
 
+  public abstract ExperimentPlotPanel getPlotPanel();
+
   public abstract SwingWorker getCaptureWorker();
 
   public abstract void doCreateAndShowGUI();
@@ -82,8 +84,6 @@ public abstract class Experiment implements PropertyChangeListener {
 
     getControlModel().addListener(this);
 
-
-
     getControlPanel().getStartStopButton().addActionListener(new ActionListener() {
 
       @Override
@@ -108,6 +108,9 @@ public abstract class Experiment implements PropertyChangeListener {
         }
       }
     });
+
+    // Plot Panel
+    mainFrameContainer.add(getPlotPanel(), BorderLayout.CENTER);
   }
 
   public void refreshModelFromPreferences() {

@@ -53,6 +53,7 @@ import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
 import org.knowm.memristor.discovery.utils.AveMaxMinVar;
 import org.knowm.waveforms4j.DWF;
 import org.knowm.waveforms4j.DWF.AcquisitionMode;
@@ -464,5 +465,11 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
   @Override
   public void doCreateAndShowGUI() {
 
+  }
+
+  @Override
+  public ExperimentPlotPanel getPlotPanel() {
+
+    return null;
   }
 }

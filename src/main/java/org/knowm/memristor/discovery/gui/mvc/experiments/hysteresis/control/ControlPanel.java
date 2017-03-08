@@ -67,9 +67,6 @@ public class ControlPanel extends ExperimentControlPanel {
   private final JLabel seriesLabel;
   private final JTextField seriesTextField;
 
-  private final JButton startButton;
-  private final JButton stopButton;
-
   /**
    * Constructor
    */
@@ -183,18 +180,11 @@ public class ControlPanel extends ExperimentControlPanel {
     c.insets = new Insets(0, 5, 14, 5);
     add(seriesTextField, c);
 
-    startButton = new JButton("Start");
-    startButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-    // startButton.setSize(128, 28);
+    startStopButton = new JButton("Start");
+    startStopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.gridy++;
     c.insets = new Insets(0, 0, 0, 0);
-    add(startButton, c);
-
-    stopButton = new JButton("Stop");
-    stopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-    c.gridy++;
-
-    add(stopButton, c);
+    add(startStopButton, c);
 
     c.gridy++;
     JLabel logoLabel = new JLabel(Util.createImageIcon("img/logo_200.png"));
@@ -209,8 +199,7 @@ public class ControlPanel extends ExperimentControlPanel {
     amplitudeSlider.setEnabled(enabled);
     frequencySlider.setEnabled(enabled);
     seriesTextField.setEnabled(enabled);
-    startButton.setEnabled(enabled);
-    stopButton.setEnabled(false);
+    startStopButton.setEnabled(enabled);
   }
 
   public ButtonGroup getWaveformRadioButtonGroup() {
@@ -256,15 +245,5 @@ public class ControlPanel extends ExperimentControlPanel {
   public JTextField getSeriesTextField() {
 
     return seriesTextField;
-  }
-
-  public JButton getStartButton() {
-
-    return startButton;
-  }
-
-  public JButton getStopButton() {
-
-    return stopButton;
   }
 }

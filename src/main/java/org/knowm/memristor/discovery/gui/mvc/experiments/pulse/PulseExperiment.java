@@ -27,7 +27,6 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.pulse;
 
-import java.awt.BorderLayout;
 import java.awt.Container;
 import java.beans.PropertyChangeEvent;
 import java.util.List;
@@ -38,6 +37,7 @@ import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.ConductancePreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCPreferences;
@@ -79,7 +79,6 @@ public class PulseExperiment extends Experiment {
   @Override
   public void doCreateAndShowGUI() {
 
-    mainFrameContainer.add(plotPanel, BorderLayout.CENTER);
   }
 
   boolean initialPulseTrainCaptured = false;
@@ -308,6 +307,12 @@ public class PulseExperiment extends Experiment {
   public ExperimentControlPanel getControlPanel() {
 
     return controlPanel;
+  }
+
+  @Override
+  public ExperimentPlotPanel getPlotPanel() {
+
+    return plotPanel;
   }
 
   @Override

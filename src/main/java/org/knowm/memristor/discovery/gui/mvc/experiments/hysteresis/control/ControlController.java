@@ -77,7 +77,6 @@ public class ControlController implements PropertyChangeListener {
 
   private void initGUIComponents() {
 
-    controlPanel.getStopButton().setEnabled(false);
     initGUIComponentsFromModel();
   }
 

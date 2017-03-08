@@ -44,6 +44,7 @@ import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.control.ControlModel;
@@ -170,10 +171,12 @@ public class ConductanceExperiment extends Experiment implements PropertyChangeL
     PropertyChangeEvent evt = new PropertyChangeEvent(this, ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
     propertyChange(evt);
   }
+
   @Override
   public void doCreateAndShowGUI() {
 
   }
+
   private class ResetCaptureWorker extends SwingWorker<Boolean, double[][]> {
 
     @Override
@@ -425,6 +428,12 @@ public class ConductanceExperiment extends Experiment implements PropertyChangeL
   public ExperimentControlPanel getControlPanel() {
 
     return controlPanel;
+  }
+
+  @Override
+  public ExperimentPlotPanel getPlotPanel() {
+
+    return plotPanel;
   }
 
   @Override

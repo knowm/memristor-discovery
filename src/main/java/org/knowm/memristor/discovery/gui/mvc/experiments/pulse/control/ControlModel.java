@@ -27,7 +27,6 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.pulse.control;
 
-import java.beans.PropertyChangeListener;
 import java.text.DecimalFormat;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;

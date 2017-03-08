@@ -44,6 +44,7 @@ import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.control.ControlPanel;
@@ -319,7 +320,11 @@ public class DCExperiment extends Experiment implements PropertyChangeListener {
 
     return controlPanel;
   }
+  @Override
+  public ExperimentPlotPanel getPlotPanel() {
 
+    return plotPanel;
+  }
   @Override
   public SwingWorker getCaptureWorker() {
 

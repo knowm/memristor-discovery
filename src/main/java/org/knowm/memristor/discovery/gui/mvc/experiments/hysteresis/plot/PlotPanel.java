@@ -37,6 +37,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.HysteresisPreferences;
 import org.knowm.xchart.XChartPanel;
 import org.knowm.xchart.XYChart;
@@ -46,7 +47,7 @@ import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
 import org.knowm.xchart.style.Styler.LegendPosition;
 import org.knowm.xchart.style.markers.SeriesMarkers;
 
-public class PlotPanel extends JPanel {
+public class PlotPanel extends ExperimentPlotPanel {
 
   private final JPanel radioPanel;
   private final ButtonGroup radioButtonGroup;

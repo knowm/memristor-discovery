@@ -31,8 +31,6 @@ import static javax.swing.BorderFactory.createEmptyBorder;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
@@ -44,6 +42,7 @@ import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control.ControlPanel;
@@ -63,7 +62,7 @@ public class HysteresisExperiment extends Experiment implements PropertyChangeLi
   private final PlotControlModel plotModel = new PlotControlModel();
   private final PlotController plotController;
 
-  private HysteresisCaptureWorker captureWorker;
+  private CaptureWorker captureWorker;
   private boolean allowPlotting = true;
 
   /**
@@ -81,59 +80,59 @@ public class HysteresisExperiment extends Experiment implements PropertyChangeLi
     jScrollPane.setBorder(createEmptyBorder());
     mainFrameContainer.add(jScrollPane, BorderLayout.WEST);
 
-    // ///////////////////////////////////////////////////////////
-    // START BUTTON ////////////////////////////////////////////
-    // ///////////////////////////////////////////////////////////
-
-    controlPanel.getStartButton().addActionListener(new ActionListener() {
-
-      @Override
-      public void actionPerformed(ActionEvent e) {
-
-        allowPlotting = true;
-        dwfProxy.setAD2Capturing(true);
-
-        // switchPanel.enableAllDigitalIOCheckBoxes(false);
-        // controlPanel.enableAllChildComponents(false);
-        controlPanel.getStartButton().setEnabled(false);
-        controlPanel.getStopButton().setEnabled(true);
-
-        // switch to capture view
-        if (plotPanel.getCaptureButton().isSelected()) {
-          plotPanel.switch2CaptureChart();
-        }
-        else if (plotPanel.getIVButton().isSelected()) {
-          plotPanel.switch2IVChart();
-        }
-        else {
-          plotPanel.switch2GVChart();
-        }
-
-        // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
-        captureWorker = new HysteresisCaptureWorker();
-        captureWorker.execute();
-      }
-    });
+    // // ///////////////////////////////////////////////////////////
+    // // START BUTTON ////////////////////////////////////////////
+    // // ///////////////////////////////////////////////////////////
+    //
+    // controlPanel.getStartButton().addActionListener(new ActionListener() {
+    //
+    //   @Override
+    //   public void actionPerformed(ActionEvent e) {
+    //
+    //     allowPlotting = true;
+    //     dwfProxy.setAD2Capturing(true);
+    //
+    //     // switchPanel.enableAllDigitalIOCheckBoxes(false);
+    //     // controlPanel.enableAllChildComponents(false);
+    //     controlPanel.getStartButton().setEnabled(false);
+    //     controlPanel.getStopButton().setEnabled(true);
+    //
+    //     // switch to capture view
+    //     if (plotPanel.getCaptureButton().isSelected()) {
+    //       plotPanel.switch2CaptureChart();
+    //     }
+    //     else if (plotPanel.getIVButton().isSelected()) {
+    //       plotPanel.switch2IVChart();
+    //     }
+    //     else {
+    //       plotPanel.switch2GVChart();
+    //     }
+    //
+    //     // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
+    //     captureWorker = new CaptureWorker();
+    //     captureWorker.execute();
+    //   }
+    // });
 
     // ///////////////////////////////////////////////////////////
     // STOP BUTTON //////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    controlPanel.getStopButton().addActionListener(new ActionListener() {
-
-      @Override
-      public void actionPerformed(ActionEvent e) {
-
-        dwfProxy.setAD2Capturing(false);
-
-        controlPanel.getStartButton().setEnabled(true);
-        controlPanel.getStopButton().setEnabled(false);
-
-        // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
-        allowPlotting = false;
-        captureWorker.cancel(true);
-      }
-    });
+    // controlPanel.getStopButton().addActionListener(new ActionListener() {
+    //
+    //   @Override
+    //   public void actionPerformed(ActionEvent e) {
+    //
+    //     dwfProxy.setAD2Capturing(false);
+    //
+    //     controlPanel.getStartButton().setEnabled(true);
+    //     controlPanel.getStopButton().setEnabled(false);
+    //
+    //     // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
+    //     allowPlotting = false;
+    //     captureWorker.cancel(true);
+    //   }
+    // });
 
     plotPanel = new PlotPanel();
     plotController = new PlotController(plotPanel, plotModel);
@@ -154,7 +153,7 @@ public class HysteresisExperiment extends Experiment implements PropertyChangeLi
 
   }
 
-  private class HysteresisCaptureWorker extends SwingWorker<Boolean, double[][]> {
+  private class CaptureWorker extends SwingWorker<Boolean, double[][]> {
 
     @Override
     protected Boolean doInBackground() throws Exception {
@@ -345,8 +344,14 @@ public class HysteresisExperiment extends Experiment implements PropertyChangeLi
   }
 
   @Override
+  public ExperimentPlotPanel getPlotPanel() {
+
+    return plotPanel;
+  }
+
+  @Override
   public SwingWorker getCaptureWorker() {
 
-    return new HysteresisCaptureWorker();
+    return new CaptureWorker();
   }
 }
