@@ -27,17 +27,10 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.conductance;
 
-import static javax.swing.BorderFactory.createEmptyBorder;
-
-import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.List;
 
-import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
 
 import org.knowm.memristor.discovery.DWFProxy;
@@ -56,7 +49,7 @@ import org.knowm.memristor.discovery.utils.PostProcessDataUtils;
 import org.knowm.memristor.discovery.utils.WaveformUtils;
 import org.knowm.waveforms4j.DWF;
 
-public class ConductanceExperiment extends Experiment implements PropertyChangeListener {
+public class ConductanceExperiment extends Experiment {
 
   private final ControlModel controlModel = new ControlModel();
   private ControlPanel controlPanel;
@@ -66,8 +59,6 @@ public class ConductanceExperiment extends Experiment implements PropertyChangeL
   private final PlotController plotController;
 
   private ResetCaptureWorker resetCaptureWorker;
-  private SetCaptureWorker setCaptureWorker;
-  private boolean allowPlotting = true;
 
   /**
    * Constructor
@@ -80,96 +71,9 @@ public class ConductanceExperiment extends Experiment implements PropertyChangeL
     super(dwfProxy, mainFrameContainer);
 
     controlPanel = new ControlPanel();
-    JScrollPane jScrollPane = new JScrollPane(controlPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-    jScrollPane.setBorder(createEmptyBorder());
-    mainFrameContainer.add(jScrollPane, BorderLayout.WEST);
-
-    // ///////////////////////////////////////////////////////////
-    // RESET BUTTON ////////////////////////////////////////////
-    // ///////////////////////////////////////////////////////////
-
-    controlPanel.getResetButton().addActionListener(new ActionListener() {
-
-      @Override
-      public void actionPerformed(ActionEvent e) {
-
-        allowPlotting = true;
-        dwfProxy.setAD2Capturing(true);
-
-        // switch to capture view
-        if (plotPanel.getCaptureButton().isSelected()) {
-          plotPanel.switch2CaptureChart();
-        }
-        else if (plotPanel.getIVButton().isSelected()) {
-          plotPanel.switch2IVChart();
-        }
-        else {
-          plotPanel.switch2GVChart();
-        }
-
-        resetCaptureWorker = new ResetCaptureWorker();
-        resetCaptureWorker.execute();
-      }
-    });
-
-    // ///////////////////////////////////////////////////////////
-    // START BUTTON ////////////////////////////////////////////
-    // ///////////////////////////////////////////////////////////
-
-    controlPanel.getStartButton().addActionListener(new ActionListener() {
-
-      @Override
-      public void actionPerformed(ActionEvent e) {
-
-        allowPlotting = true;
-        dwfProxy.setAD2Capturing(true);
-
-        controlPanel.getStartButton().setEnabled(false);
-        controlPanel.getStopButton().setEnabled(true);
-
-        // switch to G-V view
-        plotPanel.switch2GVChart();
-
-        // start AD2 resetWaveform 1 and start AD2 capture on channel 1 and 2
-        setCaptureWorker = new SetCaptureWorker();
-        setCaptureWorker.execute();
-      }
-    });
-
-    // ///////////////////////////////////////////////////////////
-    // STOP BUTTON ///////////////////////////////////////////////
-    // ///////////////////////////////////////////////////////////
-
-    controlPanel.getStopButton().addActionListener(new ActionListener() {
-
-      @Override
-      public void actionPerformed(ActionEvent e) {
-
-        dwfProxy.setAD2Capturing(false);
-
-        // switchPanel.enableAllDigitalIOCheckBoxes(true);
-        // controlPanel.enableAllChildComponents(true);
-        controlPanel.getStartButton().setEnabled(true);
-        controlPanel.getStopButton().setEnabled(false);
-
-        // stop AD2 resetWaveform 1 and stop AD2 capture on channel 1 and 2
-        allowPlotting = false;
-        setCaptureWorker.cancel(true);
-      }
-    });
-
     plotPanel = new PlotPanel();
     plotController = new PlotController(plotPanel, plotModel);
-    mainFrameContainer.add(plotPanel, BorderLayout.CENTER);
-
     new ControlController(controlPanel, plotPanel, controlModel, dwfProxy);
-
-    // register this as the listener of the controlModel
-    controlModel.addListener(this);
-
-    // trigger plot of resetWaveform
-    PropertyChangeEvent evt = new PropertyChangeEvent(this, ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
-    propertyChange(evt);
   }
 
   @Override
@@ -253,28 +157,28 @@ public class ConductanceExperiment extends Experiment implements PropertyChangeL
     @Override
     protected void process(List<double[][]> chunks) {
 
-      if (allowPlotting) {
+      double[][] newestChunk = chunks.get(chunks.size() - 1);
+      // System.out.println("" + chunks.size());
 
-        double[][] newestChunk = chunks.get(chunks.size() - 1);
-        // System.out.println("" + chunks.size());
+      plotController.udpateVtChart(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getResetPulseWidth(), controlModel
+          .getResetAmplitude());
+      plotController.udpateIVChart(newestChunk[1], newestChunk[3], controlModel.getResetPulseWidth(), controlModel.getResetAmplitude());
+      plotController.updateGVChartReset(newestChunk[1], newestChunk[4], controlModel.getResetPulseWidth(), controlModel
+          .getResetAmplitude());
 
-        plotController.udpateVtChart(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getResetPulseWidth(), controlModel
-            .getResetAmplitude());
-        plotController.udpateIVChart(newestChunk[1], newestChunk[3], controlModel.getResetPulseWidth(), controlModel.getResetAmplitude());
-        plotController.updateGVChartReset(newestChunk[1], newestChunk[4], controlModel.getResetPulseWidth(), controlModel
-            .getResetAmplitude());
-
-        if (plotPanel.getCaptureButton().isSelected()) {
-          plotController.repaintVtChart();
-        }
-        else if (plotPanel.getIVButton().isSelected()) {
-          plotController.repaintIVChart();
-        }
-        else {
-          plotController.repaintGVChart();
-        }
+      if (plotPanel.getCaptureButton().isSelected()) {
+        plotController.repaintVtChart();
+        plotPanel.switch2CaptureChart();
       }
-      controlPanel.getStopButton().doClick();
+      else if (plotPanel.getIVButton().isSelected()) {
+        plotController.repaintIVChart();
+        plotPanel.switch2IVChart();
+      }
+      else {
+        plotController.repaintGVChart();
+        plotPanel.switch2GVChart();
+      }
+      controlPanel.getStartStopButton().doClick();
     }
   }
 
@@ -291,7 +195,6 @@ public class ConductanceExperiment extends Experiment implements PropertyChangeL
           // eat it. caught when interrupt is called
           dwfProxy.getDwf().stopWave(DWF.WAVEFORM_CHANNEL_1);
           dwfProxy.getDwf().stopAnalogCaptureBothChannels();
-          dwfProxy.setAD2Capturing(false);
         }
 
         // 1. set pulse
@@ -355,34 +258,31 @@ public class ConductanceExperiment extends Experiment implements PropertyChangeL
         publish(new double[][]{timeData, V1Trimmed, V2Trimmed, current, conductance});
       }
 
-      controlPanel.getStopButton().doClick();
+      controlPanel.getStartStopButton().doClick();
       return true;
     }
 
     @Override
     protected void process(List<double[][]> chunks) {
 
-      if (allowPlotting) {
+      double[][] newestChunk = chunks.get(chunks.size() - 1);
 
-        double[][] newestChunk = chunks.get(chunks.size() - 1);
+      // System.out.println("" + chunks.size());
 
-        // System.out.println("" + chunks.size());
+      plotController.udpateVtChart(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getSetPulseWidth(), controlModel
+          .getSetAmplitude());
+      plotController.udpateIVChart(newestChunk[1], newestChunk[3], controlModel.getSetPulseWidth(), controlModel
+          .getSetAmplitude());
+      plotController.updateGVChart(newestChunk[4], controlModel.getSetPulseWidth(), controlModel.getSetAmplitude());
 
-        plotController.udpateVtChart(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getSetPulseWidth(), controlModel
-            .getSetAmplitude());
-        plotController.udpateIVChart(newestChunk[1], newestChunk[3], controlModel.getSetPulseWidth(), controlModel
-            .getSetAmplitude());
-        plotController.updateGVChart(newestChunk[4], controlModel.getSetPulseWidth(), controlModel.getSetAmplitude());
-
-        if (plotPanel.getCaptureButton().isSelected()) {
-          plotController.repaintVtChart();
-        }
-        else if (plotPanel.getIVButton().isSelected()) {
-          plotController.repaintIVChart();
-        }
-        else {
-          plotController.repaintGVChart();
-        }
+      if (plotPanel.getCaptureButton().isSelected()) {
+        plotController.repaintVtChart();
+      }
+      else if (plotPanel.getIVButton().isSelected()) {
+        plotController.repaintIVChart();
+      }
+      else {
+        plotController.repaintGVChart();
       }
     }
   }
@@ -402,7 +302,7 @@ public class ConductanceExperiment extends Experiment implements PropertyChangeL
 
       case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
 
-        if (dwfProxy.isAD2Capturing()) {
+        if (controlModel.isStartToggled()) {
 
           double[] customWaveform = WaveformUtils.generateCustomWaveform(Waveform.Square, controlModel.getSetAmplitude(), controlModel.getCalculatedFrequency());
           dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, 1, customWaveform);

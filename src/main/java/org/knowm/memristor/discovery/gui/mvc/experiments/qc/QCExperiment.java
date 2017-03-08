@@ -123,7 +123,6 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
           ioException.printStackTrace();
         }
 
-        dwfProxy.setAD2Capturing(true);
 
         // switchPanel.enableAllDigitalIOCheckBoxes(false);
         // controlPanel.enableAllChildComponents(false);
@@ -148,7 +147,6 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
       @Override
       public void actionPerformed(ActionEvent e) {
 
-        dwfProxy.setAD2Capturing(false);
 
         // switchPanel.enableAllDigitalIOCheckBoxes(true);
         // controlPanel.enableAllChildComponents(true);
@@ -207,7 +205,6 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
           dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, model.getWaveform(), model.getFrequency(), model.getAmplitude(), model.getOffset(), 50);
           dwfProxy.getDwf().startAnalogCaptureBothChannelsImmediately(model.getFrequency() * QCPreferences.CAPTURE_BUFFER_SIZE / QCPreferences.CAPTURE_PERIOD_COUNT, QCPreferences.CAPTURE_BUFFER_SIZE,
               AcquisitionMode.ScanShift);
-          dwfProxy.setAD2Capturing(true);
 
           int captureCount = 0;
 
@@ -223,7 +220,6 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
               dwfProxy.setAllIOStates(0b0000_0000);
               dwfProxy.getDwf().FDwfAnalogInConfigure(false, false);
               dwfProxy.getDwf().FDwfAnalogOutConfigure(DWF.WAVEFORM_CHANNEL_1, false);
-              dwfProxy.setAD2Capturing(false);
             }
 
             // Read In Data
@@ -292,7 +288,6 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
               // stop capture
               dwfProxy.getDwf().FDwfAnalogInConfigure(false, false);
               dwfProxy.getDwf().FDwfAnalogOutConfigure(DWF.WAVEFORM_CHANNEL_1, false);
-              dwfProxy.setAD2Capturing(false);
 
               if (high_resistance_measurments.size() > 0 && low_resistance_measurments.size() > 0) {
                 AveMaxMinVar hrs = new AveMaxMinVar(high_resistance_measurments);
@@ -421,7 +416,7 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
 
       case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
 
-        if (dwfProxy.isAD2Capturing()) {
+        if (true) { // TODO fix this when converting to new experiment abstraction
 
           // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
           captureWorker.cancel(true);

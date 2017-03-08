@@ -71,7 +71,6 @@ public class DWFProxy {
   /////////////////////////////////////////////////////////////
 
   private boolean isAD2Running = false;
-  private boolean isAD2Capturing = false; // TODO get rid of this in favor of controlModel.isStartToggled()
   private int digitalIOStates = 0;
 
   /////////////////////////////////////////////////////////////
@@ -184,7 +183,6 @@ public class DWFProxy {
     isAD2Running = false;
     dwf.FDwfDeviceCloseAll();
     swingPropertyChangeSupport.firePropertyChange(DWFProxy.AD2_STARTUP_CHANGE, oldValDevice, isAD2Running);
-    setAD2Capturing(false);
 
     // try {
     // Thread.sleep(500);
@@ -252,16 +250,6 @@ public class DWFProxy {
   public boolean isAD2Running() {
 
     return isAD2Running;
-  }
-
-  public boolean isAD2Capturing() {
-
-    return isAD2Capturing;
-  }
-
-  public void setAD2Capturing(boolean isAD2Capturing) {
-
-    this.isAD2Capturing = isAD2Capturing;
   }
 
   public DWF getDwf() {

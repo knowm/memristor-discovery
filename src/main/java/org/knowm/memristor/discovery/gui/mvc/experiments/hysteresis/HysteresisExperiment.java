@@ -29,7 +29,6 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis;
 
 import java.awt.Container;
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.List;
 
 import javax.swing.SwingWorker;
@@ -49,7 +48,7 @@ import org.knowm.memristor.discovery.utils.WaveformUtils;
 import org.knowm.waveforms4j.DWF;
 import org.knowm.waveforms4j.DWF.AcquisitionMode;
 
-public class HysteresisExperiment extends Experiment implements PropertyChangeListener {
+public class HysteresisExperiment extends Experiment {
 
   private final ControlModel controlModel = new ControlModel();
   private final ControlPanel controlPanel;
@@ -92,7 +91,6 @@ public class HysteresisExperiment extends Experiment implements PropertyChangeLi
       double sampleFrequency = (double) controlModel.getFrequency() * HysteresisPreferences.CAPTURE_BUFFER_SIZE / HysteresisPreferences.CAPTURE_PERIOD_COUNT;
       dwfProxy.getDwf().startAnalogCaptureBothChannelsImmediately(sampleFrequency, HysteresisPreferences.CAPTURE_BUFFER_SIZE, AcquisitionMode.ScanShift);
 
-      dwfProxy.setAD2Capturing(true);
       while (!isCancelled()) {
 
         try {
@@ -101,7 +99,6 @@ public class HysteresisExperiment extends Experiment implements PropertyChangeLi
           // eat it. caught when interrupt is called
           dwfProxy.getDwf().stopWave(DWF.WAVEFORM_CHANNEL_1);
           dwfProxy.getDwf().stopAnalogCaptureBothChannels();
-          dwfProxy.setAD2Capturing(false);
         }
 
         // Read In Data

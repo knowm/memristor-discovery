@@ -27,17 +27,10 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.dc;
 
-import static javax.swing.BorderFactory.createEmptyBorder;
-
-import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.List;
 
-import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
 
 import org.knowm.memristor.discovery.DWFProxy;
@@ -55,7 +48,7 @@ import org.knowm.memristor.discovery.utils.PostProcessDataUtils;
 import org.knowm.memristor.discovery.utils.WaveformUtils;
 import org.knowm.waveforms4j.DWF;
 
-public class DCExperiment extends Experiment implements PropertyChangeListener {
+public class DCExperiment extends Experiment {
 
   private final ControlModel controlModel = new ControlModel();
   private ControlPanel controlPanel;
@@ -63,9 +56,6 @@ public class DCExperiment extends Experiment implements PropertyChangeListener {
   private PlotPanel plotPanel;
   private final PlotControlModel plotModel = new PlotControlModel();
   private final PlotController plotController;
-
-  private CaptureWorker captureWorker;
-  private boolean allowPlotting = true;
 
   /**
    * Constructor
@@ -78,76 +68,9 @@ public class DCExperiment extends Experiment implements PropertyChangeListener {
     super(dwfProxy, mainFrameContainer);
 
     controlPanel = new ControlPanel();
-    JScrollPane jScrollPane = new JScrollPane(controlPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-    jScrollPane.setBorder(createEmptyBorder());
-    mainFrameContainer.add(jScrollPane, BorderLayout.WEST);
-
-    // ///////////////////////////////////////////////////////////
-    // START BUTTON ////////////////////////////////////////////
-    // ///////////////////////////////////////////////////////////
-
-    controlPanel.getStartButton().addActionListener(new ActionListener() {
-
-      @Override
-      public void actionPerformed(ActionEvent e) {
-
-        allowPlotting = true;
-        dwfProxy.setAD2Capturing(true);
-
-        controlPanel.getStartButton().setEnabled(false);
-        controlPanel.getStopButton().setEnabled(true);
-
-        // switch to capture view
-        if (plotPanel.getCaptureButton().isSelected()) {
-          plotPanel.switch2CaptureChart();
-        }
-        else if (plotPanel.getIVButton().isSelected()) {
-          plotPanel.switch2IVChart();
-        }
-        else {
-          plotPanel.switch2GVChart();
-        }
-
-        // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
-        captureWorker = new CaptureWorker();
-        captureWorker.execute();
-      }
-    });
-
-    // ///////////////////////////////////////////////////////////
-    // STOP BUTTON //////////////////////////////////////////////
-    // ///////////////////////////////////////////////////////////
-
-    controlPanel.getStopButton().addActionListener(new ActionListener() {
-
-      @Override
-      public void actionPerformed(ActionEvent e) {
-
-        dwfProxy.setAD2Capturing(false);
-
-        // switchPanel.enableAllDigitalIOCheckBoxes(true);
-        // controlPanel.enableAllChildComponents(true);
-        controlPanel.getStartButton().setEnabled(true);
-        controlPanel.getStopButton().setEnabled(false);
-
-        // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
-        allowPlotting = false;
-        captureWorker.cancel(true);
-      }
-    });
-
     plotPanel = new PlotPanel();
     plotController = new PlotController(plotPanel, plotModel);
-    mainFrameContainer.add(plotPanel, BorderLayout.CENTER);
-
     new ControlController(controlPanel, plotPanel, controlModel, dwfProxy);
-
-    // register this as the listener of the controlModel
-    controlModel.addListener(this);
-
-    // trigger plot of waveform
-    PropertyChangeEvent evt = new PropertyChangeEvent(this, ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
-    propertyChange(evt);
   }
 
   @Override
@@ -232,30 +155,27 @@ public class DCExperiment extends Experiment implements PropertyChangeListener {
     @Override
     protected void process(List<double[][]> chunks) {
 
-      if (allowPlotting) {
+      double[][] newestChunk = chunks.get(chunks.size() - 1);
 
-        double[][] newestChunk = chunks.get(chunks.size() - 1);
+      // System.out.println("" + chunks.size());
 
-        // System.out.println("" + chunks.size());
+      plotController.udpateVtChart(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getPeriod(), controlModel
+          .getAmplitude());
+      plotController.udpateIVChart(newestChunk[1], newestChunk[3], controlModel.getPeriod(), controlModel
+          .getAmplitude());
+      plotController.updateGVChart(newestChunk[1], newestChunk[4], controlModel.getPeriod(), controlModel
+          .getAmplitude());
 
-        plotController.udpateVtChart(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getPeriod(), controlModel
-            .getAmplitude());
-        plotController.udpateIVChart(newestChunk[1], newestChunk[3], controlModel.getPeriod(), controlModel
-            .getAmplitude());
-        plotController.updateGVChart(newestChunk[1], newestChunk[4], controlModel.getPeriod(), controlModel
-            .getAmplitude());
-
-        if (plotPanel.getCaptureButton().isSelected()) {
-          plotController.repaintVtChart();
-        }
-        else if (plotPanel.getIVButton().isSelected()) {
-          plotController.repaintItChart();
-        }
-        else {
-          plotController.repaintRtChart();
-        }
+      if (plotPanel.getCaptureButton().isSelected()) {
+        plotController.repaintVtChart();
       }
-      controlPanel.getStopButton().doClick();
+      else if (plotPanel.getIVButton().isSelected()) {
+        plotController.repaintItChart();
+      }
+      else {
+        plotController.repaintRtChart();
+      }
+      controlPanel.getStartStopButton().doClick();
     }
   }
 
@@ -274,32 +194,8 @@ public class DCExperiment extends Experiment implements PropertyChangeListener {
 
       case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
 
-        if (dwfProxy.isAD2Capturing()) {
+        if (!controlModel.isStartToggled()) {
 
-          // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
-          captureWorker.cancel(true);
-
-          try {
-            Thread.sleep(10);
-          } catch (InterruptedException e) {
-            e.printStackTrace();
-          }
-
-          // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
-          captureWorker = new CaptureWorker();
-          captureWorker.execute();
-
-          if (plotPanel.getCaptureButton().isSelected()) {
-            plotPanel.switch2CaptureChart();
-          }
-          else if (plotPanel.getIVButton().isSelected()) {
-            plotPanel.switch2IVChart();
-          }
-          else {
-            plotPanel.switch2GVChart();
-          }
-        }
-        else {
           plotPanel.switch2WaveformChart();
           plotController.udpateWaveformChart(controlModel.getWaveformTimeData(), controlModel.getWaveformAmplitudeData(), controlModel.getAmplitude(), controlModel.getPeriod());
         }
@@ -320,11 +216,13 @@ public class DCExperiment extends Experiment implements PropertyChangeListener {
 
     return controlPanel;
   }
+
   @Override
   public ExperimentPlotPanel getPlotPanel() {
 
     return plotPanel;
   }
+
   @Override
   public SwingWorker getCaptureWorker() {
 

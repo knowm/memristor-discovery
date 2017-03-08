@@ -234,7 +234,7 @@ public class QCController implements PropertyChangeListener {
     case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
 
       model.updateWaveformChartData();
-      if (!dwf.isAD2Capturing()) {
+      if (true) {
         plotPanel.switch2WaveformChart();
         plotPanel.udpateWaveformChart(model.getWaveformTimeData(), model.getWaveformAmplitudeData(), model.getAmplitude(), model.getFrequency());
       }
