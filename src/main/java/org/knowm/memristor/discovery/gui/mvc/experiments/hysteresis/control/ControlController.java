@@ -32,25 +32,21 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Enumeration;
 
-import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
-import javax.swing.JComponent;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.LeftAndRightArrowKeyListener;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.plot.PlotPanel;
 
-public class ControlController implements PropertyChangeListener {
+public class ControlController extends ExperimentControlController {
 
   private final ControlPanel controlPanel;
   private final ControlModel controlModel;
@@ -61,11 +57,12 @@ public class ControlController implements PropertyChangeListener {
    * Constructor
    *
    * @param controlPanel
-   * @param plotPanel
    * @param controlModel
    * @param dwf
    */
-  public ControlController(ControlPanel controlPanel, PlotPanel plotPanel, ControlModel controlModel, DWFProxy dwf) {
+  public ControlController(ControlPanel controlPanel, ControlModel controlModel, DWFProxy dwf) {
+
+    super(controlPanel, controlModel);
 
     this.controlPanel = controlPanel;
     this.controlModel = controlModel;
@@ -119,10 +116,7 @@ public class ControlController implements PropertyChangeListener {
     controlPanel.getSeriesTextField().setText("" + controlModel.getSeriesResistance());
   }
 
-  /**
-   * Here, all the action listeners are attached to the GUI components
-   */
-  private void setUpViewEvents() {
+  public void doSetUpViewEvents() {
 
     controlPanel.getSineRadioButton().addActionListener(waveformRadioButtonActionListener);
     controlPanel.getTriangleRadioButton().addActionListener(waveformRadioButtonActionListener);
@@ -201,15 +195,6 @@ public class ControlController implements PropertyChangeListener {
           // parsing error, default back to previous value
           textField.setText(Integer.toString(controlModel.getSeriesResistance()));
         }
-      }
-    });
-
-    controlPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("S"), "fire");
-    controlPanel.getActionMap().put("fire", new AbstractAction() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-
-        controlPanel.getStartStopButton().doClick();
       }
     });
   }

@@ -89,9 +89,9 @@ public abstract class Experiment implements PropertyChangeListener {
       @Override
       public void actionPerformed(ActionEvent e) {
 
-        if (getControlModel().isStartToggled()) {
+        if (!getControlModel().isStartToggled()) {
 
-          getControlModel().setStartToggled(false);
+          getControlModel().setStartToggled(true);
           getControlPanel().getStartStopButton().setText("Stop");
 
           // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
@@ -100,7 +100,7 @@ public abstract class Experiment implements PropertyChangeListener {
         }
         else {
 
-          getControlModel().setStartToggled(true);
+          getControlModel().setStartToggled(false);
           getControlPanel().getStartStopButton().setText("Start");
 
           // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2

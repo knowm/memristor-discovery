@@ -37,7 +37,7 @@ public abstract class ExperimentControlModel {
    * runtime variables
    */
   public int seriesResistance;
-  public boolean isStartToggled = true; // TODO set this to false
+  private boolean isStartToggled = false;
 
   /**
    * Events

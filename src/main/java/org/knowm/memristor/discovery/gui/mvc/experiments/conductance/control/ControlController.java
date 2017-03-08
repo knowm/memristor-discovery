@@ -32,7 +32,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Enumeration;
 
 import javax.swing.AbstractButton;
@@ -43,10 +42,11 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.knowm.memristor.discovery.DWFProxy;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.plot.PlotPanel;
 
-public class ControlController implements PropertyChangeListener {
+public class ControlController extends ExperimentControlController {
 
   private final ControlPanel controlPanel;
   private final ControlModel controlModel;
@@ -62,6 +62,10 @@ public class ControlController implements PropertyChangeListener {
    * @param dwf
    */
   public ControlController(ControlPanel controlPanel, PlotPanel plotPanel, ControlModel controlModel, DWFProxy dwf) {
+
+    super(controlPanel, controlModel);
+
+
 
     this.controlPanel = controlPanel;
     this.plotPanel = plotPanel;
@@ -117,7 +121,7 @@ public class ControlController implements PropertyChangeListener {
   /**
    * Here, all the action listeners are attached to the GUI components
    */
-  private void setUpViewEvents() {
+  public void doSetUpViewEvents() {
 
     controlPanel.getSawToothRadioButton().addActionListener(waveformRadioButtonActionListener);
     controlPanel.getSquareRadioButton().addActionListener(waveformRadioButtonActionListener);

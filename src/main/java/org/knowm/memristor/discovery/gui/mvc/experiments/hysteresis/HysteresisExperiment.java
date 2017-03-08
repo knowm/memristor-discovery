@@ -62,9 +62,6 @@ public class HysteresisExperiment extends Experiment implements PropertyChangeLi
   private final PlotControlModel plotModel = new PlotControlModel();
   private final PlotController plotController;
 
-  private CaptureWorker captureWorker;
-  private boolean allowPlotting = true;
-
   /**
    * Constructor
    *
@@ -84,7 +81,7 @@ public class HysteresisExperiment extends Experiment implements PropertyChangeLi
     plotController = new PlotController(plotPanel, plotModel);
     mainFrameContainer.add(plotPanel, BorderLayout.CENTER);
 
-    new ControlController(controlPanel, plotPanel, controlModel, dwfProxy);
+    new ControlController(controlPanel, controlModel, dwfProxy);
 
     // register this as the listener of the model
     controlModel.addListener(this);
@@ -193,13 +190,9 @@ public class HysteresisExperiment extends Experiment implements PropertyChangeLi
 
       long start = System.currentTimeMillis();
 
-      if (allowPlotting) {
+      if (controlModel.isStartToggled()) {
 
         double[][] newestChunk = chunks.get(chunks.size() - 1);
-
-        // System.out.println("" + chunks.size());
-
-        // Messages received from the doInBackground() (when invoking the publish() method). See: http://www.javacreed.com/swing-worker-example/
 
         if (plotPanel.getCaptureButton().isSelected()) {
           plotController.udpateVtChartData(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getFrequency(), controlModel
