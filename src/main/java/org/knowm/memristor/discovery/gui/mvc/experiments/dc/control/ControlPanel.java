@@ -44,6 +44,7 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCPreferences;
 import org.knowm.memristor.discovery.utils.Util;
 
 /**
@@ -68,7 +69,6 @@ public class ControlPanel extends ExperimentControlPanel {
   private final JTextField seriesTextField;
 
   private final JSlider pulseNumberSlider;
-
 
   /**
    * Constructor
@@ -126,33 +126,30 @@ public class ControlPanel extends ExperimentControlPanel {
     amplitudeSlider.setPreferredSize(new Dimension(300, 80));
     add(amplitudeSlider, c);
 
-    periodSlider = new JSlider(JSlider.HORIZONTAL, 5000, 100000, 5000);
-    periodSlider.setBorder(BorderFactory.createTitledBorder("Period [µs]"));
-    periodSlider.setMinorTickSpacing(5000);
+    periodSlider = new JSlider(JSlider.HORIZONTAL, 100, 1000, 100);
+    periodSlider.setBorder(BorderFactory.createTitledBorder("Period [" + DCPreferences.TIME_UNIT.getLabel() + "]"));
+    periodSlider.setMinorTickSpacing(100);
     periodSlider.setPaintTicks(true);
     periodSlider.setPaintLabels(true);
     periodSlider.setSnapToTicks(true);
     labelTable = new Hashtable<>();
-    labelTable.put(5000, new JLabel("5"));
-    labelTable.put(50000, new JLabel("50"));
-    labelTable.put(100000, new JLabel("100"));
+    labelTable.put(100, new JLabel("100"));
+    labelTable.put(500, new JLabel("500"));
+    labelTable.put(1000, new JLabel("1000"));
     periodSlider.setLabelTable(labelTable);
     c.gridy++;
     add(periodSlider, c);
 
-    periodSliderNs = new JSlider(JSlider.HORIZONTAL, 500, 5000, 5000);
-    periodSliderNs.setBorder(BorderFactory.createTitledBorder("Period [µs]"));
-    periodSliderNs.setMinorTickSpacing(250);
+    periodSliderNs = new JSlider(JSlider.HORIZONTAL, 10, 100, 100);
+    periodSliderNs.setBorder(BorderFactory.createTitledBorder("Period [" + DCPreferences.TIME_UNIT.getLabel() + "]"));
+    periodSliderNs.setMinorTickSpacing(10);
     periodSliderNs.setPaintTicks(true);
     periodSliderNs.setPaintLabels(true);
     periodSliderNs.setSnapToTicks(true);
     labelTable = new Hashtable<>();
-    labelTable.put(500, new JLabel(".5"));
-    labelTable.put(1000, new JLabel("1"));
-    labelTable.put(2000, new JLabel("2"));
-    labelTable.put(3000, new JLabel("3"));
-    labelTable.put(4000, new JLabel("4"));
-    labelTable.put(5000, new JLabel("5"));
+    labelTable.put(10, new JLabel("10"));
+    labelTable.put(50, new JLabel("50"));
+    labelTable.put(100, new JLabel("100"));
     periodSliderNs.setLabelTable(labelTable);
     c.gridy++;
     add(periodSliderNs, c);
@@ -258,5 +255,4 @@ public class ControlPanel extends ExperimentControlPanel {
 
     return seriesTextField;
   }
-
 }

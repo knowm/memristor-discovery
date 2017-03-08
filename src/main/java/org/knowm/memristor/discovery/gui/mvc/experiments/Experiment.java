@@ -129,7 +129,7 @@ public abstract class Experiment implements PropertyChangeListener {
         // System.out.println("bailCount = " + bailCount);
         return true;
       }
-      if (bailCount++ > 1000) {
+      if (bailCount++ > 10000) {
         System.out.println("Bailed!!!");
         return false;
       }

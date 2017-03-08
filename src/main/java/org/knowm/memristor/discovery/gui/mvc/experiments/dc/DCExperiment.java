@@ -87,18 +87,31 @@ public class DCExperiment extends Experiment {
       // Analog In /////////////////
       //////////////////////////////////
 
+      int freqMultTest = 1;
       int sampleFrequencyMultiplier = 200; // adjust this down if you want to capture more pulses as the buffer size is limited.
-      double sampleFrequency = controlModel.getCalculatedFrequency() * sampleFrequencyMultiplier; // adjust this down if you want to capture more pulses as the buffer size is limited.
+      double sampleFrequency = controlModel.getCalculatedFrequency() * freqMultTest * sampleFrequencyMultiplier; // adjust this down if you want to capture more pulses as the buffer size is limited.
       dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02 * (controlModel.getAmplitude() > 0 ? 1 : -1));
-      Thread.sleep(20); // Attempt to allow Analog In to get fired up for the next set of pulses
+      // dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, .3);
+      // Thread.sleep(200); // Attempt to allow Analog In to get fired up for the next set of pulses
+      // System.out.println("sampleFrequency = " + sampleFrequency);
+
+      long startTime = System.currentTimeMillis();
+      while (true) {
+        byte status = dwfProxy.getDwf().FDwfAnalogInStatus(true);
+        // System.out.println("status: " + status);
+        if (status == 1) { // armed
+          // System.out.println("armed.");
+          break;
+        }
+      }
+      // System.out.println("time = " + (System.currentTimeMillis() - startTime));
 
       //////////////////////////////////
       // Pulse Out /////////////////
       //////////////////////////////////
 
-      // custom waveform
-      double[] customWaveform = WaveformUtils.generateCustomWaveform(controlModel.getWaveform(), controlModel.getAmplitude(), controlModel.getCalculatedFrequency());
-      dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, controlModel.getPulseNumber(), customWaveform);
+      double[] customWaveform = WaveformUtils.generateCustomWaveform(controlModel.getWaveform(), controlModel.getAmplitude(), controlModel.getCalculatedFrequency() * freqMultTest);
+      dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency() * freqMultTest, 0, controlModel.getPulseNumber(), customWaveform);
 
       //////////////////////////////////
       //////////////////////////////////
@@ -106,6 +119,7 @@ public class DCExperiment extends Experiment {
       // Read In Data
       boolean success = capturePulseData();
       if (!success) {
+        controlPanel.getStartStopButton().doClick();
         return false;
       }
 
@@ -113,6 +127,11 @@ public class DCExperiment extends Experiment {
       int validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
       double[] v1 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
       double[] v2 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
+
+      // TODO add this to bail code too?
+      // Stop Analog In and Out
+      dwfProxy.getDwf().stopWave(DWF.WAVEFORM_CHANNEL_1);
+      dwfProxy.getDwf().stopAnalogCaptureBothChannels();
 
       ///////////////////////////
       // Create Chart Data //////

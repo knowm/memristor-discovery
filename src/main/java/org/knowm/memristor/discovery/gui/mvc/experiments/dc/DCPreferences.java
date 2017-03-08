@@ -51,7 +51,7 @@ public class DCPreferences extends ExperimentPreferences {
   public static final float AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE = 0.1f;
 
   public static final String PERIOD_INIT_KEY = PREFIX + "PERIOD_INIT_KEY";
-  public static final int PERIOD_INIT_DEFAULT_VALUE = 5000;
+  public static final int PERIOD_INIT_DEFAULT_VALUE = 5;
 
   ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -60,9 +60,7 @@ public class DCPreferences extends ExperimentPreferences {
   public static final ConductanceUnits CONDUCTANCE_UNIT = ConductanceUnits.MilliSiemens;
   public static final TimeUnits TIME_UNIT = TimeUnits.MicroSeconds;
 
-  // public static final int CAPTURE_BUFFER_SIZE = DWF.AD2_MAX_BUFFER_SIZE;
-  public static final int CAPTURE_BUFFER_SIZE = 8000;
-  // public static final int CAPTURE_BUFFER_SIZE = 8192 / 11; // AD2 buffer size / most pulses allowed.
+  public static final int CAPTURE_BUFFER_SIZE = 8192; // AD2 buffer size .
 
   /**
    * Constructor

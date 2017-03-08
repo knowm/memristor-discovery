@@ -42,7 +42,7 @@ public class ControlModel extends ExperimentControlModel {
 
   public DCPreferences.Waveform waveform;
   private float amplitude;
-  private int period; // model store period in nanoseconds
+  private int period; // model store period
   private int pulseNumber;
 
   private final double[] waveformTimeData = new double[DCPreferences.CAPTURE_BUFFER_SIZE];
@@ -93,7 +93,7 @@ public class ControlModel extends ExperimentControlModel {
     int counter = 0;
     do {
       double time = counter * timeStep;
-      waveformTimeData[counter] = time * 1_000_000;
+      waveformTimeData[counter] = time * DCPreferences.TIME_UNIT.getDivisor();
       waveformAmplitudeData[counter] = driver.getSignal(time);
     } while (++counter < DCPreferences.CAPTURE_BUFFER_SIZE);
   }
@@ -148,8 +148,7 @@ public class ControlModel extends ExperimentControlModel {
   public double getCalculatedFrequency() {
 
     // System.out.println("period = " + period);
-    // return (1.0 / (2.0 * (double) period) * 1_000_000_000); // 50% duty cycle
-    return (1.0 / ((double) period) * 1_000_000_000); // 50% duty cycle
+    return 1.0 / ((double) period) * DCPreferences.TIME_UNIT.getDivisor(); // 50% duty cycle
   }
 
   public void setPeriod(int period) {

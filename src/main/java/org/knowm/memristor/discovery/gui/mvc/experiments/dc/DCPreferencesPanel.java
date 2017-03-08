@@ -112,7 +112,7 @@ public class DCPreferencesPanel extends ExperimentPreferencesPanel {
     gc.gridy++;
 
     gc.gridx = 0;
-    this.periodLabel = new JLabel("Period [ns]:");
+    this.periodLabel = new JLabel("Period [" + DCPreferences.TIME_UNIT.getLabel() + "]:");
     preferencesPanel.add(periodLabel, gc);
 
     gc.gridx = 1;

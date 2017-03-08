@@ -44,6 +44,7 @@ import javax.swing.event.ChangeListener;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.plot.PlotPanel;
 
 public class ControlController extends ExperimentControlController {
@@ -108,17 +109,17 @@ public class ControlController extends ExperimentControlController {
     controlPanel.getSeriesTextField().setText("" + controlModel.getSeriesResistance());
     controlPanel.getAmplitudeSlider().setValue((int) (controlModel.getAmplitude() * 100));
     controlPanel.getAmplitudeSlider().setBorder(BorderFactory.createTitledBorder("Amplitude [V] = " + controlModel.getAmplitude()));
-    if (controlModel.getPeriod() >= 5000) {
+    if (controlModel.getPeriod() >= 100) {
       controlPanel.getPeriodSlider().setValue((int) (controlModel.getPeriod()));
-      controlPanel.getPeriodSliderNs().setValue(0);
-      controlPanel.getPeriodSlider().setBorder(BorderFactory.createTitledBorder("Period [µs] = " + controlModel.getPeriod() / 1000));
-      controlPanel.getPeriodSliderNs().setBorder(BorderFactory.createTitledBorder("Period [µs]"));
+      controlPanel.getPeriodSliderNs().setValue(100);
+      controlPanel.getPeriodSlider().setBorder(BorderFactory.createTitledBorder("Period [" + DCPreferences.TIME_UNIT.getLabel() + "] = " + controlModel.getPeriod()));
+      controlPanel.getPeriodSliderNs().setBorder(BorderFactory.createTitledBorder("Period [" + DCPreferences.TIME_UNIT.getLabel() + "]"));
     }
     else {
-      controlPanel.getPeriodSlider().setValue(0);
+      controlPanel.getPeriodSlider().setValue(100);
       controlPanel.getPeriodSliderNs().setValue(controlModel.getPeriod());
-      controlPanel.getPeriodSlider().setBorder(BorderFactory.createTitledBorder("Period [µs]"));
-      controlPanel.getPeriodSliderNs().setBorder(BorderFactory.createTitledBorder("Period [µs] = " + controlModel.getPeriod() / 1000));
+      controlPanel.getPeriodSlider().setBorder(BorderFactory.createTitledBorder("Period [" + DCPreferences.TIME_UNIT.getLabel() + "]"));
+      controlPanel.getPeriodSliderNs().setBorder(BorderFactory.createTitledBorder("Period [" + DCPreferences.TIME_UNIT.getLabel() + "] = " + controlModel.getPeriod()));
     }
     controlPanel.getPulseNumberSlider().setBorder(BorderFactory.createTitledBorder("Pulse Number = " + controlModel.getPulseNumber()));
     controlPanel.getPulseNumberSlider().setValue((int) controlModel.getPulseNumber());
@@ -152,8 +153,8 @@ public class ControlController extends ExperimentControlController {
         JSlider source = (JSlider) e.getSource();
         if (!(source.getValueIsAdjusting())) {
           controlModel.setPeriod(source.getValue());
-          controlPanel.getPeriodSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + (double) controlModel.getPeriod() / 1000));
-          controlPanel.getPeriodSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
+          controlPanel.getPeriodSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [" + DCPreferences.TIME_UNIT.getLabel() + "] = " + (double) controlModel.getPeriod()));
+          controlPanel.getPeriodSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [" + DCPreferences.TIME_UNIT.getLabel() + "]"));
         }
       }
     });
@@ -166,8 +167,8 @@ public class ControlController extends ExperimentControlController {
         JSlider source = (JSlider) e.getSource();
         if (!(source.getValueIsAdjusting())) {
           controlModel.setPeriod(source.getValue());
-          controlPanel.getPeriodSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
-          controlPanel.getPeriodSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + (double) controlModel.getPeriod() / 1000));
+          controlPanel.getPeriodSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [" + DCPreferences.TIME_UNIT.getLabel() + "]"));
+          controlPanel.getPeriodSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [" + DCPreferences.TIME_UNIT.getLabel() + "] = " + (double) controlModel.getPeriod()));
         }
       }
     });

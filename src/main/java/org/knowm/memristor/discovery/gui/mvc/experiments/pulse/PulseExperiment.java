@@ -95,7 +95,16 @@ public class PulseExperiment extends Experiment {
       int sampleFrequencyMultiplier = 300; // adjust this down if you want to capture more pulses as the buffer size is limited.
       double sampleFrequency = controlModel.getCalculatedFrequency() * sampleFrequencyMultiplier; // adjust this down if you want to capture more pulses as the buffer size is limited.
       dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02 * (controlModel.getAmplitude() > 0 ? 1 : -1));
-      Thread.sleep(20); // Attempt to allow Analog In to get fired up for the next set of pulses
+      // Thread.sleep(20); // Attempt to allow Analog In to get fired up for the next set of pulses
+
+      while (true) {
+        byte status = dwfProxy.getDwf().FDwfAnalogInStatus(true);
+        // System.out.println("status: " + status);
+        if (status == 1) { // armed
+          // System.out.println("armed.");
+          break;
+        }
+      }
 
       //////////////////////////////////
       // Pulse Out /////////////////
@@ -110,9 +119,11 @@ public class PulseExperiment extends Experiment {
       // Read In Data
       boolean success = capturePulseData();
       if (!success) {
+        controlPanel.getStartStopButton().doClick();
         return false;
       }
 
+      // Get Raw Data from Oscilloscope
       int validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
       double[] v1 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
       double[] v2 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);

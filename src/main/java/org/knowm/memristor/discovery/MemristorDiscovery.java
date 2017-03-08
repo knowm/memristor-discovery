@@ -264,18 +264,21 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
 
     // default control injected here
 
-    // control = new HysteresisExperiment(dwf, mainFrameContainer);
-    // appID = "Hysteresis";
+    // experiment = new HysteresisExperiment(dwf, mainFrameContainer);
+    // experiment.createAndShowGUI();
+// appID = "Hysteresis";
 
-    // control = new DCExperiment(dwf, mainFrameContainer);
-    // appID = "DC";
+    experiment = new DCExperiment(dwf, mainFrameContainer);
+    experiment.createAndShowGUI();
+    appID = "DC";
 
-    // control = new ConductanceExperiment(dwf, mainFrameContainer);
+    // experiment = new ConductanceExperiment(dwf, mainFrameContainer);
+    // experiment.createAndShowGUI();
     // appID = "Conductance";
 
-    experiment = new PulseExperiment(dwf, mainFrameContainer);
-    experiment.createAndShowGUI();
-    appID = "Pulse";
+    // experiment = new PulseExperiment(dwf, mainFrameContainer);
+    // experiment.createAndShowGUI();
+    // appID = "Pulse";
 
     mainFrame.setTitle(FRAME_TITLE_BASE + appID);
 

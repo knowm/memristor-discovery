@@ -33,6 +33,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCPreferences;
 import org.knowm.memristor.discovery.utils.Util;
 
 public class PlotController implements PropertyChangeListener {
@@ -201,7 +202,7 @@ public class PlotController implements PropertyChangeListener {
 
   private String getWaveform(double amplitude, int period) {
 
-    return "Amplitude = " + getFormattedAmplitude(amplitude) + " V, Period = " + (double) period / 1000 + " µs";
+    return "Amplitude = " + getFormattedAmplitude(amplitude) + " V, Period = " + (double) period + " " + DCPreferences.TIME_UNIT.getLabel();
   }
 
   private double getFormattedAmplitude(double amplitude) {
