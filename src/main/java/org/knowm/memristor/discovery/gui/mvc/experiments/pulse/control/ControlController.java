@@ -99,7 +99,7 @@ public class ControlController extends ExperimentControlController {
       controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + controlModel.getPulseWidth() / 1000));
     }
     controlPanel.getPulseNumberSlider().setBorder(BorderFactory.createTitledBorder("Pulse Number = " + controlModel.getPulseNumber()));
-    controlPanel.getPulseNumberSlider().setValue((int) (controlModel.getPulseNumber()));
+    controlPanel.getPulseNumberSlider().setValue(controlModel.getPulseNumber());
   }
 
   /**
@@ -197,8 +197,6 @@ public class ControlController extends ExperimentControlController {
         controlModel.setMemristorVoltageDropSelected(selected);
       }
     });
-
-
   }
 
   /**

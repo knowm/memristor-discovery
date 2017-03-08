@@ -121,6 +121,7 @@ public class ControlController extends ExperimentControlController {
       controlPanel.getPeriodSliderNs().setBorder(BorderFactory.createTitledBorder("Period [µs] = " + controlModel.getPeriod() / 1000));
     }
     controlPanel.getPulseNumberSlider().setBorder(BorderFactory.createTitledBorder("Pulse Number = " + controlModel.getPulseNumber()));
+    controlPanel.getPulseNumberSlider().setValue((int) controlModel.getPulseNumber());
   }
 
   public void doSetUpViewEvents() {

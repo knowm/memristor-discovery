@@ -294,11 +294,7 @@ public class ConductanceExperiment extends Experiment {
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
 
-    String propName = evt.getPropertyName();
-
-    // System.out.println("propName: " + propName);
-
-    switch (propName) {
+    switch (evt.getPropertyName()) {
 
       case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
 

@@ -67,9 +67,6 @@ public class ControlModel extends ExperimentControlModel {
     swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
-  /**
-   * Given the state of the model, update the waveform x and y axis data arrays.
-   */
   void updateWaveformChartData() {
 
     Driver driver;
@@ -181,7 +178,6 @@ public class ControlModel extends ExperimentControlModel {
     this.pulseNumber = pulseNumber;
     swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
-
 
   @Override
   public ExperimentPreferences initAppPreferences() {
