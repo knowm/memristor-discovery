@@ -83,7 +83,8 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
   private final DWFProxy dwf = new DWFProxy();
 
   // private final String[] experiments = new String[] { "Hysteresis", "Pulse", "QC" };
-  private final String[] apps = new String[]{"Hysteresis", "Pulse", "DC", "Conductance"};
+  // private final String[] apps = new String[]{"Hysteresis", "Pulse", "DC", "Conductance"};
+  private final String[] apps = new String[]{"Hysteresis", "Pulse", "DC"};
   private String appID;
   // private String appID = experiments[0];
   private Experiment experiment;
