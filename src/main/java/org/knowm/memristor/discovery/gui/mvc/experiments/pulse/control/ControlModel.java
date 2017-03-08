@@ -265,9 +265,9 @@ public class ControlModel extends ExperimentControlModel {
 
       // V=IR =
       double voltageDropOnMemristor = appliedCurrent / PulsePreferences.CURRENT_UNIT.getDivisor() * getLastR();
-      System.out.println("voltageDropOnMemristor = " + voltageDropOnMemristor);
+      // System.out.println("voltageDropOnMemristor = " + voltageDropOnMemristor);
       this.appliedMemristorEnergy = voltageDropOnMemristor * voltageDropOnMemristor / getLastR() * pulseNumber * pulseWidth / 2 * 1000;// divided by two to guestimate the energy savings of a quarter sine wave vs a square wave.
-      System.out.println("appliedMemristorEnergy = " + appliedMemristorEnergy);
+      // System.out.println("appliedMemristorEnergy = " + appliedMemristorEnergy);
     }
     else {
       this.appliedAmplitude = amplitude;

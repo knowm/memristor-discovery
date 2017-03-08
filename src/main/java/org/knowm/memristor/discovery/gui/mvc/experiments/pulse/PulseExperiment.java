@@ -95,7 +95,6 @@ public class PulseExperiment extends Experiment {
       int sampleFrequencyMultiplier = 300; // adjust this down if you want to capture more pulses as the buffer size is limited.
       double sampleFrequency = controlModel.getCalculatedFrequency() * sampleFrequencyMultiplier; // adjust this down if you want to capture more pulses as the buffer size is limited.
       dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02 * (controlModel.getAmplitude() > 0 ? 1 : -1));
-      // Thread.sleep(20); // Attempt to allow Analog In to get fired up for the next set of pulses
 
       waitUntilArmed();
 
@@ -112,6 +111,7 @@ public class PulseExperiment extends Experiment {
       // Read In Data
       boolean success = capturePulseData();
       if (!success) {
+        System.out.println("here");
         controlPanel.getStartStopButton().doClick();
         return false;
       }
@@ -227,6 +227,8 @@ public class PulseExperiment extends Experiment {
           double[] conductanceAve = new double[]{runningTotal / (bufferLength - 6) * ConductancePreferences.CONDUCTANCE_UNIT.getDivisor()};
 
           publish(new double[][]{null, null, null, null, null, null, conductanceAve});
+        }else{
+          System.out.println("here1");
         }
         // Stop Analog In and Out
         dwfProxy.getDwf().stopWave(DWF.WAVEFORM_CHANNEL_1);
