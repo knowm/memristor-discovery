@@ -55,6 +55,7 @@ public class ControlModel extends ExperimentControlModel {
   private double appliedAmplitude;
   private double appliedCurrent;
   private double appliedEnergy;
+  private double appliedMemristorEnergy;
 
   private double lastG;
   public DecimalFormat ohmFormatter = new DecimalFormat("#,### Ω");
@@ -121,8 +122,6 @@ public class ControlModel extends ExperimentControlModel {
       waveformAmplitudeData[counter++] = driver.getSignal(i);
     }
   }
-
-
 
   /////////////////////////////////////////////////////////////
   // GETTERS AND SETTERS //////////////////////////////////////
@@ -235,11 +234,15 @@ public class ControlModel extends ExperimentControlModel {
     return appliedEnergy;
   }
 
+  public double getAppliedMemristorEnergy() {
+
+    return appliedMemristorEnergy;
+  }
+
   public String getLastRAsString() {
 
     return ohmFormatter.format(getLastR());
   }
-
 
   @Override
   public ExperimentPreferences initAppPreferences() {
@@ -259,6 +262,12 @@ public class ControlModel extends ExperimentControlModel {
       }
       this.appliedCurrent = appliedAmplitude / (getLastR() + seriesResistance + Util.getSwitchesSeriesResistance()) * PulsePreferences.CURRENT_UNIT.getDivisor();
       this.appliedEnergy = appliedAmplitude * appliedAmplitude / (getLastR() + seriesResistance + Util.getSwitchesSeriesResistance()) * pulseNumber * pulseWidth / 2;// divided by two to guestimate the energy savings of a quarter sine wave vs a square wave.
+
+      // V=IR =
+      double voltageDropOnMemristor = appliedCurrent / PulsePreferences.CURRENT_UNIT.getDivisor() * getLastR();
+      System.out.println("voltageDropOnMemristor = " + voltageDropOnMemristor);
+      this.appliedMemristorEnergy = voltageDropOnMemristor * voltageDropOnMemristor / getLastR() * pulseNumber * pulseWidth / 2 * 1000;// divided by two to guestimate the energy savings of a quarter sine wave vs a square wave.
+      System.out.println("appliedMemristorEnergy = " + appliedMemristorEnergy);
     }
     else {
       this.appliedAmplitude = amplitude;

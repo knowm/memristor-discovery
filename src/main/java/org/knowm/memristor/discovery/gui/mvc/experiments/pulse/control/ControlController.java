@@ -222,7 +222,7 @@ public class ControlController extends ExperimentControlController {
 
         controlModel.updateWaveformChartData();
         controlModel.updateEnergyData();
-        controlPanel.updateEnergyGUI(controlModel.getAppliedAmplitude(), controlModel.getAppliedCurrent(), controlModel.getAppliedEnergy());
+        controlPanel.updateEnergyGUI(controlModel.getAppliedAmplitude(), controlModel.getAppliedCurrent(), controlModel.getAppliedEnergy(), controlModel.getAppliedMemristorEnergy());
         break;
 
       default:

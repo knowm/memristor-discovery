@@ -57,6 +57,7 @@ public class ControlPanel extends ExperimentControlPanel {
   private final JLabel appliedAmplitudeLabel;
   private final JLabel currentLabel;
   private final JLabel energyLabel;
+  private final JLabel energyMemRistorOnlyLabel;
 
   private JComboBox<Waveform> waveformComboBox;
 
@@ -70,7 +71,6 @@ public class ControlPanel extends ExperimentControlPanel {
   private final JTextField seriesTextField;
 
   private final JSlider pulseNumberSlider;
-
 
   /**
    * Constructor
@@ -96,11 +96,17 @@ public class ControlPanel extends ExperimentControlPanel {
     c.insets = new Insets(0, 10, 4, 0);
     add(currentLabel, c);
 
-    energyLabel = new JLabel("Energy [nJ]: ");
+    energyLabel = new JLabel("Energy M+R [nJ]: ");
     energyLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.gridy++;
     c.insets = new Insets(0, 10, 4, 0);
     add(energyLabel, c);
+
+    energyMemRistorOnlyLabel = new JLabel("Energy M [nJ]: ");
+    energyMemRistorOnlyLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.gridy++;
+    c.insets = new Insets(0, 10, 4, 0);
+    add(energyMemRistorOnlyLabel, c);
 
     this.waveformComboBox = new JComboBox<>();
     waveformComboBox.setFocusable(false);
@@ -213,11 +219,12 @@ public class ControlPanel extends ExperimentControlPanel {
     startStopButton.setEnabled(enabled);
   }
 
-  public void updateEnergyGUI(double appliedAmplitude, double appliedCurrent, double appliedEnergy) {
+  public void updateEnergyGUI(double appliedAmplitude, double appliedCurrent, double appliedEnergy, double appliedMemristorEnergy) {
 
     appliedAmplitudeLabel.setText("Applied Amplitude [V]: " + Util.round(appliedAmplitude, 2));
     currentLabel.setText("Current [" + PulsePreferences.CURRENT_UNIT.getLabel() + "]: " + Util.round(appliedCurrent, 3));
-    energyLabel.setText("Energy [nJ]: " + Util.round(appliedEnergy, 3));
+    energyLabel.setText("Energy M+R [nJ]: " + Util.round(appliedEnergy, 3));
+    energyMemRistorOnlyLabel.setText("Energy M [fJ]: " + Util.round(appliedMemristorEnergy, 3));
   }
 
   public JComboBox<Waveform> getWaveformComboBox() {
@@ -249,8 +256,6 @@ public class ControlPanel extends ExperimentControlPanel {
 
     return seriesTextField;
   }
-
-
 
   public JCheckBox getMemristorVoltageCheckBox() {
 

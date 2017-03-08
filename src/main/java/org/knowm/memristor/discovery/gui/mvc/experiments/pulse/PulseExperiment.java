@@ -271,7 +271,7 @@ public class PulseExperiment extends Experiment {
         plotController.repaintGChart();
 
         controlModel.updateEnergyData();
-        controlPanel.updateEnergyGUI(controlModel.getAppliedAmplitude(), controlModel.getAppliedCurrent(), controlModel.getAppliedEnergy());
+        controlPanel.updateEnergyGUI(controlModel.getAppliedAmplitude(), controlModel.getAppliedCurrent(), controlModel.getAppliedEnergy(), controlModel.getAppliedMemristorEnergy());
       }
     }
   }
