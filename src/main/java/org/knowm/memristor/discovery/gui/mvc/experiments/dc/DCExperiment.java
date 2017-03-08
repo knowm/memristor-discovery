@@ -157,23 +157,21 @@ public class DCExperiment extends Experiment {
 
       double[][] newestChunk = chunks.get(chunks.size() - 1);
 
-      // System.out.println("" + chunks.size());
-
-      plotController.udpateVtChart(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getPeriod(), controlModel
-          .getAmplitude());
-      plotController.udpateIVChart(newestChunk[1], newestChunk[3], controlModel.getPeriod(), controlModel
-          .getAmplitude());
-      plotController.updateGVChart(newestChunk[1], newestChunk[4], controlModel.getPeriod(), controlModel
-          .getAmplitude());
+      plotController.updateVtChart(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getPeriod(), controlModel.getAmplitude());
+      plotController.updateIVChart(newestChunk[1], newestChunk[3], controlModel.getPeriod(), controlModel.getAmplitude());
+      plotController.updateGVChart(newestChunk[1], newestChunk[4], controlModel.getPeriod(), controlModel.getAmplitude());
 
       if (plotPanel.getCaptureButton().isSelected()) {
         plotController.repaintVtChart();
+        plotPanel.switch2CaptureChart();
       }
       else if (plotPanel.getIVButton().isSelected()) {
         plotController.repaintItChart();
+        plotPanel.switch2IVChart();
       }
       else {
         plotController.repaintRtChart();
+        plotPanel.switch2GVChart();
       }
       controlPanel.getStartStopButton().doClick();
     }
@@ -186,18 +184,14 @@ public class DCExperiment extends Experiment {
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
 
-    String propName = evt.getPropertyName();
-
-    // System.out.println("propName: " + propName);
-
-    switch (propName) {
+    switch (evt.getPropertyName()) {
 
       case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
 
         if (!controlModel.isStartToggled()) {
 
           plotPanel.switch2WaveformChart();
-          plotController.udpateWaveformChart(controlModel.getWaveformTimeData(), controlModel.getWaveformAmplitudeData(), controlModel.getAmplitude(), controlModel.getPeriod());
+          plotController.updateWaveformChart(controlModel.getWaveformTimeData(), controlModel.getWaveformAmplitudeData(), controlModel.getAmplitude(), controlModel.getPeriod());
         }
         break;
 

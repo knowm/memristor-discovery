@@ -65,8 +65,6 @@ public class ControlController extends ExperimentControlController {
 
     super(controlPanel, controlModel);
 
-
-
     this.controlPanel = controlPanel;
     this.plotPanel = plotPanel;
     this.controlModel = controlModel;
