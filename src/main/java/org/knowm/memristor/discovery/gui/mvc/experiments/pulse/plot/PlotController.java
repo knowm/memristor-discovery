@@ -129,7 +129,7 @@ public class PlotController implements PropertyChangeListener {
     });
   }
 
-  public void udpateWaveformChart(double[] timeData, double[] waveformAmplitudeData, double amplitude, int pulseWidth) {
+  public void updateWaveformChart(double[] timeData, double[] waveformAmplitudeData, double amplitude, int pulseWidth) {
 
     plotPanel.getWaveformChart().setTitle(getWaveformChartTitle(amplitude, pulseWidth));
     plotPanel.getWaveformChart().updateXYSeries("waveform", timeData, waveformAmplitudeData, null);
@@ -137,15 +137,15 @@ public class PlotController implements PropertyChangeListener {
     plotPanel.getWaveformChartPanel().repaint();
   }
 
-  public void udpateVtChartData(double[] timeData, double[] captureAmplitudeData1, double[] captureAmplitudeData2, double[] v1Minusv2, int pulseWidth, double amplitude) {
+  public void updateCaptureChartData(double[] timeData, double[] v1, double[] v2, double[] v1Minusv2, int pulseWidth, double amplitude) {
 
     plotPanel.getCaptureChart().setTitle(getVtChartTitle(amplitude, pulseWidth));
-    plotPanel.getCaptureChart().updateXYSeries("V1", timeData, captureAmplitudeData1, null);
-    plotPanel.getCaptureChart().updateXYSeries("V2", timeData, captureAmplitudeData2, null);
+    plotPanel.getCaptureChart().updateXYSeries("V1", timeData, v1, null);
+    plotPanel.getCaptureChart().updateXYSeries("V2", timeData, v2, null);
     plotPanel.getCaptureChart().updateXYSeries("V1-V2", timeData, v1Minusv2, null);
   }
 
-  public void udpateIVChartData(double[] timeData, double[] current, int pulseWidth, double amplitude) {
+  public void updateIVChartData(double[] timeData, double[] current, int pulseWidth, double amplitude) {
 
     plotPanel.getIvChart().getStyler().setYAxisMax(plotModel.getyMaxIV());
     plotPanel.getIvChart().getStyler().setYAxisMin(plotModel.getyMinIV());

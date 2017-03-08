@@ -113,7 +113,6 @@ public class DCExperiment extends Experiment {
       int validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
       double[] v1 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
       double[] v2 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
-      System.out.println("validSamples: " + validSamples);
 
       ///////////////////////////
       // Create Chart Data //////
@@ -122,6 +121,8 @@ public class DCExperiment extends Experiment {
       double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, 0.02, 10);
       double[] V1Trimmed = trimmedRawData[0];
       double[] V2Trimmed = trimmedRawData[1];
+      double[] V2MinusV1 = PostProcessDataUtils.getV1MinusV2(V1Trimmed, V2Trimmed);
+
       int bufferLength = V1Trimmed.length;
 
       // create time data
@@ -147,7 +148,7 @@ public class DCExperiment extends Experiment {
         conductance[i] = G;
       }
 
-      publish(new double[][]{timeData, V1Trimmed, V2Trimmed, current, conductance});
+      publish(new double[][]{timeData, V1Trimmed, V2Trimmed, V2MinusV1, current, conductance});
 
       return true;
     }
@@ -157,12 +158,12 @@ public class DCExperiment extends Experiment {
 
       double[][] newestChunk = chunks.get(chunks.size() - 1);
 
-      plotController.updateVtChart(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getPeriod(), controlModel.getAmplitude());
-      plotController.updateIVChart(newestChunk[1], newestChunk[3], controlModel.getPeriod(), controlModel.getAmplitude());
-      plotController.updateGVChart(newestChunk[1], newestChunk[4], controlModel.getPeriod(), controlModel.getAmplitude());
+      plotController.updateCaptureChartData(newestChunk[0], newestChunk[1], newestChunk[2], newestChunk[3], controlModel.getPeriod(), controlModel.getAmplitude());
+      plotController.updateIVChartData(newestChunk[1], newestChunk[4], controlModel.getPeriod(), controlModel.getAmplitude());
+      plotController.updateGVChartData(newestChunk[1], newestChunk[5], controlModel.getPeriod(), controlModel.getAmplitude());
 
       if (plotPanel.getCaptureButton().isSelected()) {
-        plotController.repaintVtChart();
+        plotController.repaintCaptureChart();
         plotPanel.switch2CaptureChart();
       }
       else if (plotPanel.getIVButton().isSelected()) {

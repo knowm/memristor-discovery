@@ -130,7 +130,7 @@ public class PulseExperiment extends Experiment {
       double[] V1Trimmed = trimmedRawData[0];
       double[] V2Trimmed = trimmedRawData[1];
       // double[] V2Zeroed = PostProcessDataUtils.zeroIdleData(V1Trimmed, V2Trimmed, 0.05);
-      double[] V2MinusV1 = PostProcessDataUtils.getV2MinusV1(V1Trimmed, V2Trimmed);
+      double[] V2MinusV1 = PostProcessDataUtils.getV1MinusV2(V1Trimmed, V2Trimmed);
 
       int bufferLength = V1Trimmed.length;
 
@@ -239,12 +239,11 @@ public class PulseExperiment extends Experiment {
       double[][] newestChunk = chunks.get(chunks.size() - 1);
 
       if (newestChunk[6] == null) {
-        // System.out.println("" + chunks.size());
         initialPulseTrainCaptured = true;
 
-        plotController.udpateVtChartData(newestChunk[0], newestChunk[1], newestChunk[2], newestChunk[3], controlModel.getPulseWidth(), controlModel
+        plotController.updateCaptureChartData(newestChunk[0], newestChunk[1], newestChunk[2], newestChunk[3], controlModel.getPulseWidth(), controlModel
             .getAmplitude());
-        plotController.udpateIVChartData(newestChunk[0], newestChunk[4], controlModel.getPulseWidth(), controlModel
+        plotController.updateIVChartData(newestChunk[0], newestChunk[4], controlModel.getPulseWidth(), controlModel
             .getAmplitude());
         plotController.updateGVChartData(newestChunk[0], newestChunk[5], controlModel.getPulseWidth(), controlModel
             .getAmplitude());
@@ -289,7 +288,7 @@ public class PulseExperiment extends Experiment {
       case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
 
         plotPanel.switch2WaveformChart();
-        plotController.udpateWaveformChart(controlModel.getWaveformTimeData(), controlModel.getWaveformAmplitudeData(), controlModel.getAmplitude(), controlModel.getPulseWidth());
+        plotController.updateWaveformChart(controlModel.getWaveformTimeData(), controlModel.getWaveformAmplitudeData(), controlModel.getAmplitude(), controlModel.getPulseWidth());
 
         break;
 

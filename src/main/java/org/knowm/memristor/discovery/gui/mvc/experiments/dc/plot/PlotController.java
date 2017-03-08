@@ -136,14 +136,15 @@ public class PlotController implements PropertyChangeListener {
     plotPanel.getWaveformChartPanel().repaint();
   }
 
-  public void updateVtChart(double[] timeData, double[] v1, double[] v2, int pulseWidth, double amplitude) {
+  public void updateCaptureChartData(double[] timeData, double[] v1, double[] v2, double[] v1Minusv2, int pulseWidth, double amplitude) {
 
     plotPanel.getCaptureChart().setTitle(getVtChartTitle(amplitude, pulseWidth));
     plotPanel.getCaptureChart().updateXYSeries("V1", timeData, v1, null);
     plotPanel.getCaptureChart().updateXYSeries("V2", timeData, v2, null);
+    plotPanel.getCaptureChart().updateXYSeries("V1-V2", timeData, v1Minusv2, null);
   }
 
-  public void updateIVChart(double[] v1, double[] current, int pulseWidth, double amplitude) {
+  public void updateIVChartData(double[] v1, double[] current, int pulseWidth, double amplitude) {
 
     plotPanel.getIvChart().getStyler().setYAxisMax(plotModel.getyMaxIV());
     plotPanel.getIvChart().getStyler().setYAxisMin(plotModel.getyMinIV());
@@ -152,7 +153,7 @@ public class PlotController implements PropertyChangeListener {
     plotPanel.getIvChart().updateXYSeries("iv", v1, current, null);
   }
 
-  public void updateGVChart(double[] v1, double[] conductance, int pulseWidth, double amplitude) {
+  public void updateGVChartData(double[] v1, double[] conductance, int pulseWidth, double amplitude) {
 
     plotPanel.getGvChart().getStyler().setYAxisMax(plotModel.getyMaxGV());
     plotPanel.getGvChart().getStyler().setYAxisMin(0.0);
@@ -160,7 +161,7 @@ public class PlotController implements PropertyChangeListener {
     plotPanel.getGvChart().updateXYSeries("gv", v1, conductance, null);
   }
 
-  public void repaintVtChart() {
+  public void repaintCaptureChart() {
 
     plotPanel.getCaptureChartPanel().revalidate();
     plotPanel.getCaptureChartPanel().repaint();

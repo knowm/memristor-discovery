@@ -93,7 +93,7 @@ public class PlotPanel extends ExperimentPlotPanel {
     // ///////////////////////////////////////////////////////////
 
     captureChart = new XYChartBuilder().width(600).title("Capture").height(400).yAxisTitle("Voltage [V]").xAxisTitle("Time [µs]").build();
-    captureChart.getStyler().setLegendPosition(LegendPosition.InsideNW);
+    captureChart.getStyler().setLegendPosition(LegendPosition.InsideNE);
     series = captureChart.addSeries("V1", new double[]{0}, new double[]{0});
     series.setMarker(SeriesMarkers.NONE);
     series = captureChart.addSeries("V2", new double[]{0}, new double[]{0});

@@ -98,8 +98,9 @@ public class PlotPanel extends ExperimentPlotPanel {
 
     series = captureChart.addSeries("V1", new double[]{0}, new double[]{0});
     series.setMarker(SeriesMarkers.NONE);
-
     series = captureChart.addSeries("V2", new double[]{0}, new double[]{0});
+    series.setMarker(SeriesMarkers.NONE);
+    series = captureChart.addSeries("V1-V2", new double[]{0}, new double[]{0});
     series.setMarker(SeriesMarkers.NONE);
 
     captureChartPanel = new XChartPanel<>(captureChart);

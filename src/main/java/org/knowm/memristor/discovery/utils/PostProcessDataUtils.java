@@ -69,7 +69,7 @@ public class PostProcessDataUtils {
     return V2Zeroed;
   }
 
-  public static double[] getV2MinusV1(double[] v1, double[] v2) {
+  public static double[] getV1MinusV2(double[] v1, double[] v2) {
 
     double[] V2MinusV1 = new double[v1.length];
     for (int i = 0; i < V2MinusV1.length; i++) {
