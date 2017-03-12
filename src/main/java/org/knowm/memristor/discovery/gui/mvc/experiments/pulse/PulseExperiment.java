@@ -165,37 +165,6 @@ public class PulseExperiment extends Experiment {
 
       publish(new double[][]{timeData, V1Trimmed, V2Trimmed, V2MinusV1, current, conductance, null});
 
-      // double[] V2MinusV1 = PostProcessDataUtils.getV1MinusV2(v1, v2);
-      //
-      // int bufferLength = v1.length;
-      //
-      // // create time data
-      // double[] timeData = new double[bufferLength];
-      // double timeStep = 1 / sampleFrequency * DCPreferences.TIME_UNIT.getDivisor();
-      // for (int i = 0; i < bufferLength; i++) {
-      //   timeData[i] = i * timeStep;
-      // }
-      //
-      // // create current data
-      // double[] current = new double[bufferLength];
-      // for (int i = 0; i < bufferLength; i++) {
-      //   current[i] = v2[i] / controlModel.getSeriesResistance() * DCPreferences.CURRENT_UNIT.getDivisor();
-      // }
-      //
-      // // create conductance data
-      // double[] conductance = new double[bufferLength];
-      // for (int i = 0; i < bufferLength; i++) {
-      //
-      //   double I = v2[i] / controlModel.getSeriesResistance();
-      //   double G = I / (v1[i] - v2[i]) * DCPreferences.CONDUCTANCE_UNIT.getDivisor();
-      //   G = G < 0 ? 0 : G;
-      //   conductance[i] = G;
-      // }
-      //
-      // publish(new double[][]{timeData, v1, v2, V2MinusV1, current, conductance, null});
-
-      // New addition: Loop and capture read data (0.1V, 10µs) until stop is pushed.
-
       while (!initialPulseTrainCaptured) {
         // System.out.println("Waiting...");
         Thread.sleep(50);
@@ -248,7 +217,6 @@ public class PulseExperiment extends Experiment {
           validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
           v1 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
           v2 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
-          System.out.println("validSamples: " + validSamples);
 
           ///////////////////////////
           // Create Chart Data //////
@@ -267,51 +235,9 @@ public class PulseExperiment extends Experiment {
             G = G < 0 ? 0 : G;
             runningTotal += G;
           }
-          // System.out.println("runningTotal = " + runningTotal);
-          // System.out.println("bufferLength = " + bufferLength);
-          // conductance value packed in a one-element array
           double[] conductanceAve = new double[]{runningTotal / (bufferLength - 6) * ConductancePreferences.CONDUCTANCE_UNIT.getDivisor()};
 
-          // // create time data
-          // timeData = new double[bufferLength];
-          // timeStep = 1 / sampleFrequency * DCPreferences.TIME_UNIT.getDivisor();
-          // for (int i = 0; i < bufferLength; i++) {
-          //   timeData[i] = i * timeStep;
-          // }
-          //
-          // // create current data
-          // current = new double[bufferLength];
-          // for (int i = 0; i < bufferLength; i++) {
-          //   current[i] = V2Trimmed[i] / controlModel.getSeriesResistance() * DCPreferences.CURRENT_UNIT.getDivisor();
-          // }
-          //
-          // // create conductance data
-          // conductance = new double[bufferLength];
-          // for (int i = 0; i < bufferLength; i++) {
-          //
-          //   double I = V2Trimmed[i] / controlModel.getSeriesResistance();
-          //   double G = I / (V1Trimmed[i] - V2Trimmed[i]) * DCPreferences.CONDUCTANCE_UNIT.getDivisor();
-          //   G = G < 0 ? 0 : G;
-          //   conductance[i] = G;
-          // }
-
           publish(new double[][]{null, null, null, null, null, null, conductanceAve});
-          // publish(new double[][]{timeData, V1Trimmed, V2Trimmed, V2MinusV1, current, conductance, null});
-
-          // bufferLength = v1.length;
-
-          // // create conductance data - a single number equal to the average of all points in the trimmed data
-          // double runningTotal = 0.0;
-          // for (int i = 3; i < bufferLength - 3; i++) {
-          //   double I = v2[i] / controlModel.getSeriesResistance();
-          //   double G = I / (v1[i] - v2[i]);
-          //   G = G < 0 ? 0 : G;
-          //   runningTotal += G;
-          // }
-          // // conductance value packed in a one-element array
-          // double[] conductanceAve = new double[]{runningTotal / (bufferLength - 6) * ConductancePreferences.CONDUCTANCE_UNIT.getDivisor()};
-          //
-          // publish(new double[][]{null, null, null, null, null, null, conductanceAve});
         }
         // Stop Analog In and Out
         dwfProxy.getDwf().stopWave(DWF.WAVEFORM_CHANNEL_1);

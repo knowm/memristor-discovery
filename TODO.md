@@ -1,10 +1,10 @@
 ## TODO
 
 1. Remove redundant copy-pasta code, abstract stuff
-1. Profile app
 
 ## DONE
 
+1. Profile app
 1. Include analog switch resistance in current measurement
 1. pulse app, clean out noise, remove k.
 1. Redo all help files
