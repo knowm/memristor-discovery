@@ -94,7 +94,7 @@ public class ConductanceExperiment extends Experiment {
 
       int sampleFrequencyMultiplier = 200; // adjust this down if you want to capture more pulses as the buffer size is limited.
       double sampleFrequency = controlModel.getCalculatedFrequency() * sampleFrequencyMultiplier; // adjust this down if you want to capture more pulses as the buffer size is limited.
-      dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02 * (controlModel.getResetAmplitude() > 0 ? 1 : -1));
+      dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02 * (controlModel.getResetAmplitude() > 0 ? 1 : -1), 8000);
       Thread.sleep(10); // Attempt to allow Analog In to get fired up for the next set of pulses
 
       //////////////////////////////////
@@ -106,8 +106,12 @@ public class ConductanceExperiment extends Experiment {
       dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, 1, customWaveform);
 
       // Read In Data
-      boolean success = capturePulseData();
+      boolean success = capturePulseData(controlModel.getCalculatedFrequency(), 1);
       if (!success) {
+        // Stop Analog In and Out
+        dwfProxy.getDwf().stopWave(DWF.WAVEFORM_CHANNEL_1);
+        dwfProxy.getDwf().stopAnalogCaptureBothChannels();
+        controlPanel.getStartStopButton().doClick();
         return false;
       }
 
@@ -205,7 +209,7 @@ public class ConductanceExperiment extends Experiment {
 
         int sampleFrequencyMultiplier = 200; // adjust this down if you want to capture more pulses as the buffer size is limited.
         double sampleFrequency = controlModel.getCalculatedFrequency() * sampleFrequencyMultiplier; // adjust this down if you want to capture more pulses as the buffer size is limited.
-        dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02 * (controlModel.getSetAmplitude() > 0 ? 1 : -1));
+        dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02 * (controlModel.getSetAmplitude() > 0 ? 1 : -1), 8000);
         Thread.sleep(20); // Attempt to allow Analog In to get fired up for the next set of pulses
 
         //////////////////////////////////

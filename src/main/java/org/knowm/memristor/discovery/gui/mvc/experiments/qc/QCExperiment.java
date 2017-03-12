@@ -123,7 +123,6 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
           ioException.printStackTrace();
         }
 
-
         // switchPanel.enableAllDigitalIOCheckBoxes(false);
         // controlPanel.enableAllChildComponents(false);
         controlPanel.getStartButton().setEnabled(false);
@@ -146,7 +145,6 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
 
       @Override
       public void actionPerformed(ActionEvent e) {
-
 
         // switchPanel.enableAllDigitalIOCheckBoxes(true);
         // controlPanel.enableAllChildComponents(true);
@@ -223,7 +221,7 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
             }
 
             // Read In Data
-            boolean success = capturePulseData();
+            boolean success = capturePulseData(model.getFrequency(), 1);
             if (!success) {
               continue;
             }

@@ -45,8 +45,8 @@ public class ControlModel extends ExperimentControlModel {
   private int period; // model store period
   private int pulseNumber;
 
-  private final double[] waveformTimeData = new double[DCPreferences.CAPTURE_BUFFER_SIZE];
-  private final double[] waveformAmplitudeData = new double[DCPreferences.CAPTURE_BUFFER_SIZE];
+  private final double[] waveformTimeData = new double[1000];
+  private final double[] waveformAmplitudeData = new double[1000];
 
   /**
    * Constructor
@@ -88,14 +88,14 @@ public class ControlModel extends ExperimentControlModel {
         break;
     }
 
-    double timeStep = 1 / getCalculatedFrequency() * pulseNumber / DCPreferences.CAPTURE_BUFFER_SIZE;
+    double timeStep = 1 / getCalculatedFrequency() * pulseNumber / waveformTimeData.length;
 
     int counter = 0;
     do {
       double time = counter * timeStep;
       waveformTimeData[counter] = time * DCPreferences.TIME_UNIT.getDivisor();
       waveformAmplitudeData[counter] = driver.getSignal(time);
-    } while (++counter < DCPreferences.CAPTURE_BUFFER_SIZE);
+    } while (++counter < waveformTimeData.length);
   }
 
   /**

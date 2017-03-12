@@ -84,7 +84,7 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
 
   // private final String[] experiments = new String[] { "Hysteresis", "Pulse", "QC" };
   // private final String[] apps = new String[]{"Hysteresis", "Pulse", "DC", "Conductance"};
-  private final String[] apps = new String[]{"Hysteresis", "Pulse", "DC"};
+  private final String[] apps = new String[]{"Hysteresis", "DC", "Pulse"};
   private String appID;
   // private String appID = experiments[0];
   private Experiment experiment;
@@ -264,9 +264,9 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
 
     // default control injected here
 
-    // experiment = new HysteresisExperiment(dwf, mainFrameContainer);
-    // experiment.createAndShowGUI();
-// appID = "Hysteresis";
+    experiment = new HysteresisExperiment(dwf, mainFrameContainer);
+    experiment.createAndShowGUI();
+    appID = "Hysteresis";
 
     // experiment = new DCExperiment(dwf, mainFrameContainer);
     // experiment.createAndShowGUI();
@@ -276,9 +276,9 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
     // experiment.createAndShowGUI();
     // appID = "Conductance";
 
-    experiment = new PulseExperiment(dwf, mainFrameContainer);
-    experiment.createAndShowGUI();
-    appID = "Pulse";
+    // experiment = new PulseExperiment(dwf, mainFrameContainer);
+    // experiment.createAndShowGUI();
+    // appID = "Pulse";
 
     mainFrame.setTitle(FRAME_TITLE_BASE + appID);
 

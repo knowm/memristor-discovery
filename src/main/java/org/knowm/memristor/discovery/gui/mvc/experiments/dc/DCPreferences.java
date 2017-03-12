@@ -58,9 +58,7 @@ public class DCPreferences extends ExperimentPreferences {
   public static final CurrentUnits CURRENT_UNIT = CurrentUnits.MicroAmps;
   public static final ResistanceUnits RESISTANCE_UNIT = ResistanceUnits.KiloOhms;
   public static final ConductanceUnits CONDUCTANCE_UNIT = ConductanceUnits.MilliSiemens;
-  public static final TimeUnits TIME_UNIT = TimeUnits.MicroSeconds;
-
-  public static final int CAPTURE_BUFFER_SIZE = 8192; // AD2 buffer size .
+  public static final TimeUnits TIME_UNIT = TimeUnits.MilliSeconds;
 
   /**
    * Constructor

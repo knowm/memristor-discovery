@@ -154,7 +154,7 @@ public class ControlPanel extends ExperimentControlPanel {
     c.gridy++;
     add(periodSliderNs, c);
 
-    pulseNumberSlider = new JSlider(JSlider.HORIZONTAL, 1, 20, 1);
+    pulseNumberSlider = new JSlider(JSlider.HORIZONTAL, 1, 10, 1);
     pulseNumberSlider.setBorder(BorderFactory.createTitledBorder("Pulse Number"));
     pulseNumberSlider.setMinorTickSpacing(1);
     pulseNumberSlider.setPaintTicks(true);
@@ -164,8 +164,6 @@ public class ControlPanel extends ExperimentControlPanel {
     labelTable.put(1, new JLabel("1"));
     labelTable.put(5, new JLabel("5"));
     labelTable.put(10, new JLabel("10"));
-    labelTable.put(15, new JLabel("15"));
-    labelTable.put(20, new JLabel("20"));
     pulseNumberSlider.setLabelTable(labelTable);
     c.gridy++;
     add(pulseNumberSlider, c);

@@ -100,6 +100,7 @@ public class DWFProxy {
         // Some device read out stuff
         // System.out.println("Analog Out Custom Waveform Buffer Size Channel 1: "+Arrays.toString(dwf.FDwfAnalogOutNodeDataInfo(DWF.WAVEFORM_CHANNEL_1)));
         // System.out.println("Analog Out Custom Waveform Buffer Size Channel 2: "+Arrays.toString(dwf.FDwfAnalogOutNodeDataInfo(DWF.WAVEFORM_CHANNEL_2)));
+        // System.out.println("Analog In Trigger Position Info: "+ Arrays.toString(dwf.FDwfAnalogInTriggerPositionInfo()));
 
         /////////////////////////////////////////////////////////////
         // Digital I/O //////////////////////////////////////////////

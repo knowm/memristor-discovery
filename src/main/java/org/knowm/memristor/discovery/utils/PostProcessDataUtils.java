@@ -20,17 +20,20 @@ public class PostProcessDataUtils {
     int startIndex = 0;
     for (int i = 0; i < v1.length; i++) {
       if (Math.abs(v1[i]) > vThresholdAbs) {
-        startIndex = i - windowBuffer;
+        startIndex = Math.max(startIndex, i - windowBuffer);
         break;
       }
     }
+    // System.out.println("startIndex = " + startIndex);
     int endIndex = v1.length - 1;
     for (int i = v1.length - 1; i > 0; i--) {
       if (Math.abs(v1[i]) > vThresholdAbs) {
-        endIndex = i + windowBuffer;
+        endIndex = Math.min(endIndex, i + windowBuffer);
         break;
       }
     }
+    // System.out.println("endIndex = " + endIndex);
+
     int bufferLength = endIndex - startIndex;
 
     double[] V1Cleaned = new double[bufferLength];

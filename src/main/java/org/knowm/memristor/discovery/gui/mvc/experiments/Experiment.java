@@ -118,11 +118,16 @@ public abstract class Experiment implements PropertyChangeListener {
     getControlModel().loadModelFromPrefs();
   }
 
-  public boolean capturePulseData() {
+  public boolean capturePulseData(double frequency, int pulseNumber) {
 
     // Read In Data
     int bailCount = 0;
     while (true) {
+      try {
+        Thread.sleep((long) (1 / frequency * pulseNumber * 1000));
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
       byte status = dwfProxy.getDwf().FDwfAnalogInStatus(true);
       // System.out.println("status: " + status);
       if (status == 2) { // done capturing
