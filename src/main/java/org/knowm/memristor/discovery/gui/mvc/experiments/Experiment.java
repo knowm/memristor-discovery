@@ -124,7 +124,9 @@ public abstract class Experiment implements PropertyChangeListener {
     int bailCount = 0;
     while (true) {
       try {
-        Thread.sleep((long) (1 / frequency * pulseNumber * 1000));
+        long sleepTime = (long) (1 / frequency * pulseNumber * 1000);
+        // System.out.println("sleepTime = " + sleepTime);
+        Thread.sleep(sleepTime);
       } catch (InterruptedException e) {
         e.printStackTrace();
       }
