@@ -8,7 +8,7 @@ The following screenshots show Memristor-Discovery running on the three supporte
 
 ![Linux](_img/MD_Linux_DC.png)
 
-![Windows 10](_img/MD_Windows_Pulse.png)
+![Windows 10](_img/MD_Windows_Pulse.PNG)
 
 # Installing Memristor-Discovery
 
