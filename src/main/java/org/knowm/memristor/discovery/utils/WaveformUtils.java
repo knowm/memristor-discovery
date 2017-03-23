@@ -101,7 +101,7 @@ public class WaveformUtils {
 
     int counter = 0;
     double[] customWaveform = new double[4096];
-    double timeInc = 1 / frequency / 4096;
+    double timeInc = 1.0 / frequency / 4096;
 
     do {
       double time = counter * timeInc;

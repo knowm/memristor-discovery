@@ -118,7 +118,7 @@ public class ControlModel extends ExperimentControlModel {
       if (counter >= PulsePreferences.CAPTURE_BUFFER_SIZE) {
         break;
       }
-      waveformTimeData[counter] = i * 1_000_000;
+      waveformTimeData[counter] = i * PulsePreferences.TIME_UNIT.getDivisor();
       waveformAmplitudeData[counter++] = driver.getSignal(i);
     }
   }

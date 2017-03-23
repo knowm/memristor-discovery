@@ -40,7 +40,6 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.ConductancePreferences;
-import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.control.ControlPanel;
@@ -92,7 +91,7 @@ public class PulseExperiment extends Experiment {
       // Analog In /////////////////
       //////////////////////////////////
 
-      int samplesPerPulse = 300;
+      int samplesPerPulse = 100;
       double sampleFrequency = controlModel.getCalculatedFrequency() * samplesPerPulse;
       dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02 * (controlModel.getAmplitude() > 0 ? 1 : -1), samplesPerPulse * controlModel.getPulseNumber());
 
@@ -135,14 +134,13 @@ public class PulseExperiment extends Experiment {
       double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, 0.05, 10);
       double[] V1Trimmed = trimmedRawData[0];
       double[] V2Trimmed = trimmedRawData[1];
-      // double[] V2Zeroed = PostProcessDataUtils.zeroIdleData(V1Trimmed, V2Trimmed, 0.05);
       double[] V2MinusV1 = PostProcessDataUtils.getV1MinusV2(V1Trimmed, V2Trimmed);
 
       int bufferLength = V1Trimmed.length;
 
       // create time data
       double[] timeData = new double[bufferLength];
-      double timeStep = 1 / sampleFrequency * DCPreferences.TIME_UNIT.getDivisor();
+      double timeStep = 1.0 / sampleFrequency * PulsePreferences.TIME_UNIT.getDivisor();
       for (int i = 0; i < bufferLength; i++) {
         timeData[i] = i * timeStep;
       }
@@ -150,7 +148,7 @@ public class PulseExperiment extends Experiment {
       // create current data
       double[] current = new double[bufferLength];
       for (int i = 0; i < bufferLength; i++) {
-        current[i] = V2Trimmed[i] / controlModel.getSeriesResistance() * DCPreferences.CURRENT_UNIT.getDivisor();
+        current[i] = V2Trimmed[i] / controlModel.getSeriesResistance() * PulsePreferences.CURRENT_UNIT.getDivisor();
       }
 
       // create conductance data
@@ -158,7 +156,7 @@ public class PulseExperiment extends Experiment {
       for (int i = 0; i < bufferLength; i++) {
 
         double I = V2Trimmed[i] / controlModel.getSeriesResistance();
-        double G = I / (V1Trimmed[i] - V2Trimmed[i]) * DCPreferences.CONDUCTANCE_UNIT.getDivisor();
+        double G = I / (V1Trimmed[i] - V2Trimmed[i]) * PulsePreferences.CONDUCTANCE_UNIT.getDivisor();
         G = G < 0 ? 0 : G;
         conductance[i] = G;
       }
@@ -198,7 +196,7 @@ public class PulseExperiment extends Experiment {
         // Pulse Out /////////////////
         //////////////////////////////////
 
-        // read pulse: 0.1 V, 10 us pulse width
+        // read pulse: 0.1 V, 5 us pulse width
         customWaveform = WaveformUtils.generateCustomWaveform(Waveform.SquareSmooth, 0.1, 100_000);
         dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, 100_000, 0, 1, customWaveform);
 
