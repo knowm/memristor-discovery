@@ -36,7 +36,6 @@ import eu.hansolo.component.SteelCheckBox;
 public class HeaderPanel extends JPanel {
 
   private final static int NUM_SWITCHES = 8;
-  public final static int SWITCHES_MASK = 0b0000_0000_1111_1111;
   private final SteelCheckBox[] checkBoxes;
 
   private final Color warnColor = new Color(255, 33, 33);
@@ -74,7 +73,8 @@ public class HeaderPanel extends JPanel {
       checkBoxes[i].setSelected(bit > 0);
       checkBoxes[i].setBackground(null);
     }
-    if (digitalIOStates == 0) {
+    //  check lowest 8 bits for all zeros
+    if ((byte)(digitalIOStates & 0xFF) == 0) {
       setBackground(warnColor);
     }
     else {

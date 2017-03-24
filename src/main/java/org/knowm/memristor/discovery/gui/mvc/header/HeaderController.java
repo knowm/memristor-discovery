@@ -41,19 +41,19 @@ import eu.hansolo.component.SteelCheckBox;
 public class HeaderController implements PropertyChangeListener {
 
   private final HeaderPanel headerPanel;
-  private final DWFProxy dwf;
+  private final DWFProxy dwfProxy;
 
   /**
    * Constructor
    *
    * @param headerPanel
-   * @param dwf
+   * @param dwfProxy
    */
-  public HeaderController(HeaderPanel headerPanel, DWFProxy dwf) {
+  public HeaderController(HeaderPanel headerPanel, DWFProxy dwfProxy) {
 
     this.headerPanel = headerPanel;
-    this.dwf = dwf;
-    dwf.addListener(this);
+    this.dwfProxy = dwfProxy;
+    dwfProxy.addListener(this);
     setUpViewEvents();
   }
 
@@ -67,7 +67,7 @@ public class HeaderController implements PropertyChangeListener {
         public void actionPerformed(ActionEvent event) {
 
           SteelCheckBox cb = (SteelCheckBox) event.getSource();
-          dwf.updateDigitalIOState(cb.getId(), cb.isSelected());
+          dwfProxy.update2DigitalIOStatesAtOnce(cb.getId(), cb.isSelected());
         }
       });
     }
@@ -80,12 +80,12 @@ public class HeaderController implements PropertyChangeListener {
 
     case DWFProxy.AD2_STARTUP_CHANGE:
 
-      headerPanel.enableAllDigitalIOCheckBoxes(dwf.isAD2Running());
+      headerPanel.enableAllDigitalIOCheckBoxes(dwfProxy.isAD2Running());
       break;
 
     case DWFProxy.DIGITAL_IO_READ:
 
-      headerPanel.updateDigitalIOSwitches(dwf.getDigitalIOStates());
+      headerPanel.updateDigitalIOSwitches(dwfProxy.getDigitalIOStates());
       break;
 
     default:

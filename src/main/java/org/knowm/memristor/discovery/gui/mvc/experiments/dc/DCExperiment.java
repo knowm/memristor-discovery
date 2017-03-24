@@ -63,9 +63,9 @@ public class DCExperiment extends Experiment {
    * @param dwfProxy
    * @param mainFrameContainer
    */
-  public DCExperiment(DWFProxy dwfProxy, Container mainFrameContainer) {
+  public DCExperiment(DWFProxy dwfProxy, Container mainFrameContainer, boolean isV1Board) {
 
-    super(dwfProxy, mainFrameContainer);
+    super(dwfProxy, mainFrameContainer, isV1Board);
 
     controlPanel = new ControlPanel();
     plotPanel = new PlotPanel();

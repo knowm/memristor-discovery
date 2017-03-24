@@ -40,12 +40,16 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
 
 import org.knowm.memristor.discovery.DWFProxy;
+import org.knowm.memristor.discovery.gui.mvc.rightbar.RightBarController;
+import org.knowm.memristor.discovery.gui.mvc.rightbar.RightBarPanel;
 
 public abstract class Experiment implements PropertyChangeListener {
 
   public final DWFProxy dwfProxy;
 
   public final Container mainFrameContainer;
+
+  private final boolean isV1Board;
 
   private SwingWorker experimentCaptureWorker;
 
@@ -64,15 +68,20 @@ public abstract class Experiment implements PropertyChangeListener {
    *
    * @param dwfProxy
    */
-  public Experiment(DWFProxy dwfProxy, Container mainFrameContainer) {
+  public Experiment(DWFProxy dwfProxy, Container mainFrameContainer, boolean isV1Board) {
 
     this.dwfProxy = dwfProxy;
     this.mainFrameContainer = mainFrameContainer;
+    this.isV1Board = isV1Board;
   }
 
   public void createAndShowGUI() {
 
     doCreateAndShowGUI();
+
+    ////////////////////////
+    // Control Panel ///////
+    ////////////////////////
 
     JScrollPane jScrollPane = new JScrollPane(getControlPanel(), JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     jScrollPane.setBorder(createEmptyBorder());
@@ -109,8 +118,21 @@ public abstract class Experiment implements PropertyChangeListener {
       }
     });
 
-    // Plot Panel
+    ////////////////////////
+    // Plot Panel //////////
+    ////////////////////////
+
     mainFrameContainer.add(getPlotPanel(), BorderLayout.CENTER);
+
+    ////////////////////////
+    // Plot Panel //////////
+    ////////////////////////
+
+    if (isV1Board) {
+      RightBarPanel rightBarPanel = new RightBarPanel();
+      RightBarController rightBarController = new RightBarController(rightBarPanel, dwfProxy);
+      mainFrameContainer.add(rightBarPanel, BorderLayout.EAST);
+    }
   }
 
   public void refreshModelFromPreferences() {

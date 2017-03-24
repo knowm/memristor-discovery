@@ -49,7 +49,6 @@ import org.knowm.memristor.discovery.gui.AboutDialog;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentHelpDialog;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferencesPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.ConductanceExperiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.ConductancePreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCExperiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCPreferencesPanel;
@@ -80,13 +79,13 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
 
   private final static String FRAME_TITLE_BASE = "Knowm Memristor Discovery - ";
 
-  private final DWFProxy dwf = new DWFProxy();
+  // Board Version
+  private final boolean isV1Board;
 
-  // private final String[] experiments = new String[] { "Hysteresis", "Pulse", "QC" };
-  // private final String[] apps = new String[]{"Hysteresis", "Pulse", "DC", "Conductance"};
+  private final DWFProxy dwf;
+
   private final String[] apps = new String[]{"Hysteresis", "DC", "Pulse"};
   private String appID;
-  // private String appID = experiments[0];
   private Experiment experiment;
 
   // Swing Stuff
@@ -111,7 +110,8 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
       e.printStackTrace();
     }
 
-    final MemristorDiscovery memristorDiscovery = new MemristorDiscovery();
+    boolean isV1Board = args.length > 0 && args[0].equalsIgnoreCase("v1");
+    final MemristorDiscovery memristorDiscovery = new MemristorDiscovery(isV1Board);
 
     // Schedule a job for the event dispatch thread:
     // creating and showing this application's GUI.
@@ -123,6 +123,12 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
         memristorDiscovery.createAndShowGUI();
       }
     });
+  }
+
+  public MemristorDiscovery(boolean isV1Board) {
+
+    this.isV1Board = isV1Board;
+    this.dwf = new DWFProxy(isV1Board);
   }
 
   public void createAndShowGUI() {
@@ -191,19 +197,19 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
 
           switch (e.getActionCommand()) {
             case "Hysteresis":
-              experiment = new HysteresisExperiment(dwf, mainFrame.getContentPane());
+              experiment = new HysteresisExperiment(dwf, mainFrame.getContentPane(), isV1Board);
               break;
             case "Pulse":
-              experiment = new PulseExperiment(dwf, mainFrame.getContentPane());
+              experiment = new PulseExperiment(dwf, mainFrame.getContentPane(), isV1Board);
               break;
             case "DC":
-              experiment = new DCExperiment(dwf, mainFrame.getContentPane());
+              experiment = new DCExperiment(dwf, mainFrame.getContentPane(), isV1Board);
               break;
-            case "Conductance":
-              experiment = new ConductanceExperiment(dwf, mainFrame.getContentPane());
-              break;
+            // case "Conductance":
+            //   experiment = new ConductanceExperiment(dwf, mainFrame.getContentPane(), isV1Board);
+            //   break;
             case "QC":
-              experiment = new QCExperiment(dwf, mainFrame.getContentPane());
+              experiment = new QCExperiment(dwf, mainFrame.getContentPane(), isV1Board);
               break;
 
             default:
@@ -264,7 +270,7 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
 
     // default control injected here
 
-    experiment = new HysteresisExperiment(dwf, mainFrameContainer);
+    experiment = new HysteresisExperiment(dwf, mainFrameContainer, isV1Board);
     experiment.createAndShowGUI();
     appID = "Hysteresis";
 

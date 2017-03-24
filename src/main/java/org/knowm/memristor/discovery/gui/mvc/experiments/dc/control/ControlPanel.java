@@ -200,6 +200,7 @@ public class ControlPanel extends ExperimentControlPanel {
     amplitudeSlider.setEnabled(enabled);
     periodSlider.setEnabled(enabled);
     periodSliderNs.setEnabled(enabled);
+    pulseNumberSlider.setEnabled(enabled);
     seriesTextField.setEnabled(enabled);
     startStopButton.setEnabled(enabled);
   }

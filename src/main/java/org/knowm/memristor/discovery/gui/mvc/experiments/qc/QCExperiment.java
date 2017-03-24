@@ -76,9 +76,9 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
    * @param dwfProxy
    * @param mainFrameContainer
    */
-  public QCExperiment(DWFProxy dwfProxy, Container mainFrameContainer) {
+  public QCExperiment(DWFProxy dwfProxy, Container mainFrameContainer, boolean isV1Board) {
 
-    super(dwfProxy, mainFrameContainer);
+    super(dwfProxy, mainFrameContainer, isV1Board);
     createAndShowGUI(mainFrameContainer);
   }
 
@@ -123,7 +123,7 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
           ioException.printStackTrace();
         }
 
-        // switchPanel.enableAllDigitalIOCheckBoxes(false);
+        // switchPanel.enableAllRadioButtons(false);
         // controlPanel.enableAllChildComponents(false);
         controlPanel.getStartButton().setEnabled(false);
         controlPanel.getStopButton().setEnabled(true);
@@ -146,7 +146,7 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
       @Override
       public void actionPerformed(ActionEvent e) {
 
-        // switchPanel.enableAllDigitalIOCheckBoxes(true);
+        // switchPanel.enableAllRadioButtons(true);
         // controlPanel.enableAllChildComponents(true);
         controlPanel.getStartButton().setEnabled(true);
         controlPanel.getStopButton().setEnabled(false);
@@ -197,7 +197,7 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
         for (int j = 0; j < 8; j++) {
 
           // switch memristor
-          dwfProxy.updateDigitalIOState(j, true);
+          dwfProxy.update2DigitalIOStatesAtOnce(j, true);
 
           // start capture
           dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, model.getWaveform(), model.getFrequency(), model.getAmplitude(), model.getOffset(), 50);
