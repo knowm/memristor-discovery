@@ -58,6 +58,8 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulseExperiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.qc.QCExperiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.qc.QCPreferencesPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.SynapseExperiment;
+import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.SynapsePreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.footer.FooterController;
 import org.knowm.memristor.discovery.gui.mvc.footer.FooterPanel;
 import org.knowm.memristor.discovery.gui.mvc.header.HeaderController;
@@ -84,7 +86,8 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
 
   private final DWFProxy dwf;
 
-  private final String[] apps = new String[]{"Hysteresis", "DC", "Pulse"};
+  private final String[] appsV0 = new String[]{"Hysteresis", "DC", "Pulse"};
+  private final String[] appsV1 = new String[]{"Synapse"};
   private String appID;
   private Experiment experiment;
 
@@ -100,13 +103,7 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
     //Set the look and feel to users OS LaF.
     try {
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-    } catch (ClassNotFoundException e) {
-      e.printStackTrace();
-    } catch (InstantiationException e) {
-      e.printStackTrace();
-    } catch (IllegalAccessException e) {
-      e.printStackTrace();
-    } catch (UnsupportedLookAndFeelException e) {
+    } catch (ClassNotFoundException | InstantiationException | UnsupportedLookAndFeelException | IllegalAccessException e) {
       e.printStackTrace();
     }
 
@@ -172,9 +169,9 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
     JMenu menu = new JMenu("Experiments");
     menu.setMnemonic(KeyEvent.VK_A);
     menuBar.add(menu);
-    for (int i = 0; i < apps.length; i++) {
+    for (int i = 0; i < appsV0.length; i++) {
 
-      JMenuItem appMenuItem = new JMenuItem(new AbstractAction(apps[i]) {
+      JMenuItem appMenuItem = new JMenuItem(new AbstractAction(appsV0[i]) {
 
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -205,9 +202,9 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
             case "DC":
               experiment = new DCExperiment(dwf, mainFrame.getContentPane(), isV1Board);
               break;
-            // case "Conductance":
-            //   experiment = new ConductanceExperiment(dwf, mainFrame.getContentPane(), isV1Board);
-            //   break;
+            case "Synapse":
+              experiment = new SynapseExperiment(dwf, mainFrame.getContentPane(), isV1Board);
+              break;
             case "QC":
               experiment = new QCExperiment(dwf, mainFrame.getContentPane(), isV1Board);
               break;
@@ -224,6 +221,50 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
       });
       appMenuItem.setActionCommand(appMenuItem.getName());
       menu.add(appMenuItem);
+    }
+
+    if (isV1Board) {
+      for (int i = 0; i < appsV1.length; i++) {
+
+        JMenuItem appMenuItem = new JMenuItem(new AbstractAction(appsV1[i]) {
+
+          @Override
+          public void actionPerformed(ActionEvent e) {
+
+            try {
+              dwf.shutdownAD2();
+            } catch (DWFException e1) {
+              e1.printStackTrace();
+            }
+            Container mainFrameContainer = mainFrame.getContentPane();
+            mainFrameContainer.removeAll();
+            mainFrameContainer.revalidate();
+            mainFrameContainer.repaint();
+            mainFrameContainer.add(headerPanel, BorderLayout.NORTH);
+            mainFrameContainer.add(footerPanel, BorderLayout.SOUTH);
+
+            experiment = null;
+            appID = e.getActionCommand();
+            // System.out.println(appID);
+
+            switch (e.getActionCommand()) {
+              case "Synapse":
+                experiment = new SynapseExperiment(dwf, mainFrame.getContentPane(), isV1Board);
+                break;
+
+              default:
+                break;
+            }
+            experiment.createAndShowGUI();
+
+            dwf.startupAD2();
+
+            mainFrame.setTitle(FRAME_TITLE_BASE + e.getActionCommand());
+          }
+        });
+        appMenuItem.setActionCommand(appMenuItem.getName());
+        menu.add(appMenuItem);
+      }
     }
 
     // Window menu
@@ -270,10 +311,16 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
 
     // default control injected here
 
-    experiment = new HysteresisExperiment(dwf, mainFrameContainer, isV1Board);
-    experiment.createAndShowGUI();
-    appID = "Hysteresis";
-
+    if (isV1Board) {
+      experiment = new SynapseExperiment(dwf, mainFrameContainer, isV1Board);
+      experiment.createAndShowGUI();
+      appID = "Synapse";
+    }
+    else {
+      experiment = new HysteresisExperiment(dwf, mainFrameContainer, isV1Board);
+      experiment.createAndShowGUI();
+      appID = "Hysteresis";
+    }
     // experiment = new DCExperiment(dwf, mainFrameContainer);
     // experiment.createAndShowGUI();
     // appID = "DC";
@@ -353,6 +400,9 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
         break;
       case "Conductance":
         result = new ConductancePreferencesPanel(mainFrame).doModal();
+        break;
+      case "Synapse":
+        result = new SynapsePreferencesPanel(mainFrame).doModal();
         break;
       case "QC":
         result = new QCPreferencesPanel(mainFrame).doModal();

@@ -30,8 +30,10 @@ package org.knowm.memristor.discovery.utils;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Enumeration;
 import java.util.Properties;
 
+import javax.swing.AbstractButton;
 import javax.swing.ImageIcon;
 
 import org.slf4j.Logger;
@@ -108,5 +110,15 @@ public class Util {
   public static double getSwitchesSeriesResistance() {
 
     return 100.0; // 50 + 50 Ohm Vishay 445DY switches
+  }
+
+  public static void setButtonGroup(String rdValue, Enumeration elements) {
+
+    while (elements.hasMoreElements()) {
+      AbstractButton button = (AbstractButton) elements.nextElement();
+      if (button.getActionCommand() == rdValue) {
+        button.setSelected(true);
+      }
+    }
   }
 }

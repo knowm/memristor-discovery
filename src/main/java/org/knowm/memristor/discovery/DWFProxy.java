@@ -40,7 +40,8 @@ public class DWFProxy {
 
   public final static int SWITCHES_MASK = 0b1111_1111_1111_1111;
   public final static int ALL_DIO_OFF = 0b0000_0000_0000_0000;
-  public final static int DEFAULT_SELECTOR_DIO = 0b0001_1101_0000_0000;
+  public final static int DEFAULT_SELECTOR_DIO = 0b0001_1101_0000_0000; // the top 8 bits control the 4 MUXes
+  // public final static int DEFAULT_SELECTOR_DIO = 0b0000_0000_0000_0000;
 
   private final Logger logger = LoggerFactory.getLogger(DWFProxy.class);
 
@@ -108,6 +109,7 @@ public class DWFProxy {
         dwf.FDwfDigitalIOOutputEnableSet(SWITCHES_MASK);
         if (isV1Board) {
           digitalIOStates = DEFAULT_SELECTOR_DIO;
+          // System.out.println(Integer.toBinaryString(digitalIOStates));
         }
         else {
           digitalIOStates = ALL_DIO_OFF;
@@ -146,6 +148,7 @@ public class DWFProxy {
 
         System.out.println(dwf.FDwfGetLastErrorMsg());
       }
+      // swingPropertyChangeSupport.firePropertyChange(DWFProxy.AD2_STARTUP_CHANGE, !isAD2Running, isAD2Running);
       return isAD2Running;
     }
 
@@ -251,6 +254,30 @@ public class DWFProxy {
 
     boolean successful = dwf.FDwfDigitalIOOutputSet(digitalIOStates);
     logger.debug("AD2 Device Digital I/O Written: " + successful);
+    dwf.FDwfDigitalIOConfigure();
+
+    digitalIOStates = dwf.getDigitalIOStatus();
+    swingPropertyChangeSupport.firePropertyChange(DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
+  }
+
+  public void setUpper8IOStates(int upper8SetMask) {
+
+    // logger.debug("upper8SetMask: " + upper8SetMask);
+    int oldValDigitalIO = digitalIOStates;
+
+    int preserveLower8 = 0b0000_0000_1111_1111;
+
+    int zeroUpper8 = digitalIOStates & preserveLower8;
+
+    int setUpper8 = zeroUpper8 | upper8SetMask;
+
+    // Update model
+    digitalIOStates = setUpper8;
+
+    // logger.debug("new state: " + digitalIOStates);
+
+    boolean successful = dwf.FDwfDigitalIOOutputSet(digitalIOStates);
+    // logger.debug("AD2 Device Digital I/O Written: " + successful);
     dwf.FDwfDigitalIOConfigure();
 
     digitalIOStates = dwf.getDigitalIOStatus();

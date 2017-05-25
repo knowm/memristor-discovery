@@ -1,23 +1,21 @@
-# Pulse App
+# Synapse App
 
-This app allows you to drive a memristor in series with a resistor with one or more square pulse waveforms and observe the response as either a time series (V1+/T and V2+/T), I-T or G-T plot, revealing the incremental conductance behavior of the memristor.
+This app allows you to drive a 2-1 synapse with the kT-RAM instructions set and observe a continuous response in synaptic value on node `y` via repaeted `FFLV` instructions.
 
 ## Connections
 
-1.  Arbitrary Waveform Generator W1 (Analog Discovery 2's "W1" and "gnd" connectors) is connected across the memristor (M) and series resistor (R).
-2.  Oscilloscope Probe V1+ (Analog Discovery 2's "1+" and "1-" connectors) is connected across the memristor (M) and series resistor (Rs).
-3.  Oscilloscope Probe V2+ (Analog Discovery 2's "2+" and "2-" connectors) is connected across the series resistor (R).
+1. The jumper on the left side of memristor #1 connects to node `A`.
+1. The jumper on the right side of memristor #2 connects to node `B`.
+1. A jumper cable (white) connects the right side of memristor #1 with the left side of memristor #2.
+1. A jumper cable (yellow) connects the left side of memristor #2 with node `Y`.
 
 ## Memristor Selection
 
-Use the toggle switches near the top of the app window to connect one or more individual memristors into the circuit.
+Use the toggle switches near the top of the app window to connect the two individual memristors wired as a synapse into the circuit.
 
-## Series Resistor
+## Series Resistors
 
-The series resistor provide two important functions:
-
-1.  Limits the maximum current through the memristor to prevent device damage (see memristor datasheet).
-2.  Allows for a current measurement to be made with the oscilloscope (I = V2+/R).
+The jumpers on the left and right bypass the resistors. There is no serial resistor.
 
 ## Controls
 
