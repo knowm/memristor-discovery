@@ -262,7 +262,7 @@ public class DWFProxy {
 
   public void setUpper8IOStates(int upper8SetMask) {
 
-    // logger.debug("upper8SetMask: " + upper8SetMask);
+    logger.debug("upper8SetMask: " + upper8SetMask);
     int oldValDigitalIO = digitalIOStates;
 
     int preserveLower8 = 0b0000_0000_1111_1111;

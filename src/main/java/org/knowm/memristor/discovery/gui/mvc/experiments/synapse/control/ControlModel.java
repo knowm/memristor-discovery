@@ -48,7 +48,7 @@ public class ControlModel extends ExperimentControlModel {
    */
   public SynapsePreferences.Waveform waveform;
 
-  public Instruction instruction = Instruction.FFLV;
+  public Instruction instruction = Instruction.FF;
   /**
    * Events
    */

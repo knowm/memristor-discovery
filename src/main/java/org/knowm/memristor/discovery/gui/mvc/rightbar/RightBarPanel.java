@@ -341,6 +341,8 @@ public class RightBarPanel extends JPanel {
 
   public void enableAllRadioButtons(boolean ad2Running) {
 
+    ad2Running = false;
+
     oscilloscopeProbe10RadioButton.setEnabled(ad2Running);
     oscilloscopeProbe1ARadioButton.setEnabled(ad2Running);
     oscilloscopeProbe1BRadioButton.setEnabled(ad2Running);

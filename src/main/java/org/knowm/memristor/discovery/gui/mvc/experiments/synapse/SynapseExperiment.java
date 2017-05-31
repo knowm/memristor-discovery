@@ -104,10 +104,20 @@ public class SynapseExperiment extends Experiment {
       // Pulse Out /////////////////////
       //////////////////////////////////
 
-      // TODO implement AHaH Controller here. Given the instruction, set everything and send the pulse(es).
+      // The Instruction is pulled from the model, which reflects the selection on the GUI.
+      System.out.println("running = " + controlModel.getInstruction());
+      System.out.println("IO bits = " + Integer.toBinaryString(dwfProxy.getDigitalIOStates()));
 
-      // Get the waveform given the selected instruction
+      // Get the waveform for the selected instruction
       double[] customWaveform = WaveformUtils.generateCustomWaveform(controlModel.getWaveform(), controlModel.getAmplitude(), controlModel.getCalculatedFrequency());
+
+      // Here, we have the desired instruction, now...
+      // 1. the IO-bits are set (change things so they are set here),
+      dwfProxy.setUpper8IOStates(controlModel.getInstruction().getBits());
+
+      // 2. the waveform is set ( change this to correct amplitude and sign based on instruction)
+
+
 
       // TODO According to the documentation if you set the `idxChannel` to -1, it will configure and start a pulse for BOTH channels. I never tested it though (yet).
       // WAVEFORM_CHANNEL_BOTH
@@ -285,7 +295,7 @@ public class SynapseExperiment extends Experiment {
       case EVENT_INSTRUCTION_UPDATE:
 
         // System.out.println(controlModel.getInstruction());
-        dwfProxy.setUpper8IOStates(controlModel.getInstruction().getBits());
+        // dwfProxy.setUpper8IOStates(controlModel.getInstruction().getBits());
 
         break;
 
