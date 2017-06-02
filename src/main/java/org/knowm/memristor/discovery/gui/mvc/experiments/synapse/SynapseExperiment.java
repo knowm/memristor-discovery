@@ -88,7 +88,8 @@ public class SynapseExperiment extends Experiment {
     @Override
     protected Boolean doInBackground() throws Exception {
 
-      // NOTE: everytime start is clicked this runs. It first applied the desired instruction (no recording of what happens directly from the operation), followed by continuous FFLV pulses, reading the `y` value.
+      // NOTE: everytime start is clicked this runs. It first applies the desired instruction (no recording of what happens directly from the
+      // operation), followed by continuous FFLV pulses, reading the `y` value.
 
       //////////////////////////////////
       // Analog In /////////////////
@@ -108,20 +109,24 @@ public class SynapseExperiment extends Experiment {
       System.out.println("running = " + controlModel.getInstruction());
       System.out.println("IO bits = " + Integer.toBinaryString(dwfProxy.getDigitalIOStates()));
 
-      // Get the waveform for the selected instruction
-      double[] customWaveform = WaveformUtils.generateCustomWaveform(controlModel.getWaveform(), controlModel.getAmplitude(), controlModel.getCalculatedFrequency());
-
       // Here, we have the desired instruction, now...
       // 1. the IO-bits are set (change things so they are set here),
       dwfProxy.setUpper8IOStates(controlModel.getInstruction().getBits());
 
-      // 2. the waveform is set ( change this to correct amplitude and sign based on instruction)
-
-
+      // 2. set the waveforms ( change this to correct amplitude and sign based on instruction)
+      // Get the waveform for the selected instruction
+      double W2Amplitude = controlModel.getAmplitude() * controlModel.getInstruction().getW2VoltageMultiplier();
+      double[] customWaveformW2 = WaveformUtils.generateCustomWaveform(controlModel.getWaveform(), W2Amplitude, controlModel
+          .getCalculatedFrequency());
+      double W1Amplitude = controlModel.getAmplitude() * controlModel.getInstruction().getW1VoltageMultiplier();
+      double[] customWaveformW1 = WaveformUtils.generateCustomWaveform(controlModel.getWaveform(), W1Amplitude, controlModel.getCalculatedFrequency());
 
       // TODO According to the documentation if you set the `idxChannel` to -1, it will configure and start a pulse for BOTH channels. I never tested it though (yet).
       // WAVEFORM_CHANNEL_BOTH
-      dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, controlModel.getPulseNumber(), customWaveform);
+      dwfProxy.getDwf().setCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, controlModel.getPulseNumber(), customWaveformW1);
+      dwfProxy.getDwf().setCustomPulseTrain(DWF.WAVEFORM_CHANNEL_2, controlModel.getCalculatedFrequency(), 0, controlModel.getPulseNumber(),
+          customWaveformW2);
+      dwfProxy.getDwf().startPulseTrain(DWF.WAVEFORM_CHANNEL_BOTH);
       // TODO verify with oscilloscope that this is working ( it should )
 
       //////////////////////////////////
@@ -192,8 +197,9 @@ public class SynapseExperiment extends Experiment {
       // FFLV READ PULSES /////////////////
       //////////////////////////////////
 
-      // TODO set W1 MUX to A, W2 MUX to no, 1+ Mux to Y, 1+ Mux to no
-      // TODO it be even better to wrap that in a FFLV instruction utility, in fact all instructions should be wrapped in a utility.
+      // set the FFLV instruction
+      dwfProxy.setUpper8IOStates(AHaHController.Instruction.FF.getBits());
+
 
       while (!isCancelled()) {
 
@@ -221,8 +227,8 @@ public class SynapseExperiment extends Experiment {
 
         // TODO decide on the FFLV voltage ampl. and width. It's hardcoded here. Should be added to GUI as configurable?
         // FFLV pulse: 0.1 V, 5 us pulse width
-        customWaveform = WaveformUtils.generateCustomWaveform(Waveform.SquareSmooth, 0.1, 100_000);
-        dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, 100_000, 0, 1, customWaveform);
+        customWaveformW1 = WaveformUtils.generateCustomWaveform(Waveform.SquareSmooth, 0.1, 100_000);
+        dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, 100_000, 0, 1, customWaveformW1);
 
         ////////////////////////////////
         // Read In /////////////////////
@@ -235,8 +241,7 @@ public class SynapseExperiment extends Experiment {
           dwfProxy.getDwf().stopAnalogCaptureBothChannels();
           controlPanel.getStartStopButton().doClick();
           return false;
-        }
-        else {
+        } else {
 
           // Get Raw Data from Oscilloscope
           int validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();

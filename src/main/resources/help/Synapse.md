@@ -6,8 +6,8 @@ This app allows you to drive a 2-1 synapse with the kT-RAM instructions set and 
 
 1. The jumper on the left side of memristor #1 connects to node `A`.
 1. The jumper on the right side of memristor #2 connects to node `B`.
-1. A jumper cable (white) connects the right side of memristor #1 with the left side of memristor #2.
-1. A jumper cable (yellow) connects the left side of memristor #2 with node `Y`.
+1. A jumper cable connects the right side of memristor #1 with node `Y`.
+1. A jumper cable connects the left side of memristor #2 with node `Y`.
 
 ## Memristor Selection
 

@@ -54,7 +54,7 @@ public class ExperimentHelpDialog {
 
     JPanel helpPanel = new JPanel();
 
-    JLabel picLabel = new JLabel(Util.createImageIcon("help" + File.separatorChar + "Circuit.png"));
+    JLabel picLabel = new JLabel(Util.createImageIcon("help" + File.separatorChar + appName + ".png"));
     helpPanel.add(picLabel);
 
     System.out.println("markdownString = " + "help" + File.separatorChar + appName + ".md");
