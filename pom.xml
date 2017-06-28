@@ -53,7 +53,7 @@
         <dependency>
             <groupId>org.knowm.xchart</groupId>
             <artifactId>xchart</artifactId>
-            <version>3.3.0</version>
+            <version>3.3.2-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.pegdown</groupId>
