@@ -1,6 +1,6 @@
 # Synapse App
 
-This app allows you to drive a 2-1 synapse with the kT-RAM instructions set and observe a continuous response in synaptic value on node `y` via repaeted `FFLV` instructions.
+This app allows you to drive a 2-1 synapse with the kT-RAM instructions set and observe a continuous response in synaptic value on node `y` via repeated `FFLV` instructions.
 
 ## Connections
 

@@ -31,6 +31,8 @@ import static org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.
 
 import java.awt.Container;
 import java.beans.PropertyChangeEvent;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.SwingWorker;
@@ -41,6 +43,7 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
+import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.ConductancePreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlPanel;
@@ -50,6 +53,10 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.plot.PlotPanel;
 import org.knowm.memristor.discovery.utils.PostProcessDataUtils;
 import org.knowm.memristor.discovery.utils.WaveformUtils;
 import org.knowm.waveforms4j.DWF;
+import org.knowm.waveforms4j.DWFException;
+import org.knowm.waveforms4j.DWF.AcquisitionMode;
+import org.knowm.waveforms4j.DWF.AnalogTriggerCondition;
+import org.knowm.waveforms4j.DWF.AnalogTriggerType;
 
 public class SynapseExperiment extends Experiment {
 
@@ -121,13 +128,15 @@ public class SynapseExperiment extends Experiment {
       double W1Amplitude = controlModel.getAmplitude() * controlModel.getInstruction().getW1VoltageMultiplier();
       double[] customWaveformW1 = WaveformUtils.generateCustomWaveform(controlModel.getWaveform(), W1Amplitude, controlModel.getCalculatedFrequency());
 
-      // TODO According to the documentation if you set the `idxChannel` to -1, it will configure and start a pulse for BOTH channels. I never tested it though (yet).
-      // WAVEFORM_CHANNEL_BOTH
+      // TIM: According to the documentation if you set the `idxChannel` to -1, it will configure and start a pulse for BOTH channels. I never tested it though (yet).
+      // ALEX: This was confirmed on external oscilloscope pulse capture.
+     
+      System.out.println("W1 Waveform: "+Arrays.toString(customWaveformW1));
+      System.out.println("W2 Waveform: "+Arrays.toString(customWaveformW2));
+      
       dwfProxy.getDwf().setCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, controlModel.getPulseNumber(), customWaveformW1);
-      dwfProxy.getDwf().setCustomPulseTrain(DWF.WAVEFORM_CHANNEL_2, controlModel.getCalculatedFrequency(), 0, controlModel.getPulseNumber(),
-          customWaveformW2);
+      dwfProxy.getDwf().setCustomPulseTrain(DWF.WAVEFORM_CHANNEL_2, controlModel.getCalculatedFrequency(), 0, controlModel.getPulseNumber(), customWaveformW2);
       dwfProxy.getDwf().startPulseTrain(DWF.WAVEFORM_CHANNEL_BOTH);
-      // TODO verify with oscilloscope that this is working ( it should )
 
       //////////////////////////////////
       //////////////////////////////////
@@ -197,10 +206,20 @@ public class SynapseExperiment extends Experiment {
       // FFLV READ PULSES /////////////////
       //////////////////////////////////
 
-      // set the FFLV instruction
-      dwfProxy.setUpper8IOStates(AHaHController.Instruction.FF.getBits());
+      /*
+       Order ==> W2, W1, 2+, 1+
+       00 E
+       10 Y
+       01 A
+       11 B
+       */
+      //W2->E,W1-->A, 2+-->Y,1+-->B
+      dwfProxy.setUpper8IOStates(0b0001_1011_0000_0000);
 
-
+      double readVoltage=.1;
+      int samplesPerPulse = 300;
+      int sampleFrequency = 10_000 * samplesPerPulse;
+      
       while (!isCancelled()) {
 
         try {
@@ -211,29 +230,29 @@ public class SynapseExperiment extends Experiment {
           dwfProxy.getDwf().stopAnalogCaptureBothChannels();
         }
 
-        //////////////////////////////////
+        
+        /*
+         * Apply a pulse across both memristors and the series resistor, measure Y and B to determine conductance of both memristors
+         * 
+         */
+     
+        
+        /////////////////////////////
         // Analog In /////////////////
-        //////////////////////////////////
-
-        // trigger on 20% the rising .1 V read pulse
-        int samplesPerPulse = 300;
-        int sampleFrequency = 100_000 * samplesPerPulse;
-        dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02, samplesPerPulse * 1);
+        //////////////////////////////
+       // dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.01, samplesPerPulse * 1);
+        startAnalogCaptureBothChannelsTriggerW1(sampleFrequency, samplesPerPulse * 1);
         waitUntilArmed();
 
         //////////////////////////////////
         // Pulse Out /////////////////
         //////////////////////////////////
-
-        // TODO decide on the FFLV voltage ampl. and width. It's hardcoded here. Should be added to GUI as configurable?
-        // FFLV pulse: 0.1 V, 5 us pulse width
-        customWaveformW1 = WaveformUtils.generateCustomWaveform(Waveform.SquareSmooth, 0.1, 100_000);
-        dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, 100_000, 0, 1, customWaveformW1);
+        customWaveformW1 = WaveformUtils.generateCustomWaveform(Waveform.HalfSine, readVoltage, 10_000);
+        dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, 10_000, 0, 1, customWaveformW1);
 
         ////////////////////////////////
         // Read In /////////////////////
         ////////////////////////////////
-
         boolean success = capturePulseData(100_000, 1);
         if (!success) {
           // Stop Analog In and Out
@@ -246,26 +265,35 @@ public class SynapseExperiment extends Experiment {
           // Get Raw Data from Oscilloscope
           int validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
           double[] v1 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
-          // double[] v2 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
+          double[] v2 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
 
           ///////////////////////////
           // Create Chart Data //////
           ///////////////////////////
 
-          double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v1, 0.08, 0);
-          double[] V1Trimmed = trimmedRawData[0];
-          int bufferLength = V1Trimmed.length;
-
-          // create conductance data - a single number equal to the average of all points in the trimmed data
-          double runningTotal = 0.0;
-          for (int i = 3; i < bufferLength - 3; i++) {
-            double y = V1Trimmed[i] / 0.1; // 0.1V is the above hardcoded FFLV read pulse ampl. y=is the voltage divider value: V_y/V_applied
-            y = y < 0 ? 0 : y;
-            runningTotal += y;
-          }
-          double yAve = runningTotal / (bufferLength - 6); // an array with one value: `y`
-
-          publish(yAve);
+          //double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, 0.08, 0);
+        //  double[] V1Trimmed = trimmedRawData[0];
+        //  double[] V2Trimmed = trimmedRawData[1];
+          
+          
+          double peakV1=max(v1);
+          double peakV2=max(v2);
+          
+          double vM1=readVoltage-peakV2;
+          double vM2=peakV2-peakV1;
+          double vR=peakV1;
+          
+          double I=vR/controlModel.getSeriesResistance();
+          double Gm1=ConductancePreferences.CONDUCTANCE_UNIT.getDivisor()*I/vM1;
+          double Gm2=ConductancePreferences.CONDUCTANCE_UNIT.getDivisor()*I/vM2;
+          
+//          System.out.println("seriesResistance="+controlModel.getSeriesResistance());
+//          System.out.println("I="+I);
+//          System.out.println("Gm1="+Gm1);
+//          System.out.println("Gm2="+Gm2);
+//          System.out.println("ConductancePreferences.CONDUCTANCE_UNIT.getDivisor()"+ConductancePreferences.CONDUCTANCE_UNIT.getDivisor());
+// 
+          publish(Gm1,Gm2);
         }
         // Stop Analog In and Out
         dwfProxy.getDwf().stopWave(DWF.WAVEFORM_CHANNEL_1);
@@ -274,14 +302,19 @@ public class SynapseExperiment extends Experiment {
       return true;
     }
 
+    
+    private double max(double[] x) {
+      
+      double max=Float.MIN_VALUE;
+      for (int i = 0; i < x.length; i++) {
+        max=x[i]>max?x[i]:max;
+      }
+      return max;
+    }
+    
     @Override
     protected void process(List<Double> chunks) {
-
-      double newestChunk = chunks.get(chunks.size() - 1);
-
-      // update Y chart
-      controlModel.setLastY(newestChunk);
-      plotController.updateYChartData(controlModel.getLastY());
+      plotController.updateYChartData(chunks.get(0),chunks.get(chunks.size() - 1));
       plotController.repaintYChart();
     }
   }
@@ -309,6 +342,50 @@ public class SynapseExperiment extends Experiment {
     }
   }
 
+  public boolean startAnalogCaptureBothChannelsTriggerW1(double sampleFrequency, int bufferSize) {
+
+    // System.out.println("triggerLevel = " + triggerLevel);
+    if (bufferSize > DWF.AD2_MAX_BUFFER_SIZE) {
+     // logger.error("Buffer size larger than allowed size. Setting to " + DWF.AD2_MAX_BUFFER_SIZE);
+      bufferSize = DWF.AD2_MAX_BUFFER_SIZE;
+    }
+
+    boolean success = true;
+    success = success && dwfProxy.getDwf().FDwfAnalogInFrequencySet(sampleFrequency);
+    success = success && dwfProxy.getDwf().FDwfAnalogInBufferSizeSet(bufferSize);
+    success = success && dwfProxy.getDwf().FDwfAnalogInTriggerPositionSet((bufferSize / 2) / sampleFrequency); // no buffer prefill
+
+    success = success && dwfProxy.getDwf().FDwfAnalogInChannelEnableSet(DWF.OSCILLOSCOPE_CHANNEL_1, true);
+    success = success && dwfProxy.getDwf().FDwfAnalogInChannelRangeSet(DWF.OSCILLOSCOPE_CHANNEL_1, 2.5);
+    success = success && dwfProxy.getDwf().FDwfAnalogInChannelEnableSet(DWF.OSCILLOSCOPE_CHANNEL_2, true);
+    success = success && dwfProxy.getDwf().FDwfAnalogInChannelRangeSet(DWF.OSCILLOSCOPE_CHANNEL_2, 2.5);
+    success = success && dwfProxy.getDwf().FDwfAnalogInAcquisitionModeSet(AcquisitionMode.Single.getId());
+    // Trigger single capture on rising edge of analog signal pulse
+    success = success && dwfProxy.getDwf().FDwfAnalogInTriggerAutoTimeoutSet(0); // disable auto trigger
+    success = success && dwfProxy.getDwf().FDwfAnalogInTriggerSourceSet(DWF.TriggerSource.trigsrcAnalogOut1.getId()); // one of the analog in channels
+    success = success && dwfProxy.getDwf().FDwfAnalogInTriggerTypeSet(AnalogTriggerType.trigtypeEdge.getId());
+    success = success && dwfProxy.getDwf().FDwfAnalogInTriggerChannelSet(0); // first channel
+    // Trigger Level
+///    if (triggerLevel > 0) {
+//      success = success && dwfProxy.getDwf().FDwfAnalogInTriggerConditionSet(AnalogTriggerCondition.trigcondRisingPositive.getId());
+//      success = success && dwfProxy.getDwf().FDwfAnalogInTriggerLevelSet(triggerLevel);
+//    } else {
+//      success = success && dwfProxy.getDwf().FDwfAnalogInTriggerConditionSet(AnalogTriggerCondition.trigcondFallingNegative.getId());
+//      success = success && dwfProxy.getDwf().FDwfAnalogInTriggerLevelSet(triggerLevel);
+//    }
+
+    // arm the capture
+    success = success && dwfProxy.getDwf().FDwfAnalogInConfigure(true, true);
+    if (!success) {
+      dwfProxy.getDwf().FDwfAnalogInChannelEnableSet(DWF.OSCILLOSCOPE_CHANNEL_1, true);
+      dwfProxy.getDwf().FDwfAnalogInChannelEnableSet(DWF.OSCILLOSCOPE_CHANNEL_2, true);
+      dwfProxy.getDwf().FDwfAnalogInConfigure(false, false);
+      throw new DWFException(dwfProxy.getDwf().FDwfGetLastErrorMsg());
+    }
+    return true;
+  }
+  
+  
   public ExperimentControlModel getControlModel() {
 
     return controlModel;

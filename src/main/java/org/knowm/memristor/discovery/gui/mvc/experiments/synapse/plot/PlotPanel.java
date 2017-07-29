@@ -38,6 +38,7 @@ import org.knowm.xchart.XChartPanel;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
 import org.knowm.xchart.XYSeries;
+import org.knowm.xchart.style.Styler.LegendPosition;
 import org.knowm.xchart.style.markers.SeriesMarkers;
 
 public class PlotPanel extends ExperimentPlotPanel {
@@ -59,13 +60,18 @@ public class PlotPanel extends ExperimentPlotPanel {
     // G Chart ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    gChart = new XYChartBuilder().width(100).title("Y").height(250).xAxisTitle("Sample").yAxisTitle("Y").build();
-    gChart.getStyler().setLegendVisible(false);
+    gChart = new XYChartBuilder().width(100).title("Synapse Conductance").height(250).xAxisTitle("Sample").yAxisTitle("Conductance (mS)").build();
+    gChart.getStyler().setLegendVisible(true);
+    gChart.getStyler().setLegendPosition(LegendPosition.InsideSE);
     gChart.getStyler().setYAxisMin(0.0);
-    XYSeries series = gChart.addSeries("y", new double[]{0}, new double[]{0});
-    series.setMarker(SeriesMarkers.NONE);
-    series = gChart.addSeries("ylast", new double[]{0}, new double[]{0});
-    series.setMarker(SeriesMarkers.NONE);
+   
+    XYSeries series1 = gChart.addSeries("G(M1)", new double[]{0}, new double[]{0});
+    series1.setMarker(SeriesMarkers.NONE);
+    XYSeries series2 = gChart.addSeries("G(M2)", new double[]{0}, new double[]{0});
+    series2.setMarker(SeriesMarkers.NONE);
+    
+
+    
     gChartPanel = new XChartPanel<>(gChart);
 
     // ///////////////////////////////////////////////////////////

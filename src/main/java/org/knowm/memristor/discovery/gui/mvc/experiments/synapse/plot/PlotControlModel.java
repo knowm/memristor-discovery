@@ -46,7 +46,8 @@ public class PlotControlModel extends ExperimentControlModel {
   Double yMaxGV = null;
   Double yMinGV = null;
 
-  List<Double> gData = new ArrayList<>();
+  List<Double> gm1Data = new ArrayList<>();
+  List<Double> gm2Data = new ArrayList<>();
 
   /**
    * Here is where the Controller registers itself as a listener to model changes.
@@ -109,8 +110,12 @@ public class PlotControlModel extends ExperimentControlModel {
 
   }
 
-  public List<Double> getGData() {
+  public List<Double> getGM1Data() {
 
-    return gData;
+    return gm1Data;
+  }
+  public List<Double> getGM2Data() {
+
+    return gm2Data;
   }
 }
