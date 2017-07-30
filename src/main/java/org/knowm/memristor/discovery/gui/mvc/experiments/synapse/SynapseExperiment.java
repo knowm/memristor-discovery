@@ -141,66 +141,13 @@ public class SynapseExperiment extends Experiment {
       //////////////////////////////////
       //////////////////////////////////
 
-      // // Read In Data
-      // boolean success = capturePulseData(controlModel.getCalculatedFrequency(), controlModel.getPulseNumber());
-      // if (!success) {
-      //   // Stop Analog In and Out
-      //   dwfProxy.getDwf().stopWave(DWF.WAVEFORM_CHANNEL_1);
-      //   dwfProxy.getDwf().stopAnalogCaptureBothChannels();
-      //   controlPanel.getStartStopButton().doClick();
-      //   return false;
-      // }
-      //
-      // // Get Raw Data from Oscilloscope
-      // int validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
-      // double[] v1 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
-      // double[] v2 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
-      // // System.out.println("validSamples: " + validSamples);
-      //
-      // // Stop Analog In and Out
-      // dwfProxy.getDwf().stopWave(DWF.WAVEFORM_CHANNEL_1);
-      // dwfProxy.getDwf().stopAnalogCaptureBothChannels();
-      //
-      // ///////////////////////////
-      // // Create Chart Data //////
-      // ///////////////////////////
-      //
-      // double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, 0.05, 10);
-      // double[] V1Trimmed = trimmedRawData[0];
-      // double[] V2Trimmed = trimmedRawData[1];
-      // double[] V2MinusV1 = PostProcessDataUtils.getV1MinusV2(V1Trimmed, V2Trimmed);
-      //
-      // int bufferLength = V1Trimmed.length;
-      //
-      // // create time data
-      // double[] timeData = new double[bufferLength];
-      // double timeStep = 1.0 / sampleFrequency * SynapsePreferences.TIME_UNIT.getDivisor();
-      // for (int i = 0; i < bufferLength; i++) {
-      //   timeData[i] = i * timeStep;
-      // }
-      //
-      // // create current data
-      // double[] current = new double[bufferLength];
-      // for (int i = 0; i < bufferLength; i++) {
-      //   current[i] = V2Trimmed[i] / controlModel.getSeriesResistance() * SynapsePreferences.CURRENT_UNIT.getDivisor();
-      // }
-      //
-      // // create conductance data
-      // double[] conductance = new double[bufferLength];
-      // for (int i = 0; i < bufferLength; i++) {
-      //
-      //   double I = V2Trimmed[i] / controlModel.getSeriesResistance();
-      //   double G = I / (V1Trimmed[i] - V2Trimmed[i]) * SynapsePreferences.CONDUCTANCE_UNIT.getDivisor();
-      //   G = G < 0 ? 0 : G;
-      //   conductance[i] = G;
-      // }
-      //
-      // publish(new double[][]{timeData, V1Trimmed, V2Trimmed, V2MinusV1, current, conductance, null});
-      //
-      // while (!initialPulseTrainCaptured) {
-      //   // System.out.println("Waiting...");
-      //   Thread.sleep(50);
-      // }
+      try {
+        Thread.sleep(500);
+      } catch (InterruptedException e) {
+        
+      }
+      
+   
 
       //////////////////////////////////
       // FFLV READ PULSES /////////////////
@@ -342,6 +289,7 @@ public class SynapseExperiment extends Experiment {
     }
   }
 
+  //this is for trigger from the analog out channel instead of analog in
   public boolean startAnalogCaptureBothChannelsTriggerW1(double sampleFrequency, int bufferSize) {
 
     // System.out.println("triggerLevel = " + triggerLevel);

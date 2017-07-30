@@ -63,13 +63,14 @@ public class PlotPanel extends ExperimentPlotPanel {
     gChart = new XYChartBuilder().width(100).title("Synapse Conductance").height(250).xAxisTitle("Sample").yAxisTitle("Conductance (mS)").build();
     gChart.getStyler().setLegendVisible(true);
     gChart.getStyler().setLegendPosition(LegendPosition.InsideSE);
-    gChart.getStyler().setYAxisMin(0.0);
+   // gChart.getStyler().setYAxisMin(0.0);
    
     XYSeries series1 = gChart.addSeries("G(M1)", new double[]{0}, new double[]{0});
     series1.setMarker(SeriesMarkers.NONE);
     XYSeries series2 = gChart.addSeries("G(M2)", new double[]{0}, new double[]{0});
     series2.setMarker(SeriesMarkers.NONE);
-    
+    XYSeries series3 = gChart.addSeries("G(M1-M2)", new double[]{0}, new double[]{0});
+    series3.setMarker(SeriesMarkers.NONE);
 
     
     gChartPanel = new XChartPanel<>(gChart);

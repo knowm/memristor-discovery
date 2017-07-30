@@ -87,10 +87,12 @@ public class PlotController implements PropertyChangeListener {
 
     plotModel.getGM1Data().add(g_m1);
     plotModel.getGM2Data().add(g_m2);
-    plotPanel.getGChart().getStyler().setYAxisMax(plotModel.getyMaxGV());
-    plotPanel.getGChart().getStyler().setYAxisMin(0.0);
+    plotModel.getGM3Data().add(g_m1-g_m2);
+   // plotPanel.getGChart().getStyler().setYAxisMax(plotModel.getyMaxGV());
+   // plotPanel.getGChart().getStyler().setYAxisMin(plotModel.getyMinGV());
     plotPanel.getGChart().updateXYSeries("G(M1)", null, plotModel.getGM1Data(), null);
     plotPanel.getGChart().updateXYSeries("G(M2)", null, plotModel.getGM2Data(), null);
+    plotPanel.getGChart().updateXYSeries("G(M1-M2)", null, plotModel.getGM3Data(), null);
    // plotPanel.getGChart().updateXYSeries("ylast", new double[]{1, plotModel.getGData().size()}, new double[]{conductance, conductance}, null);
   }
 
