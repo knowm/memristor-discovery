@@ -92,6 +92,21 @@ public class Util {
     }
   }
 
+  public static double maxAbs(double[] x) {
+
+    double max = Float.MIN_VALUE;
+    double b = 0;
+    for (int i = 0; i < x.length; i++) {
+      double a = Math.abs(x[i]);
+      if (a > max) {
+        max = a;
+        b = x[i];
+      }
+
+    }
+    return b;
+  }
+
   public static double round(double value, int places) {
 
     if (places < 0)

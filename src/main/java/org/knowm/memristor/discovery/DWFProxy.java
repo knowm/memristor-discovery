@@ -48,9 +48,9 @@ public class DWFProxy {
   public static final String AD2_STARTUP_CHANGE = "AD2_START_UP";
   public static final String DIGITAL_IO_READ = "DIGITAL_IO_READ";
 
-  /////////////////////////////////////////////////////////////
+  // ///////////////////////////////////////////////////////////
   // State Variables //////////////////////////////////////////
-  /////////////////////////////////////////////////////////////
+  // ///////////////////////////////////////////////////////////
 
   private boolean isAD2Running = false;
   private int digitalIOStates = ALL_DIO_OFF;
@@ -86,14 +86,54 @@ public class DWFProxy {
     new AD2StartupWorker().execute();
   }
 
+  public void waitUntilArmed() {
+
+    // long startTime = System.currentTimeMillis();
+    while (true) {
+      byte status = dwf.FDwfAnalogInStatus(true);
+      // System.out.println("status: " + status);
+      if (status == 1) { // armed
+        // System.out.println("armed.");
+        break;
+      }
+    }
+    // System.out.println("time = " + (System.currentTimeMillis() - startTime));
+
+  }
+
+  public boolean capturePulseData(double frequency, int pulseNumber) {
+
+    // Read In Data
+    int bailCount = 0;
+    while (true) {
+      try {
+        long sleepTime = (long) (1 / frequency * pulseNumber * 1000);
+        // System.out.println("sleepTime = " + sleepTime);
+        Thread.sleep(sleepTime);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+      byte status = dwf.FDwfAnalogInStatus(true);
+      // System.out.println("status: " + status);
+      if (status == 2) { // done capturing
+        // System.out.println("bailCount = " + bailCount);
+        return true;
+      }
+      if (bailCount++ > 1000) {
+        System.out.println("Bailed!!!");
+        return false;
+      }
+    }
+  }
+
   private class AD2StartupWorker extends SwingWorker<Boolean, Void> {
 
     @Override
     protected Boolean doInBackground() throws Exception {
 
-      /////////////////////////////////////////////////////////////
+      // ///////////////////////////////////////////////////////////
       // Device ///////////////////////////////////////////////////
-      /////////////////////////////////////////////////////////////
+      // ///////////////////////////////////////////////////////////
       isAD2Running = dwf.FDwfDeviceOpen();
 
       if (isAD2Running) {
@@ -103,14 +143,15 @@ public class DWFProxy {
         // System.out.println("Analog Out Custom Waveform Buffer Size Channel 2: "+Arrays.toString(dwf.FDwfAnalogOutNodeDataInfo(DWF.WAVEFORM_CHANNEL_2)));
         // System.out.println("Analog In Trigger Position Info: "+ Arrays.toString(dwf.FDwfAnalogInTriggerPositionInfo()));
 
-        /////////////////////////////////////////////////////////////
+        // ///////////////////////////////////////////////////////////
         // Digital I/O //////////////////////////////////////////////
-        /////////////////////////////////////////////////////////////
+        // ///////////////////////////////////////////////////////////
         dwf.FDwfDigitalIOOutputEnableSet(SWITCHES_MASK);
         if (isV1Board) {
           digitalIOStates = DEFAULT_SELECTOR_DIO;
           // System.out.println(Integer.toBinaryString(digitalIOStates));
-        } else {
+        }
+        else {
           digitalIOStates = ALL_DIO_OFF;
         }
         dwf.FDwfDigitalIOOutputSet(digitalIOStates);
@@ -118,23 +159,23 @@ public class DWFProxy {
         digitalIOStates = dwf.getDigitalIOStatus();
         swingPropertyChangeSupport.firePropertyChange(DWFProxy.DIGITAL_IO_READ, true, false);
 
-        /////////////////////////////////////////////////////////////
+        // ///////////////////////////////////////////////////////////
         // Analog I/O //////////////////////////////////////////////
-        /////////////////////////////////////////////////////////////
+        // ///////////////////////////////////////////////////////////
         dwf.setPowerSupply(0, 5.0);
         dwf.setPowerSupply(1, -5.0);
 
-        /////////////////////////////////////////////////////////////
+        // ///////////////////////////////////////////////////////////
         // Analog Out //////////////////////////////////////////////
-        /////////////////////////////////////////////////////////////
+        // ///////////////////////////////////////////////////////////
         // set analog out offset to zero, as it seems like it's not quite there by default
         dwf.FDwfAnalogOutNodeOffsetSet(DWF.WAVEFORM_CHANNEL_1, 0);
         dwf.FDwfAnalogOutNodeOffsetSet(DWF.WAVEFORM_CHANNEL_2, 0);
         // dwf.FDwfAnalogOutConfigure(DWF.WAVEFORM_CHANNEL_1, true);
 
-        /////////////////////////////////////////////////////////////
+        // ///////////////////////////////////////////////////////////
         // Analog In //////////////////////////////////////////////
-        /////////////////////////////////////////////////////////////
+        // ///////////////////////////////////////////////////////////
         dwf.FDwfAnalogInChannelEnableSet(DWF.OSCILLOSCOPE_CHANNEL_1, true);
         dwf.FDwfAnalogInChannelRangeSet(DWF.OSCILLOSCOPE_CHANNEL_1, 2.5);
         dwf.FDwfAnalogInChannelEnableSet(DWF.OSCILLOSCOPE_CHANNEL_2, true);
@@ -142,7 +183,8 @@ public class DWFProxy {
 
         // Set this to false (default=true). Need to call FDwfAnalogOutConfigure(true), FDwfAnalogInConfigure(true) in order for *Set* methods to take effect.
         dwf.FDwfDeviceAutoConfigureSet(false);
-      } else {
+      }
+      else {
 
         System.out.println(dwf.FDwfGetLastErrorMsg());
       }
@@ -162,32 +204,32 @@ public class DWFProxy {
    */
   public void shutdownAD2() {
 
-    /////////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////////
     // Digital I/O //////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////////
     setAllIOStates(ALL_DIO_OFF);
     dwf.FDwfDigitalIOReset();
     dwf.FDwfDigitalOutReset();
 
-    /////////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////////
     // Analog Out ///////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////////
     dwf.FDwfAnalogOutConfigure(DWF.WAVEFORM_CHANNEL_1, false);
 
-    /////////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////////
     // Analog In ///////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////////
     dwf.FDwfAnalogInConfigure(false, false);
 
-    /////////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////////
     // Analog I/O //////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////////
     dwf.setPowerSupply(0, 0.0);
     dwf.setPowerSupply(1, 0.0);
 
-    /////////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////////
     // Device //////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////////
     boolean oldValDevice = isAD2Running;
     isAD2Running = false;
     dwf.FDwfDeviceCloseAll();
@@ -214,7 +256,8 @@ public class DWFProxy {
     // Update model
     if (isOn) {
       digitalIOStates = digitalIOStates | (1 << toggleClickedID);
-    } else {
+    }
+    else {
       digitalIOStates = digitalIOStates & ~(1 << toggleClickedID);
     }
 
@@ -236,12 +279,14 @@ public class DWFProxy {
     // Update model
     if (value1) {
       digitalIOStates = digitalIOStates | (1 << io1);
-    } else {
+    }
+    else {
       digitalIOStates = digitalIOStates & ~(1 << io1);
     }
     if (value2) {
       digitalIOStates = digitalIOStates | (1 << io2);
-    } else {
+    }
+    else {
       digitalIOStates = digitalIOStates & ~(1 << io2);
     }
 
@@ -297,9 +342,9 @@ public class DWFProxy {
     swingPropertyChangeSupport.firePropertyChange(DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
   }
 
-  /////////////////////////////////////////////////////////////
+  // ///////////////////////////////////////////////////////////
   // Getters and Setters //////////////////////////////////////
-  /////////////////////////////////////////////////////////////
+  // ///////////////////////////////////////////////////////////
 
   public int getDigitalIOStates() {
 

@@ -182,7 +182,8 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
         reportLines.add("## Testing Conditions");
         reportLines.add("|Waveform|Amplitude|Offset|Frequency|Series Resistor|");
         reportLines.add("|:--:|:--:|:--:|:--:|");
-        reportLines.add("|" + model.getWaveform() + "|" + model.getAmplitude() + "V|" + model.getOffset() + " V|" + model.getFrequency() + " Hz|" + f.format(model.getSeriesResistance() / 1000.0) + "|");
+        reportLines.add("|" + model.getWaveform() + "|" + model.getAmplitude() + "V|" + model.getOffset() + " V|" + model.getFrequency() + " Hz|" + f.format(model.getSeriesResistance() / 1000.0)
+            + "|");
         reportLines.add("");
 
         reportLines.add("## Test Result");
@@ -221,7 +222,7 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
             }
 
             // Read In Data
-            boolean success = capturePulseData(model.getFrequency(), 1);
+            boolean success = dwfProxy.capturePulseData(model.getFrequency(), 1);
             if (!success) {
               continue;
             }
@@ -254,7 +255,7 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
                 }
               }
 
-              publish(new double[][]{rawdata1, voltage, current});
+              publish(new double[][] { rawdata1, voltage, current });
 
               // System.out.println("voltage: " + Arrays.toString(voltage));
               // System.out.println("current: " + Arrays.toString(current));
@@ -412,32 +413,33 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
 
     switch (propName) {
 
-      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
+    case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
 
-        if (true) { // TODO fix this when converting to new experiment abstraction
+      if (true) { // TODO fix this when converting to new experiment abstraction
 
-          // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
-          captureWorker.cancel(true);
+        // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
+        captureWorker.cancel(true);
 
-          try {
-            Thread.sleep(10);
-          } catch (InterruptedException e) {
-            e.printStackTrace();
-          }
-
-          // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
-          captureWorker = new QCCaptureWorker();
-          captureWorker.execute();
-
-          mainPanel.switch2IVChart();
+        try {
+          Thread.sleep(10);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
         }
-        break;
 
-      default:
-        break;
+        // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
+        captureWorker = new QCCaptureWorker();
+        captureWorker.execute();
+
+        mainPanel.switch2IVChart();
+      }
+      break;
+
+    default:
+      break;
     }
   }
 
+  @Override
   public ExperimentControlModel getControlModel() {
 
     return model;

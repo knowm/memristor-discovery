@@ -79,9 +79,9 @@ public abstract class Experiment implements PropertyChangeListener {
 
     doCreateAndShowGUI();
 
-    ////////////////////////
+    // //////////////////////
     // Control Panel ///////
-    ////////////////////////
+    // //////////////////////
 
     JScrollPane jScrollPane = new JScrollPane(getControlPanel(), JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     jScrollPane.setBorder(createEmptyBorder());
@@ -118,15 +118,15 @@ public abstract class Experiment implements PropertyChangeListener {
       }
     });
 
-    ////////////////////////
+    // //////////////////////
     // Plot Panel //////////
-    ////////////////////////
+    // //////////////////////
 
     mainFrameContainer.add(getPlotPanel(), BorderLayout.CENTER);
 
-    ////////////////////////
+    // //////////////////////
     // Plot Panel //////////
-    ////////////////////////
+    // //////////////////////
 
     if (isV1Board) {
       RightBarPanel rightBarPanel = new RightBarPanel();
@@ -140,43 +140,4 @@ public abstract class Experiment implements PropertyChangeListener {
     getControlModel().loadModelFromPrefs();
   }
 
-  public boolean capturePulseData(double frequency, int pulseNumber) {
-
-    // Read In Data
-    int bailCount = 0;
-    while (true) {
-      try {
-        long sleepTime = (long) (1 / frequency * pulseNumber * 1000);
-        // System.out.println("sleepTime = " + sleepTime);
-        Thread.sleep(sleepTime);
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
-      byte status = dwfProxy.getDwf().FDwfAnalogInStatus(true);
-      // System.out.println("status: " + status);
-      if (status == 2) { // done capturing
-        // System.out.println("bailCount = " + bailCount);
-        return true;
-      }
-      if (bailCount++ > 1000) {
-        System.out.println("Bailed!!!");
-        return false;
-      }
-    }
-  }
-
-  public void waitUntilArmed() {
-
-    // long startTime = System.currentTimeMillis();
-    while (true) {
-      byte status = dwfProxy.getDwf().FDwfAnalogInStatus(true);
-      // System.out.println("status: " + status);
-      if (status == 1) { // armed
-        // System.out.println("armed.");
-        break;
-      }
-    }
-    // System.out.println("time = " + (System.currentTimeMillis() - startTime));
-
-  }
 }

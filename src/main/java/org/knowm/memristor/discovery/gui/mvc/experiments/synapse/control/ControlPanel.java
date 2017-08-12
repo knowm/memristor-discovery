@@ -63,11 +63,10 @@ public class ControlPanel extends ExperimentControlPanel {
   private final JSlider pulseWidthSlider;
   private final JSlider pulseWidthSliderNs;
 
-  private final JSlider pulseNumberSlider;
+  // private final JSlider pulseNumberSlider;
 
   private final ButtonGroup instructionRadioButtonGroup;
-  private final Box instructionRadioButtonBox;
-  ;
+  private final Box instructionRadioButtonBox;;
 
   /**
    * Constructor
@@ -138,19 +137,19 @@ public class ControlPanel extends ExperimentControlPanel {
     c.gridy++;
     add(pulseWidthSliderNs, c);
 
-    pulseNumberSlider = new JSlider(JSlider.HORIZONTAL, 1, 10, 1);
-    pulseNumberSlider.setBorder(BorderFactory.createTitledBorder("Pulse Number"));
-    pulseNumberSlider.setMinorTickSpacing(1);
-    pulseNumberSlider.setPaintTicks(true);
-    pulseNumberSlider.setPaintLabels(true);
-    pulseNumberSlider.setSnapToTicks(true);
+    // pulseNumberSlider = new JSlider(JSlider.HORIZONTAL, 1, 10, 1);
+    // pulseNumberSlider.setBorder(BorderFactory.createTitledBorder("Pulse Number"));
+    // pulseNumberSlider.setMinorTickSpacing(1);
+    // pulseNumberSlider.setPaintTicks(true);
+    // pulseNumberSlider.setPaintLabels(true);
+    // pulseNumberSlider.setSnapToTicks(true);
     labelTable = new Hashtable<>();
     labelTable.put(1, new JLabel("1"));
     labelTable.put(5, new JLabel("5"));
     labelTable.put(10, new JLabel("10"));
-    pulseNumberSlider.setLabelTable(labelTable);
+    // pulseNumberSlider.setLabelTable(labelTable);
     c.gridy++;
-    add(pulseNumberSlider, c);
+    // add(pulseNumberSlider, c);
 
     instructionRadioButtonGroup = new ButtonGroup();
     instructionRadioButtonBox = Box.createVerticalBox();
@@ -183,7 +182,7 @@ public class ControlPanel extends ExperimentControlPanel {
     amplitudeSlider.setEnabled(enabled);
     pulseWidthSlider.setEnabled(enabled);
     pulseWidthSliderNs.setEnabled(enabled);
-    pulseNumberSlider.setEnabled(enabled);
+    // pulseNumberSlider.setEnabled(enabled);
     instructionRadioButtonBox.setEnabled(enabled);
     Enumeration<AbstractButton> enumeration = instructionRadioButtonGroup.getElements();
     while (enumeration.hasMoreElements()) {
@@ -212,10 +211,10 @@ public class ControlPanel extends ExperimentControlPanel {
     return pulseWidthSliderNs;
   }
 
-  public JSlider getPulseNumberSlider() {
-
-    return pulseNumberSlider;
-  }
+  // public JSlider getPulseNumberSlider() {
+  //
+  // return pulseNumberSlider;
+  // }
 
   public ButtonGroup getInstructionRadioButtonGroup() {
 

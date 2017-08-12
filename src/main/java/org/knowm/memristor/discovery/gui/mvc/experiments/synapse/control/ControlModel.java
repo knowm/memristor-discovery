@@ -48,7 +48,7 @@ public class ControlModel extends ExperimentControlModel {
    */
   public SynapsePreferences.Waveform waveform;
 
-  public Instruction instruction = Instruction.FF;
+  public Instruction instruction = Instruction.FFLV;
   /**
    * Events
    */
@@ -90,24 +90,24 @@ public class ControlModel extends ExperimentControlModel {
 
     Driver driver;
     switch (waveform) {
-      case Sawtooth:
-        driver = new Sawtooth("Sawtooth", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
-        break;
-      case QuarterSine:
-        driver = new QuarterSine("QuarterSine", 0, 0, amplitude, getCalculatedFrequency());
-        break;
-      case Triangle:
-        driver = new Triangle("Triangle", 0, 0, amplitude, getCalculatedFrequency());
-        break;
-      case Square:
-        driver = new Square("Square", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
-        break;
-      case SquareSmooth:
-        driver = new SquareSmooth("SquareSmooth", 0, 0, amplitude, getCalculatedFrequency());
-        break;
-      default:
-        driver = new HalfSine("HalfSine", 0, 0, amplitude, getCalculatedFrequency());
-        break;
+    case Sawtooth:
+      driver = new Sawtooth("Sawtooth", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
+      break;
+    case QuarterSine:
+      driver = new QuarterSine("QuarterSine", 0, 0, amplitude, getCalculatedFrequency());
+      break;
+    case Triangle:
+      driver = new Triangle("Triangle", 0, 0, amplitude, getCalculatedFrequency());
+      break;
+    case Square:
+      driver = new Square("Square", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
+      break;
+    case SquareSmooth:
+      driver = new SquareSmooth("SquareSmooth", 0, 0, amplitude, getCalculatedFrequency());
+      break;
+    default:
+      driver = new HalfSine("HalfSine", 0, 0, amplitude, getCalculatedFrequency());
+      break;
     }
 
     double stopTime = 1 / getCalculatedFrequency() * pulseNumber;
@@ -123,9 +123,9 @@ public class ControlModel extends ExperimentControlModel {
     }
   }
 
-  /////////////////////////////////////////////////////////////
+  // ///////////////////////////////////////////////////////////
   // GETTERS AND SETTERS //////////////////////////////////////
-  /////////////////////////////////////////////////////////////
+  // ///////////////////////////////////////////////////////////
 
   public float getAmplitude() {
 
@@ -146,7 +146,7 @@ public class ControlModel extends ExperimentControlModel {
   public double getCalculatedFrequency() {
 
     // System.out.println("pulseWidth = " + pulseWidth);
-    return (1.0 / (2.0 * (double) pulseWidth) * 1_000_000_000); // 50% duty cycle
+    return (1.0 / (2.0 * pulseWidth) * 1_000_000_000); // 50% duty cycle
   }
 
   public void setPulseWidth(int pulseWidth) {
