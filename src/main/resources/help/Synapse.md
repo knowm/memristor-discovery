@@ -1,6 +1,6 @@
 # Synapse App
 
-This app allows you to drive a 2-1 synapse with the kT-RAM instructions set and observe a continuous response in synaptic value on node `y` via repeated `FFLV` instructions.
+This app allows you to drive a 2-1 synapse with base kT-RAM instructions and observe a continuous response in synaptic conductances via repeated `FFLV` instructions. It does this by measuring the voltage drops across the two memristors and the series resistor. 
 
 ## Connections
 
@@ -15,15 +15,12 @@ Use the toggle switches near the top of the app window to connect the two indivi
 
 ## Series Resistors
 
-The jumpers on the left and right bypass the resistors. There is no serial resistor.
+Use the jumpers on the right to select the series resistor and route it to ground. The default series resistor is 1kΩ. If you change this, be sure that you change this in the preferences as well.
 
 ## Controls
 
-The control panel can be used to adjust the driver waveform of W1. The series resistor value control should correspond to the actual series resistance value used in the experimental setup in order to calculate an accurate current value.
+The control panel can be used to adjust the driver waveform and pulse width. 
 
-## Conductance Plot
-
-The conductance plot (G-V) uses a running average value, k, to smooth the data. A k value of 0 will eliminate all averaging. The larger k is, the more averaging will occur. If k is too big you may unknowingly hide important memristor behavior so it is best to keep k as low as possible.
 
 ## Exporting Data
 
