@@ -44,6 +44,7 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control.Cont
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.plot.PlotControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.plot.PlotController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.plot.PlotPanel;
+import org.knowm.memristor.discovery.utils.Util;
 import org.knowm.memristor.discovery.utils.WaveformUtils;
 import org.knowm.waveforms4j.DWF;
 import org.knowm.waveforms4j.DWF.AcquisitionMode;
@@ -122,8 +123,7 @@ public class HysteresisExperiment extends Experiment {
               timeData[i] = i * timeStep;
             }
             publish(new double[][]{rawdata1, rawdata2, timeData});
-          }
-          else if (plotPanel.getIVButton().isSelected()) { // IV
+          } else if (plotPanel.getIVButton().isSelected()) { // IV
 
             // create current data
             double[] current = new double[rawdata2.length];
@@ -137,8 +137,7 @@ public class HysteresisExperiment extends Experiment {
               }
             }
             publish(new double[][]{rawdata1, voltage, current});
-          }
-          else {// GV
+          } else {// GV
 
             double[] conductance = new double[rawdata2.length];
             double[] voltage = new double[rawdata1.length];
@@ -168,7 +167,7 @@ public class HysteresisExperiment extends Experiment {
     @Override
     protected void process(List<double[][]> chunks) {
 
-      long start = System.currentTimeMillis();
+      long start = System.nanoTime();
 
       if (controlModel.isStartToggled()) {
 
@@ -178,13 +177,11 @@ public class HysteresisExperiment extends Experiment {
           plotController.udpateVtChartData(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getFrequency(), controlModel
               .getAmplitude(), controlModel.getOffset());
           plotPanel.switch2CaptureChart();
-        }
-        else if (plotPanel.getIVButton().isSelected()) {
+        } else if (plotPanel.getIVButton().isSelected()) {
           plotController.udpateIVChartData(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getFrequency(), controlModel
               .getAmplitude(), controlModel.getOffset());
           plotPanel.switch2IVChart();
-        }
-        else {
+        } else {
           plotController.updateGVChartData(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getFrequency(), controlModel
               .getAmplitude(), controlModel.getOffset());
           plotPanel.switch2GVChart();
@@ -192,10 +189,9 @@ public class HysteresisExperiment extends Experiment {
       }
 
       // Throttle GUI updates at some FPS rate.
-      long duration = System.currentTimeMillis() - start;
+      long duration = (System.nanoTime() - start) / 1000_000;
       try {
-        // Thread.sleep(40 - duration); // 40 ms ==> 25fps
-        Thread.sleep(50 - duration); // 50 ms ==> 20fps
+        Thread.sleep(Util.SLEEP_TIME - duration);
       } catch (InterruptedException e) {
       }
     }
@@ -216,8 +212,7 @@ public class HysteresisExperiment extends Experiment {
           // AnalogOut
           DWF.Waveform dwfWaveform = WaveformUtils.getDWFWaveform(controlModel.getWaveform());
           dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, controlModel.getFrequency(), controlModel.getAmplitude(), controlModel.getOffset(), 50);
-        }
-        else {
+        } else {
           plotPanel.switch2WaveformChart();
           plotController.udpateWaveformChart(controlModel.getWaveformTimeData(), controlModel.getWaveformAmplitudeData(), controlModel.getAmplitude(), controlModel.getFrequency(),
               controlModel.getOffset());

@@ -205,6 +205,9 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
               experiment = new DCExperiment(dwf, mainFrame.getContentPane(), isV1Board);
               break;
             case "Synapse":
+              experiment = new SynapseExperiment(dwf, mainFrame.getContentPane(), isV1Board);
+              break;
+            case "AHaH":
               experiment = new AHaHExperiment(dwf, mainFrame.getContentPane(), isV1Board);
               break;
             case "QC":

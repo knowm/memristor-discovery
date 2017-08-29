@@ -46,6 +46,11 @@ public class Util {
   public static final String VERSION_PROPERTIES_FILENAME = "/version.properties";
   public static final String VERSION_PROPERTY_KEY_NAME = "version";
 
+  //   public final static long SLEEP_TIME = 40; // 40 ms ==> 25fps
+//      public final static long SLEEP_TIME = 50; // 50 ms ==> 20fps
+//   public final static long SLEEP_TIME = 60; // 60 ms ==> 16.67fps
+  public final static long SLEEP_TIME = 100; // 100 ms ==> 10fps
+
   /**
    * Get the version number specified in the version.properties file.
    *
@@ -85,8 +90,7 @@ public class Util {
     java.net.URL imgURL = Util.class.getClassLoader().getResource(path);
     if (imgURL != null) {
       return new ImageIcon(imgURL);
-    }
-    else {
+    } else {
       logger.error("Could not find file: " + path);
       return null;
     }
