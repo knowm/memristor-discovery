@@ -40,8 +40,8 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 
 public class QCPreferencesPanel extends ExperimentPreferencesPanel {
 
-  private JLabel shuntResistorLabel;
-  private JTextField shuntResistorTextField;
+  private JLabel seriesResistorLabel;
+  private JTextField seriesResistorTextField;
 
   private JLabel amplitudeLabel;
   private JTextField amplitudeTextField;
@@ -71,13 +71,13 @@ public class QCPreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridy = 0;
     gc.gridx = 0;
-    this.shuntResistorLabel = new JLabel("Series Resistor:");
-    preferencesPanel.add(shuntResistorLabel, gc);
+    this.seriesResistorLabel = new JLabel("Series Resistor:");
+    preferencesPanel.add(seriesResistorLabel, gc);
 
     gc.gridx = 1;
-    this.shuntResistorTextField = new JTextField(12);
-    this.shuntResistorTextField.setText(String.valueOf(experimentPreferences.getInteger(QCPreferences.SERIES_R_INIT_KEY, QCPreferences.SERIES_R_INIT_DEFAULT_VALUE)));
-    preferencesPanel.add(shuntResistorTextField, gc);
+    this.seriesResistorTextField = new JTextField(12);
+    this.seriesResistorTextField.setText(String.valueOf(experimentPreferences.getInteger(QCPreferences.SERIES_R_INIT_KEY, QCPreferences.SERIES_R_INIT_DEFAULT_VALUE)));
+    preferencesPanel.add(seriesResistorTextField, gc);
 
     gc.gridy++;
 
@@ -117,7 +117,7 @@ public class QCPreferencesPanel extends ExperimentPreferencesPanel {
   @Override
   public void doSavePreferences() {
 
-    experimentPreferences.setInteger(QCPreferences.SERIES_R_INIT_KEY, Integer.parseInt(shuntResistorTextField.getText()));
+    experimentPreferences.setInteger(QCPreferences.SERIES_R_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
     experimentPreferences.setFloat(QCPreferences.AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(amplitudeTextField.getText()));
     experimentPreferences.setInteger(QCPreferences.FREQUENCY_INIT_KEY, Integer.parseInt(frequencyTextField.getText()));
     experimentPreferences.setString(QCPreferences.REPORT_DIRECTORY_PATH_KEY, savePathTextField.getText());

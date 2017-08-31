@@ -40,8 +40,8 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferencesPa
 
 public class AHaHPreferencesPanel extends ExperimentPreferencesPanel {
 
-  private JLabel shuntResistorLabel;
-  private JTextField shuntResistorTextField;
+  private JLabel seriesResistorLabel;
+  private JTextField seriesResistorTextField;
 
   private JLabel amplitudeLabel;
   private JTextField amplitudeTextField;
@@ -68,13 +68,13 @@ public class AHaHPreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridy = 0;
     gc.gridx = 0;
-    this.shuntResistorLabel = new JLabel("Series Resistor:");
-    preferencesPanel.add(shuntResistorLabel, gc);
+    this.seriesResistorLabel = new JLabel("Series Resistor:");
+    preferencesPanel.add(seriesResistorLabel, gc);
 
     gc.gridx = 1;
-    this.shuntResistorTextField = new JTextField(12);
-    this.shuntResistorTextField.setText(String.valueOf(experimentPreferences.getInteger(AHaHPreferences.SERIES_R_INIT_KEY, AHaHPreferences.SERIES_R_INIT_DEFAULT_VALUE)));
-    preferencesPanel.add(shuntResistorTextField, gc);
+    this.seriesResistorTextField = new JTextField(12);
+    this.seriesResistorTextField.setText(String.valueOf(experimentPreferences.getInteger(AHaHPreferences.SERIES_R_INIT_KEY, AHaHPreferences.SERIES_R_INIT_DEFAULT_VALUE)));
+    preferencesPanel.add(seriesResistorTextField, gc);
 
     gc.gridy++;
 
@@ -103,8 +103,8 @@ public class AHaHPreferencesPanel extends ExperimentPreferencesPanel {
   public void doSavePreferences() {
 
     // TODO add num pulses prefs.
-    // experimentPreferences.setInteger(SynapsePreferences.NUM_PULSES_INIT_KEY, Integer.parseInt(shuntResistorTextField.getText()));
-    experimentPreferences.setInteger(AHaHPreferences.SERIES_R_INIT_KEY, Integer.parseInt(shuntResistorTextField.getText()));
+    // experimentPreferences.setInteger(SynapsePreferences.NUM_PULSES_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
+    experimentPreferences.setInteger(AHaHPreferences.SERIES_R_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
     experimentPreferences.setFloat(AHaHPreferences.AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(amplitudeTextField.getText()));
     experimentPreferences.setInteger(AHaHPreferences.PULSE_WIDTH_INIT_KEY, Integer.parseInt(pulseWidthTextField.getText()));
   }

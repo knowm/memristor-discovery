@@ -201,8 +201,8 @@ public class QCController implements PropertyChangeListener {
         String text = textField.getText();
 
         try {
-          int newShuntValue = Integer.parseInt(text);
-          model.setSeriesResistance(newShuntValue);
+          int newSeriesValue = Integer.parseInt(text);
+          model.setSeriesResistance(newSeriesValue);
         } catch (Exception ex) {
           // parsing error, default back to previous value
           textField.setText(Integer.toString(model.getSeriesResistance()));
