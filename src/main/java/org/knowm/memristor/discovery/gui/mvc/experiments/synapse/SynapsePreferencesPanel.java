@@ -37,6 +37,7 @@ import javax.swing.JTextField;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferencesPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferences;
 
 public class SynapsePreferencesPanel extends ExperimentPreferencesPanel {
 
@@ -48,6 +49,9 @@ public class SynapsePreferencesPanel extends ExperimentPreferencesPanel {
 
   private JLabel pulseWidthLabel;
   private JTextField pulseWidthTextField;
+
+  private JLabel sampleRateLabel;
+  private JTextField sampleRateTextField;
 
   /**
    * Constructor
@@ -97,6 +101,17 @@ public class SynapsePreferencesPanel extends ExperimentPreferencesPanel {
     this.pulseWidthTextField = new JTextField(12);
     this.pulseWidthTextField.setText(String.valueOf(experimentPreferences.getInteger(SynapsePreferences.PULSE_WIDTH_INIT_KEY, SynapsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(pulseWidthTextField, gc);
+
+    gc.gridx = 0;
+    this.sampleRateLabel = new JLabel("Sample Rate [s]:");
+    preferencesPanel.add(sampleRateLabel, gc);
+
+    gc.gridx = 1;
+    this.sampleRateTextField = new JTextField(12);
+    this.sampleRateTextField.setText(String.valueOf(experimentPreferences.getInteger(SynapsePreferences.SAMPLE_RATE_INIT_KEY, SynapsePreferences
+        .SAMPLE_RATE_INIT_DEFAULT_VALUE)));
+    preferencesPanel.add(sampleRateTextField, gc);
+
   }
 
   @Override
@@ -107,6 +122,7 @@ public class SynapsePreferencesPanel extends ExperimentPreferencesPanel {
     experimentPreferences.setInteger(SynapsePreferences.SERIES_R_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
     experimentPreferences.setFloat(SynapsePreferences.AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(amplitudeTextField.getText()));
     experimentPreferences.setInteger(SynapsePreferences.PULSE_WIDTH_INIT_KEY, Integer.parseInt(pulseWidthTextField.getText()));
+    experimentPreferences.setInteger(SynapsePreferences.SAMPLE_RATE_INIT_KEY, Integer.parseInt(sampleRateTextField.getText()));
   }
 
   @Override

@@ -29,6 +29,8 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.util.Enumeration;
 
@@ -36,6 +38,7 @@ import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JSlider;
+import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -97,8 +100,7 @@ public class ControlController extends ExperimentControlController {
       controlPanel.getPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
       controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + controlModel.getPulseWidth() / 1000));
     }
-    // controlPanel.getPulseNumberSlider().setBorder(BorderFactory.createTitledBorder("Pulse Number = " + controlModel.getPulseNumber()));
-    // controlPanel.getPulseNumberSlider().setValue(controlModel.getPulseNumber());
+    controlPanel.getSampleRateTextField().setText("" + controlModel.getSampleRate());
   }
 
   /**
@@ -158,6 +160,23 @@ public class ControlController extends ExperimentControlController {
           controlModel.setPulseWidth(source.getValue());
           controlPanel.getPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
           controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + (double) controlModel.getPulseWidth() / 1000));
+        }
+      }
+    });
+    controlPanel.getSampleRateTextField().addKeyListener(new KeyAdapter() {
+
+      @Override
+      public void keyReleased(KeyEvent e) {
+
+        JTextField textField = (JTextField) e.getSource();
+        String text = textField.getText();
+
+        try {
+          int newValue = Integer.parseInt(text);
+          controlModel.setSampleRate(newValue);
+        } catch (Exception ex) {
+          // parsing error, default back to previous value
+          textField.setText(Integer.toString(controlModel.getSampleRate()));
         }
       }
     });

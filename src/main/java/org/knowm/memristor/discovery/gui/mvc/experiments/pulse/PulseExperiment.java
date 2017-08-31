@@ -175,7 +175,7 @@ public class PulseExperiment extends Experiment {
       while (!isCancelled()) {
 
         try {
-          Thread.sleep(controlModel.sampleRate * 1000);
+          Thread.sleep(controlModel.getSampleRate() * 1000);
         } catch (InterruptedException e) {
           // eat it. caught when interrupt is called
           dwfProxy.getDwf().stopWave(DWF.WAVEFORM_CHANNEL_1);

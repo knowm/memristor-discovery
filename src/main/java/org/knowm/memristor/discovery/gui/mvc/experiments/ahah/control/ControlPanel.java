@@ -44,6 +44,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
+import javax.swing.JTextField;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
@@ -67,6 +68,9 @@ public class ControlPanel extends ExperimentControlPanel {
 
   private final ButtonGroup instructionRadioButtonGroup;
   private final Box instructionRadioButtonBox;;
+
+  private final JLabel sampleRateLabel;
+  private final JTextField sampleRateTextField;
 
   /**
    * Constructor
@@ -165,6 +169,19 @@ public class ControlPanel extends ExperimentControlPanel {
     c.insets = new Insets(0, 6, 4, 6);
     add(instructionRadioButtonBox, c);
 
+    sampleRateLabel = new JLabel("Sample Rate [s]");
+    sampleRateLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.gridy++;
+    c.insets = new Insets(0, 10, 4, 0);
+    add(sampleRateLabel, c);
+
+    sampleRateTextField = new JTextField();
+    sampleRateTextField.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.gridy++;
+    c.insets = new Insets(0, 5, 14, 5);
+    add(sampleRateTextField, c);
+
+
     startStopButton = new JButton("Start");
     startStopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.gridy++;
@@ -211,10 +228,10 @@ public class ControlPanel extends ExperimentControlPanel {
     return pulseWidthSliderNs;
   }
 
-  // public JSlider getPulseNumberSlider() {
-  //
-  // return pulseNumberSlider;
-  // }
+  public JTextField getSampleRateTextField() {
+    return sampleRateTextField;
+  }
+
 
   public ButtonGroup getInstructionRadioButtonGroup() {
 

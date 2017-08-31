@@ -63,7 +63,7 @@ public class ControlModel extends ExperimentControlModel {
   private final double[] waveformTimeData = new double[PulsePreferences.CAPTURE_BUFFER_SIZE];
   private final double[] waveformAmplitudeData = new double[PulsePreferences.CAPTURE_BUFFER_SIZE];
 
-  public int sampleRate;
+  private int sampleRate;
 
   /**
    * Constructor

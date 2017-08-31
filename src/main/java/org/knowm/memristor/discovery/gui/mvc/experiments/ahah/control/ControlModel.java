@@ -64,6 +64,8 @@ public class ControlModel extends ExperimentControlModel {
   private final double[] waveformTimeData = new double[AHaHPreferences.CAPTURE_BUFFER_SIZE];
   private final double[] waveformAmplitudeData = new double[AHaHPreferences.CAPTURE_BUFFER_SIZE];
 
+  private int sampleRate;
+
   /**
    * Constructor
    */
@@ -81,6 +83,7 @@ public class ControlModel extends ExperimentControlModel {
     amplitude = experimentPreferences.getFloat(AHaHPreferences.AMPLITUDE_INIT_FLOAT_KEY, AHaHPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
     pulseWidth = experimentPreferences.getInteger(AHaHPreferences.PULSE_WIDTH_INIT_KEY, AHaHPreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
     pulseNumber = experimentPreferences.getInteger(AHaHPreferences.NUM_PULSES_INIT_KEY, AHaHPreferences.NUM_PULSES_INIT_DEFAULT_VALUE);
+    sampleRate = experimentPreferences.getInteger(AHaHPreferences.SAMPLE_RATE_INIT_KEY, AHaHPreferences.SAMPLE_RATE_INIT_DEFAULT_VALUE);
     swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
@@ -209,6 +212,14 @@ public class ControlModel extends ExperimentControlModel {
 
     this.instruction = Enum.valueOf(Instruction.class, text);
     swingPropertyChangeSupport.firePropertyChange(EVENT_INSTRUCTION_UPDATE, true, false);
+  }
+
+  public int getSampleRate() {
+    return sampleRate;
+  }
+
+  public void setSampleRate(int sampleRate) {
+    this.sampleRate = sampleRate;
   }
 
   public double getLastY() {

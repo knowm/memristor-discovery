@@ -122,38 +122,6 @@ public class DCExperiment extends Experiment {
       // Create Chart Data //////
       // /////////////////////////
 
-      // double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, 0.02, 10);
-      // double[] V1Trimmed = trimmedRawData[0];
-      // double[] V2Trimmed = trimmedRawData[1];
-      // double[] V2MinusV1 = PostProcessDataUtils.getV1MinusV2(V1Trimmed, V2Trimmed);
-      //
-      // int bufferLength = V1Trimmed.length;
-      //
-      // // create time data
-      // double[] timeData = new double[bufferLength];
-      // double timeStep = 1 / sampleFrequency * DCPreferences.TIME_UNIT.getDivisor();
-      // for (int i = 0; i < bufferLength; i++) {
-      // timeData[i] = i * timeStep;
-      // }
-      //
-      // // create current data
-      // double[] current = new double[bufferLength];
-      // for (int i = 0; i < bufferLength; i++) {
-      // current[i] = V2Trimmed[i] / controlModel.getSeriesResistance() * DCPreferences.CURRENT_UNIT.getDivisor();
-      // }
-      //
-      // // create conductance data
-      // double[] conductance = new double[bufferLength];
-      // for (int i = 0; i < bufferLength; i++) {
-      //
-      // double I = V2Trimmed[i] / controlModel.getSeriesResistance();
-      // double G = I / (V1Trimmed[i] - V2Trimmed[i]) * DCPreferences.CONDUCTANCE_UNIT.getDivisor();
-      // G = G < 0 ? 0 : G;
-      // conductance[i] = G;
-      // }
-      //
-      // publish(new double[][]{timeData, V1Trimmed, V2Trimmed, V2MinusV1, current, conductance});
-
       double[] V2MinusV1 = PostProcessDataUtils.getV1MinusV2(v1, v2);
 
       int bufferLength = v1.length;
@@ -181,7 +149,7 @@ public class DCExperiment extends Experiment {
         conductance[i] = G;
       }
 
-      publish(new double[][] { timeData, v1, v2, V2MinusV1, current, conductance });
+      publish(new double[][]{timeData, v1, v2, V2MinusV1, current, conductance});
 
       return true;
     }
@@ -198,12 +166,10 @@ public class DCExperiment extends Experiment {
       if (plotPanel.getCaptureButton().isSelected()) {
         plotController.repaintCaptureChart();
         plotPanel.switch2CaptureChart();
-      }
-      else if (plotPanel.getIVButton().isSelected()) {
+      } else if (plotPanel.getIVButton().isSelected()) {
         plotController.repaintItChart();
         plotPanel.switch2IVChart();
-      }
-      else {
+      } else {
         plotController.repaintRtChart();
         plotPanel.switch2GVChart();
       }
@@ -221,17 +187,17 @@ public class DCExperiment extends Experiment {
 
     switch (evt.getPropertyName()) {
 
-    case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
+      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
 
-      if (!controlModel.isStartToggled()) {
+        if (!controlModel.isStartToggled()) {
 
-        plotPanel.switch2WaveformChart();
-        plotController.updateWaveformChart(controlModel.getWaveformTimeData(), controlModel.getWaveformAmplitudeData(), controlModel.getAmplitude(), controlModel.getPeriod());
-      }
-      break;
+          plotPanel.switch2WaveformChart();
+          plotController.updateWaveformChart(controlModel.getWaveformTimeData(), controlModel.getWaveformAmplitudeData(), controlModel.getAmplitude(), controlModel.getPeriod());
+        }
+        break;
 
-    default:
-      break;
+      default:
+        break;
     }
   }
 

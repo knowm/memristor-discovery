@@ -101,14 +101,14 @@ public class ControlController extends ExperimentControlController {
     }
 
     controlPanel.getResetAmplitudeSlider().setValue((int) (controlModel.getResetAmplitude() * 100));
-    controlPanel.getResetAmplitudeSlider().setBorder(BorderFactory.createTitledBorder(" Reset Amplitude [V] = " + controlModel.getResetAmplitude()));
+    controlPanel.getResetAmplitudeSlider().setBorder(BorderFactory.createTitledBorder("Reset Amplitude [V] = " + controlModel.getResetAmplitude()));
     controlPanel.getResetPulseWidthSlider().setValue((controlModel.getResetPulseWidth()));
     controlPanel.getResetPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Reset Period [µs] = " + controlModel.getResetPulseWidth() / 1000));
 
     // SET
 
     controlPanel.getSetAmplitudeSlider().setValue((int) (controlModel.getSetAmplitude() * 100));
-    controlPanel.getSetAmplitudeSlider().setBorder(BorderFactory.createTitledBorder(" Set Amplitude [V] = " + controlModel.getSetAmplitude()));
+    controlPanel.getSetAmplitudeSlider().setBorder(BorderFactory.createTitledBorder("Set Amplitude [V] = " + controlModel.getSetAmplitude()));
     controlPanel.getSetPulseWidthSlider().setValue((controlModel.getSetPulseWidth()));
     controlPanel.getSetPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Set Period [µs] = " + controlModel.getSetPulseWidth() / 1000));
 
@@ -206,6 +206,7 @@ public class ControlController extends ExperimentControlController {
         }
       }
     });
+
     plotPanel.getCaptureButton().addActionListener(new ActionListener() {
 
       @Override

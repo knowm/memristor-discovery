@@ -41,13 +41,13 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
-import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.ConductancePreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ahah.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ahah.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ahah.control.ControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ahah.plot.PlotControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ahah.plot.PlotController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ahah.plot.PlotPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.ConductancePreferences;
 import org.knowm.memristor.discovery.utils.Util;
 import org.knowm.memristor.discovery.utils.WaveformUtils;
 import org.knowm.waveforms4j.DWF;
@@ -132,7 +132,7 @@ public class AHaHExperiment extends Experiment {
       while (!isCancelled()) {
 
         try {
-          Thread.sleep(500);
+          Thread.sleep(controlModel.getSampleRate() * 1000);
         } catch (InterruptedException e) {
           // eat it. caught when interrupt is called
           dwfProxy.getDwf().stopWave(DWF.WAVEFORM_CHANNEL_1);
@@ -166,8 +166,7 @@ public class AHaHExperiment extends Experiment {
           dwfProxy.getDwf().stopAnalogCaptureBothChannels();
           controlPanel.getStartStopButton().doClick();
           return false;
-        }
-        else {
+        } else {
 
           // Get Raw Data from Oscilloscope
           int validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
@@ -267,15 +266,15 @@ public class AHaHExperiment extends Experiment {
 
     switch (propName) {
 
-    case EVENT_INSTRUCTION_UPDATE:
+      case EVENT_INSTRUCTION_UPDATE:
 
-      // System.out.println(controlModel.getInstruction());
-      // dwfProxy.setUpper8IOStates(controlModel.getInstruction().getBits());
+        // System.out.println(controlModel.getInstruction());
+        // dwfProxy.setUpper8IOStates(controlModel.getInstruction().getBits());
 
-      break;
+        break;
 
-    default:
-      break;
+      default:
+        break;
     }
   }
 

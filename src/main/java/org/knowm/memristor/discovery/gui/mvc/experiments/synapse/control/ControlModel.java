@@ -64,6 +64,8 @@ public class ControlModel extends ExperimentControlModel {
   private final double[] waveformTimeData = new double[SynapsePreferences.CAPTURE_BUFFER_SIZE];
   private final double[] waveformAmplitudeData = new double[SynapsePreferences.CAPTURE_BUFFER_SIZE];
 
+  private int sampleRate;
+
   /**
    * Constructor
    */
@@ -80,6 +82,7 @@ public class ControlModel extends ExperimentControlModel {
     amplitude = experimentPreferences.getFloat(SynapsePreferences.AMPLITUDE_INIT_FLOAT_KEY, SynapsePreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
     pulseWidth = experimentPreferences.getInteger(SynapsePreferences.PULSE_WIDTH_INIT_KEY, SynapsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
     pulseNumber = experimentPreferences.getInteger(SynapsePreferences.NUM_PULSES_INIT_KEY, SynapsePreferences.NUM_PULSES_INIT_DEFAULT_VALUE);
+    sampleRate = experimentPreferences.getInteger(SynapsePreferences.SAMPLE_RATE_INIT_KEY, SynapsePreferences.SAMPLE_RATE_INIT_DEFAULT_VALUE);
     swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
@@ -90,24 +93,24 @@ public class ControlModel extends ExperimentControlModel {
 
     Driver driver;
     switch (waveform) {
-    case Sawtooth:
-      driver = new Sawtooth("Sawtooth", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
-      break;
-    case QuarterSine:
-      driver = new QuarterSine("QuarterSine", 0, 0, amplitude, getCalculatedFrequency());
-      break;
-    case Triangle:
-      driver = new Triangle("Triangle", 0, 0, amplitude, getCalculatedFrequency());
-      break;
-    case Square:
-      driver = new Square("Square", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
-      break;
-    case SquareSmooth:
-      driver = new SquareSmooth("SquareSmooth", 0, 0, amplitude, getCalculatedFrequency());
-      break;
-    default:
-      driver = new HalfSine("HalfSine", 0, 0, amplitude, getCalculatedFrequency());
-      break;
+      case Sawtooth:
+        driver = new Sawtooth("Sawtooth", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
+        break;
+      case QuarterSine:
+        driver = new QuarterSine("QuarterSine", 0, 0, amplitude, getCalculatedFrequency());
+        break;
+      case Triangle:
+        driver = new Triangle("Triangle", 0, 0, amplitude, getCalculatedFrequency());
+        break;
+      case Square:
+        driver = new Square("Square", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
+        break;
+      case SquareSmooth:
+        driver = new SquareSmooth("SquareSmooth", 0, 0, amplitude, getCalculatedFrequency());
+        break;
+      default:
+        driver = new HalfSine("HalfSine", 0, 0, amplitude, getCalculatedFrequency());
+        break;
     }
 
     double stopTime = 1 / getCalculatedFrequency() * pulseNumber;
@@ -208,6 +211,14 @@ public class ControlModel extends ExperimentControlModel {
 
     this.instruction = Enum.valueOf(Instruction.class, text);
     swingPropertyChangeSupport.firePropertyChange(EVENT_INSTRUCTION_UPDATE, true, false);
+  }
+
+  public int getSampleRate() {
+    return sampleRate;
+  }
+
+  public void setSampleRate(int sampleRate) {
+    this.sampleRate = sampleRate;
   }
 
   public double getLastY() {

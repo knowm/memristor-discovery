@@ -132,7 +132,7 @@ public class SynapseExperiment extends Experiment {
       while (!isCancelled()) {
 
         try {
-          Thread.sleep(500);
+          Thread.sleep(controlModel.getSampleRate() * 1000);
         } catch (InterruptedException e) {
           // eat it. caught when interrupt is called
           dwfProxy.getDwf().stopWave(DWF.WAVEFORM_CHANNEL_1);
@@ -166,8 +166,7 @@ public class SynapseExperiment extends Experiment {
           dwfProxy.getDwf().stopAnalogCaptureBothChannels();
           controlPanel.getStartStopButton().doClick();
           return false;
-        }
-        else {
+        } else {
 
           // Get Raw Data from Oscilloscope
           int validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
@@ -267,15 +266,15 @@ public class SynapseExperiment extends Experiment {
 
     switch (propName) {
 
-    case EVENT_INSTRUCTION_UPDATE:
+      case EVENT_INSTRUCTION_UPDATE:
 
-      // System.out.println(controlModel.getInstruction());
-      // dwfProxy.setUpper8IOStates(controlModel.getInstruction().getBits());
+        // System.out.println(controlModel.getInstruction());
+        // dwfProxy.setUpper8IOStates(controlModel.getInstruction().getBits());
 
-      break;
+        break;
 
-    default:
-      break;
+      default:
+        break;
     }
   }
 
