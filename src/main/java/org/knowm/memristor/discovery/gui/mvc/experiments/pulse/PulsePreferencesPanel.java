@@ -49,6 +49,9 @@ public class PulsePreferencesPanel extends ExperimentPreferencesPanel {
   private JLabel pulseWidthLabel;
   private JTextField pulseWidthTextField;
 
+  private JLabel sampleRateLabel;
+  private JTextField sampleRateTextField;
+
   /**
    * Constructor
    *
@@ -68,7 +71,7 @@ public class PulsePreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridy = 0;
     gc.gridx = 0;
-    this.shuntResistorLabel = new JLabel("Series Resistor:");
+    this.shuntResistorLabel = new JLabel("Series Resistor [Ohm]:");
     preferencesPanel.add(shuntResistorLabel, gc);
 
     gc.gridx = 1;
@@ -97,6 +100,19 @@ public class PulsePreferencesPanel extends ExperimentPreferencesPanel {
     this.pulseWidthTextField = new JTextField(12);
     this.pulseWidthTextField.setText(String.valueOf(experimentPreferences.getInteger(PulsePreferences.PULSE_WIDTH_INIT_KEY, PulsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(pulseWidthTextField, gc);
+
+    gc.gridx = 0;
+    this.sampleRateLabel = new JLabel("Sample Rate [s]:");
+    preferencesPanel.add(sampleRateLabel, gc);
+
+    gc.gridx = 1;
+    this.sampleRateTextField = new JTextField(12);
+    this.sampleRateTextField.setText(String.valueOf(experimentPreferences.getInteger(PulsePreferences.SAMPLE_RATE_INIT_KEY, PulsePreferences
+        .SAMPLE_RATE_INIT_DEFAULT_VALUE)));
+    preferencesPanel.add(sampleRateTextField, gc);
+
+
+
   }
 
   @Override
@@ -107,6 +123,7 @@ public class PulsePreferencesPanel extends ExperimentPreferencesPanel {
     experimentPreferences.setInteger(PulsePreferences.SERIES_R_INIT_KEY, Integer.parseInt(shuntResistorTextField.getText()));
     experimentPreferences.setFloat(PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(amplitudeTextField.getText()));
     experimentPreferences.setInteger(PulsePreferences.PULSE_WIDTH_INIT_KEY, Integer.parseInt(pulseWidthTextField.getText()));
+    experimentPreferences.setInteger(PulsePreferences.SAMPLE_RATE_INIT_KEY, Integer.parseInt(sampleRateTextField.getText()));
   }
 
   @Override

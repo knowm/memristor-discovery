@@ -67,10 +67,13 @@ public class ControlPanel extends ExperimentControlPanel {
   private final JSlider pulseWidthSlider;
   private final JSlider pulseWidthSliderNs;
 
+  private final JSlider pulseNumberSlider;
+
   private final JLabel seriesLabel;
   private final JTextField seriesTextField;
 
-  private final JSlider pulseNumberSlider;
+  private final JLabel sampleRateLabel;
+  private final JTextField sampleRateTextField;
 
   /**
    * Constructor
@@ -196,6 +199,18 @@ public class ControlPanel extends ExperimentControlPanel {
     c.insets = new Insets(0, 5, 14, 5);
     add(seriesTextField, c);
 
+    sampleRateLabel = new JLabel("Sample Rate [s]");
+    sampleRateLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.gridy++;
+    c.insets = new Insets(0, 10, 4, 0);
+    add(sampleRateLabel, c);
+
+    sampleRateTextField = new JTextField();
+    sampleRateTextField.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.gridy++;
+    c.insets = new Insets(0, 5, 14, 5);
+    add(sampleRateTextField, c);
+
     startStopButton = new JButton("Start");
     startStopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.gridy++;
@@ -216,6 +231,7 @@ public class ControlPanel extends ExperimentControlPanel {
     pulseWidthSliderNs.setEnabled(enabled);
     pulseNumberSlider.setEnabled(enabled);
     seriesTextField.setEnabled(enabled);
+    sampleRateTextField.setEnabled(enabled);
     startStopButton.setEnabled(enabled);
   }
 
@@ -255,6 +271,10 @@ public class ControlPanel extends ExperimentControlPanel {
   public JTextField getSeriesTextField() {
 
     return seriesTextField;
+  }
+
+  public JTextField getSampleRateTextField() {
+    return sampleRateTextField;
   }
 
   public JCheckBox getMemristorVoltageCheckBox() {

@@ -83,7 +83,6 @@ public class ControlController extends ExperimentControlController {
     controlPanel.getWaveformComboBox().setSelectedItem(controlModel.getWaveform());
     controlPanel.getWaveformComboBox().setModel(new DefaultComboBoxModel<>(new Waveform[]{Waveform.QuarterSine, Waveform.SquareSmooth, Waveform.Square, Waveform.Triangle, Waveform.HalfSine}));
 
-    controlPanel.getSeriesTextField().setText("" + controlModel.getSeriesResistance());
     controlPanel.getAmplitudeSlider().setValue((int) (controlModel.getAmplitude() * 100));
     controlPanel.getAmplitudeSlider().setBorder(BorderFactory.createTitledBorder("Amplitude [V] = " + controlModel.getAmplitude()));
     if (controlModel.getPulseWidth() >= 5000) {
@@ -100,6 +99,9 @@ public class ControlController extends ExperimentControlController {
     }
     controlPanel.getPulseNumberSlider().setBorder(BorderFactory.createTitledBorder("Pulse Number = " + controlModel.getPulseNumber()));
     controlPanel.getPulseNumberSlider().setValue(controlModel.getPulseNumber());
+
+    controlPanel.getSeriesTextField().setText("" + controlModel.getSeriesResistance());
+    controlPanel.getSampleRateTextField().setText("" + controlModel.getSampleRate());
   }
 
   /**
@@ -186,6 +188,26 @@ public class ControlController extends ExperimentControlController {
         }
       }
     });
+
+
+    controlPanel.getSampleRateTextField().addKeyListener(new KeyAdapter() {
+
+      @Override
+      public void keyReleased(KeyEvent e) {
+
+        JTextField textField = (JTextField) e.getSource();
+        String text = textField.getText();
+
+        try {
+          int newValue = Integer.parseInt(text);
+          controlModel.setSampleRate(newValue);
+        } catch (Exception ex) {
+          // parsing error, default back to previous value
+          textField.setText(Integer.toString(controlModel.getSampleRate()));
+        }
+      }
+    });
+
     controlPanel.getMemristorVoltageCheckBox().addActionListener(new ActionListener() {
 
       @Override

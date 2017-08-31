@@ -63,6 +63,8 @@ public class ControlModel extends ExperimentControlModel {
   private final double[] waveformTimeData = new double[PulsePreferences.CAPTURE_BUFFER_SIZE];
   private final double[] waveformAmplitudeData = new double[PulsePreferences.CAPTURE_BUFFER_SIZE];
 
+  public int sampleRate;
+
   /**
    * Constructor
    */
@@ -80,6 +82,7 @@ public class ControlModel extends ExperimentControlModel {
     appliedAmplitude = amplitude;
     pulseWidth = experimentPreferences.getInteger(PulsePreferences.PULSE_WIDTH_INIT_KEY, PulsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
     pulseNumber = experimentPreferences.getInteger(PulsePreferences.NUM_PULSES_INIT_KEY, PulsePreferences.NUM_PULSES_INIT_DEFAULT_VALUE);
+    sampleRate = experimentPreferences.getInteger(PulsePreferences.SAMPLE_RATE_INIT_KEY, PulsePreferences.SAMPLE_RATE_INIT_DEFAULT_VALUE);
     swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
@@ -209,6 +212,14 @@ public class ControlModel extends ExperimentControlModel {
     swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
+  public int getSampleRate() {
+    return sampleRate;
+  }
+
+  public void setSampleRate(int sampleRate) {
+    this.sampleRate = sampleRate;
+  }
+
   public double getLastG() {
 
     return lastG;
@@ -256,8 +267,7 @@ public class ControlModel extends ExperimentControlModel {
     if (lastG > 0.0) {
       if (isMemristorVoltageDropSelected) {
         this.appliedAmplitude = amplitude / (1 - seriesResistance / (seriesResistance + getLastR() + Util.getSwitchesSeriesResistance()));
-      }
-      else {
+      } else {
         this.appliedAmplitude = amplitude;
       }
       this.appliedCurrent = appliedAmplitude / (getLastR() + seriesResistance + Util.getSwitchesSeriesResistance()) * PulsePreferences.CURRENT_UNIT.getDivisor();
@@ -268,8 +278,7 @@ public class ControlModel extends ExperimentControlModel {
       // System.out.println("voltageDropOnMemristor = " + voltageDropOnMemristor);
       this.appliedMemristorEnergy = voltageDropOnMemristor * voltageDropOnMemristor / getLastR() * pulseNumber * pulseWidth / 2 * 1000;// divided by two to guestimate the energy savings of a quarter sine wave vs a square wave.
       // System.out.println("appliedMemristorEnergy = " + appliedMemristorEnergy);
-    }
-    else {
+    } else {
       this.appliedAmplitude = amplitude;
     }
   }
