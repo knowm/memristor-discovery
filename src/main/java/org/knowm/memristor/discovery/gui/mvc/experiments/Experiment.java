@@ -79,9 +79,9 @@ public abstract class Experiment implements PropertyChangeListener {
 
     doCreateAndShowGUI();
 
-    // //////////////////////
+    ////////////////////////
     // Control Panel ///////
-    // //////////////////////
+    ////////////////////////
 
     JScrollPane jScrollPane = new JScrollPane(getControlPanel(), JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     jScrollPane.setBorder(createEmptyBorder());

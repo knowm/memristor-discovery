@@ -146,8 +146,8 @@ public class SynapseExperiment extends Experiment {
         // ///////////////////////////
         // Analog In /////////////////
         // ////////////////////////////
-        // dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.01, samplesPerPulse * 1);
-        dwfProxy.getDwf().startAnalogCaptureBothChannelsTriggerW1(sampleFrequency, samplesPerPulse * 1);
+        // dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.01, samplesPerPulse);
+        dwfProxy.getDwf().startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(DWF.WAVEFORM_CHANNEL_1,sampleFrequency, samplesPerPulse);
         dwfProxy.waitUntilArmed();
 
         // ////////////////////////////////

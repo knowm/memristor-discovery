@@ -62,6 +62,8 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.qc.QCExperiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.qc.QCPreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.SynapseExperiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.SynapsePreferencesPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.v1boardcheck.V1BoardCheckExperiment;
+import org.knowm.memristor.discovery.gui.mvc.experiments.v1boardcheck.V1BoardCheckPreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.footer.FooterController;
 import org.knowm.memristor.discovery.gui.mvc.footer.FooterPanel;
 import org.knowm.memristor.discovery.gui.mvc.header.HeaderController;
@@ -89,7 +91,7 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
   private final DWFProxy dwf;
 
   private final String[] appsV0 = new String[]{"Hysteresis", "DC", "Pulse"};
-  private final String[] appsV1 = new String[]{"Synapse", "AHaH"};
+  private final String[] appsV1 = new String[]{"Synapse", "AHaH","V1BoardCheck"};
   private String appID;
   private Experiment experiment;
 
@@ -204,15 +206,11 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
             case "DC":
               experiment = new DCExperiment(dwf, mainFrame.getContentPane(), isV1Board);
               break;
-            case "Synapse":
-              experiment = new SynapseExperiment(dwf, mainFrame.getContentPane(), isV1Board);
-              break;
-            case "AHaH":
-              experiment = new AHaHExperiment(dwf, mainFrame.getContentPane(), isV1Board);
-              break;
+           
             case "QC":
               experiment = new QCExperiment(dwf, mainFrame.getContentPane(), isV1Board);
               break;
+           
 
             default:
               break;
@@ -258,6 +256,9 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
                 break;
               case "AHaH":
                 experiment = new AHaHExperiment(dwf, mainFrame.getContentPane(), isV1Board);
+                break;
+              case "V1BoardCheck":
+                experiment = new V1BoardCheckExperiment(dwf, mainFrameContainer, isV1Board);
                 break;
 
               default:
@@ -320,9 +321,15 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
     // default control injected here
 
     if (isV1Board) {
-      experiment = new SynapseExperiment(dwf, mainFrameContainer, isV1Board);
+//      experiment = new SynapseExperiment(dwf, mainFrameContainer, isV1Board);
+//      experiment.createAndShowGUI();
+//      appID = "Synapse";
+      
+      experiment = new V1BoardCheckExperiment(dwf, mainFrameContainer, isV1Board);
       experiment.createAndShowGUI();
-      appID = "Synapse";
+      appID = "V1BoardCheck";
+      
+      
     } else {
       experiment = new HysteresisExperiment(dwf, mainFrameContainer, isV1Board);
       experiment.createAndShowGUI();
@@ -414,8 +421,8 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
       case "AHaH":
         result = new AHaHPreferencesPanel(mainFrame).doModal();
         break;
-      case "QC":
-        result = new QCPreferencesPanel(mainFrame).doModal();
+      case "V1BoardCheck":
+        result = new V1BoardCheckPreferencesPanel(mainFrame).doModal();
         break;
 
       default:

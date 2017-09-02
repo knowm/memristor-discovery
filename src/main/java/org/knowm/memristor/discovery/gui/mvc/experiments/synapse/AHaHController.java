@@ -33,7 +33,7 @@ public class AHaHController {
 
     // capture read data
     if (isReadInstruction) {
-      dWFProxy.getDwf().startAnalogCaptureBothChannelsTriggerW1(calculatedFrequency * 300, 300 * 1);
+      dWFProxy.getDwf().startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(DWF.WAVEFORM_CHANNEL_1,calculatedFrequency * 300, 300 * 1);
       dWFProxy.waitUntilArmed();
     }
 
