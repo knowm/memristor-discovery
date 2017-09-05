@@ -86,11 +86,14 @@ public class HysteresisExperiment extends Experiment {
 
       // AnalogOut
       DWF.Waveform dwfWaveform = WaveformUtils.getDWFWaveform(controlModel.getWaveform());
-      dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, controlModel.getFrequency(), controlModel.getAmplitude(), controlModel.getOffset(), 50);
+      dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, controlModel.getFrequency(), controlModel.getAmplitude(),
+          controlModel.getOffset(), 50);
 
       // Analog In
-      double sampleFrequency = (double) controlModel.getFrequency() * HysteresisPreferences.CAPTURE_BUFFER_SIZE / HysteresisPreferences.CAPTURE_PERIOD_COUNT;
-      dwfProxy.getDwf().startAnalogCaptureBothChannelsImmediately(sampleFrequency, HysteresisPreferences.CAPTURE_BUFFER_SIZE, AcquisitionMode.ScanShift);
+      double sampleFrequency = (double) controlModel.getFrequency() * HysteresisPreferences.CAPTURE_BUFFER_SIZE
+          / HysteresisPreferences.CAPTURE_PERIOD_COUNT;
+      dwfProxy.getDwf().startAnalogCaptureBothChannelsImmediately(sampleFrequency, HysteresisPreferences.CAPTURE_BUFFER_SIZE,
+          AcquisitionMode.ScanShift);
 
       while (!isCancelled()) {
 
@@ -118,7 +121,8 @@ public class HysteresisExperiment extends Experiment {
 
             // Calculate time data
             double[] timeData = new double[rawdata1.length];
-            double timeStep = 1 / (double) controlModel.getFrequency() * HysteresisPreferences.CAPTURE_PERIOD_COUNT / HysteresisPreferences.CAPTURE_BUFFER_SIZE;
+            double timeStep = 1 / (double) controlModel.getFrequency() * HysteresisPreferences.CAPTURE_PERIOD_COUNT
+                / HysteresisPreferences.CAPTURE_BUFFER_SIZE;
             for (int i = 0; i < timeData.length; i++) {
               timeData[i] = i * timeStep;
             }
@@ -137,6 +141,7 @@ public class HysteresisExperiment extends Experiment {
               }
             }
             publish(new double[][]{rawdata1, voltage, current});
+
           } else {// GV
 
             double[] conductance = new double[rawdata2.length];
@@ -174,16 +179,16 @@ public class HysteresisExperiment extends Experiment {
         double[][] newestChunk = chunks.get(chunks.size() - 1);
 
         if (plotPanel.getCaptureButton().isSelected()) {
-          plotController.udpateVtChartData(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getFrequency(), controlModel
-              .getAmplitude(), controlModel.getOffset());
+          plotController.udpateVtChartData(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getFrequency(), controlModel.getAmplitude(),
+              controlModel.getOffset());
           plotPanel.switch2CaptureChart();
         } else if (plotPanel.getIVButton().isSelected()) {
-          plotController.udpateIVChartData(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getFrequency(), controlModel
-              .getAmplitude(), controlModel.getOffset());
+          plotController.udpateIVChartData(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getFrequency(), controlModel.getAmplitude(),
+              controlModel.getOffset());
           plotPanel.switch2IVChart();
         } else {
-          plotController.updateGVChartData(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getFrequency(), controlModel
-              .getAmplitude(), controlModel.getOffset());
+          plotController.updateGVChartData(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getFrequency(), controlModel.getAmplitude(),
+              controlModel.getOffset());
           plotPanel.switch2GVChart();
         }
       }
@@ -198,8 +203,8 @@ public class HysteresisExperiment extends Experiment {
   }
 
   /**
-   * These property change events are triggered in the model in the case where the underlying model is updated. Here, the controller can respond to those events and make sure the corresponding GUI
-   * components get updated.
+   * These property change events are triggered in the model in the case where the underlying model is updated. Here, the controller can respond to
+   * those events and make sure the corresponding GUI components get updated.
    */
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
@@ -211,11 +216,12 @@ public class HysteresisExperiment extends Experiment {
         if (controlModel.isStartToggled()) {
           // AnalogOut
           DWF.Waveform dwfWaveform = WaveformUtils.getDWFWaveform(controlModel.getWaveform());
-          dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, controlModel.getFrequency(), controlModel.getAmplitude(), controlModel.getOffset(), 50);
+          dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, controlModel.getFrequency(), controlModel.getAmplitude(),
+              controlModel.getOffset(), 50);
         } else {
           plotPanel.switch2WaveformChart();
-          plotController.udpateWaveformChart(controlModel.getWaveformTimeData(), controlModel.getWaveformAmplitudeData(), controlModel.getAmplitude(), controlModel.getFrequency(),
-              controlModel.getOffset());
+          plotController.udpateWaveformChart(controlModel.getWaveformTimeData(), controlModel.getWaveformAmplitudeData(), controlModel.getAmplitude(),
+              controlModel.getFrequency(), controlModel.getOffset());
         }
         break;
       case ExperimentControlModel.EVENT_FREQUENCY_UPDATE:
@@ -225,8 +231,10 @@ public class HysteresisExperiment extends Experiment {
         if (controlModel.isStartToggled()) {
 
           // Analog In
-          double sampleFrequency = (double) controlModel.getFrequency() * HysteresisPreferences.CAPTURE_BUFFER_SIZE / HysteresisPreferences.CAPTURE_PERIOD_COUNT;
-          dwfProxy.getDwf().startAnalogCaptureBothChannelsImmediately(sampleFrequency, HysteresisPreferences.CAPTURE_BUFFER_SIZE, AcquisitionMode.ScanShift);
+          double sampleFrequency = (double) controlModel.getFrequency() * HysteresisPreferences.CAPTURE_BUFFER_SIZE
+              / HysteresisPreferences.CAPTURE_PERIOD_COUNT;
+          dwfProxy.getDwf().startAnalogCaptureBothChannelsImmediately(sampleFrequency, HysteresisPreferences.CAPTURE_BUFFER_SIZE,
+              AcquisitionMode.ScanShift);
         }
         break;
       default:
@@ -234,6 +242,7 @@ public class HysteresisExperiment extends Experiment {
     }
   }
 
+  @Override
   public ExperimentControlModel getControlModel() {
 
     return controlModel;

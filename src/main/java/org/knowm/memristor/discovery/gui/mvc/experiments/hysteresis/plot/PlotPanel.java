@@ -125,11 +125,12 @@ public class PlotPanel extends ExperimentPlotPanel {
     // ///////////////////////////////////////////////////////////
 
     gvChart = new XYChartBuilder().width(100).title("G-V").height(100).xAxisTitle("Voltage [V]").yAxisTitle("Conductance [" + HysteresisPreferences.CONDUCTANCE_UNIT.getLabel() + "]").build();
-    gvChart.getStyler().setLegendVisible(false);
+    gvChart.getStyler().setLegendVisible(true);
+    gvChart.getStyler().setLegendPosition(LegendPosition.InsideNW);
     gvChart.getStyler().setYAxisMin(0.0);
     gvChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);
-    gvChart.addSeries("gv", new double[]{0}, new double[]{0});
-    gvChart.addSeries("gv_m", new double[]{0}, new double[]{0});
+    gvChart.addSeries("V1", new double[]{0}, new double[]{0});
+    gvChart.addSeries("Memristor", new double[]{0}, new double[]{0});
     gvChart.getStyler().setYAxisMin(0.0);
     gvChart.getStyler().setXAxisMin(-2.0);
     gvChart.getStyler().setXAxisMax(1.0);
@@ -276,12 +277,12 @@ public class PlotPanel extends ExperimentPlotPanel {
 
   public double getGVChartMax() {
 
-    return gvChart.getSeriesMap().get("gv").getYMax();
+    return gvChart.getSeriesMap().get("V1").getYMax();
   }
 
   public double getGVChartMin() {
 
-    return gvChart.getSeriesMap().get("gv").getYMin();
+    return gvChart.getSeriesMap().get("V1").getYMin();
   }
 
   public JPanel getRadioPanel() {
