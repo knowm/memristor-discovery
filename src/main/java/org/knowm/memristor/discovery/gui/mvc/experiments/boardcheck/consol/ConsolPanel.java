@@ -25,38 +25,22 @@
  * If you have any questions regarding our licensing policy, please
  * contact us at `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.experiments.v1boardcheck.consol;
+package org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.consol;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Date;
 
 import javax.swing.BorderFactory;
-import javax.swing.JCheckBox;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
-import org.knowm.xchart.XChartPanel;
-import org.knowm.xchart.XYChart;
-import org.knowm.xchart.XYChartBuilder;
-import org.knowm.xchart.XYSeries;
-import org.knowm.xchart.style.Styler.LegendPosition;
-import org.knowm.xchart.style.markers.SeriesMarkers;
 
 public class ConsolPanel extends ExperimentPlotPanel {
 
-
-  XYChart gChart;
   JTextArea consol;
- 
-//  JScrollPane scrollpane;
-  
-  private static final int consolSize=1024;//lines it will keep.
-  private ArrayList<String> lines=new ArrayList<>();
+  private ArrayList<String> lines = new ArrayList<>();
 
   /**
    * Constructor
@@ -66,64 +50,49 @@ public class ConsolPanel extends ExperimentPlotPanel {
     setLayout(new BorderLayout());
     setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
 
-    consol= new JTextArea();
+    consol = new JTextArea();
     consol.setLineWrap(true);
     consol.setWrapStyleWord(true);
     consol.setAutoscrolls(true);
-    
-   // for (int i = 0; i < 100; i++) {
-    Date now=new Date();
-      lines.add("V1BoardDiagnostic");
-      lines.add("Date: "+now.toString());
-  //  }
-   
+
+    Date now = new Date();
+    lines.add("" + now.toString());
+    lines.add("");
+
     loadLinesToColsol();
-    
+
     consol.setLineWrap(true);
     consol.setWrapStyleWord(true);
-   
-//    scrollpane = new JScrollPane(consol, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-//    scrollpane.add(consol);
-    
-//    consol.setColumns(10);
-//    consolPanel = new JPanel();
-//    consolPanel.add(consol);
-   
-    // ///////////////////////////////////////////////////////////
-    // Check Box ////////////////////////////////////////////
-    // ///////////////////////////////////////////////////////////
 
-    JScrollPane scroll = new JScrollPane (consol, 
-        JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-    
+    JScrollPane scroll = new JScrollPane(consol, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+
     add(scroll);
   }
 
   public void loadLinesToColsol() {
-    StringBuilder sb=new StringBuilder();
+
+    StringBuilder sb = new StringBuilder();
     for (int i = 0; i < lines.size(); i++) {
-      sb.append(lines.get(i)+"\n");
+      sb.append(lines.get(i) + "\n");
     }
-    
+
     consol.setText(sb.toString());
   }
 
   public void println(String newLine) {
+
     lines.add(newLine);
-    loadLinesToColsol() ;
+    loadLinesToColsol();
   }
-  
+
   public ArrayList<String> getLines() {
-  
+
     return lines;
   }
 
   public void setLines(ArrayList<String> lines) {
-  
+
     this.lines = lines;
   }
-  
-  
- 
 
 }

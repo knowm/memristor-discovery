@@ -25,7 +25,7 @@
  * If you have any questions regarding our licensing policy, please
  * contact us at `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.experiments.v1boardcheck.control;
+package org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.control;
 
 import java.awt.Component;
 import java.awt.Dimension;

@@ -51,6 +51,8 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentHelpDialog;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ahah.AHaHExperiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ahah.AHaHPreferencesPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.BoardCheckExperiment;
+import org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.BoardCheckPreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.ConductancePreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCExperiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCPreferencesPanel;
@@ -59,11 +61,8 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.HysteresisPr
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulseExperiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.qc.QCExperiment;
-import org.knowm.memristor.discovery.gui.mvc.experiments.qc.QCPreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.SynapseExperiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.SynapsePreferencesPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.v1boardcheck.V1BoardCheckExperiment;
-import org.knowm.memristor.discovery.gui.mvc.experiments.v1boardcheck.V1BoardCheckPreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.footer.FooterController;
 import org.knowm.memristor.discovery.gui.mvc.footer.FooterPanel;
 import org.knowm.memristor.discovery.gui.mvc.header.HeaderController;
@@ -90,8 +89,8 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
 
   private final DWFProxy dwf;
 
-  private final String[] appsV0 = new String[]{"Hysteresis", "DC", "Pulse"};
-  private final String[] appsV1 = new String[]{"Synapse", "AHaH","V1BoardCheck"};
+  private final String[] appsV0 = new String[] { "Hysteresis", "DC", "Pulse", "BoardCheck" };
+  private final String[] appsV1 = new String[] { "Synapse", "AHaH", "BoardCheck" };
   private String appID;
   private Experiment experiment;
 
@@ -104,7 +103,7 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
 
     System.setProperty("apple.awt.application.name", "Knowm Memristor Discovery");
 
-    //Set the look and feel to users OS LaF.
+    // Set the look and feel to users OS LaF.
     try {
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
     } catch (ClassNotFoundException | InstantiationException | UnsupportedLookAndFeelException | IllegalAccessException e) {
@@ -197,23 +196,25 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
           // System.out.println(appID);
 
           switch (e.getActionCommand()) {
-            case "Hysteresis":
-              experiment = new HysteresisExperiment(dwf, mainFrame.getContentPane(), isV1Board);
-              break;
-            case "Pulse":
-              experiment = new PulseExperiment(dwf, mainFrame.getContentPane(), isV1Board);
-              break;
-            case "DC":
-              experiment = new DCExperiment(dwf, mainFrame.getContentPane(), isV1Board);
-              break;
-           
-            case "QC":
-              experiment = new QCExperiment(dwf, mainFrame.getContentPane(), isV1Board);
-              break;
-           
+          case "Hysteresis":
+            experiment = new HysteresisExperiment(dwf, mainFrame.getContentPane(), isV1Board);
+            break;
+          case "Pulse":
+            experiment = new PulseExperiment(dwf, mainFrame.getContentPane(), isV1Board);
+            break;
+          case "DC":
+            experiment = new DCExperiment(dwf, mainFrame.getContentPane(), isV1Board);
+            break;
+          case "QC":
+            experiment = new QCExperiment(dwf, mainFrame.getContentPane(), isV1Board);
+            break;
 
-            default:
-              break;
+          case "BoardCheck":
+            experiment = new BoardCheckExperiment(dwf, mainFrame.getContentPane(), isV1Board);
+            break;
+
+          default:
+            break;
           }
           experiment.createAndShowGUI();
 
@@ -251,18 +252,18 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
             // System.out.println(appID);
 
             switch (e.getActionCommand()) {
-              case "Synapse":
-                experiment = new SynapseExperiment(dwf, mainFrame.getContentPane(), isV1Board);
-                break;
-              case "AHaH":
-                experiment = new AHaHExperiment(dwf, mainFrame.getContentPane(), isV1Board);
-                break;
-              case "V1BoardCheck":
-                experiment = new V1BoardCheckExperiment(dwf, mainFrameContainer, isV1Board);
-                break;
+            case "Synapse":
+              experiment = new SynapseExperiment(dwf, mainFrame.getContentPane(), isV1Board);
+              break;
+            case "AHaH":
+              experiment = new AHaHExperiment(dwf, mainFrame.getContentPane(), isV1Board);
+              break;
+            case "BoardCheck":
+              experiment = new BoardCheckExperiment(dwf, mainFrameContainer, isV1Board);
+              break;
 
-              default:
-                break;
+            default:
+              break;
             }
             experiment.createAndShowGUI();
 
@@ -321,16 +322,16 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
     // default control injected here
 
     if (isV1Board) {
-//      experiment = new SynapseExperiment(dwf, mainFrameContainer, isV1Board);
-//      experiment.createAndShowGUI();
-//      appID = "Synapse";
-      
-      experiment = new V1BoardCheckExperiment(dwf, mainFrameContainer, isV1Board);
+      // experiment = new SynapseExperiment(dwf, mainFrameContainer, isV1Board);
+      // experiment.createAndShowGUI();
+      // appID = "Synapse";
+
+      experiment = new BoardCheckExperiment(dwf, mainFrameContainer, isV1Board);
       experiment.createAndShowGUI();
-      appID = "V1BoardCheck";
-      
-      
-    } else {
+      appID = "BoardCheck";
+
+    }
+    else {
       experiment = new HysteresisExperiment(dwf, mainFrameContainer, isV1Board);
       experiment.createAndShowGUI();
       appID = "Hysteresis";
@@ -403,30 +404,30 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
     int result = 0;
     // System.out.println("appID= " + appID);
     switch (appID) {
-      case "Hysteresis":
-        result = new HysteresisPreferencesPanel(mainFrame).doModal();
-        break;
-      case "Pulse":
-        result = new PulsePreferencesPanel(mainFrame).doModal();
-        break;
-      case "DC":
-        result = new DCPreferencesPanel(mainFrame).doModal();
-        break;
-      case "Conductance":
-        result = new ConductancePreferencesPanel(mainFrame).doModal();
-        break;
-      case "Synapse":
-        result = new SynapsePreferencesPanel(mainFrame).doModal();
-        break;
-      case "AHaH":
-        result = new AHaHPreferencesPanel(mainFrame).doModal();
-        break;
-      case "V1BoardCheck":
-        result = new V1BoardCheckPreferencesPanel(mainFrame).doModal();
-        break;
+    case "Hysteresis":
+      result = new HysteresisPreferencesPanel(mainFrame).doModal();
+      break;
+    case "Pulse":
+      result = new PulsePreferencesPanel(mainFrame).doModal();
+      break;
+    case "DC":
+      result = new DCPreferencesPanel(mainFrame).doModal();
+      break;
+    case "Conductance":
+      result = new ConductancePreferencesPanel(mainFrame).doModal();
+      break;
+    case "Synapse":
+      result = new SynapsePreferencesPanel(mainFrame).doModal();
+      break;
+    case "AHaH":
+      result = new AHaHPreferencesPanel(mainFrame).doModal();
+      break;
+    case "BoardCheck":
+      result = new BoardCheckPreferencesPanel(mainFrame).doModal();
+      break;
 
-      default:
-        break;
+    default:
+      break;
     }
     if (result == ExperimentPreferencesPanel.ID_OK) {
       experiment.refreshModelFromPreferences();
