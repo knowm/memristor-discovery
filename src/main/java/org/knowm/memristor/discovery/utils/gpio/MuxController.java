@@ -16,25 +16,11 @@ public class MuxController {
     A, B, Y, OUT
   }
 
-  // public static void main(String[] args) {
-  //
-  // int z = 0b0001_0101_0000_0000;
-  //
-  // System.out.println("what the string should look like: ");
-  // System.out.println(Integer.toBinaryString(z));
-  //
-  // String s = "0001010100000000";
-  //
-  // int z_s = Integer.parseInt(s, 2);
-  //
-  // System.out.println("z=" + z);
-  // System.out.println("z_s=" + z_s);
-  // }
-
-  private Destination w1 = Destination.OUT;
+  // default configuration set up to measure voltage drop across selected memristors and the series resistor.
+  private Destination w1 = Destination.A;
   private Destination w2 = Destination.OUT;
-  private Destination scope1 = Destination.OUT;
-  private Destination scope2 = Destination.OUT;
+  private Destination scope1 = Destination.A;
+  private Destination scope2 = Destination.B;
 
   @Override
   public String toString() {

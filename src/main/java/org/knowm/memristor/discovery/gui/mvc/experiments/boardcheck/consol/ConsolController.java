@@ -27,8 +27,6 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.consol;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -36,8 +34,8 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 
 public class ConsolController implements PropertyChangeListener {
 
-  private final ConsolPanel plotPanel;
-  private final ConsolControlModel plotModel;
+  private final ConsolPanel consolPanel;
+  private final ConsolControlModel consolModel;
 
   /**
    * Constructor
@@ -45,10 +43,10 @@ public class ConsolController implements PropertyChangeListener {
    * @param plotPanel
    * @param plotModel
    */
-  public ConsolController(ConsolPanel plotPanel, ConsolControlModel plotModel) {
+  public ConsolController(ConsolPanel consolPanel, ConsolControlModel consolModel) {
 
-    this.plotPanel = plotPanel;
-    this.plotModel = plotModel;
+    this.consolPanel = consolPanel;
+    this.consolModel = consolModel;
 
     initGUIComponents();
     setUpViewEvents();
@@ -65,44 +63,11 @@ public class ConsolController implements PropertyChangeListener {
 
   private void setUpViewEvents() {
 
-//    plotPanel.getFreezeYAxisCheckBoxIV().addActionListener(new ActionListener() {
-//
-//      @Override
-//      public void actionPerformed(ActionEvent e) {
-//
-//        if (plotPanel.getFreezeYAxisCheckBoxIV().isSelected()) {
-//          plotModel.setyMaxIV(plotPanel.getYChartMax());
-//          plotModel.setyMinIV(plotPanel.getYChartMin());
-//        }
-//        else {
-//          plotModel.setyMaxIV(null);
-//          plotModel.setyMinIV(null);
-//        }
-//      }
-//    });
   }
 
-//  public void updateYChartData(double g_m1,double g_m2) {
-//
-//    plotModel.getGM1Data().add(g_m1);
-//    plotModel.getGM2Data().add(g_m2);
-//    plotModel.getGM3Data().add(g_m1-g_m2);
-//   // plotPanel.getGChart().getStyler().setYAxisMax(plotModel.getyMaxGV());
-//   // plotPanel.getGChart().getStyler().setYAxisMin(plotModel.getyMinGV());
-//    plotPanel.getGChart().updateXYSeries("G(M1)", null, plotModel.getGM1Data(), null);
-//    plotPanel.getGChart().updateXYSeries("G(M2)", null, plotModel.getGM2Data(), null);
-//    plotPanel.getGChart().updateXYSeries("G(M1-M2)", null, plotModel.getGM3Data(), null);
-//   // plotPanel.getGChart().updateXYSeries("ylast", new double[]{1, plotModel.getGData().size()}, new double[]{conductance, conductance}, null);
-//  }
-//
-//  public void repaintYChart() {
-//
-//    plotPanel.getGChartPanel().revalidate();
-//    plotPanel.getGChartPanel().repaint();
-//  }
-
   /**
-   * These property change events are triggered in the model in the case where the underlying model is updated. Here, the controller can respond to those events and make sure the corresponding GUI
+   * These property change events are triggered in the model in the case where the underlying model
+   * is updated. Here, the controller can respond to those events and make sure the corresponding GUI
    * components get updated.
    */
   @Override
@@ -110,13 +75,13 @@ public class ConsolController implements PropertyChangeListener {
 
     switch (evt.getPropertyName()) {
 
-      case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
+    case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
 
-        initGUIComponentsFromModel();
-        break;
+      initGUIComponentsFromModel();
+      break;
 
-      default:
-        break;
+    default:
+      break;
     }
   }
 }

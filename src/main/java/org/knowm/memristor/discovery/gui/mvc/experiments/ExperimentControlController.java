@@ -14,7 +14,7 @@ public abstract class ExperimentControlController implements PropertyChangeListe
 
   protected abstract void doSetUpViewEvents();
 
-  private final ExperimentControlPanel experimentControlPanel;
+  protected final ExperimentControlPanel experimentControlPanel;
   private final ExperimentControlModel experimentControlModel;
 
   /**
@@ -35,6 +35,7 @@ public abstract class ExperimentControlController implements PropertyChangeListe
 
     experimentControlPanel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("S"), "startstop");
     experimentControlPanel.getActionMap().put("startstop", new AbstractAction() {
+
       @Override
       public void actionPerformed(ActionEvent e) {
 

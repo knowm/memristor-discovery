@@ -30,6 +30,8 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck;
 import static org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlModel.EVENT_INSTRUCTION_UPDATE;
 
 import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.text.DecimalFormat;
 import java.util.Arrays;
@@ -43,7 +45,6 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
-import org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.consol.ConsolControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.consol.ConsolPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.control.ControlPanel;
@@ -54,17 +55,25 @@ import org.knowm.waveforms4j.DWF;
 
 public class BoardCheckExperiment extends Experiment {
 
+  private SwingWorker meminlineTestWorker;
+
   private final ControlModel controlModel = new ControlModel();
 
-  private final static float V_MEASURE = 1.2345f;// the voltage used to test the waveform generators/muxes
-  private final static float R_SWITCH = 73F;// Resistance of one of the switches. DG Switchs. Old AD Switches are 50.
+  private final static float V_MUX_TEST = 1.2345f;// the voltage used to test the waveform generators/muxes
+  private final static float V_SWITCH_RESISTANCE = 1;
+
+  private final static float V_MEMINLINE_READ = .1f;
+  private final static float V_MEMINLINE_WRITE = 1f;
+  private final static float V_MEMINLINE_RESET = -1f;
+  private final static float V_MEMINLINE_HARD_RESET = -2.5f;
+
+  private final static float R_SWITCH = 73F;// Resistance of one of the DG445 switches. Old AD Switches are ~50.
 
   private DecimalFormat percentFormat = new DecimalFormat("0.00%");
   private DecimalFormat ohmFormat = new DecimalFormat("0.00 kΩ");
 
   private ControlPanel controlPanel;
   private ConsolPanel consolPanel;
-  private final ConsolControlModel consolModel = new ConsolControlModel();
   private final MuxController muxController;
 
   /**
@@ -79,36 +88,52 @@ public class BoardCheckExperiment extends Experiment {
 
     controlPanel = new ControlPanel();
     consolPanel = new ConsolPanel();
-    // consolController = new ConsolController(consolPanel, consolModel);
     muxController = new MuxController();
   }
 
+  /*
+   * Here action listeners are attached to the widgets in the control panel and mapped to
+   * a worker, also defined here in the experiment.
+   */
   @Override
   public void doCreateAndShowGUI() {
 
+    controlPanel.meminlineTestButton.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+
+        // System.out.println("Meminline button was clicked. e=" + e.toString());
+
+        meminlineTestWorker = new MeminlineTestWorker();
+        meminlineTestWorker.execute();
+
+      }
+    });
+
   }
 
-  public float[] measureAllSwitchResistances() {
+  public float[] measureAllSwitchResistances(float readVoltage, int sleep, boolean configureMux) {
 
-    muxController.setW1(Destination.A);
-    muxController.setW2(Destination.OUT);
-
-    muxController.setScope1(Destination.A);
-    muxController.setScope2(Destination.B);
-    dwfProxy.setUpper8IOStates(muxController.getGPIOConfig());
+    if (configureMux) {
+      muxController.setW1(Destination.A);
+      muxController.setW2(Destination.OUT);
+      muxController.setScope1(Destination.A);
+      muxController.setScope2(Destination.B);
+      dwfProxy.setUpper8IOStates(muxController.getGPIOConfig());
+    }
 
     // dwfProxy.setAllIOStates(0b0000_0000);// turn off all switches.
 
     float[] r_array = new float[9];
-    r_array[0] = getSwitchResistancekOhm(DWF.WAVEFORM_CHANNEL_1);// all switch off
-
-    int sleep = dwfProxy.isV1Board() ? 20 : 300;
+    r_array[0] = getSwitchResistancekOhm(readVoltage, DWF.WAVEFORM_CHANNEL_1);// all switches off
 
     for (int i = 0; i < 8; i++) {
-      try {
-        Thread.sleep(sleep);
-      } catch (InterruptedException e) {
-      }
+
+      // try {
+      // Thread.sleep(sleep);
+      // } catch (InterruptedException e) {
+      // }
 
       dwfProxy.update2DigitalIOStatesAtOnce(i, true);
 
@@ -118,7 +143,7 @@ public class BoardCheckExperiment extends Experiment {
 
       }
 
-      r_array[i + 1] = getSwitchResistancekOhm(DWF.WAVEFORM_CHANNEL_1);
+      r_array[i + 1] = getSwitchResistancekOhm(readVoltage, DWF.WAVEFORM_CHANNEL_1);
 
       dwfProxy.update2DigitalIOStatesAtOnce(i, false);
 
@@ -128,9 +153,9 @@ public class BoardCheckExperiment extends Experiment {
 
   }
 
-  private float getSwitchResistancekOhm(int dWFWaveformChannel) {
+  private float getSwitchResistancekOhm(float readVoltage, int dWFWaveformChannel) {
 
-    float[] vMeasure = getScopesAverageVoltage(dWFWaveformChannel);
+    float[] vMeasure = getScopesAverageVoltage(readVoltage, dWFWaveformChannel);
     /*
      * Vy/Rseries=I
      * Vdrop/I=Rswitch
@@ -138,11 +163,15 @@ public class BoardCheckExperiment extends Experiment {
      */
 
     System.out.println("measurevoltage: " + Arrays.toString(vMeasure));
-    System.out.println("series resistance: " + controlModel.getSeriesResistance());
-    float I = vMeasure[1] / controlModel.getSeriesResistance();
-    float rSwitch = ((vMeasure[0] - vMeasure[1]) / I) - 2 * R_SWITCH;
+    // System.out.println("series resistance: " + controlModel.getSeriesResistance());
+    // BoardCheckPreferences.SERIES_R_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText())
+    float seriesResistance = controlModel.seriesResistance;
+    System.out.println("seriesResistance: " + seriesResistance);
 
-    return rSwitch / 1000;
+    float I = Math.abs(vMeasure[1] / seriesResistance);
+    float rSwitch = (Math.abs(vMeasure[0] - vMeasure[1]) / I) - 2 * R_SWITCH;
+
+    return rSwitch / 1000;// to kilohms
   }
 
   public float[] measureMuxDeviation(int dWFWaveformChannel, Destination destination) {
@@ -161,13 +190,13 @@ public class BoardCheckExperiment extends Experiment {
 
     dwfProxy.setUpper8IOStates(muxController.getGPIOConfig());
 
-    float[] scopeReading = getScopesAverageVoltage(dWFWaveformChannel);
+    float[] scopeReading = getScopesAverageVoltage(V_MUX_TEST, dWFWaveformChannel);
 
-    return new float[] { Math.abs(scopeReading[0] - V_MEASURE), Math.abs(scopeReading[1] - V_MEASURE) };
+    return new float[] { Math.abs(scopeReading[0] - V_MUX_TEST), Math.abs(scopeReading[1] - V_MUX_TEST) };
 
   }
 
-  private float[] getScopesAverageVoltage(int dWFWaveformChannel) {
+  private float[] getScopesAverageVoltage(float readVoltage, int dWFWaveformChannel) {
 
     int samplesPerPulse = 300;
     int sampleFrequency = 100 * samplesPerPulse;
@@ -175,7 +204,7 @@ public class BoardCheckExperiment extends Experiment {
 
     dwfProxy.getDwf().startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(dWFWaveformChannel, sampleFrequency, samplesPerPulse);
     dwfProxy.waitUntilArmed();
-    double[] pulse = WaveformUtils.generateCustomWaveform(Waveform.Square, V_MEASURE, 100);
+    double[] pulse = WaveformUtils.generateCustomWaveform(Waveform.Square, readVoltage, 100);
     dwfProxy.getDwf().startCustomPulseTrain(dWFWaveformChannel, 100, 0, 1, pulse);
     boolean success = dwfProxy.capturePulseData(sampleFrequency, 1);
     if (success) {
@@ -213,7 +242,7 @@ public class BoardCheckExperiment extends Experiment {
 
   }
 
-  private class CaptureWorker extends SwingWorker<Boolean, Double> {
+  private class BoardDiagnosticWorker extends SwingWorker<Boolean, Double> {
 
     @Override
     protected Boolean doInBackground() throws Exception {
@@ -269,9 +298,9 @@ public class BoardCheckExperiment extends Experiment {
       }
 
       consolPanel.println("Testing Switches. ");
-      // consolPanel.println("ALL OFF                1              2              3              4              5              6              7              8");
+      int sleep = dwfProxy.isV1Board() ? 0 : 300;// so the tester can see the LEDs blink in the V1 board.
 
-      float[] r = measureAllSwitchResistances();
+      float[] r = measureAllSwitchResistances(V_SWITCH_RESISTANCE, sleep, true);
 
       for (int i = 0; i < r.length; i++) {
 
@@ -295,6 +324,101 @@ public class BoardCheckExperiment extends Experiment {
       }
 
       return true;
+    }
+
+    @Override
+    protected void process(List<Double> chunks) {
+
+      // plotController.updateYChartData(chunks.get(0), chunks.get(chunks.size() - 1));
+      // plotController.repaintYChart();
+    }
+  }
+
+  private class MeminlineTestWorker extends SwingWorker<Boolean, Double> {
+
+    @Override
+    protected Boolean doInBackground() throws Exception {
+
+      // if its a v1 board, we must set the MUXes
+
+      if (dwfProxy.isV1Board()) {
+        MuxController muxController = new MuxController();
+        dwfProxy.setUpper8IOStates(muxController.getGPIOConfig());// default configuration is for series resistor measurment.
+      }
+
+      consolPanel.println("Meminline Chip Test");
+
+      float[][] reads = new float[3][9];
+
+      consolPanel.println(formatResistanceArray("WRITE      ", measureAllSwitchResistances(V_MEMINLINE_WRITE, 0, true)));
+      consolPanel.println(formatResistanceArray("HARD RESET ", measureAllSwitchResistances(V_MEMINLINE_HARD_RESET, 0, false)));
+
+      reads[0] = measureAllSwitchResistances(V_MEMINLINE_READ, 0, false);
+      consolPanel.println(formatResistanceArray("READ 1     ", reads[0]));
+
+      consolPanel.println(formatResistanceArray("WRITE      ", measureAllSwitchResistances(V_MEMINLINE_WRITE, 0, false)));
+      reads[1] = measureAllSwitchResistances(V_MEMINLINE_READ, 0, false);
+      consolPanel.println(formatResistanceArray("READ 2     ", reads[1]));
+
+      consolPanel.println(formatResistanceArray("RESET      ", measureAllSwitchResistances(V_MEMINLINE_RESET, 0, false)));
+
+      reads[2] = measureAllSwitchResistances(V_MEMINLINE_READ, 0, false);
+      consolPanel.println(formatResistanceArray("READ 3     ", reads[2]));
+
+      try {
+        float[] delta_12 = new float[9];
+        float[] delta_23 = new float[9];
+        for (int i = 0; i < delta_12.length; i++) {
+          delta_12[i] = reads[0][i] - reads[1][i];
+          delta_23[i] = reads[1][i] - reads[2][i];
+        }
+
+        System.out.println("delta_12:" + Arrays.toString(delta_12));
+        System.out.println("delta_23:" + Arrays.toString(delta_23));
+
+        consolPanel.println(formatResistanceArray("DIFF(1,2)   ", delta_12));
+        consolPanel.println(formatResistanceArray("DIFF(2,3)   ", delta_23));
+
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+
+      return true;
+    }
+
+    private String formatResistanceArray(String prefix, float[] r) {
+
+      int COL_WIDTH = 10;
+
+      StringBuilder b = new StringBuilder();
+      b.append(prefix);
+      b.append(": ");
+      for (int i = 0; i < r.length; i++) {
+
+        String s;
+        if (r[i] > 0) {
+
+          if (r[i] > 1000) {
+            s = ">1MΩ";
+          }
+          else {
+            s = ohmFormat.format(r[i]);
+          }
+        }
+        else {
+          s = ">1MΩ";
+        }
+        b.append(s);
+
+        // white space
+        for (int j = 0; j < (COL_WIDTH - s.length()); j++) {
+          b.append(" ");
+        }
+
+        b.append("|");
+      }
+      return b.toString();
+
     }
 
     @Override
@@ -350,6 +474,6 @@ public class BoardCheckExperiment extends Experiment {
   @Override
   public SwingWorker getCaptureWorker() {
 
-    return new CaptureWorker();
+    return new BoardDiagnosticWorker();
   }
 }

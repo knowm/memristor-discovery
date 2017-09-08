@@ -8,13 +8,11 @@ import javax.swing.JPanel;
  */
 public abstract class ExperimentControlPanel extends JPanel {
 
-  // TODO set this button up more, reduce copypasta
   public JButton startStopButton;
 
   public JButton getStartStopButton() {
 
     return startStopButton;
   }
-
 
 }

@@ -27,29 +27,16 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.control;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
-import java.util.Enumeration;
-
-import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JSlider;
-import javax.swing.JTextField;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
 
 public class ControlController extends ExperimentControlController {
 
   private final ControlPanel controlPanel;
+
   private final ControlModel controlModel;
 
   /**
@@ -62,7 +49,6 @@ public class ControlController extends ExperimentControlController {
   public ControlController(ControlPanel controlPanel, ControlModel controlModel, DWFProxy dwf) {
 
     super(controlPanel, controlModel);
-
     this.controlPanel = controlPanel;
     this.controlModel = controlModel;
     dwf.addListener(this);
@@ -81,26 +67,6 @@ public class ControlController extends ExperimentControlController {
 
   private void initGUIComponentsFromModel() {
 
-    // Util.setButtonGroup(controlModel.getInstruction().name(), controlPanel.getInstructionRadioButtonGroup().getElements());
-//
-//    controlPanel.getWaveformComboBox().setSelectedItem(controlModel.getWaveform());
-//    controlPanel.getWaveformComboBox().setModel(new DefaultComboBoxModel<>(new Waveform[] { Waveform.SquareSmooth, Waveform.Square, Waveform.QuarterSine, Waveform.HalfSine, Waveform.Triangle }));
-//
-//    controlPanel.getAmplitudeSlider().setValue((int) (controlModel.getAmplitude() * 100));
-//    controlPanel.getAmplitudeSlider().setBorder(BorderFactory.createTitledBorder("Amplitude [V] = " + controlModel.getAmplitude()));
-//    if (controlModel.getPulseWidth() >= 5000) {
-//      controlPanel.getPulseWidthSlider().setValue((controlModel.getPulseWidth()));
-//      controlPanel.getPulseWidthSliderNs().setValue(0);
-//      controlPanel.getPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + controlModel.getPulseWidth() / 1000));
-//      controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
-//    }
-//    else {
-//      controlPanel.getPulseWidthSlider().setValue(0);
-//      controlPanel.getPulseWidthSliderNs().setValue(controlModel.getPulseWidth());
-//      controlPanel.getPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
-//      controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + controlModel.getPulseWidth() / 1000));
-//    }
-//    controlPanel.getSampleRateTextField().setText("" + controlModel.getSampleRate());
   }
 
   /**
@@ -109,36 +75,14 @@ public class ControlController extends ExperimentControlController {
   @Override
   public void doSetUpViewEvents() {
 
-   
+    // Is this really true? They appear to be set up in the experiment.
 
-//    controlPanel.getWaveformComboBox().addActionListener(new ActionListener() {
-//
-//      @Override
-//      public void actionPerformed(ActionEvent e) {
-//
-//        controlModel.setWaveform(controlPanel.getWaveformComboBox().getSelectedItem().toString());
-//      }
-//    });
-//
-//    controlPanel.getAmplitudeSlider().addChangeListener(new ChangeListener() {
-//
-//      @Override
-//      public void stateChanged(ChangeEvent e) {
-//
-//        JSlider source = (JSlider) e.getSource();
-//        if (!(source.getValueIsAdjusting())) {
-//          controlModel.setAmplitude(source.getValue() / (float) 100);
-//          controlPanel.getAmplitudeSlider().setBorder(BorderFactory.createTitledBorder("Amplitude [V] = " + controlModel.getAmplitude()));
-//        }
-//      }
-//    });
-
-   
   }
 
-
   /**
-   * These property change events are triggered in the controlModel in the case where the underlying controlModel is updated. Here, the controller can respond to those events and make sure the
+   * These property change events are triggered in the controlModel in the case where
+   * the underlying controlModel is updated. Here, the controller can respond to
+   * those events and make sure the
    * corresponding GUI
    * components get updated.
    */
@@ -156,11 +100,6 @@ public class ControlController extends ExperimentControlController {
     case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
 
       initGUIComponentsFromModel();
-      break;
-
-    case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
-
-      controlModel.updateWaveformChartData();
       break;
 
     default:

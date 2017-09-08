@@ -28,82 +28,28 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.consol;
 
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
-import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.SynapsePreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.BoardCheckPreferences;
 
 public class ConsolControlModel extends ExperimentControlModel {
-
-  /**
-   * Min Max params
-   */
-  Double yMaxIV = null;
-  Double yMinIV = null;
-
-  Double yMaxGV = null;
-  Double yMinGV = null;
-
-  List<Double> gm1Data = new ArrayList<>();
-  List<Double> gm2Data = new ArrayList<>();
-  List<Double> gm3Data = new ArrayList<>();
 
   /**
    * Here is where the Controller registers itself as a listener to model changes.
    *
    * @param listener
    */
+  @Override
   public void addListener(PropertyChangeListener listener) {
 
     swingPropertyChangeSupport.addPropertyChangeListener(listener);
   }
 
-  public Double getyMaxIV() {
-
-    return yMaxIV;
-  }
-
-  public void setyMaxIV(Double yMaxIV) {
-
-    this.yMaxIV = yMaxIV;
-  }
-
-  public Double getyMinIV() {
-
-    return yMinIV;
-  }
-
-  public void setyMinIV(Double yMinIV) {
-
-    this.yMinIV = yMinIV;
-  }
-
-  public Double getyMaxGV() {
-
-    return yMaxGV;
-  }
-
-  public void setyMaxGV(Double yMaxGV) {
-
-    this.yMaxGV = yMaxGV;
-  }
-
-  public Double getyMinGV() {
-
-    return yMinGV;
-  }
-
-  public void setyMinGV(Double yMinGV) {
-
-    this.yMinGV = yMinGV;
-  }
-
   @Override
   public ExperimentPreferences initAppPreferences() {
 
-    return new SynapsePreferences();
+    return new BoardCheckPreferences();
   }
 
   @Override
@@ -111,16 +57,4 @@ public class ConsolControlModel extends ExperimentControlModel {
 
   }
 
-  public List<Double> getGM1Data() {
-
-    return gm1Data;
-  }
-  public List<Double> getGM2Data() {
-
-    return gm2Data;
-  }
-  public List<Double> getGM3Data() {
-
-    return gm3Data;
-  }
 }
