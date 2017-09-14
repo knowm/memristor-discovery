@@ -65,7 +65,7 @@ public class BoardCheckExperiment extends Experiment {
   private final static float V_MEMINLINE_READ = .1f;
   private final static float V_MEMINLINE_WRITE = 1f;
   private final static float V_MEMINLINE_RESET = -1f;
-  private final static float V_MEMINLINE_HARD_RESET = -2.5f;
+  private final static float V_MEMINLINE_HARD_RESET = -2.0f;
 
   private final static float R_SWITCH = 73F;// Resistance of one of the DG445 switches. Old AD Switches are ~50.
 
@@ -199,14 +199,16 @@ public class BoardCheckExperiment extends Experiment {
   private float[] getScopesAverageVoltage(float readVoltage, int dWFWaveformChannel) {
 
     int samplesPerPulse = 300;
-    int sampleFrequency = 100 * samplesPerPulse;
+    int sampleFrequency = 10;
+    int samples = sampleFrequency * samplesPerPulse;
+
     // consolPanel.println("Starting Pulse Measurment");
 
-    dwfProxy.getDwf().startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(dWFWaveformChannel, sampleFrequency, samplesPerPulse);
+    dwfProxy.getDwf().startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(dWFWaveformChannel, samples, samplesPerPulse);
     dwfProxy.waitUntilArmed();
-    double[] pulse = WaveformUtils.generateCustomWaveform(Waveform.Square, readVoltage, 100);
-    dwfProxy.getDwf().startCustomPulseTrain(dWFWaveformChannel, 100, 0, 1, pulse);
-    boolean success = dwfProxy.capturePulseData(sampleFrequency, 1);
+    double[] pulse = WaveformUtils.generateCustomWaveform(Waveform.Square, readVoltage, sampleFrequency);
+    dwfProxy.getDwf().startCustomPulseTrain(dWFWaveformChannel, sampleFrequency, 0, 1, pulse);
+    boolean success = dwfProxy.capturePulseData(samples, 1);
     if (success) {
       int validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
       double[] v1 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
@@ -365,6 +367,8 @@ public class BoardCheckExperiment extends Experiment {
       reads[2] = measureAllSwitchResistances(V_MEMINLINE_READ, 0, false);
       consolPanel.println(formatResistanceArray("READ 3     ", reads[2]));
 
+      StringBuilder b = new StringBuilder();
+
       try {
         float[] delta_12 = new float[9];
         float[] delta_23 = new float[9];
@@ -384,6 +388,43 @@ public class BoardCheckExperiment extends Experiment {
       }
 
       return true;
+    }
+
+    private String verifyMemInlineReads(float[][] reads) {
+
+      int COL_WIDTH = 10;
+
+      StringBuilder b = new StringBuilder();
+      b.append("TEST");
+      b.append(": ");
+      for (int i = 0; i < reads[0].length; i++) {
+
+        String testResult = "POOP";// should never see this.
+        if (i == 0) {// this is all switches off. R1, R2 and R3 should all be over 10mOhm
+
+          testResult = " ";
+
+        }
+        else {// memristor
+
+          if (reads[i][0] > 50) {
+            testResult = "FAIL(WRITE)";
+          }
+          else if (reads[i][1] > 50) {
+            testResult = "FAIL(WRITE)";
+          }
+
+        }
+
+        // white space
+        for (int j = 0; j < (COL_WIDTH - s.length()); j++) {
+          b.append(" ");
+        }
+
+        b.append("|");
+      }
+      return b.toString();
+
     }
 
     private String formatResistanceArray(String prefix, float[] r) {

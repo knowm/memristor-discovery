@@ -28,6 +28,8 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.consol;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -54,6 +56,12 @@ public class ConsolPanel extends ExperimentPlotPanel {
     consol.setLineWrap(true);
     consol.setWrapStyleWord(true);
     consol.setAutoscrolls(true);
+
+    Font font = new Font("Courier", Font.PLAIN, 12);
+
+    consol.setFont(font);
+    consol.setForeground(Color.green);
+    consol.setBackground(Color.black);
 
     Date now = new Date();
     lines.add("" + now.toString());
