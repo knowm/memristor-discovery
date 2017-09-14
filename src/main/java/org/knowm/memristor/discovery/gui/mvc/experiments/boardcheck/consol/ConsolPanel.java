@@ -82,6 +82,12 @@ public class ConsolPanel extends ExperimentPlotPanel {
     add(scroll);
   }
 
+  public void clear() {
+
+    lines.clear();
+    loadLinesToColsol();
+  }
+
   public void loadLinesToColsol() {
 
     StringBuilder sb = new StringBuilder();

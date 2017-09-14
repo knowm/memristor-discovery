@@ -77,8 +77,6 @@ public abstract class Experiment implements PropertyChangeListener {
 
   public void createAndShowGUI() {
 
-    doCreateAndShowGUI();
-
     // //////////////////////
     // Control Panel ///////
     // //////////////////////
@@ -93,29 +91,38 @@ public abstract class Experiment implements PropertyChangeListener {
 
     getControlModel().addListener(this);
 
-    getControlPanel().getStartStopButton().addActionListener(new ActionListener() {
+    try {
+      getControlPanel().getStartStopButton().addActionListener(new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+        @Override
+        public void actionPerformed(ActionEvent e) {
 
-        if (!getControlModel().isStartToggled()) {
+          if (!getControlModel().isStartToggled()) {
 
-          getControlModel().setStartToggled(true);
-          getControlPanel().getStartStopButton().setText("Stop");
+            getControlModel().setStartToggled(true);
+            getControlPanel().getStartStopButton().setText("Stop");
 
-          // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
-          experimentCaptureWorker = getCaptureWorker();
-          experimentCaptureWorker.execute();
-        } else {
+            // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
+            experimentCaptureWorker = getCaptureWorker();
+            experimentCaptureWorker.execute();
+          }
+          else {
 
-          getControlModel().setStartToggled(false);
-          getControlPanel().getStartStopButton().setText("Start");
+            getControlModel().setStartToggled(false);
+            getControlPanel().getStartStopButton().setText("Start");
 
-          // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
-          experimentCaptureWorker.cancel(true);
+            // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
+            experimentCaptureWorker.cancel(true);
+          }
         }
-      }
-    });
+      });
+    } catch (java.lang.NullPointerException e) {
+
+      // this will occur if the start-stop button has been over-written in an experiment (like BoardCheck)
+
+    }
+
+    doCreateAndShowGUI();// after adding the default start/stop action so actions can be overridden.
 
     // //////////////////////
     // Plot Panel //////////

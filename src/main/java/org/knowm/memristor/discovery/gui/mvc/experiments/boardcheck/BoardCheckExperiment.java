@@ -55,6 +55,9 @@ import org.knowm.waveforms4j.DWF;
 public class BoardCheckExperiment extends Experiment {
 
   private SwingWorker meminlineTestWorker;
+  private SwingWorker muxTestWorker;
+  private SwingWorker switchTestWorker;
+  private SwingWorker clearConsolWorker;
 
   private final ControlModel controlModel = new ControlModel();
 
@@ -69,11 +72,12 @@ public class BoardCheckExperiment extends Experiment {
   private int meminline_numFailed = 0;
 
   private final static float R_SWITCH = 73F;// Resistance of one of the DG445 switches. Old AD Switches are ~50.
+  private final static float R_CALIBRATE = 120;// Line trace resistance, AD2 Calibration.
 
-  private int COL_WIDTH = 15;
+  private int COL_WIDTH = 12;
 
   private DecimalFormat percentFormat = new DecimalFormat("0.00 %");
-  private DecimalFormat ohmFormat = new DecimalFormat("000.00 kΩ");
+  private DecimalFormat ohmFormat = new DecimalFormat("0.00 kΩ");
 
   private ControlPanel controlPanel;
   private ConsolPanel consolPanel;
@@ -110,6 +114,45 @@ public class BoardCheckExperiment extends Experiment {
 
         meminlineTestWorker = new MeminlineTestWorker();
         meminlineTestWorker.execute();
+
+      }
+    });
+
+    controlPanel.muxTestButton.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+
+        // System.out.println("Meminline button was clicked. e=" + e.toString());
+
+        muxTestWorker = new MuxDiagnosticWorker();
+        muxTestWorker.execute();
+
+      }
+    });
+
+    controlPanel.switchTestButton.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+
+        // System.out.println("Meminline button was clicked. e=" + e.toString());
+
+        switchTestWorker = new SwitchDiagnosticWorker();
+        switchTestWorker.execute();
+
+      }
+    });
+
+    controlPanel.clearConsolButton.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+
+        // System.out.println("Meminline button was clicked. e=" + e.toString());
+
+        clearConsolWorker = new ClearConsolWorker();
+        clearConsolWorker.execute();
 
       }
     });
@@ -172,7 +215,7 @@ public class BoardCheckExperiment extends Experiment {
     // System.out.println("seriesResistance: " + seriesResistance);
 
     float I = Math.abs(vMeasure[1] / seriesResistance);
-    float rSwitch = (Math.abs(vMeasure[0] - vMeasure[1]) / I) - 2 * R_SWITCH;
+    float rSwitch = (Math.abs(vMeasure[0] - vMeasure[1]) / I) - 2 * R_SWITCH - R_CALIBRATE;
 
     return rSwitch / 1000;// to kilohms
   }
@@ -247,7 +290,85 @@ public class BoardCheckExperiment extends Experiment {
 
   }
 
-  private class BoardDiagnosticWorker extends SwingWorker<Boolean, Double> {
+  private class SwitchDiagnosticWorker extends SwingWorker<Boolean, Double> {
+
+    @Override
+    protected Boolean doInBackground() throws Exception {
+
+      consolPanel.println("");
+      consolPanel.println("Testing Board Switches(assuming 5kΩ resistors in socket)");
+      consolPanel.println("");
+      int sleep = 250;// so the tester can see the LEDs blink in the V1 board.
+
+      float[] r = measureAllSwitchResistances(V_SWITCH_RESISTANCE, sleep, true);
+
+      boolean pass = true;
+      for (int i = 0; i < r.length; i++) {
+
+        StringBuilder b = new StringBuilder();
+
+        if (i == 0) {
+          b.append(" ALL OFF: ");
+        }
+        else {
+          b.append("SWITCH " + i + ": ");
+        }
+
+        if (r[i] < 0) {
+          b.append("INF");
+        }
+        else {
+          b.append(ohmFormat.format(r[i]));
+        }
+
+        if (i > 0 && !isWithenPercent2Percent(r[i], 5.0f)) {
+          b.append("  FAILED!");
+          pass = false;
+        }
+        else if (i == 0) {
+
+          if (r[i] < 10000) {
+            b.append("  FAILED!");
+            pass = false;
+          }
+
+        }
+
+        consolPanel.println(b.toString());
+
+      }
+
+      consolPanel.println("");
+      if (pass) {
+        consolPanel.println("PASS");
+      }
+      else {
+        consolPanel.println("FAIL!");
+      }
+
+      return true;
+    }
+
+    @Override
+    protected void process(List<Double> chunks) {
+
+      // plotController.updateYChartData(chunks.get(0), chunks.get(chunks.size() - 1));
+      // plotController.repaintYChart();
+    }
+  }
+
+  private boolean isWithenPercent2Percent(float value, float reference) {
+
+    float p = Math.abs(value - reference) / reference;
+
+    System.out.println("p=" + p);
+    System.out.println("value=" + value);
+    System.out.println("reference=" + reference);
+
+    return p <= .02;
+  }
+
+  private class MuxDiagnosticWorker extends SwingWorker<Boolean, Double> {
 
     @Override
     protected Boolean doInBackground() throws Exception {
@@ -264,8 +385,9 @@ public class BoardCheckExperiment extends Experiment {
          * 01 A
          * 11 B
          */
-
-        consolPanel.println("Testing Muxes");
+        consolPanel.println("");
+        consolPanel.println("Testing 1-4 Board Muxes");
+        consolPanel.println("");
 
         /*
          * Procedure:
@@ -278,53 +400,59 @@ public class BoardCheckExperiment extends Experiment {
          * If one or the other fail, its a bad scope mux.
          */
 
-        consolPanel.println("                 Scope 1+       Scope 2+      ");
+        consolPanel.println("            Scope 1+       Scope 2+      ");
 
+        boolean pass = true;
         float[] deviations = measureMuxDeviation(DWF.WAVEFORM_CHANNEL_1, Destination.A);
         consolPanel.println("W1-->A      " + percentFormat.format(deviations[0]) + "          " + percentFormat.format(deviations[1]));
+
+        if (deviations[0] > .02 | deviations[1] > .02) {
+          pass = false;
+        }
 
         deviations = measureMuxDeviation(DWF.WAVEFORM_CHANNEL_1, Destination.B);
         consolPanel.println("W1-->B      " + percentFormat.format(deviations[0]) + "          " + percentFormat.format(deviations[1]));
 
+        if (deviations[0] > .02 | deviations[1] > .02) {
+          pass = false;
+        }
+
         deviations = measureMuxDeviation(DWF.WAVEFORM_CHANNEL_1, Destination.Y);
         consolPanel.println("W1-->Y      " + percentFormat.format(deviations[0]) + "          " + percentFormat.format(deviations[1]));
+
+        if (deviations[0] > .02 | deviations[1] > .02) {
+          pass = false;
+        }
 
         deviations = measureMuxDeviation(DWF.WAVEFORM_CHANNEL_2, Destination.A);
         consolPanel.println("W2-->A      " + percentFormat.format(deviations[0]) + "          " + percentFormat.format(deviations[1]));
 
+        if (deviations[0] > .02 | deviations[1] > .02) {
+          pass = false;
+        }
+
         deviations = measureMuxDeviation(DWF.WAVEFORM_CHANNEL_2, Destination.B);
         consolPanel.println("W2-->B      " + percentFormat.format(deviations[0]) + "          " + percentFormat.format(deviations[1]));
+
+        if (deviations[0] > .02 | deviations[1] > .02) {
+          pass = false;
+        }
 
         deviations = measureMuxDeviation(DWF.WAVEFORM_CHANNEL_2, Destination.Y);
         consolPanel.println("W2-->Y      " + percentFormat.format(deviations[0]) + "          " + percentFormat.format(deviations[1]));
 
+        if (deviations[0] > .02 | deviations[1] > .02) {
+          pass = false;
+        }
+
         consolPanel.println("");
 
-      }
-
-      consolPanel.println("Testing Switches. ");
-      int sleep = dwfProxy.isV1Board() ? 0 : 300;// so the tester can see the LEDs blink in the V1 board.
-
-      float[] r = measureAllSwitchResistances(V_SWITCH_RESISTANCE, sleep, true);
-
-      for (int i = 0; i < r.length; i++) {
-
-        StringBuilder b = new StringBuilder();
-
-        if (i == 0) {
-          b.append("   ALL OFF: ");
+        if (pass) {
+          consolPanel.println("PASS");
         }
         else {
-          b.append("SWITCH " + i + ": ");
+          consolPanel.println("FAIL!");
         }
-
-        if (r[i] < 0) {
-          b.append("INF");
-        }
-        else {
-          b.append(ohmFormat.format(r[i]));
-        }
-        consolPanel.println(b.toString());
 
       }
 
@@ -336,6 +464,16 @@ public class BoardCheckExperiment extends Experiment {
 
       // plotController.updateYChartData(chunks.get(0), chunks.get(chunks.size() - 1));
       // plotController.repaintYChart();
+    }
+  }
+
+  private class ClearConsolWorker extends SwingWorker<Boolean, Double> {
+
+    @Override
+    protected Boolean doInBackground() throws Exception {
+
+      consolPanel.clear();
+      return true;
     }
   }
 
@@ -352,8 +490,8 @@ public class BoardCheckExperiment extends Experiment {
       }
 
       consolPanel.println("");
-      consolPanel.println("Knowm Mem-Inline Chip Test");
-
+      consolPanel.println("Mem-Inline Chip Test");
+      consolPanel.println("");
       float[][] reads = new float[3][9];
       measureAllSwitchResistances(V_MEMINLINE_WRITE, 0, true);// first call to measureAllSwitchResistances will set the muxes.
       measureAllSwitchResistances(V_MEMINLINE_RESET, 0, false);
@@ -552,6 +690,6 @@ public class BoardCheckExperiment extends Experiment {
   @Override
   public SwingWorker getCaptureWorker() {
 
-    return new BoardDiagnosticWorker();
+    return new ClearConsolWorker();
   }
 }

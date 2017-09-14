@@ -46,7 +46,10 @@ import org.knowm.memristor.discovery.utils.Util;
  */
 public class ControlPanel extends ExperimentControlPanel {
 
+  public JButton clearConsolButton;
   public JButton meminlineTestButton;
+  public JButton muxTestButton;
+  public JButton switchTestButton;
 
   /**
    * Constructor
@@ -60,27 +63,42 @@ public class ControlPanel extends ExperimentControlPanel {
 
     c.gridx = 0;
 
-    startStopButton = new JButton("Board Diagnostic");
-    startStopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    clearConsolButton = new JButton("Clear Consol");
+    clearConsolButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.gridy++;
     c.insets = new Insets(0, 0, 0, 0);
-    add(startStopButton, c);
+    add(clearConsolButton, c);
     c.gridy++;
 
-    meminlineTestButton = new JButton("MemInline Chip Test");
+    meminlineTestButton = new JButton("Mem-Inline Chip Test (R=30.1kΩ)");
     meminlineTestButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.insets = new Insets(0, 0, 0, 0);
     add(meminlineTestButton, c);
-
     c.gridy++;
+
+    muxTestButton = new JButton("1-4 Mux Board Test (V1.x)");
+    muxTestButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.insets = new Insets(0, 0, 0, 0);
+    add(muxTestButton, c);
+    c.gridy++;
+
+    switchTestButton = new JButton("Switch Board Test (R=30.1kΩ)");
+    switchTestButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.insets = new Insets(0, 0, 0, 0);
+    add(switchTestButton, c);
+    c.gridy++;
+
     JLabel logoLabel = new JLabel(Util.createImageIcon("img/logo_200.png"));
     add(logoLabel, c);
   }
 
   public void enableAllChildComponents(boolean enabled) {
 
-    startStopButton.setEnabled(enabled);
+    clearConsolButton.setEnabled(enabled);
     meminlineTestButton.setEnabled(enabled);
+    muxTestButton.setEnabled(enabled);
+    switchTestButton.setEnabled(enabled);
+
   }
 
 }
