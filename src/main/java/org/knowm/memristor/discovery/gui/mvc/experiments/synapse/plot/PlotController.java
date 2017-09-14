@@ -74,8 +74,7 @@ public class PlotController implements PropertyChangeListener {
         if (plotPanel.getFreezeYAxisCheckBoxIV().isSelected()) {
           plotModel.setyMaxIV(plotPanel.getYChartMax());
           plotModel.setyMinIV(plotPanel.getYChartMin());
-        }
-        else {
+        } else {
           plotModel.setyMaxIV(null);
           plotModel.setyMinIV(null);
         }
@@ -83,17 +82,17 @@ public class PlotController implements PropertyChangeListener {
     });
   }
 
-  public void updateYChartData(double g_m1,double g_m2) {
+  public void updateYChartData(double g_m1, double g_m2) {
 
     plotModel.getGM1Data().add(g_m1);
     plotModel.getGM2Data().add(g_m2);
-    plotModel.getGM3Data().add(g_m1-g_m2);
-   // plotPanel.getGChart().getStyler().setYAxisMax(plotModel.getyMaxGV());
-   // plotPanel.getGChart().getStyler().setYAxisMin(plotModel.getyMinGV());
+    plotModel.getGM3Data().add(g_m1 - g_m2);
+    // plotPanel.getGChart().getStyler().setYAxisMax(plotModel.getyMaxGV());
+    // plotPanel.getGChart().getStyler().setYAxisMin(plotModel.getyMinGV());
     plotPanel.getGChart().updateXYSeries("G(M1)", null, plotModel.getGM1Data(), null);
     plotPanel.getGChart().updateXYSeries("G(M2)", null, plotModel.getGM2Data(), null);
     plotPanel.getGChart().updateXYSeries("G(M1-M2)", null, plotModel.getGM3Data(), null);
-   // plotPanel.getGChart().updateXYSeries("ylast", new double[]{1, plotModel.getGData().size()}, new double[]{conductance, conductance}, null);
+    // plotPanel.getGChart().updateXYSeries("ylast", new double[]{1, plotModel.getGData().size()}, new double[]{conductance, conductance}, null);
   }
 
   public void repaintYChart() {

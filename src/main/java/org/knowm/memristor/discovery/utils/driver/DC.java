@@ -34,7 +34,7 @@ public class DC extends Driver {
 
   /**
    * Constructor
-   * 
+   *
    * @param id
    * @param dcOffset
    */

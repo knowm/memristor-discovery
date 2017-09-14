@@ -221,27 +221,27 @@ public class QCController implements PropertyChangeListener {
 
     switch (evt.getPropertyName()) {
 
-    case DWFProxy.AD2_STARTUP_CHANGE:
+      case DWFProxy.AD2_STARTUP_CHANGE:
 
-      controlPanel.enableAllChildComponents((Boolean) evt.getNewValue());
-      break;
+        controlPanel.enableAllChildComponents((Boolean) evt.getNewValue());
+        break;
 
-    case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
+      case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
 
-      initGUIComponentsFromModel();
-      break;
+        initGUIComponentsFromModel();
+        break;
 
-    case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
+      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
 
-      model.updateWaveformChartData();
-      if (true) {
-        plotPanel.switch2WaveformChart();
-        plotPanel.udpateWaveformChart(model.getWaveformTimeData(), model.getWaveformAmplitudeData(), model.getAmplitude(), model.getFrequency());
-      }
-      break;
+        model.updateWaveformChartData();
+        if (true) {
+          plotPanel.switch2WaveformChart();
+          plotPanel.udpateWaveformChart(model.getWaveformTimeData(), model.getWaveformAmplitudeData(), model.getAmplitude(), model.getFrequency());
+        }
+        break;
 
-    default:
-      break;
+      default:
+        break;
     }
 
   }

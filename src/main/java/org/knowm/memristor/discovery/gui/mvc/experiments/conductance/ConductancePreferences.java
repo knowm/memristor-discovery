@@ -56,7 +56,6 @@ public class ConductancePreferences extends ExperimentPreferences {
   public static final String SET_CONDUCTANCE_INIT_KEY = PREFIX + "SET_CONDUCTANCE_INIT_KEY";
   public static final float SET_CONDUCTANCE_INIT_DEFAULT_VALUE = 1.0f;
 
-
   public static final String SET_AMPLITUDE_INIT_FLOAT_KEY = PREFIX + "SET_AMPLITUDE_INIT_FLOAT_KEY";
   public static final float SET_AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE = 1.0f;
 

@@ -16,9 +16,9 @@ public class SteelCheckBoxUI extends javax.swing.plaf.basic.BasicCheckBoxUI impl
   private java.awt.geom.RoundRectangle2D foreground;
   private java.awt.geom.Point2D foregroundStart;
   private java.awt.geom.Point2D foregroundStop;
-  private final float[] FOREGROUND_FRACTIONS = { 0.0f, 0.03f, 0.94f, 1.0f };
-  private java.awt.Color[] foregroundColors = { new java.awt.Color(241, 242, 242, 255), new java.awt.Color(224, 225, 226, 255), new java.awt.Color(166, 169, 171, 255), new java.awt.Color(124, 124,
-      124, 255) };
+  private final float[] FOREGROUND_FRACTIONS = {0.0f, 0.03f, 0.94f, 1.0f};
+  private java.awt.Color[] foregroundColors = {new java.awt.Color(241, 242, 242, 255), new java.awt.Color(224, 225, 226, 255), new java.awt.Color(166, 169, 171, 255), new java.awt.Color(124, 124,
+      124, 255)};
   private java.awt.LinearGradientPaint foregroundGradient;
 
   /**
@@ -77,33 +77,28 @@ public class SteelCheckBoxUI extends javax.swing.plaf.basic.BasicCheckBoxUI impl
     if (CHECKBOX.isSelected()) {
       if (CHECKBOX.isColored()) {
         if (CHECKBOX.isRised()) {
-          foregroundColors = new java.awt.Color[] {
+          foregroundColors = new java.awt.Color[]{
 
-              CHECKBOX.getSelectedColor().LIGHT.brighter(), CHECKBOX.getSelectedColor().LIGHT, CHECKBOX.getSelectedColor().MEDIUM, CHECKBOX.getSelectedColor().DARK };
+              CHECKBOX.getSelectedColor().LIGHT.brighter(), CHECKBOX.getSelectedColor().LIGHT, CHECKBOX.getSelectedColor().MEDIUM, CHECKBOX.getSelectedColor().DARK};
+        } else {
+          foregroundColors = new java.awt.Color[]{CHECKBOX.getSelectedColor().DARK, CHECKBOX.getSelectedColor().DARK, CHECKBOX.getSelectedColor().LIGHT, CHECKBOX.getSelectedColor().MEDIUM};
         }
-        else {
-          foregroundColors = new java.awt.Color[] { CHECKBOX.getSelectedColor().DARK, CHECKBOX.getSelectedColor().DARK, CHECKBOX.getSelectedColor().LIGHT, CHECKBOX.getSelectedColor().MEDIUM };
-        }
-      }
-      else {
-        foregroundColors = new java.awt.Color[] { new java.awt.Color(241, 242, 242, 255), new java.awt.Color(224, 225, 226, 255), new java.awt.Color(166, 169, 171, 255), new java.awt.Color(124, 124,
-            124, 255) };
+      } else {
+        foregroundColors = new java.awt.Color[]{new java.awt.Color(241, 242, 242, 255), new java.awt.Color(224, 225, 226, 255), new java.awt.Color(166, 169, 171, 255), new java.awt.Color(124, 124,
+            124, 255)};
       }
       foregroundGradient = new java.awt.LinearGradientPaint(foregroundStart, foregroundStop, FOREGROUND_FRACTIONS, foregroundColors);
       G2.setPaint(foregroundGradient);
       G2.fill(foreground);
       if (mouseOver && mousePressed) {
         G2.drawImage(knobPressedImage, pos.x + backgroundImage.getWidth() / 2, pos.y, null);
-      }
-      else {
+      } else {
         G2.drawImage(knobStandardImage, pos.x + backgroundImage.getWidth() / 2, pos.y, null);
       }
-    }
-    else {
+    } else {
       if (mouseOver && mousePressed) {
         G2.drawImage(knobPressedImage, pos.x, pos.y, null);
-      }
-      else {
+      } else {
         G2.drawImage(knobStandardImage, pos.x, pos.y, null);
       }
     }
@@ -135,9 +130,9 @@ public class SteelCheckBoxUI extends javax.swing.plaf.basic.BasicCheckBoxUI impl
     final java.awt.geom.Ellipse2D KNOB_FRAME = new java.awt.geom.Ellipse2D.Double(IMAGE_WIDTH * 0.0, IMAGE_HEIGHT * 0.0, IMAGE_WIDTH * 1.0, IMAGE_HEIGHT * 1.0);
     final java.awt.geom.Point2D KNOB_FRAME_START = new java.awt.geom.Point2D.Double(0, KNOB_FRAME.getBounds2D().getMinY());
     final java.awt.geom.Point2D KNOB_FRAME_STOP = new java.awt.geom.Point2D.Double(0, KNOB_FRAME.getBounds2D().getMaxY());
-    final float[] E_KNOB_FRAME_FRACTIONS = { 0.0f, 0.25f, 0.51f, 0.76f, 1.0f };
-    final java.awt.Color[] KNOB_FRAME_COLORS = { new java.awt.Color(90, 91, 92, 255), new java.awt.Color(127, 127, 128, 255), new java.awt.Color(81, 82, 83, 255), new java.awt.Color(104, 105, 105,
-        255), new java.awt.Color(63, 64, 65, 255) };
+    final float[] E_KNOB_FRAME_FRACTIONS = {0.0f, 0.25f, 0.51f, 0.76f, 1.0f};
+    final java.awt.Color[] KNOB_FRAME_COLORS = {new java.awt.Color(90, 91, 92, 255), new java.awt.Color(127, 127, 128, 255), new java.awt.Color(81, 82, 83, 255), new java.awt.Color(104, 105, 105,
+        255), new java.awt.Color(63, 64, 65, 255)};
     if (KNOB_FRAME_START.distance(KNOB_FRAME_STOP) > 0) {
       final java.awt.LinearGradientPaint KNOB_FRAME_GRADIENT = new java.awt.LinearGradientPaint(KNOB_FRAME_START, KNOB_FRAME_STOP, E_KNOB_FRAME_FRACTIONS, KNOB_FRAME_COLORS);
       G2.setPaint(KNOB_FRAME_GRADIENT);
@@ -147,16 +142,15 @@ public class SteelCheckBoxUI extends javax.swing.plaf.basic.BasicCheckBoxUI impl
     final java.awt.geom.Ellipse2D KNOB = new java.awt.geom.Ellipse2D.Double(IMAGE_WIDTH * 0.07692307978868484, IMAGE_HEIGHT * 0.07692307978868484, IMAGE_WIDTH * 0.8461538553237915, IMAGE_HEIGHT
         * 0.8461538553237915);
     final java.awt.geom.Point2D KNOB_CENTER = new java.awt.geom.Point2D.Double(KNOB.getCenterX(), KNOB.getCenterY());
-    final float[] KNOB_FRACTIONS = { 0.0f, 40.0f, 90.0f, 140.0f, 220.0f, 270.0f, 320.0f };
+    final float[] KNOB_FRACTIONS = {0.0f, 40.0f, 90.0f, 140.0f, 220.0f, 270.0f, 320.0f};
     final java.awt.Color[] KNOB_COLORS;
 
     if (PRESSED) {
-      KNOB_COLORS = new java.awt.Color[] { new java.awt.Color(0xC2C2C2), new java.awt.Color(0x727678), new java.awt.Color(0xC2C2C2), new java.awt.Color(0x727678), new java.awt.Color(0xC2C2C2),
-          new java.awt.Color(0x727678), new java.awt.Color(0xC2C2C2) };
-    }
-    else {
-      KNOB_COLORS = new java.awt.Color[] { new java.awt.Color(0xF2F2F2), new java.awt.Color(0x8F9396), new java.awt.Color(0xF2F2F2), new java.awt.Color(0x8F9396), new java.awt.Color(0xF2F2F2),
-          new java.awt.Color(0x8F9396), new java.awt.Color(0xF2F2F2) };
+      KNOB_COLORS = new java.awt.Color[]{new java.awt.Color(0xC2C2C2), new java.awt.Color(0x727678), new java.awt.Color(0xC2C2C2), new java.awt.Color(0x727678), new java.awt.Color(0xC2C2C2),
+          new java.awt.Color(0x727678), new java.awt.Color(0xC2C2C2)};
+    } else {
+      KNOB_COLORS = new java.awt.Color[]{new java.awt.Color(0xF2F2F2), new java.awt.Color(0x8F9396), new java.awt.Color(0xF2F2F2), new java.awt.Color(0x8F9396), new java.awt.Color(0xF2F2F2),
+          new java.awt.Color(0x8F9396), new java.awt.Color(0xF2F2F2)};
     }
     final eu.hansolo.component.ConicalGradientPaint KNOB_GRADIENT = new eu.hansolo.component.ConicalGradientPaint(true, KNOB_CENTER, 0f, KNOB_FRACTIONS, KNOB_COLORS);
     G2.setPaint(KNOB_GRADIENT);
@@ -191,8 +185,8 @@ public class SteelCheckBoxUI extends javax.swing.plaf.basic.BasicCheckBoxUI impl
         IMAGE_HEIGHT);
     final java.awt.geom.Point2D BACKGROUND_FRAME_START = new java.awt.geom.Point2D.Double(0, BACKGROUND_FRAME.getBounds2D().getMinY());
     final java.awt.geom.Point2D BACKGROUND_FRAME_STOP = new java.awt.geom.Point2D.Double(0, BACKGROUND_FRAME.getBounds2D().getMaxY());
-    final float[] BACKGROUND_FRAME_FRACTIONS = { 0.0f, 0.51f, 1.0f };
-    final java.awt.Color[] BACKGROUND_FRAME_COLORS = { new java.awt.Color(68, 68, 68, 255), new java.awt.Color(105, 105, 106, 255), new java.awt.Color(216, 217, 218, 255) };
+    final float[] BACKGROUND_FRAME_FRACTIONS = {0.0f, 0.51f, 1.0f};
+    final java.awt.Color[] BACKGROUND_FRAME_COLORS = {new java.awt.Color(68, 68, 68, 255), new java.awt.Color(105, 105, 106, 255), new java.awt.Color(216, 217, 218, 255)};
     final java.awt.LinearGradientPaint BACKGROUND_FRAME_GRADIENT = new java.awt.LinearGradientPaint(BACKGROUND_FRAME_START, BACKGROUND_FRAME_STOP, BACKGROUND_FRAME_FRACTIONS, BACKGROUND_FRAME_COLORS);
     G2.setPaint(BACKGROUND_FRAME_GRADIENT);
     G2.fill(BACKGROUND_FRAME);
@@ -201,8 +195,8 @@ public class SteelCheckBoxUI extends javax.swing.plaf.basic.BasicCheckBoxUI impl
         IMAGE_HEIGHT * 0.8571428060531616, IMAGE_HEIGHT, IMAGE_HEIGHT);
     final java.awt.geom.Point2D BACKGROUND_START = new java.awt.geom.Point2D.Double(0, BACKGROUND.getBounds2D().getMinY());
     final java.awt.geom.Point2D BACKGROUND_STOP = new java.awt.geom.Point2D.Double(0, BACKGROUND.getBounds2D().getMaxY());
-    final float[] BACKGROUND_FRACTIONS = { 0.0f, 0.96f, 1.0f };
-    final java.awt.Color[] BACKGROUND_COLORS = { new java.awt.Color(91, 91, 91, 255), new java.awt.Color(138, 138, 138, 255), new java.awt.Color(124, 124, 124, 255) };
+    final float[] BACKGROUND_FRACTIONS = {0.0f, 0.96f, 1.0f};
+    final java.awt.Color[] BACKGROUND_COLORS = {new java.awt.Color(91, 91, 91, 255), new java.awt.Color(138, 138, 138, 255), new java.awt.Color(124, 124, 124, 255)};
     if (BACKGROUND_START.distance(BACKGROUND_STOP) > 0) {
       final java.awt.LinearGradientPaint BACKGROUND_GRADIENT = new java.awt.LinearGradientPaint(BACKGROUND_START, BACKGROUND_STOP, BACKGROUND_FRACTIONS, BACKGROUND_COLORS);
       G2.setPaint(BACKGROUND_GRADIENT);
@@ -229,25 +223,25 @@ public class SteelCheckBoxUI extends javax.swing.plaf.basic.BasicCheckBoxUI impl
     final double TEXT_X;
     final double TEXT_Y;
     switch (ORIENTATION) {
-    case javax.swing.SwingConstants.CENTER:
-      TEXT_X = CENTER_X - TEXT_BOUNDARY.getWidth() / 2.0;
-      TEXT_Y = CENTER_Y - TEXT_BOUNDARY.getHeight() / 2.0 + TEXT_BOUNDARY.getHeight();
-      break;
+      case javax.swing.SwingConstants.CENTER:
+        TEXT_X = CENTER_X - TEXT_BOUNDARY.getWidth() / 2.0;
+        TEXT_Y = CENTER_Y - TEXT_BOUNDARY.getHeight() / 2.0 + TEXT_BOUNDARY.getHeight();
+        break;
 
-    case javax.swing.SwingConstants.LEFT:
-      TEXT_X = BOUNDARY.getMinX();
-      TEXT_Y = CENTER_Y - TEXT_BOUNDARY.getHeight() / 2.0 + TEXT_BOUNDARY.getHeight();
-      break;
+      case javax.swing.SwingConstants.LEFT:
+        TEXT_X = BOUNDARY.getMinX();
+        TEXT_Y = CENTER_Y - TEXT_BOUNDARY.getHeight() / 2.0 + TEXT_BOUNDARY.getHeight();
+        break;
 
-    case javax.swing.SwingConstants.RIGHT:
-      TEXT_X = BOUNDARY.getMaxX() - TEXT_BOUNDARY.getWidth();
-      TEXT_Y = CENTER_Y - TEXT_BOUNDARY.getHeight() / 2.0 + TEXT_BOUNDARY.getHeight();
-      break;
+      case javax.swing.SwingConstants.RIGHT:
+        TEXT_X = BOUNDARY.getMaxX() - TEXT_BOUNDARY.getWidth();
+        TEXT_Y = CENTER_Y - TEXT_BOUNDARY.getHeight() / 2.0 + TEXT_BOUNDARY.getHeight();
+        break;
 
-    default:
-      TEXT_X = CENTER_X - TEXT_BOUNDARY.getWidth() / 2.0;
-      TEXT_Y = CENTER_Y - TEXT_BOUNDARY.getHeight() / 2.0 + TEXT_BOUNDARY.getHeight();
-      break;
+      default:
+        TEXT_X = CENTER_X - TEXT_BOUNDARY.getWidth() / 2.0;
+        TEXT_Y = CENTER_Y - TEXT_BOUNDARY.getHeight() / 2.0 + TEXT_BOUNDARY.getHeight();
+        break;
     }
 
     return new java.awt.geom.Point2D.Double(TEXT_X, TEXT_Y);

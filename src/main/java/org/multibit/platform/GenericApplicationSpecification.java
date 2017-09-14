@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://opensource.org/licenses/mit-license.php
+ * http://opensource.org/licenses/mit-license.php
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -34,25 +34,25 @@ import org.multibit.platform.listener.GenericQuitEventListener;
  */
 public class GenericApplicationSpecification {
 
-    private Set<GenericOpenURIEventListener> openURIEventListeners = new HashSet<GenericOpenURIEventListener>();
-    private Set<GenericPreferencesEventListener> preferencesEventListeners = new HashSet<GenericPreferencesEventListener>();
-    private Set<GenericAboutEventListener> aboutEventListeners = new HashSet<GenericAboutEventListener>();
-    private Set<GenericQuitEventListener> quitEventListeners = new HashSet<GenericQuitEventListener>();
+  private Set<GenericOpenURIEventListener> openURIEventListeners = new HashSet<GenericOpenURIEventListener>();
+  private Set<GenericPreferencesEventListener> preferencesEventListeners = new HashSet<GenericPreferencesEventListener>();
+  private Set<GenericAboutEventListener> aboutEventListeners = new HashSet<GenericAboutEventListener>();
+  private Set<GenericQuitEventListener> quitEventListeners = new HashSet<GenericQuitEventListener>();
 
-    public Set<GenericOpenURIEventListener> getOpenURIEventListeners() {
-        return openURIEventListeners;
-    }
+  public Set<GenericOpenURIEventListener> getOpenURIEventListeners() {
+    return openURIEventListeners;
+  }
 
-    public Set<GenericPreferencesEventListener> getPreferencesEventListeners() {
-        return preferencesEventListeners;
-    }
+  public Set<GenericPreferencesEventListener> getPreferencesEventListeners() {
+    return preferencesEventListeners;
+  }
 
-    public Set<GenericAboutEventListener> getAboutEventListeners() {
-        return aboutEventListeners;
-    }
+  public Set<GenericAboutEventListener> getAboutEventListeners() {
+    return aboutEventListeners;
+  }
 
-    public Set<GenericQuitEventListener> getQuitEventListeners() {
-        return quitEventListeners;
-    }
+  public Set<GenericQuitEventListener> getQuitEventListeners() {
+    return quitEventListeners;
+  }
 
 }

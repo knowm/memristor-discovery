@@ -91,19 +91,19 @@ public class ControlController extends ExperimentControlController {
 
     switch (evt.getPropertyName()) {
 
-    case DWFProxy.AD2_STARTUP_CHANGE:
+      case DWFProxy.AD2_STARTUP_CHANGE:
 
-      controlPanel.enableAllChildComponents((Boolean) evt.getNewValue());
+        controlPanel.enableAllChildComponents((Boolean) evt.getNewValue());
 
-      break;
+        break;
 
-    case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
+      case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
 
-      initGUIComponentsFromModel();
-      break;
+        initGUIComponentsFromModel();
+        break;
 
-    default:
-      break;
+      default:
+        break;
     }
   }
 }

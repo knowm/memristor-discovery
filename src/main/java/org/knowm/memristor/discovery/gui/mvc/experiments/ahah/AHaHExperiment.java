@@ -147,7 +147,7 @@ public class AHaHExperiment extends Experiment {
         // Analog In /////////////////
         // ////////////////////////////
         // dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.01, samplesPerPulse * 1);
-        dwfProxy.getDwf().startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(DWF.WAVEFORM_CHANNEL_1,sampleFrequency, samplesPerPulse * 1);
+        dwfProxy.getDwf().startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(DWF.WAVEFORM_CHANNEL_1, sampleFrequency, samplesPerPulse * 1);
         dwfProxy.waitUntilArmed();
 
         // ////////////////////////////////

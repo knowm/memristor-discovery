@@ -40,7 +40,7 @@ public abstract class Driver {
 
   /**
    * Constructor
-   * 
+   *
    * @param id
    * @param dcOffset
    * @param phase

@@ -115,10 +115,12 @@ public class PlotControlModel extends ExperimentControlModel {
 
     return gm1Data;
   }
+
   public List<Double> getGM2Data() {
 
     return gm2Data;
   }
+
   public List<Double> getGM3Data() {
 
     return gm3Data;

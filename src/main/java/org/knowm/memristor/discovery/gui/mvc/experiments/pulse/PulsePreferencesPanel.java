@@ -111,8 +111,6 @@ public class PulsePreferencesPanel extends ExperimentPreferencesPanel {
         .SAMPLE_RATE_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(sampleRateTextField, gc);
 
-
-
   }
 
   @Override

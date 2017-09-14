@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://opensource.org/licenses/mit-license.php
+ * http://opensource.org/licenses/mit-license.php
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -35,32 +35,32 @@ import org.slf4j.LoggerFactory;
  *         
  */
 public class DefaultPreferencesHandler implements GenericPreferencesHandler, GenericEventListener<GenericPreferencesEventListener> {
-    private static final Logger log = LoggerFactory.getLogger(DefaultPreferencesHandler.class);
+  private static final Logger log = LoggerFactory.getLogger(DefaultPreferencesHandler.class);
 
-    // The event listeners
-    private Set<GenericPreferencesEventListener> listeners = new HashSet<GenericPreferencesEventListener>();
+  // The event listeners
+  private Set<GenericPreferencesEventListener> listeners = new HashSet<GenericPreferencesEventListener>();
 
-    @Override
-    public void addListeners(Collection<GenericPreferencesEventListener> listeners) {
-        this.listeners.addAll(listeners);
+  @Override
+  public void addListeners(Collection<GenericPreferencesEventListener> listeners) {
+    this.listeners.addAll(listeners);
+  }
+
+  /**
+   * Handles the process of broadcasting the event to listeners
+   * allowing this process to be decoupled
+   * @param event The generic event (or it's proxy)
+   */
+  @Override
+  public void handlePreferences(GenericPreferencesEvent event) {
+    log.debug("Called");
+    if (event == null) {
+      log.warn("Received a null event");
+      return;
     }
-
-    /**
-     * Handles the process of broadcasting the event to listeners
-     * allowing this process to be decoupled
-     * @param event The generic event (or it's proxy)
-     */
-    @Override
-    public void handlePreferences(GenericPreferencesEvent event) {
-        log.debug("Called");
-        if (event == null) {
-            log.warn("Received a null event");
-            return;
-        }
-        log.debug("Event class is {}",event.getClass().getSimpleName());
-        log.debug("Broadcasting to {} listener(s)",listeners.size());
-        for (GenericPreferencesEventListener listener: listeners) {
-            listener.onPreferencesEvent(event);
-        }
+    log.debug("Event class is {}", event.getClass().getSimpleName());
+    log.debug("Broadcasting to {} listener(s)", listeners.size());
+    for (GenericPreferencesEventListener listener : listeners) {
+      listener.onPreferencesEvent(event);
     }
+  }
 }

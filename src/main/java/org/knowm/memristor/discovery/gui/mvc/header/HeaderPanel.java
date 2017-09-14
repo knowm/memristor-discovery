@@ -74,10 +74,9 @@ public class HeaderPanel extends JPanel {
       checkBoxes[i].setBackground(null);
     }
     //  check lowest 8 bits for all zeros
-    if ((byte)(digitalIOStates & 0xFF) == 0) {
+    if ((byte) (digitalIOStates & 0xFF) == 0) {
       setBackground(warnColor);
-    }
-    else {
+    } else {
       setBackground(null);
     }
   }

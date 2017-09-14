@@ -90,8 +90,7 @@ public class ControlController extends ExperimentControlController {
       controlPanel.getPulseWidthSliderNs().setValue(0);
       controlPanel.getPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + controlModel.getPulseWidth() / 1000));
       controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
-    }
-    else {
+    } else {
       controlPanel.getPulseWidthSlider().setValue(0);
       controlPanel.getPulseWidthSliderNs().setValue(controlModel.getPulseWidth());
       controlPanel.getPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
@@ -188,7 +187,6 @@ public class ControlController extends ExperimentControlController {
         }
       }
     });
-
 
     controlPanel.getSampleRateTextField().addKeyListener(new KeyAdapter() {
 

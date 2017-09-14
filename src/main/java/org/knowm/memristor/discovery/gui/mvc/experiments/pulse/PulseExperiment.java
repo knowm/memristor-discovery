@@ -163,7 +163,7 @@ public class PulseExperiment extends Experiment {
         conductance[i] = G;
       }
 
-      publish(new double[][] { timeData, V1Trimmed, V2Trimmed, V2MinusV1, current, conductance, null });
+      publish(new double[][]{timeData, V1Trimmed, V2Trimmed, V2MinusV1, current, conductance, null});
 
       while (!initialPulseTrainCaptured) {
         // System.out.println("Waiting...");
@@ -213,8 +213,7 @@ public class PulseExperiment extends Experiment {
           dwfProxy.getDwf().stopAnalogCaptureBothChannels();
           controlPanel.getStartStopButton().doClick();
           return false;
-        }
-        else {
+        } else {
 
           // Get Raw Data from Oscilloscope
           validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
@@ -238,9 +237,9 @@ public class PulseExperiment extends Experiment {
             G = G < 0 ? 0 : G;
             runningTotal += G;
           }
-          double[] conductanceAve = new double[] { runningTotal / (bufferLength - 6) * ConductancePreferences.CONDUCTANCE_UNIT.getDivisor() };
+          double[] conductanceAve = new double[]{runningTotal / (bufferLength - 6) * ConductancePreferences.CONDUCTANCE_UNIT.getDivisor()};
 
-          publish(new double[][] { null, null, null, null, null, null, conductanceAve });
+          publish(new double[][]{null, null, null, null, null, null, conductanceAve});
         }
         // Stop Analog In and Out
         dwfProxy.getDwf().stopWave(DWF.WAVEFORM_CHANNEL_1);
@@ -264,17 +263,14 @@ public class PulseExperiment extends Experiment {
         if (plotPanel.getCaptureButton().isSelected()) {
           plotPanel.switch2CaptureChart();
           plotController.repaintVtChart();
-        }
-        else if (plotPanel.getIVButton().isSelected()) {
+        } else if (plotPanel.getIVButton().isSelected()) {
           plotPanel.switch2IVChart();
           plotController.repaintItChart();
-        }
-        else {
+        } else {
           plotPanel.switch2GVChart();
           plotController.repaintGVChart();
         }
-      }
-      else {
+      } else {
 
         // update G chart
         controlModel.setLastG(newestChunk[6][0]);
@@ -299,15 +295,15 @@ public class PulseExperiment extends Experiment {
 
     switch (propName) {
 
-    case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
+      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
 
-      plotPanel.switch2WaveformChart();
-      plotController.updateWaveformChart(controlModel.getWaveformTimeData(), controlModel.getWaveformAmplitudeData(), controlModel.getAmplitude(), controlModel.getPulseWidth());
+        plotPanel.switch2WaveformChart();
+        plotController.updateWaveformChart(controlModel.getWaveformTimeData(), controlModel.getWaveformAmplitudeData(), controlModel.getAmplitude(), controlModel.getPulseWidth());
 
-      break;
+        break;
 
-    default:
-      break;
+      default:
+        break;
     }
   }
 

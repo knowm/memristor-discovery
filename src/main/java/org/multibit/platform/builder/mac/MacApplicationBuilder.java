@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://opensource.org/licenses/mit-license.php
+ * http://opensource.org/licenses/mit-license.php
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  * <p>
  * Example:
  * </p>
- * 
+ *
  * <pre>
  * </pre>
  *
@@ -60,7 +60,7 @@ public class MacApplicationBuilder {
    * <p>
    * Requires reflective code to avoid introducing Apple-specific code. The direct equivalent operation is as follows:
    * </p>
-   * 
+   *
    * <pre>
    *
    *  Application application = Application.getApplication();
@@ -69,13 +69,13 @@ public class MacApplicationBuilder {
    *          // Fire the internal about handler event
    *      }
    *  });
-   *  
+   *
    *  application.setOpenURIHandler(new OpenURIHandler() {
    *      void openURI(AppEvent.OpenURIEvent event) {
    *          // Fire the internal open file event
    *      }
    *  });
-   *  
+   *
    *  application.setOpenFileHandler(new OpenFilesHandler() {
    *      void openFiles(AppEvent.OpenFilesEvent event) {
    *          // Fire the internal open file event
@@ -84,7 +84,7 @@ public class MacApplicationBuilder {
    *
    *  ...
    * </pre>
-   * 
+   *
    * @return A {@link GenericApplication}
    * @param specification The specification containing the listeners
    */
@@ -106,7 +106,7 @@ public class MacApplicationBuilder {
         // Determine if class loading by URL is supported
         if (URLClassLoader.class.isAssignableFrom(systemClassLoaderClass)) {
           // Get the addURL method from the class loader
-          Method addUrl = URLClassLoader.class.getDeclaredMethod("addURL", new Class[] { URL.class });
+          Method addUrl = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
           addUrl.setAccessible(true);
           // Load the Apple JDK classes
           addUrl.invoke(systemClassLoader, file.toURI().toURL());

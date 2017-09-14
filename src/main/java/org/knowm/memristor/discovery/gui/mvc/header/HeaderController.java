@@ -78,18 +78,18 @@ public class HeaderController implements PropertyChangeListener {
 
     switch (evt.getPropertyName()) {
 
-    case DWFProxy.AD2_STARTUP_CHANGE:
+      case DWFProxy.AD2_STARTUP_CHANGE:
 
-      headerPanel.enableAllDigitalIOCheckBoxes(dwfProxy.isAD2Running());
-      break;
+        headerPanel.enableAllDigitalIOCheckBoxes(dwfProxy.isAD2Running());
+        break;
 
-    case DWFProxy.DIGITAL_IO_READ:
+      case DWFProxy.DIGITAL_IO_READ:
 
-      headerPanel.updateDigitalIOSwitches(dwfProxy.getDigitalIOStates());
-      break;
+        headerPanel.updateDigitalIOSwitches(dwfProxy.getDigitalIOStates());
+        break;
 
-    default:
-      break;
+      default:
+        break;
     }
   }
 

@@ -81,7 +81,7 @@ public class ControlController extends ExperimentControlController {
     // Util.setButtonGroup(controlModel.getInstruction().name(), controlPanel.getInstructionRadioButtonGroup().getElements());
 
     controlPanel.getWaveformComboBox().setSelectedItem(controlModel.getWaveform());
-    controlPanel.getWaveformComboBox().setModel(new DefaultComboBoxModel<>(new Waveform[] { Waveform.SquareSmooth, Waveform.Square, Waveform.QuarterSine, Waveform.HalfSine, Waveform.Triangle }));
+    controlPanel.getWaveformComboBox().setModel(new DefaultComboBoxModel<>(new Waveform[]{Waveform.SquareSmooth, Waveform.Square, Waveform.QuarterSine, Waveform.HalfSine, Waveform.Triangle}));
 
     controlPanel.getAmplitudeSlider().setValue((int) (controlModel.getAmplitude() * 100));
     controlPanel.getAmplitudeSlider().setBorder(BorderFactory.createTitledBorder("Amplitude [V] = " + controlModel.getAmplitude()));
@@ -90,8 +90,7 @@ public class ControlController extends ExperimentControlController {
       controlPanel.getPulseWidthSliderNs().setValue(0);
       controlPanel.getPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + controlModel.getPulseWidth() / 1000));
       controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
-    }
-    else {
+    } else {
       controlPanel.getPulseWidthSlider().setValue(0);
       controlPanel.getPulseWidthSliderNs().setValue(controlModel.getPulseWidth());
       controlPanel.getPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
@@ -107,7 +106,7 @@ public class ControlController extends ExperimentControlController {
   @Override
   public void doSetUpViewEvents() {
 
-    for (Enumeration<AbstractButton> buttons = controlPanel.getInstructionRadioButtonGroup().getElements(); buttons.hasMoreElements();) {
+    for (Enumeration<AbstractButton> buttons = controlPanel.getInstructionRadioButtonGroup().getElements(); buttons.hasMoreElements(); ) {
       AbstractButton button = buttons.nextElement();
       button.addActionListener(instructionRadioButtonActionListener);
     }
@@ -181,7 +180,7 @@ public class ControlController extends ExperimentControlController {
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
 
-      for (Enumeration<AbstractButton> buttons = controlPanel.getInstructionRadioButtonGroup().getElements(); buttons.hasMoreElements();) {
+      for (Enumeration<AbstractButton> buttons = controlPanel.getInstructionRadioButtonGroup().getElements(); buttons.hasMoreElements(); ) {
         AbstractButton button = buttons.nextElement();
         if (button.isSelected()) {
           controlModel.setInstruction(button.getText());
@@ -200,24 +199,24 @@ public class ControlController extends ExperimentControlController {
 
     switch (evt.getPropertyName()) {
 
-    case DWFProxy.AD2_STARTUP_CHANGE:
+      case DWFProxy.AD2_STARTUP_CHANGE:
 
-      controlPanel.enableAllChildComponents((Boolean) evt.getNewValue());
+        controlPanel.enableAllChildComponents((Boolean) evt.getNewValue());
 
-      break;
+        break;
 
-    case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
+      case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
 
-      initGUIComponentsFromModel();
-      break;
+        initGUIComponentsFromModel();
+        break;
 
-    case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
+      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
 
-      controlModel.updateWaveformChartData();
-      break;
+        controlModel.updateWaveformChartData();
+        break;
 
-    default:
-      break;
+      default:
+        break;
     }
   }
 }

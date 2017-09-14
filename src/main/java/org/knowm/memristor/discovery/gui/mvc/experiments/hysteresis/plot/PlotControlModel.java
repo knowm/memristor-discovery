@@ -35,11 +35,15 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.HysteresisPr
 
 public class PlotControlModel extends ExperimentControlModel {
 
-  /** Averaging params */
+  /**
+   * Averaging params
+   */
   private double ave = 0;
   private double k;
 
-  /** Min Max params */
+  /**
+   * Min Max params
+   */
   Double yMaxIV = null;
   Double yMinIV = null;
 
@@ -48,7 +52,7 @@ public class PlotControlModel extends ExperimentControlModel {
 
   /**
    * Here is where the Controller registers itself as a listener to model changes.
-   * 
+   *
    * @param listener
    */
   public void addListener(PropertyChangeListener listener) {

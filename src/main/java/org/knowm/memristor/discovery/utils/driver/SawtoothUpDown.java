@@ -59,7 +59,7 @@ public class SawtoothUpDown extends Driver {
 
     // down phase
     else {
-      return -2 * frequency * amplitude * (remainderTime) +  amplitude + dcOffset;
+      return -2 * frequency * amplitude * (remainderTime) + amplitude + dcOffset;
     }
   }
 }

@@ -182,8 +182,7 @@ public class BoardCheckExperiment extends Experiment {
     if (dWFWaveformChannel == DWF.WAVEFORM_CHANNEL_1) {
       muxController.setW1(destination);
       muxController.setW2(Destination.OUT);
-    }
-    else if (dWFWaveformChannel == DWF.WAVEFORM_CHANNEL_2) {
+    } else if (dWFWaveformChannel == DWF.WAVEFORM_CHANNEL_2) {
       muxController.setW1(Destination.OUT);
       muxController.setW2(destination);
     }
@@ -192,7 +191,7 @@ public class BoardCheckExperiment extends Experiment {
 
     float[] scopeReading = getScopesAverageVoltage(V_MUX_TEST, dWFWaveformChannel);
 
-    return new float[] { Math.abs(scopeReading[0] - V_MUX_TEST), Math.abs(scopeReading[1] - V_MUX_TEST) };
+    return new float[]{Math.abs(scopeReading[0] - V_MUX_TEST), Math.abs(scopeReading[1] - V_MUX_TEST)};
 
   }
 
@@ -234,10 +233,9 @@ public class BoardCheckExperiment extends Experiment {
       aveScope1 /= v1.length / 4;
       aveScope2 /= v2.length / 4;
 
-      return new float[] { aveScope1, aveScope2 };
+      return new float[]{aveScope1, aveScope2};
 
-    }
-    else {
+    } else {
       consolPanel.println("Pulse capture failed. This is usually a triggering issue.");
       return null;
     }
@@ -310,15 +308,13 @@ public class BoardCheckExperiment extends Experiment {
 
         if (i == 0) {
           b.append("   ALL OFF: ");
-        }
-        else {
+        } else {
           b.append("SWITCH " + i + ": ");
         }
 
         if (r[i] < 0) {
           b.append("INF");
-        }
-        else {
+        } else {
           b.append(ohmFormat.format(r[i]));
         }
         consolPanel.println(b.toString());
@@ -441,12 +437,10 @@ public class BoardCheckExperiment extends Experiment {
 
           if (r[i] > 1000) {
             s = ">1MΩ";
-          }
-          else {
+          } else {
             s = ohmFormat.format(r[i]);
           }
-        }
-        else {
+        } else {
           s = ">1MΩ";
         }
         b.append(s);
@@ -482,15 +476,15 @@ public class BoardCheckExperiment extends Experiment {
 
     switch (propName) {
 
-    case EVENT_INSTRUCTION_UPDATE:
+      case EVENT_INSTRUCTION_UPDATE:
 
-      // System.out.println(controlModel.getInstruction());
-      // dwfProxy.setUpper8IOStates(controlModel.getInstruction().getBits());
+        // System.out.println(controlModel.getInstruction());
+        // dwfProxy.setUpper8IOStates(controlModel.getInstruction().getBits());
 
-      break;
+        break;
 
-    default:
-      break;
+      default:
+        break;
     }
   }
 

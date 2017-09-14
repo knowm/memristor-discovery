@@ -75,13 +75,13 @@ public class ConsolController implements PropertyChangeListener {
 
     switch (evt.getPropertyName()) {
 
-    case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
+      case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
 
-      initGUIComponentsFromModel();
-      break;
+        initGUIComponentsFromModel();
+        break;
 
-    default:
-      break;
+      default:
+        break;
     }
   }
 }

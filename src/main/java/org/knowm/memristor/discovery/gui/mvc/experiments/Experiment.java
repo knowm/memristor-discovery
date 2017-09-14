@@ -106,8 +106,7 @@ public abstract class Experiment implements PropertyChangeListener {
           // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
           experimentCaptureWorker = getCaptureWorker();
           experimentCaptureWorker.execute();
-        }
-        else {
+        } else {
 
           getControlModel().setStartToggled(false);
           getControlPanel().getStartStopButton().setText("Start");

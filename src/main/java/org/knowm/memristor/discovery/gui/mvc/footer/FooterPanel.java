@@ -61,8 +61,7 @@ public class FooterPanel extends JPanel {
     if (ad2Running) {
       setBackground(null);
       steelCheckbox.setBackground(null);
-    }
-    else {
+    } else {
       setBackground(warnColor);
       steelCheckbox.setBackground(warnColor);
     }

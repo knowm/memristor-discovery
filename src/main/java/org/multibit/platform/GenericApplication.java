@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://opensource.org/licenses/mit-license.php
+ * http://opensource.org/licenses/mit-license.php
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -26,21 +26,19 @@ package org.multibit.platform;
  */
 public interface GenericApplication {
 
-    /**
-     * @return True if the application is running on a Mac AND the Apple Extensions API classes are available.
-     */
-    boolean isMac();
+  /**
+   * @return True if the application is running on a Mac AND the Apple Extensions API classes are available.
+   */
+  boolean isMac();
 
-    /**
-     * @return True if the application is running on a Mac AND the Linux Extensions API classes are available.
-     */
-    boolean isLinux();
+  /**
+   * @return True if the application is running on a Mac AND the Linux Extensions API classes are available.
+   */
+  boolean isLinux();
 
-    /**
-     * @return True if the application is running on a Windows machine AND the Windows Extensions API classes are available.
-     */
-    boolean isWindows();
-
-
+  /**
+   * @return True if the application is running on a Windows machine AND the Windows Extensions API classes are available.
+   */
+  boolean isWindows();
 
 }

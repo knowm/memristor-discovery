@@ -73,7 +73,6 @@ public abstract class ExperimentControlModel {
     this.seriesResistance = seriesResistance;
   }
 
-
   public boolean isStartToggled() {
 
     return isStartToggled;

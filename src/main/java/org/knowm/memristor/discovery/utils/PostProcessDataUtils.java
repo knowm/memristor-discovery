@@ -62,8 +62,7 @@ public class PostProcessDataUtils {
     for (int i = 1; i < V2Zeroed.length - 1; i++) {
       if (Math.abs(v1[i]) > vThresholdAbs) {
         V2Zeroed[i] = v2[i];
-      }
-      else {
+      } else {
         V2Zeroed[i - 1] = 0;
         V2Zeroed[i] = 0;
         V2Zeroed[i + 1] = 0;
