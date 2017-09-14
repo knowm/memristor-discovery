@@ -34,7 +34,7 @@ public class Sine extends Driver {
 
   /**
    * Constructor
-   * 
+   *
    * @param name
    * @param dcOffset
    * @param phase

@@ -67,7 +67,8 @@ public class ControlPanel extends ExperimentControlPanel {
   // private final JSlider pulseNumberSlider;
 
   private final ButtonGroup instructionRadioButtonGroup;
-  private final Box instructionRadioButtonBox;;
+  private final Box instructionRadioButtonBox;
+  ;
 
   private final JLabel sampleRateLabel;
   private final JTextField sampleRateTextField;
@@ -181,7 +182,6 @@ public class ControlPanel extends ExperimentControlPanel {
     c.insets = new Insets(0, 5, 14, 5);
     add(sampleRateTextField, c);
 
-
     startStopButton = new JButton("Start");
     startStopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.gridy++;
@@ -231,7 +231,6 @@ public class ControlPanel extends ExperimentControlPanel {
   public JTextField getSampleRateTextField() {
     return sampleRateTextField;
   }
-
 
   public ButtonGroup getInstructionRadioButtonGroup() {
 

@@ -150,8 +150,7 @@ public class DWFProxy {
         if (isV1Board) {
           digitalIOStates = DEFAULT_SELECTOR_DIO;
           // System.out.println(Integer.toBinaryString(digitalIOStates));
-        }
-        else {
+        } else {
           digitalIOStates = ALL_DIO_OFF;
         }
         dwf.FDwfDigitalIOOutputSet(digitalIOStates);
@@ -183,8 +182,7 @@ public class DWFProxy {
 
         // Set this to false (default=true). Need to call FDwfAnalogOutConfigure(true), FDwfAnalogInConfigure(true) in order for *Set* methods to take effect.
         dwf.FDwfDeviceAutoConfigureSet(false);
-      }
-      else {
+      } else {
 
         System.out.println(dwf.FDwfGetLastErrorMsg());
       }
@@ -256,8 +254,7 @@ public class DWFProxy {
     // Update model
     if (isOn) {
       digitalIOStates = digitalIOStates | (1 << toggleClickedID);
-    }
-    else {
+    } else {
       digitalIOStates = digitalIOStates & ~(1 << toggleClickedID);
     }
 
@@ -279,14 +276,12 @@ public class DWFProxy {
     // Update model
     if (value1) {
       digitalIOStates = digitalIOStates | (1 << io1);
-    }
-    else {
+    } else {
       digitalIOStates = digitalIOStates & ~(1 << io1);
     }
     if (value2) {
       digitalIOStates = digitalIOStates | (1 << io2);
-    }
-    else {
+    } else {
       digitalIOStates = digitalIOStates & ~(1 << io2);
     }
 

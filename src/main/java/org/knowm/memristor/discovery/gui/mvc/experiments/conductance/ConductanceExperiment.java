@@ -153,7 +153,7 @@ public class ConductanceExperiment extends Experiment {
         conductance[i] = G;
       }
 
-      publish(new double[][] { timeData, V1Trimmed, V2Trimmed, current, conductance });
+      publish(new double[][]{timeData, V1Trimmed, V2Trimmed, current, conductance});
 
       return true;
     }
@@ -171,12 +171,10 @@ public class ConductanceExperiment extends Experiment {
       if (plotPanel.getCaptureButton().isSelected()) {
         plotController.repaintVtChart();
         plotPanel.switch2CaptureChart();
-      }
-      else if (plotPanel.getIVButton().isSelected()) {
+      } else if (plotPanel.getIVButton().isSelected()) {
         plotController.repaintIVChart();
         plotPanel.switch2IVChart();
-      }
-      else {
+      } else {
         plotController.repaintGVChart();
         plotPanel.switch2GVChart();
       }
@@ -255,9 +253,9 @@ public class ConductanceExperiment extends Experiment {
           runningTotal += G;
         }
         // conductance value packed in a one-element array
-        double[] conductance = new double[] { runningTotal / (bufferLength - 6) * ConductancePreferences.CONDUCTANCE_UNIT.getDivisor() };
+        double[] conductance = new double[]{runningTotal / (bufferLength - 6) * ConductancePreferences.CONDUCTANCE_UNIT.getDivisor()};
 
-        publish(new double[][] { timeData, V1Trimmed, V2Trimmed, current, conductance });
+        publish(new double[][]{timeData, V1Trimmed, V2Trimmed, current, conductance});
       }
 
       controlPanel.getStartStopButton().doClick();
@@ -277,11 +275,9 @@ public class ConductanceExperiment extends Experiment {
 
       if (plotPanel.getCaptureButton().isSelected()) {
         plotController.repaintVtChart();
-      }
-      else if (plotPanel.getIVButton().isSelected()) {
+      } else if (plotPanel.getIVButton().isSelected()) {
         plotController.repaintIVChart();
-      }
-      else {
+      } else {
         plotController.repaintGVChart();
       }
     }
@@ -297,22 +293,21 @@ public class ConductanceExperiment extends Experiment {
 
     switch (evt.getPropertyName()) {
 
-    case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
+      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
 
-      if (controlModel.isStartToggled()) {
+        if (controlModel.isStartToggled()) {
 
-        double[] customWaveform = WaveformUtils.generateCustomWaveform(Waveform.Square, controlModel.getSetAmplitude(), controlModel.getCalculatedFrequency());
-        dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, 1, customWaveform);
-      }
-      else {
+          double[] customWaveform = WaveformUtils.generateCustomWaveform(Waveform.Square, controlModel.getSetAmplitude(), controlModel.getCalculatedFrequency());
+          dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, 1, customWaveform);
+        } else {
 
-        plotPanel.switch2WaveformChart();
-        plotController.udpateWaveformChart(controlModel.getWaveformTimeData(), controlModel.getWaveformAmplitudeData(), controlModel.getResetAmplitude(), controlModel.getResetPulseWidth());
-      }
-      break;
+          plotPanel.switch2WaveformChart();
+          plotController.udpateWaveformChart(controlModel.getWaveformTimeData(), controlModel.getWaveformAmplitudeData(), controlModel.getResetAmplitude(), controlModel.getResetPulseWidth());
+        }
+        break;
 
-    default:
-      break;
+      default:
+        break;
     }
   }
 

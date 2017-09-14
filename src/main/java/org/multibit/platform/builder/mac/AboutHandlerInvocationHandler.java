@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://opensource.org/licenses/mit-license.php
+ * http://opensource.org/licenses/mit-license.php
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,7 +23,7 @@ import org.multibit.platform.listener.GenericAboutEvent;
  */
 public class AboutHandlerInvocationHandler extends BaseMacInvocationHandler<GenericAboutHandler, GenericAboutEvent> {
 
-    AboutHandlerInvocationHandler(GenericAboutHandler genericHandler, Class<GenericAboutEvent> genericEventClass) {
-        super(genericHandler, genericEventClass);
-    }
+  AboutHandlerInvocationHandler(GenericAboutHandler genericHandler, Class<GenericAboutEvent> genericEventClass) {
+    super(genericHandler, genericEventClass);
+  }
 }

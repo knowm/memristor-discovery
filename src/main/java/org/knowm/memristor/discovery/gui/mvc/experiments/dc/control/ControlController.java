@@ -114,8 +114,7 @@ public class ControlController extends ExperimentControlController {
       controlPanel.getPeriodSliderNs().setValue(100);
       controlPanel.getPeriodSlider().setBorder(BorderFactory.createTitledBorder("Period [" + DCPreferences.TIME_UNIT.getLabel() + "] = " + controlModel.getPeriod()));
       controlPanel.getPeriodSliderNs().setBorder(BorderFactory.createTitledBorder("Period [" + DCPreferences.TIME_UNIT.getLabel() + "]"));
-    }
-    else {
+    } else {
       controlPanel.getPeriodSlider().setValue(100);
       controlPanel.getPeriodSliderNs().setValue(controlModel.getPeriod());
       controlPanel.getPeriodSlider().setBorder(BorderFactory.createTitledBorder("Period [" + DCPreferences.TIME_UNIT.getLabel() + "]"));

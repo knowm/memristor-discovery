@@ -36,7 +36,7 @@ public class Arbitrary extends Driver {
 
   /**
    * Constructor
-   * 
+   *
    * @param matchingSourceId
    * @param dcOffset
    * @param phase
@@ -66,8 +66,7 @@ public class Arbitrary extends Driver {
     if (isActive) {
 
       return dcOffset + amplitude;
-    }
-    else {
+    } else {
       return 0.0;
     }
   }

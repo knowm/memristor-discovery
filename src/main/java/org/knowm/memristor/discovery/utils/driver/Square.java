@@ -34,7 +34,7 @@ public class Square extends Driver {
 
   /**
    * Constructor
-   * 
+   *
    * @param name
    * @param dcOffset
    * @param phase

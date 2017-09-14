@@ -106,8 +106,7 @@ public class ControlController extends ExperimentControlController {
       controlPanel.getFrequencySliderLog().setValue((int) Math.log10(controlModel.getFrequency() + 1));
       controlPanel.getFrequencySlider().setBorder(BorderFactory.createTitledBorder("Frequency [Hz] = " + controlModel.getFrequency()));
       controlPanel.getFrequencySliderLog().setBorder(BorderFactory.createTitledBorder("Frequency (Log) [Hz]"));
-    }
-    else {
+    } else {
       controlPanel.getFrequencySlider().setValue(controlModel.getFrequency());
       controlPanel.getFrequencySliderLog().setValue((int) Math.log10(controlModel.getFrequency() + 1));
       controlPanel.getFrequencySliderLog().setBorder(BorderFactory.createTitledBorder("Frequency (Log) [Hz] = " + controlModel.getFrequency()));

@@ -37,7 +37,6 @@ import javax.swing.JTextField;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferencesPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferences;
 
 public class AHaHPreferencesPanel extends ExperimentPreferencesPanel {
 
@@ -101,7 +100,6 @@ public class AHaHPreferencesPanel extends ExperimentPreferencesPanel {
     this.pulseWidthTextField = new JTextField(12);
     this.pulseWidthTextField.setText(String.valueOf(experimentPreferences.getInteger(AHaHPreferences.PULSE_WIDTH_INIT_KEY, AHaHPreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(pulseWidthTextField, gc);
-
 
     gc.gridx = 0;
     this.sampleRateLabel = new JLabel("Sample Rate [s]:");

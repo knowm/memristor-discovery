@@ -65,7 +65,7 @@ public class QCMainPanel extends JPanel {
 
     waveformChart = new XYChartBuilder().width(600).height(400).title("Waveform").yAxisTitle("Voltage [V]").xAxisTitle("Time [s]").build();
     waveformChart.getStyler().setLegendVisible(false);
-    XYSeries series = waveformChart.addSeries("waveform", new double[] { 0 }, new double[] { 0 });
+    XYSeries series = waveformChart.addSeries("waveform", new double[]{0}, new double[]{0});
     series.setMarker(SeriesMarkers.NONE); // waveformChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
     waveformChartPanel = new XChartPanel<>(waveformChart);
     add(waveformChartPanel, BorderLayout.CENTER);
@@ -78,7 +78,7 @@ public class QCMainPanel extends JPanel {
     ivChart.getStyler().setLegendVisible(false);
     ivChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
     ivChart.getStyler().setMarkerSize(0);
-    series = ivChart.addSeries("iv", new double[] { 0 }, new double[] { 0 });
+    series = ivChart.addSeries("iv", new double[]{0}, new double[]{0});
 
     ivChartPanel = new XChartPanel<>(ivChart);
 
@@ -117,8 +117,7 @@ public class QCMainPanel extends JPanel {
     ivChart.setTitle(getIVChartTitle(amplitude, frequency));
     if (!QCPreferences.IS_VIN) {
       ivChart.updateXYSeries("iv", vMemristor, current, null);
-    }
-    else {
+    } else {
       ivChart.updateXYSeries("iv", captureAmplitudeData1, current, null);
     }
     ivChartPanel.revalidate();

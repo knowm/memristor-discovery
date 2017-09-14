@@ -105,8 +105,7 @@ public class PlotController implements PropertyChangeListener {
         if (plotPanel.getFreezeYAxisCheckBoxIV().isSelected()) {
           plotModel.setyMaxIV(plotPanel.getIVChartMax());
           plotModel.setyMinIV(plotPanel.getIVChartMin());
-        }
-        else {
+        } else {
           plotModel.setyMaxIV(null);
           plotModel.setyMinIV(null);
         }
@@ -120,8 +119,7 @@ public class PlotController implements PropertyChangeListener {
         if (plotPanel.getFreezeYAxisCheckBoxGV().isSelected()) {
           plotModel.setyMaxGV(plotPanel.getGVChartMax());
           plotModel.setyMinGV(plotPanel.getGVChartMin());
-        }
-        else {
+        } else {
           plotModel.setyMaxGV(null);
           plotModel.setyMinGV(null);
         }

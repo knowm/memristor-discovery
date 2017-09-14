@@ -350,6 +350,7 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
       }
 
     } else {
+
       if (!isTest) {
         experiment = new HysteresisExperiment(dwf, mainFrameContainer, isV1Board);
         experiment.createAndShowGUI();

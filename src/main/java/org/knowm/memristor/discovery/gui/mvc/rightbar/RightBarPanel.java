@@ -282,14 +282,11 @@ public class RightBarPanel extends JPanel {
     int highBit = (digitalIOStates >> 9) & 1;
     if (lowBit == 0 && highBit == 0) {
       oscilloscopeProbe10RadioButton.setSelected(true);
-    }
-    else if (lowBit == 0 && highBit == 1) {
+    } else if (lowBit == 0 && highBit == 1) {
       oscilloscopeProbe1YRadioButton.setSelected(true);
-    }
-    else if (lowBit == 1 && highBit == 0) {
+    } else if (lowBit == 1 && highBit == 0) {
       oscilloscopeProbe1ARadioButton.setSelected(true);
-    }
-    else {
+    } else {
       oscilloscopeProbe1BRadioButton.setSelected(true);
     }
 
@@ -297,14 +294,11 @@ public class RightBarPanel extends JPanel {
     highBit = (digitalIOStates >> 11) & 1;
     if (lowBit == 0 && highBit == 0) {
       oscilloscopeProbe20RadioButton.setSelected(true);
-    }
-    else if (lowBit == 0 && highBit == 1) {
+    } else if (lowBit == 0 && highBit == 1) {
       oscilloscopeProbe2YRadioButton.setSelected(true);
-    }
-    else if (lowBit == 1 && highBit == 0) {
+    } else if (lowBit == 1 && highBit == 0) {
       oscilloscopeProbe2ARadioButton.setSelected(true);
-    }
-    else {
+    } else {
       oscilloscopeProbe2BRadioButton.setSelected(true);
     }
 
@@ -312,14 +306,11 @@ public class RightBarPanel extends JPanel {
     highBit = (digitalIOStates >> 13) & 1;
     if (lowBit == 0 && highBit == 0) {
       awg10RadioButton.setSelected(true);
-    }
-    else if (lowBit == 0 && highBit == 1) {
+    } else if (lowBit == 0 && highBit == 1) {
       awg1YRadioButton.setSelected(true);
-    }
-    else if (lowBit == 1 && highBit == 0) {
+    } else if (lowBit == 1 && highBit == 0) {
       awg1ARadioButton.setSelected(true);
-    }
-    else {
+    } else {
       awg1BRadioButton.setSelected(true);
     }
 
@@ -327,14 +318,11 @@ public class RightBarPanel extends JPanel {
     highBit = (digitalIOStates >> 15) & 1;
     if (lowBit == 0 && highBit == 0) {
       awg20RadioButton.setSelected(true);
-    }
-    else if (lowBit == 0 && highBit == 1) {
+    } else if (lowBit == 0 && highBit == 1) {
       awg2YRadioButton.setSelected(true);
-    }
-    else if (lowBit == 1 && highBit == 0) {
+    } else if (lowBit == 1 && highBit == 0) {
       awg2ARadioButton.setSelected(true);
-    }
-    else {
+    } else {
       awg2BRadioButton.setSelected(true);
     }
   }

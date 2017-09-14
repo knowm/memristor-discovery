@@ -184,7 +184,6 @@ public class ControlModel extends ExperimentControlModel {
     return waveformAmplitudeData;
   }
 
-
   @Override
   public ExperimentPreferences initAppPreferences() {
 

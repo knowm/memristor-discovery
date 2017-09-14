@@ -43,7 +43,9 @@ public class QCControlModel extends ExperimentControlModel {
 
   private final Logger logger = LoggerFactory.getLogger(QCControlModel.class);
 
-  /** Save Path */
+  /**
+   * Save Path
+   */
   private String savePath;
   private String serialNumber = "";
 
@@ -51,9 +53,13 @@ public class QCControlModel extends ExperimentControlModel {
 
   public enum ChipType {
     BSAF_W, BSAF_Sn, BSAF_Cr, BSAF_C
-  };
+  }
 
-  /** Waveform */
+  ;
+
+  /**
+   * Waveform
+   */
   public final DWF.Waveform waveform = DWF.Waveform.Sine;
   private float amplitude;
   private int frequency;
@@ -61,7 +67,9 @@ public class QCControlModel extends ExperimentControlModel {
   private final double[] waveformTimeData = new double[QCPreferences.CAPTURE_BUFFER_SIZE];
   private final double[] waveformAmplitudeData = new double[QCPreferences.CAPTURE_BUFFER_SIZE];
 
-  /** Series R */
+  /**
+   * Series R
+   */
   private int seriesR;
 
   /**

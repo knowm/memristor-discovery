@@ -112,8 +112,7 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
           Path parentDir = filePath.getParent();
           if (!Files.exists(parentDir)) {
             Files.createDirectories(parentDir);
-          }
-          else {
+          } else {
             JOptionPane.showMessageDialog(mainFrameContainer, "Folder for this serial number already exixts!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
           }
@@ -255,7 +254,7 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
                 }
               }
 
-              publish(new double[][] { rawdata1, voltage, current });
+              publish(new double[][]{rawdata1, voltage, current});
 
               // System.out.println("voltage: " + Arrays.toString(voltage));
               // System.out.println("current: " + Arrays.toString(current));
@@ -267,8 +266,7 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
 
                   if (voltage[i] > maxV * QCPreferences.P_BELOW_MAX_MIN_V) {
                     resistance.add(Math.abs(voltage[i] / (rawdata2[i] / model.getSeriesResistance())));
-                  }
-                  else if (voltage[i] < minV * QCPreferences.P_BELOW_MAX_MIN_V) {
+                  } else if (voltage[i] < minV * QCPreferences.P_BELOW_MAX_MIN_V) {
                     resistance.add(Math.abs(voltage[i] / (rawdata2[i] / model.getSeriesResistance())));
                   }
                 }
@@ -302,8 +300,7 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
                 }
 
                 reportLines.add("|" + (j) + "|" + f.format(lrs.getAve() / 1000.0) + "|" + f.format(hrs.getAve() / 1000.0) + "|" + q + "|" + (pass ? "PASS" : "FAIL") + "|");
-              }
-              else {
+              } else {
                 reportLines.add("|" + (j) + "| null | null | null | null |");
               }
 
@@ -325,16 +322,13 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
         if (numpass == 8) {
           reportLines.add(1, "# Classification: Tier 1");
           classification = "TIER 1";
-        }
-        else if (numpass == 7) {
+        } else if (numpass == 7) {
           reportLines.add(1, "# Classification: Tier 2");
           classification = "TIER 2";
-        }
-        else if (numpass == 6 | numpass == 5 | numpass == 4) {
+        } else if (numpass == 6 | numpass == 5 | numpass == 4) {
           reportLines.add(1, "# Classification: Burn and Learn");
           classification = "BURN & LEARN";
-        }
-        else {
+        } else {
           reportLines.add(1, "# Classification: REJECT");
           classification = "REJECT";
         }
@@ -413,29 +407,29 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
 
     switch (propName) {
 
-    case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
+      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
 
-      if (true) { // TODO fix this when converting to new experiment abstraction
+        if (true) { // TODO fix this when converting to new experiment abstraction
 
-        // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
-        captureWorker.cancel(true);
+          // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
+          captureWorker.cancel(true);
 
-        try {
-          Thread.sleep(10);
-        } catch (InterruptedException e) {
-          e.printStackTrace();
+          try {
+            Thread.sleep(10);
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+
+          // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
+          captureWorker = new QCCaptureWorker();
+          captureWorker.execute();
+
+          mainPanel.switch2IVChart();
         }
+        break;
 
-        // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
-        captureWorker = new QCCaptureWorker();
-        captureWorker.execute();
-
-        mainPanel.switch2IVChart();
-      }
-      break;
-
-    default:
-      break;
+      default:
+        break;
     }
   }
 

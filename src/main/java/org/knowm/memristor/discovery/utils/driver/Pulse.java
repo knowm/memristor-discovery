@@ -36,7 +36,7 @@ public class Pulse extends Driver {
 
   /**
    * Constructor
-   * 
+   *
    * @param name
    * @param dcOffset
    * @param phase

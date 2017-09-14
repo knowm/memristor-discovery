@@ -47,14 +47,11 @@ public class MuxController {
 
     if (d == Destination.A) {
       return "01";
-    }
-    else if (d == Destination.B) {
+    } else if (d == Destination.B) {
       return "11";
-    }
-    else if (d == Destination.Y) {
+    } else if (d == Destination.Y) {
       return "10";
-    }
-    else if (d == Destination.OUT) {
+    } else if (d == Destination.OUT) {
       return "00";
     }
     return "00";

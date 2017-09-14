@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://opensource.org/licenses/mit-license.php
+ * http://opensource.org/licenses/mit-license.php
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -25,13 +25,13 @@ package org.multibit.platform.listener;
  */
 public interface GenericQuitResponse extends GenericEvent {
 
-    /**
-     * Call if quit should be stopped due to application tasks
-     */
-    void cancelQuit();
+  /**
+   * Call if quit should be stopped due to application tasks
+   */
+  void cancelQuit();
 
-    /**
-     * Call if quit is OK to proceed
-     */
-    void performQuit();
+  /**
+   * Call if quit is OK to proceed
+   */
+  void performQuit();
 }

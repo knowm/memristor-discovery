@@ -33,7 +33,7 @@ public class AHaHController {
 
     // capture read data
     if (isReadInstruction) {
-      dWFProxy.getDwf().startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(DWF.WAVEFORM_CHANNEL_1,calculatedFrequency * 300, 300 * 1);
+      dWFProxy.getDwf().startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(DWF.WAVEFORM_CHANNEL_1, calculatedFrequency * 300, 300 * 1);
       dWFProxy.waitUntilArmed();
     }
 
@@ -64,8 +64,7 @@ public class AHaHController {
         // System.out.println("V2=" + peakV2);
         // System.out.println("vy=" + vy);
 
-      }
-      else {
+      } else {
         System.out.println("did not capture!");
       }
 

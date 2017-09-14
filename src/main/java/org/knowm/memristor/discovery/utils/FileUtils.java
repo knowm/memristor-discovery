@@ -42,7 +42,7 @@ public class FileUtils {
 
   /**
    * Given a File from the classpath, return the content of the file as a String
-   * 
+   *
    * @param fileName
    * @return
    */
@@ -86,7 +86,7 @@ public class FileUtils {
 
   /**
    * Makes a dir, if it doesn't already exist
-   * 
+   *
    * @param filePath
    */
   public static void mkDirIfNotExists(String filePath) {

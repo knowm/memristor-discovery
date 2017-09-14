@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://opensource.org/licenses/mit-license.php
+ * http://opensource.org/licenses/mit-license.php
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,10 +28,10 @@ import org.multibit.platform.listener.GenericQuitResponse;
  *         
  */
 public interface GenericQuitHandler extends GenericHandler {
-    /**
-     * Called in response to receiving a Quit event
-     * @param event The generic Quit event
-     * @param response The response containing the methods to call if quit can continue or not
-     */
-    void handleQuitRequestWith(GenericQuitEvent event, GenericQuitResponse response);
+  /**
+   * Called in response to receiving a Quit event
+   * @param event The generic Quit event
+   * @param response The response containing the methods to call if quit can continue or not
+   */
+  void handleQuitRequestWith(GenericQuitEvent event, GenericQuitResponse response);
 }
