@@ -34,7 +34,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.text.DecimalFormat;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.SwingWorker;
@@ -60,17 +59,21 @@ public class BoardCheckExperiment extends Experiment {
   private final ControlModel controlModel = new ControlModel();
 
   private final static float V_MUX_TEST = 1.2345f;// the voltage used to test the waveform generators/muxes
-  private final static float V_SWITCH_RESISTANCE = 1;
+  private final static float V_SWITCH_RESISTANCE = 1;// the voltage used to test the switch resistance
 
   private final static float V_MEMINLINE_READ = .1f;
-  private final static float V_MEMINLINE_WRITE = 1f;
-  private final static float V_MEMINLINE_RESET = -1f;
+  private final static float V_MEMINLINE_WRITE = 1.5f;
+  private final static float V_MEMINLINE_RESET = -1.5f;
   private final static float V_MEMINLINE_HARD_RESET = -2.0f;
+
+  private int meminline_numFailed = 0;
 
   private final static float R_SWITCH = 73F;// Resistance of one of the DG445 switches. Old AD Switches are ~50.
 
-  private DecimalFormat percentFormat = new DecimalFormat("0.00%");
-  private DecimalFormat ohmFormat = new DecimalFormat("0.00 kΩ");
+  private int COL_WIDTH = 15;
+
+  private DecimalFormat percentFormat = new DecimalFormat("0.00 %");
+  private DecimalFormat ohmFormat = new DecimalFormat("000.00 kΩ");
 
   private ControlPanel controlPanel;
   private ConsolPanel consolPanel;
@@ -162,11 +165,11 @@ public class BoardCheckExperiment extends Experiment {
      * (Vin-Vy)/I=Rswitch
      */
 
-    System.out.println("measurevoltage: " + Arrays.toString(vMeasure));
+    // System.out.println("measurevoltage: " + Arrays.toString(vMeasure));
     // System.out.println("series resistance: " + controlModel.getSeriesResistance());
     // BoardCheckPreferences.SERIES_R_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText())
     float seriesResistance = controlModel.seriesResistance;
-    System.out.println("seriesResistance: " + seriesResistance);
+    // System.out.println("seriesResistance: " + seriesResistance);
 
     float I = Math.abs(vMeasure[1] / seriesResistance);
     float rSwitch = (Math.abs(vMeasure[0] - vMeasure[1]) / I) - 2 * R_SWITCH;
@@ -182,7 +185,8 @@ public class BoardCheckExperiment extends Experiment {
     if (dWFWaveformChannel == DWF.WAVEFORM_CHANNEL_1) {
       muxController.setW1(destination);
       muxController.setW2(Destination.OUT);
-    } else if (dWFWaveformChannel == DWF.WAVEFORM_CHANNEL_2) {
+    }
+    else if (dWFWaveformChannel == DWF.WAVEFORM_CHANNEL_2) {
       muxController.setW1(Destination.OUT);
       muxController.setW2(destination);
     }
@@ -191,21 +195,21 @@ public class BoardCheckExperiment extends Experiment {
 
     float[] scopeReading = getScopesAverageVoltage(V_MUX_TEST, dWFWaveformChannel);
 
-    return new float[]{Math.abs(scopeReading[0] - V_MUX_TEST), Math.abs(scopeReading[1] - V_MUX_TEST)};
+    return new float[] { Math.abs(scopeReading[0] - V_MUX_TEST), Math.abs(scopeReading[1] - V_MUX_TEST) };
 
   }
 
   private float[] getScopesAverageVoltage(float readVoltage, int dWFWaveformChannel) {
 
     int samplesPerPulse = 300;
-    int sampleFrequency = 10;
+    int sampleFrequency = 100;
     int samples = sampleFrequency * samplesPerPulse;
 
     // consolPanel.println("Starting Pulse Measurment");
 
     dwfProxy.getDwf().startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(dWFWaveformChannel, samples, samplesPerPulse);
     dwfProxy.waitUntilArmed();
-    double[] pulse = WaveformUtils.generateCustomWaveform(Waveform.Square, readVoltage, sampleFrequency);
+    double[] pulse = WaveformUtils.generateCustomWaveform(Waveform.Square, readVoltage, 100);
     dwfProxy.getDwf().startCustomPulseTrain(dWFWaveformChannel, sampleFrequency, 0, 1, pulse);
     boolean success = dwfProxy.capturePulseData(samples, 1);
     if (success) {
@@ -233,9 +237,10 @@ public class BoardCheckExperiment extends Experiment {
       aveScope1 /= v1.length / 4;
       aveScope2 /= v2.length / 4;
 
-      return new float[]{aveScope1, aveScope2};
+      return new float[] { aveScope1, aveScope2 };
 
-    } else {
+    }
+    else {
       consolPanel.println("Pulse capture failed. This is usually a triggering issue.");
       return null;
     }
@@ -308,13 +313,15 @@ public class BoardCheckExperiment extends Experiment {
 
         if (i == 0) {
           b.append("   ALL OFF: ");
-        } else {
+        }
+        else {
           b.append("SWITCH " + i + ": ");
         }
 
         if (r[i] < 0) {
           b.append("INF");
-        } else {
+        }
+        else {
           b.append(ohmFormat.format(r[i]));
         }
         consolPanel.println(b.toString());
@@ -344,78 +351,116 @@ public class BoardCheckExperiment extends Experiment {
         dwfProxy.setUpper8IOStates(muxController.getGPIOConfig());// default configuration is for series resistor measurment.
       }
 
-      consolPanel.println("Meminline Chip Test");
+      consolPanel.println("");
+      consolPanel.println("Knowm Mem-Inline Chip Test");
 
       float[][] reads = new float[3][9];
-
-      consolPanel.println(formatResistanceArray("WRITE      ", measureAllSwitchResistances(V_MEMINLINE_WRITE, 0, true)));
-      consolPanel.println(formatResistanceArray("HARD RESET ", measureAllSwitchResistances(V_MEMINLINE_HARD_RESET, 0, false)));
+      measureAllSwitchResistances(V_MEMINLINE_WRITE, 0, true);// first call to measureAllSwitchResistances will set the muxes.
+      measureAllSwitchResistances(V_MEMINLINE_RESET, 0, false);
 
       reads[0] = measureAllSwitchResistances(V_MEMINLINE_READ, 0, false);
-      consolPanel.println(formatResistanceArray("READ 1     ", reads[0]));
+      consolPanel.println(formatResistanceArray("ERASE       ", reads[0]));
 
-      consolPanel.println(formatResistanceArray("WRITE      ", measureAllSwitchResistances(V_MEMINLINE_WRITE, 0, false)));
+      measureAllSwitchResistances(V_MEMINLINE_WRITE, 0, false);
+
       reads[1] = measureAllSwitchResistances(V_MEMINLINE_READ, 0, false);
-      consolPanel.println(formatResistanceArray("READ 2     ", reads[1]));
-
-      consolPanel.println(formatResistanceArray("RESET      ", measureAllSwitchResistances(V_MEMINLINE_RESET, 0, false)));
+      consolPanel.println(formatResistanceArray("WRITE       ", reads[1]));
+      measureAllSwitchResistances(V_MEMINLINE_RESET, 0, false);
 
       reads[2] = measureAllSwitchResistances(V_MEMINLINE_READ, 0, false);
-      consolPanel.println(formatResistanceArray("READ 3     ", reads[2]));
+      consolPanel.println(formatResistanceArray("ERASE2      ", reads[2]));
 
-      StringBuilder b = new StringBuilder();
+      consolPanel.println("RESULT      " + verifyMemInlineReads(reads));
+      consolPanel.println("");
 
-      try {
-        float[] delta_12 = new float[9];
-        float[] delta_23 = new float[9];
-        for (int i = 0; i < delta_12.length; i++) {
-          delta_12[i] = reads[0][i] - reads[1][i];
-          delta_23[i] = reads[1][i] - reads[2][i];
-        }
-
-        System.out.println("delta_12:" + Arrays.toString(delta_12));
-        System.out.println("delta_23:" + Arrays.toString(delta_23));
-
-        consolPanel.println(formatResistanceArray("DIFF(1,2)   ", delta_12));
-        consolPanel.println(formatResistanceArray("DIFF(2,3)   ", delta_23));
-
-      } catch (Exception e) {
-        e.printStackTrace();
+      if (meminline_numFailed == 0) {
+        consolPanel.println("CHIP CLASSIFICATION: TIER 1");
       }
+      else if (meminline_numFailed == 1) {
+        consolPanel.println("CHIP CLASSIFICATION: TIER 2");
+      }
+      else if (meminline_numFailed < 4) {
+        consolPanel.println("CHIP CLASSIFICATION: BURN AND LEARN");
+      }
+      else {
+        consolPanel.println("CHIP CLASSIFICATION: REJECTED");
+      }
+
+      // try {
+      // float[] delta_12 = new float[9];
+      // float[] delta_23 = new float[9];
+      // for (int i = 0; i < delta_12.length; i++) {
+      // delta_12[i] = reads[0][i] - reads[1][i];
+      // delta_23[i] = reads[1][i] - reads[2][i];
+      // }
+      //
+      // // System.out.println("delta_12:" + Arrays.toString(delta_12));
+      // // System.out.println("delta_23:" + Arrays.toString(delta_23));
+      //
+      // consolPanel.println(formatResistanceArray("DIFF(1,2)   ", delta_12));
+      // consolPanel.println(formatResistanceArray("DIFF(2,3)   ", delta_23));
+      //
+      //
+      // } catch (Exception e) {
+      // e.printStackTrace();
+      // }
 
       return true;
     }
 
     private String verifyMemInlineReads(float[][] reads) {
 
-      int COL_WIDTH = 10;
+      float q_min = 5;// minimum ratio between erase/write resistance
+      float min_hrs = 100;// minimum high resistance state;
+      float max_lrs = 150;// maximum low resistant state;
 
+      meminline_numFailed = 0;
       StringBuilder b = new StringBuilder();
-      b.append("TEST");
-      b.append(": ");
       for (int i = 0; i < reads[0].length; i++) {
 
-        String testResult = "POOP";// should never see this.
+        String testResult = "✓";
         if (i == 0) {// this is all switches off. R1, R2 and R3 should all be over 10mOhm
-
-          testResult = " ";
-
+          if (reads[0][0] < 1000) {// should be in high resistance state.
+            testResult = "BAD SWITCHES!";
+            break;
+          }
+          else {
+            testResult = " ";
+          }
         }
         else {// memristor
 
-          if (reads[i][0] > 50) {
-            testResult = "FAIL(WRITE)";
+          float q1 = reads[0][i] / reads[1][i];
+          float q2 = reads[2][i] / reads[1][i];
+
+          System.out.println("q1=" + q1);
+          System.out.println("q2=" + q2);
+
+          if (q1 < q_min) {
+            testResult = "X";
+            meminline_numFailed++;
           }
-          else if (reads[i][1] > 50) {
-            testResult = "FAIL(WRITE)";
+          else if (q2 < q_min) {
+            testResult = "X";
+            meminline_numFailed++;
+          }
+          else if (reads[0][i] < min_hrs) {
+            testResult = "X";
+            meminline_numFailed++;
+          }
+          else if (reads[1][i] > max_lrs) {
+            testResult = "X";
+            meminline_numFailed++;
           }
 
         }
 
-        // white space
-        for (int j = 0; j < (COL_WIDTH - s.length()); j++) {
-          b.append(" ");
-        }
+        // System.out.println("i=:" + i + ": " + testResult);
+        // System.out.println("reads[0][i]=" + reads[0][i]);
+        // System.out.println("reads[1][i]=" + reads[1][i]);
+        // System.out.println("reads[2][i]=" + reads[2][i]);
+
+        appendWhiteSpace(testResult, b, COL_WIDTH);
 
         b.append("|");
       }
@@ -423,32 +468,30 @@ public class BoardCheckExperiment extends Experiment {
 
     }
 
-    private String formatResistanceArray(String prefix, float[] r) {
+    private void appendWhiteSpace(String s, StringBuilder b, int COL_WIDTH) {
 
-      int COL_WIDTH = 10;
+      // white space
+      b.append(s);
+      for (int j = 0; j < (COL_WIDTH - s.length()); j++) {
+        b.append(" ");
+      }
+    }
+
+    private String formatResistanceArray(String prefix, float[] r) {
 
       StringBuilder b = new StringBuilder();
       b.append(prefix);
-      b.append(": ");
       for (int i = 0; i < r.length; i++) {
 
         String s;
         if (r[i] > 0) {
-
-          if (r[i] > 1000) {
-            s = ">1MΩ";
-          } else {
-            s = ohmFormat.format(r[i]);
-          }
-        } else {
-          s = ">1MΩ";
+          s = ohmFormat.format(r[i]);
         }
-        b.append(s);
-
-        // white space
-        for (int j = 0; j < (COL_WIDTH - s.length()); j++) {
-          b.append(" ");
+        else {
+          s = "∞ Ω";
         }
+
+        appendWhiteSpace(s, b, COL_WIDTH);
 
         b.append("|");
       }
@@ -476,15 +519,15 @@ public class BoardCheckExperiment extends Experiment {
 
     switch (propName) {
 
-      case EVENT_INSTRUCTION_UPDATE:
+    case EVENT_INSTRUCTION_UPDATE:
 
-        // System.out.println(controlModel.getInstruction());
-        // dwfProxy.setUpper8IOStates(controlModel.getInstruction().getBits());
+      // System.out.println(controlModel.getInstruction());
+      // dwfProxy.setUpper8IOStates(controlModel.getInstruction().getBits());
 
-        break;
+      break;
 
-      default:
-        break;
+    default:
+      break;
     }
   }
 

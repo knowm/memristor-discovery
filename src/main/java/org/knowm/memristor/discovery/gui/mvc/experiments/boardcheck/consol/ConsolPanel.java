@@ -36,6 +36,7 @@ import java.util.Date;
 import javax.swing.BorderFactory;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.text.DefaultCaret;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
 
@@ -55,13 +56,17 @@ public class ConsolPanel extends ExperimentPlotPanel {
     consol = new JTextArea();
     consol.setLineWrap(true);
     consol.setWrapStyleWord(true);
-    consol.setAutoscrolls(true);
+    // consol.setAutoscrolls(true);
 
-    Font font = new Font("Courier", Font.PLAIN, 12);
+    // Font font = new Font("Courier", Font.PLAIN, 12);
 
-    consol.setFont(font);
+    consol.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+
     consol.setForeground(Color.green);
     consol.setBackground(Color.black);
+
+    DefaultCaret caret = (DefaultCaret) consol.getCaret();
+    caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
     Date now = new Date();
     lines.add("" + now.toString());
