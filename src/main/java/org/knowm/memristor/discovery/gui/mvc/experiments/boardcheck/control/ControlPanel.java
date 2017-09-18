@@ -63,14 +63,14 @@ public class ControlPanel extends ExperimentControlPanel {
 
     c.gridx = 0;
 
-    clearConsolButton = new JButton("Clear Consol");
+    clearConsolButton = new JButton("Clear");
     clearConsolButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.gridy++;
     c.insets = new Insets(0, 0, 0, 0);
     add(clearConsolButton, c);
     c.gridy++;
 
-    meminlineTestButton = new JButton("Mem-Inline Chip Test (R=30.1kΩ)");
+    meminlineTestButton = new JButton("Mem-Inline Chip Test");
     meminlineTestButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.insets = new Insets(0, 0, 0, 0);
     add(meminlineTestButton, c);
@@ -82,7 +82,7 @@ public class ControlPanel extends ExperimentControlPanel {
     add(muxTestButton, c);
     c.gridy++;
 
-    switchTestButton = new JButton("Switch Board Test (R=30.1kΩ)");
+    switchTestButton = new JButton("Switch Board Test (R=5kΩ)");
     switchTestButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.insets = new Insets(0, 0, 0, 0);
     add(switchTestButton, c);

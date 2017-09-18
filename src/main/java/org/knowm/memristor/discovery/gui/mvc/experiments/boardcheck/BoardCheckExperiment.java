@@ -65,14 +65,16 @@ public class BoardCheckExperiment extends Experiment {
   private final static float V_SWITCH_RESISTANCE = 1;// the voltage used to test the switch resistance
 
   private final static float V_MEMINLINE_READ = .1f;
-  private final static float V_MEMINLINE_WRITE = 1.5f;
+  private final static float V_MEMINLINE_WRITE = 1.1f;
   private final static float V_MEMINLINE_RESET = -1.5f;
   private final static float V_MEMINLINE_HARD_RESET = -2.0f;
+
+  private float MEMINLINE_MIN_Q = 3;// minimum ratio between erase/write resistance
 
   private int meminline_numFailed = 0;
 
   private final static float R_SWITCH = 73F;// Resistance of one of the DG445 switches. Old AD Switches are ~50.
-  private final static float R_CALIBRATE = 120;// Line trace resistance, AD2 Calibration.
+  private final static float R_CALIBRATE = 0;// Line trace resistance, AD2 Calibration.
 
   private int COL_WIDTH = 12;
 
@@ -245,14 +247,14 @@ public class BoardCheckExperiment extends Experiment {
   private float[] getScopesAverageVoltage(float readVoltage, int dWFWaveformChannel) {
 
     int samplesPerPulse = 300;
-    int sampleFrequency = 100;
+    int sampleFrequency = 50;
     int samples = sampleFrequency * samplesPerPulse;
 
     // consolPanel.println("Starting Pulse Measurment");
 
     dwfProxy.getDwf().startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(dWFWaveformChannel, samples, samplesPerPulse);
     dwfProxy.waitUntilArmed();
-    double[] pulse = WaveformUtils.generateCustomWaveform(Waveform.Square, readVoltage, 100);
+    double[] pulse = WaveformUtils.generateCustomWaveform(Waveform.Square, readVoltage, sampleFrequency);
     dwfProxy.getDwf().startCustomPulseTrain(dWFWaveformChannel, sampleFrequency, 0, 1, pulse);
     boolean success = dwfProxy.capturePulseData(samples, 1);
     if (success) {
@@ -321,17 +323,21 @@ public class BoardCheckExperiment extends Experiment {
           b.append(ohmFormat.format(r[i]));
         }
 
-        if (i > 0 && !isWithenPercent2Percent(r[i], 5.0f)) {
+        if (i > 0 && !isWithenPercentPercent(r[i], 5.0f, .05f)) {
           b.append("  FAILED!");
           pass = false;
         }
         else if (i == 0) {
 
-          if (r[i] < 10000) {
+          if (r[i] < 1000) {
             b.append("  FAILED!");
             pass = false;
           }
 
+        }
+
+        if (i > 0) {
+          b.append(" (" + percentFormat.format((r[i] - 5.0f) / 5.0f) + ")");
         }
 
         consolPanel.println(b.toString());
@@ -357,7 +363,7 @@ public class BoardCheckExperiment extends Experiment {
     }
   }
 
-  private boolean isWithenPercent2Percent(float value, float reference) {
+  private boolean isWithenPercentPercent(float value, float reference, float percent) {
 
     float p = Math.abs(value - reference) / reference;
 
@@ -365,7 +371,7 @@ public class BoardCheckExperiment extends Experiment {
     System.out.println("value=" + value);
     System.out.println("reference=" + reference);
 
-    return p <= .02;
+    return p <= percent;
   }
 
   private class MuxDiagnosticWorker extends SwingWorker<Boolean, Double> {
@@ -492,6 +498,19 @@ public class BoardCheckExperiment extends Experiment {
       consolPanel.println("");
       consolPanel.println("Mem-Inline Chip Test");
       consolPanel.println("");
+
+      StringBuilder b = new StringBuilder();
+      b.append("            ");
+      for (int i = 0; i < 9; i++) {
+        String w = "ALL OFF";
+        if (i > 0) {
+          w = "S" + i;
+        }
+        appendWhiteSpace(w, b, COL_WIDTH + 1);
+      }
+
+      consolPanel.println(b.toString());
+
       float[][] reads = new float[3][9];
       measureAllSwitchResistances(V_MEMINLINE_WRITE, 0, true);// first call to measureAllSwitchResistances will set the muxes.
       measureAllSwitchResistances(V_MEMINLINE_RESET, 0, false);
@@ -512,16 +531,16 @@ public class BoardCheckExperiment extends Experiment {
       consolPanel.println("");
 
       if (meminline_numFailed == 0) {
-        consolPanel.println("CHIP CLASSIFICATION: TIER 1");
+        consolPanel.println("TIER 1");
       }
       else if (meminline_numFailed == 1) {
-        consolPanel.println("CHIP CLASSIFICATION: TIER 2");
+        consolPanel.println("TIER 2");
       }
-      else if (meminline_numFailed < 4) {
-        consolPanel.println("CHIP CLASSIFICATION: BURN AND LEARN");
+      else if (meminline_numFailed <= 4) {
+        consolPanel.println("BURN AND LEARN");
       }
       else {
-        consolPanel.println("CHIP CLASSIFICATION: REJECTED");
+        consolPanel.println("REJECT");
       }
 
       // try {
@@ -548,9 +567,8 @@ public class BoardCheckExperiment extends Experiment {
 
     private String verifyMemInlineReads(float[][] reads) {
 
-      float q_min = 5;// minimum ratio between erase/write resistance
-      float min_hrs = 100;// minimum high resistance state;
-      float max_lrs = 150;// maximum low resistant state;
+      // float min_hrs = 50;// minimum high resistance state;
+      // float max_lrs = 150;// maximum low resistant state;
 
       meminline_numFailed = 0;
       StringBuilder b = new StringBuilder();
@@ -574,33 +592,33 @@ public class BoardCheckExperiment extends Experiment {
           System.out.println("q1=" + q1);
           System.out.println("q2=" + q2);
 
-          if (q1 < q_min) {
+          if (q1 < MEMINLINE_MIN_Q) {
             testResult = "X";
             meminline_numFailed++;
           }
-          else if (q2 < q_min) {
+          else if (q2 < MEMINLINE_MIN_Q) {
             testResult = "X";
             meminline_numFailed++;
           }
-          else if (reads[0][i] < min_hrs) {
-            testResult = "X";
-            meminline_numFailed++;
-          }
-          else if (reads[1][i] > max_lrs) {
-            testResult = "X";
-            meminline_numFailed++;
-          }
+          // else if (reads[0][i] < min_hrs) {
+          // testResult = "X";
+          // meminline_numFailed++;
+          // }
+          // else if (reads[1][i] > max_lrs) {
+          // testResult = "X";
+          // meminline_numFailed++;
+          // }
 
         }
 
-        // System.out.println("i=:" + i + ": " + testResult);
-        // System.out.println("reads[0][i]=" + reads[0][i]);
-        // System.out.println("reads[1][i]=" + reads[1][i]);
-        // System.out.println("reads[2][i]=" + reads[2][i]);
+        System.out.println("i=:" + i + ": " + testResult);
+        System.out.println("reads[0][i]=" + reads[0][i]);
+        System.out.println("reads[1][i]=" + reads[1][i]);
+        System.out.println("reads[2][i]=" + reads[2][i]);
 
-        appendWhiteSpace(testResult, b, COL_WIDTH);
+        appendWhiteSpace(testResult, b, COL_WIDTH + 1);
 
-        b.append("|");
+        // b.append("|");
       }
       return b.toString();
 
