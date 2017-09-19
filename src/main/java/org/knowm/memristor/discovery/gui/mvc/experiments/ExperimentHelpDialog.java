@@ -57,7 +57,7 @@ public class ExperimentHelpDialog {
     JLabel picLabel = new JLabel(Util.createImageIcon("help" + File.separatorChar + appName + ".png"));
     helpPanel.add(picLabel);
 
-    System.out.println("markdownString = " + "help" + File.separatorChar + appName + ".md");
+    // System.out.println("markdownString = " + "help" + File.separatorChar + appName + ".md");
     String markdownString = FileUtils.readFileFromClasspathToString("help" + File.separatorChar + appName + ".md");
     PegDownProcessor processor = new PegDownProcessor();
     String htmlString = processor.markdownToHtml(markdownString);

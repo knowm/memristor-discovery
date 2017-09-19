@@ -52,6 +52,9 @@ public class PulsePreferencesPanel extends ExperimentPreferencesPanel {
   private JLabel sampleRateLabel;
   private JTextField sampleRateTextField;
 
+  private JLabel numPulsesLabel;
+  private JTextField numPulsesTextField;
+
   /**
    * Constructor
    *
@@ -101,6 +104,7 @@ public class PulsePreferencesPanel extends ExperimentPreferencesPanel {
     this.pulseWidthTextField.setText(String.valueOf(experimentPreferences.getInteger(PulsePreferences.PULSE_WIDTH_INIT_KEY, PulsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(pulseWidthTextField, gc);
 
+    gc.gridy++;
     gc.gridx = 0;
     this.sampleRateLabel = new JLabel("Sample Rate [s]:");
     preferencesPanel.add(sampleRateLabel, gc);
@@ -108,16 +112,26 @@ public class PulsePreferencesPanel extends ExperimentPreferencesPanel {
     gc.gridx = 1;
     this.sampleRateTextField = new JTextField(12);
     this.sampleRateTextField.setText(String.valueOf(experimentPreferences.getInteger(PulsePreferences.SAMPLE_RATE_INIT_KEY, PulsePreferences
-        .SAMPLE_RATE_INIT_DEFAULT_VALUE)));
+            .SAMPLE_RATE_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(sampleRateTextField, gc);
+
+    gc.gridy++;
+    gc.gridx = 0;
+    this.numPulsesLabel = new JLabel("Number Pulses:");
+    preferencesPanel.add(numPulsesLabel, gc);
+
+    gc.gridx = 1;
+    this.numPulsesTextField = new JTextField(12);
+    this.numPulsesTextField.setText(String.valueOf(experimentPreferences.getInteger(PulsePreferences.NUM_PULSES_INIT_KEY, PulsePreferences
+            .NUM_PULSES_INIT_DEFAULT_VALUE)));
+    preferencesPanel.add(numPulsesTextField, gc);
 
   }
 
   @Override
   public void doSavePreferences() {
 
-    // TODO add num pulses prefs.
-    // experimentPreferences.setInteger(PulsePreferences.NUM_PULSES_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
+    experimentPreferences.setInteger(PulsePreferences.NUM_PULSES_INIT_KEY, Integer.parseInt(numPulsesTextField.getText()));
     experimentPreferences.setInteger(PulsePreferences.SERIES_R_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
     experimentPreferences.setFloat(PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(amplitudeTextField.getText()));
     experimentPreferences.setInteger(PulsePreferences.PULSE_WIDTH_INIT_KEY, Integer.parseInt(pulseWidthTextField.getText()));
