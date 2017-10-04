@@ -51,12 +51,12 @@ public class SynapsePreferences extends ExperimentPreferences {
   public static final float AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE = 1f;
 
   public static final String PULSE_WIDTH_INIT_KEY = PREFIX + "PERIOD_INIT_KEY";
-  public static final int PULSE_WIDTH_INIT_DEFAULT_VALUE = 5_000;
+  public static final int PULSE_WIDTH_INIT_DEFAULT_VALUE = 50_000;
 
   public static final String SAMPLE_RATE_INIT_KEY = PREFIX + "SAMPLE_RATE_INIT_KEY";
   public static final int SAMPLE_RATE_INIT_DEFAULT_VALUE = 1;
 
-  ///////////////////////////////////////////////////////////////////////////////////////
+  // /////////////////////////////////////////////////////////////////////////////////////
 
   public static final CurrentUnits CURRENT_UNIT = CurrentUnits.MicroAmps;
   public static final ResistanceUnits RESISTANCE_UNIT = ResistanceUnits.KiloOhms;
@@ -65,6 +65,7 @@ public class SynapsePreferences extends ExperimentPreferences {
 
   // public static final int CAPTURE_BUFFER_SIZE = DWF.AD2_MAX_BUFFER_SIZE;
   public static final int CAPTURE_BUFFER_SIZE = 8000;
+
   // public static final int CAPTURE_BUFFER_SIZE = 8192 / 11; // AD2 buffer size / most pulses allowed.
 
   /**

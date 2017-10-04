@@ -40,17 +40,14 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
-import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.ConductancePreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.AHaHController.Instruction;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.plot.PlotControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.plot.PlotController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.plot.PlotPanel;
-import org.knowm.memristor.discovery.utils.Util;
-import org.knowm.memristor.discovery.utils.WaveformUtils;
-import org.knowm.waveforms4j.DWF;
+import org.knowm.memristor.discovery.utils.gpio.MuxController;
 
 public class SynapseExperiment extends Experiment {
 
@@ -62,6 +59,7 @@ public class SynapseExperiment extends Experiment {
   private final PlotController plotController;
 
   private AHaHController aHaHController;
+  private final MuxController muxController;
 
   /**
    * Constructor
@@ -80,11 +78,13 @@ public class SynapseExperiment extends Experiment {
     System.out.println(controlModel.getInstruction());
     dwfProxy.setUpper8IOStates(controlModel.getInstruction().getBits());
 
-    aHaHController = new AHaHController();
+    aHaHController = new AHaHController(controlModel);
     aHaHController.setdWFProxy(dwfProxy);
-    aHaHController.setAmplitude(controlModel.getAmplitude());
-    aHaHController.setCalculatedFrequency(controlModel.getCalculatedFrequency());
-    aHaHController.setWaveform(controlModel.getWaveform());
+    // aHaHController.setAmplitude(controlModel.getAmplitude());
+    // aHaHController.setCalculatedFrequency(controlModel.getCalculatedFrequency());
+    // aHaHController.setWaveform(controlModel.getWaveform());
+
+    muxController = new MuxController();
 
   }
 
@@ -98,9 +98,9 @@ public class SynapseExperiment extends Experiment {
     @Override
     protected Boolean doInBackground() throws Exception {
 
-      aHaHController.setAmplitude(controlModel.getAmplitude());
-      aHaHController.setCalculatedFrequency(controlModel.getCalculatedFrequency());
-      aHaHController.setWaveform(controlModel.getWaveform());
+      // aHaHController.setAmplitude(controlModel.getAmplitude());
+      // aHaHController.setCalculatedFrequency(controlModel.getCalculatedFrequency());
+      // aHaHController.setWaveform(controlModel.getWaveform());
 
       // NOTE: everytime start is clicked this runs. It first applies the desired instruction (no recording of what happens directly from the
       // operation), followed by continuous FFLV pulses, reading the `y` value.
@@ -115,19 +115,15 @@ public class SynapseExperiment extends Experiment {
       // FFLV READ PULSES /////////////////
       // ////////////////////////////////
 
-      /*
-       * Order ==> W2, W1, 2+, 1+
-       * 00 E
-       * 10 Y
-       * 01 A
-       * 11 B
-       */
-      // W2->E,W1-->A, 2+-->Y,1+-->B
-      dwfProxy.setUpper8IOStates(0b0001_1011_0000_0000);
-
-      double readVoltage = .1;
-      int samplesPerPulse = 300;
-      int sampleFrequency = 10_000 * samplesPerPulse;
+      // muxController.setW2(Destination.OUT);
+      // muxController.setW1(Destination.A);
+      // muxController.setScope2(Destination.Y);
+      // muxController.setScope1(Destination.B);
+      // dwfProxy.setUpper8IOStates(muxController.getGPIOConfig());
+      //
+      // double readVoltage = .1;
+      // int samplesPerPulse = 300;
+      // int sampleFrequency = 10_000 * samplesPerPulse;
 
       while (!isCancelled()) {
 
@@ -135,76 +131,15 @@ public class SynapseExperiment extends Experiment {
           Thread.sleep(controlModel.getSampleRate() * 1000);
         } catch (InterruptedException e) {
           // eat it. caught when interrupt is called
-          dwfProxy.getDwf().stopWave(DWF.WAVEFORM_CHANNEL_1);
-          dwfProxy.getDwf().stopAnalogCaptureBothChannels();
+          // dwfProxy.getDwf().stopWave(DWF.WAVEFORM_CHANNEL_1);
+          // dwfProxy.getDwf().stopAnalogCaptureBothChannels();
         }
 
-        /*
-         * Apply a pulse across both memristors and the series resistor, measure Y and B to determine conductance of both memristors
-         */
+        aHaHController.executeInstruction(Instruction.FFLV);
+        System.out.println("Vy=" + aHaHController.getVy());
 
-        // ///////////////////////////
-        // Analog In /////////////////
-        // ////////////////////////////
-        // dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.01, samplesPerPulse);
-        dwfProxy.getDwf().startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(DWF.WAVEFORM_CHANNEL_1, sampleFrequency, samplesPerPulse);
-        dwfProxy.waitUntilArmed();
+        publish(aHaHController.getGa(), aHaHController.getGb());
 
-        // ////////////////////////////////
-        // Pulse Out /////////////////
-        // ////////////////////////////////
-        double[] customWaveformW1 = WaveformUtils.generateCustomWaveform(Waveform.HalfSine, readVoltage, 10_000);
-        dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, 10_000, 0, 1, customWaveformW1);
-
-        // //////////////////////////////
-        // Read In /////////////////////
-        // //////////////////////////////
-        boolean success = dwfProxy.capturePulseData(10_000, 1);
-        if (!success) {
-          // Stop Analog In and Out
-          dwfProxy.getDwf().stopWave(DWF.WAVEFORM_CHANNEL_1);
-          dwfProxy.getDwf().stopAnalogCaptureBothChannels();
-          controlPanel.getStartStopButton().doClick();
-          return false;
-        } else {
-
-          // Get Raw Data from Oscilloscope
-          int validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
-          double[] v1 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
-          double[] v2 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
-
-          // /////////////////////////
-          // Create Chart Data //////
-          // /////////////////////////
-
-          // double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, 0.08, 0);
-          // double[] V1Trimmed = trimmedRawData[0];
-          // double[] V2Trimmed = trimmedRawData[1];
-
-          double peakV1 = Util.maxAbs(v1);
-          double peakV2 = Util.maxAbs(v2);
-          // voltage drop across memristor 1
-          double vM1 = readVoltage - peakV2;
-          // voltage drop across memristor 2
-          double vM2 = peakV2 - peakV1;
-          // voltage drop across series resistor
-          double vR = peakV1;
-
-          double I = vR / controlModel.getSeriesResistance();
-          double Gm1 = ConductancePreferences.CONDUCTANCE_UNIT.getDivisor() * I / vM1;
-          double Gm2 = ConductancePreferences.CONDUCTANCE_UNIT.getDivisor() * I / vM2;
-
-          // System.out.println("seriesResistance="+controlModel.getSeriesResistance());
-          // System.out.println("I="+I);
-          // System.out.println("Gm1="+Gm1);
-          // System.out.println("Gm2="+Gm2);
-          // System.out.println("ConductancePreferences.CONDUCTANCE_UNIT.getDivisor()"+ConductancePreferences.CONDUCTANCE_UNIT.getDivisor());
-          //
-          publish(Gm1, Gm2);
-        }
-        // Stop Analog In and Out
-        dwfProxy.getDwf().stopWave(DWF.WAVEFORM_CHANNEL_1);
-        dwfProxy.getDwf().stopAnalogCaptureBothChannels();
       }
       return true;
     }
@@ -266,15 +201,15 @@ public class SynapseExperiment extends Experiment {
 
     switch (propName) {
 
-      case EVENT_INSTRUCTION_UPDATE:
+    case EVENT_INSTRUCTION_UPDATE:
 
-        // System.out.println(controlModel.getInstruction());
-        // dwfProxy.setUpper8IOStates(controlModel.getInstruction().getBits());
+      // System.out.println(controlModel.getInstruction());
+      // dwfProxy.setUpper8IOStates(controlModel.getInstruction().getBits());
 
-        break;
+      break;
 
-      default:
-        break;
+    default:
+      break;
     }
   }
 

@@ -84,21 +84,25 @@ public class ControlController extends ExperimentControlController {
     // Util.setButtonGroup(controlModel.getInstruction().name(), controlPanel.getInstructionRadioButtonGroup().getElements());
 
     controlPanel.getWaveformComboBox().setSelectedItem(controlModel.getWaveform());
-    controlPanel.getWaveformComboBox().setModel(new DefaultComboBoxModel<>(new Waveform[]{Waveform.SquareSmooth, Waveform.Square, Waveform.QuarterSine, Waveform.HalfSine, Waveform.Triangle}));
+    controlPanel.getWaveformComboBox().setModel(new DefaultComboBoxModel<>(new Waveform[] { Waveform.SquareSmooth, Waveform.Square, Waveform.QuarterSine, Waveform.HalfSine, Waveform.Triangle }));
 
     controlPanel.getAmplitudeSlider().setValue((int) (controlModel.getAmplitude() * 100));
     controlPanel.getAmplitudeSlider().setBorder(BorderFactory.createTitledBorder("Amplitude [V] = " + controlModel.getAmplitude()));
-    if (controlModel.getPulseWidth() >= 5000) {
-      controlPanel.getPulseWidthSlider().setValue((controlModel.getPulseWidth()));
-      controlPanel.getPulseWidthSliderNs().setValue(0);
-      controlPanel.getPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + controlModel.getPulseWidth() / 1000));
-      controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
-    } else {
-      controlPanel.getPulseWidthSlider().setValue(0);
-      controlPanel.getPulseWidthSliderNs().setValue(controlModel.getPulseWidth());
-      controlPanel.getPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
-      controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + controlModel.getPulseWidth() / 1000));
-    }
+    // if (controlModel.getPulseWidth() >= 5000) {
+    controlPanel.getPulseWidthSlider().setValue((controlModel.getPulseWidth()));
+    // controlPanel.getPulseWidthSliderNs().setValue(0);
+
+    // System.out.println("init pulse width value=" + (controlModel.getPulseWidth()));
+
+    controlPanel.getPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + controlModel.getPulseWidth() / 1000f));
+    // controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
+    // }
+    // else {
+    // controlPanel.getPulseWidthSlider().setValue(0);
+    // // controlPanel.getPulseWidthSliderNs().setValue(controlModel.getPulseWidth());
+    // controlPanel.getPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
+    // // controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + controlModel.getPulseWidth() / 1000));
+    // }
     controlPanel.getSampleRateTextField().setText("" + controlModel.getSampleRate());
   }
 
@@ -108,7 +112,7 @@ public class ControlController extends ExperimentControlController {
   @Override
   public void doSetUpViewEvents() {
 
-    for (Enumeration<AbstractButton> buttons = controlPanel.getInstructionRadioButtonGroup().getElements(); buttons.hasMoreElements(); ) {
+    for (Enumeration<AbstractButton> buttons = controlPanel.getInstructionRadioButtonGroup().getElements(); buttons.hasMoreElements();) {
       AbstractButton button = buttons.nextElement();
       button.addActionListener(instructionRadioButtonActionListener);
     }
@@ -144,24 +148,24 @@ public class ControlController extends ExperimentControlController {
         if (!(source.getValueIsAdjusting())) {
           controlModel.setPulseWidth(source.getValue());
           controlPanel.getPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + (double) controlModel.getPulseWidth() / 1000));
-          controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
+          // controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
         }
       }
     });
 
-    controlPanel.getPulseWidthSliderNs().addChangeListener(new ChangeListener() {
-
-      @Override
-      public void stateChanged(ChangeEvent e) {
-
-        JSlider source = (JSlider) e.getSource();
-        if (!(source.getValueIsAdjusting())) {
-          controlModel.setPulseWidth(source.getValue());
-          controlPanel.getPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
-          controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + (double) controlModel.getPulseWidth() / 1000));
-        }
-      }
-    });
+    // controlPanel.getPulseWidthSliderNs().addChangeListener(new ChangeListener() {
+    //
+    // @Override
+    // public void stateChanged(ChangeEvent e) {
+    //
+    // JSlider source = (JSlider) e.getSource();
+    // if (!(source.getValueIsAdjusting())) {
+    // controlModel.setPulseWidth(source.getValue());
+    // controlPanel.getPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
+    // controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + (double) controlModel.getPulseWidth() / 1000));
+    // }
+    // }
+    // });
     controlPanel.getSampleRateTextField().addKeyListener(new KeyAdapter() {
 
       @Override
@@ -199,7 +203,7 @@ public class ControlController extends ExperimentControlController {
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
 
-      for (Enumeration<AbstractButton> buttons = controlPanel.getInstructionRadioButtonGroup().getElements(); buttons.hasMoreElements(); ) {
+      for (Enumeration<AbstractButton> buttons = controlPanel.getInstructionRadioButtonGroup().getElements(); buttons.hasMoreElements();) {
         AbstractButton button = buttons.nextElement();
         if (button.isSelected()) {
           controlModel.setInstruction(button.getText());
@@ -218,24 +222,24 @@ public class ControlController extends ExperimentControlController {
 
     switch (evt.getPropertyName()) {
 
-      case DWFProxy.AD2_STARTUP_CHANGE:
+    case DWFProxy.AD2_STARTUP_CHANGE:
 
-        controlPanel.enableAllChildComponents((Boolean) evt.getNewValue());
+      controlPanel.enableAllChildComponents((Boolean) evt.getNewValue());
 
-        break;
+      break;
 
-      case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
+    case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
 
-        initGUIComponentsFromModel();
-        break;
+      initGUIComponentsFromModel();
+      break;
 
-      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
+    case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
 
-        controlModel.updateWaveformChartData();
-        break;
+      controlModel.updateWaveformChartData();
+      break;
 
-      default:
-        break;
+    default:
+      break;
     }
   }
 }

@@ -101,14 +101,15 @@ public class SynapsePreferencesPanel extends ExperimentPreferencesPanel {
     this.pulseWidthTextField.setText(String.valueOf(experimentPreferences.getInteger(SynapsePreferences.PULSE_WIDTH_INIT_KEY, SynapsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(pulseWidthTextField, gc);
 
+    gc.gridy++;
+
     gc.gridx = 0;
     this.sampleRateLabel = new JLabel("Sample Rate [s]:");
     preferencesPanel.add(sampleRateLabel, gc);
 
     gc.gridx = 1;
     this.sampleRateTextField = new JTextField(12);
-    this.sampleRateTextField.setText(String.valueOf(experimentPreferences.getInteger(SynapsePreferences.SAMPLE_RATE_INIT_KEY, SynapsePreferences
-        .SAMPLE_RATE_INIT_DEFAULT_VALUE)));
+    this.sampleRateTextField.setText(String.valueOf(experimentPreferences.getInteger(SynapsePreferences.SAMPLE_RATE_INIT_KEY, SynapsePreferences.SAMPLE_RATE_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(sampleRateTextField, gc);
 
   }

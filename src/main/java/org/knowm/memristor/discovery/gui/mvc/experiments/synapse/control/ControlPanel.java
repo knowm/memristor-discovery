@@ -62,13 +62,12 @@ public class ControlPanel extends ExperimentControlPanel {
 
   private final JSlider amplitudeSlider;
   private final JSlider pulseWidthSlider;
-  private final JSlider pulseWidthSliderNs;
+  // private final JSlider pulseWidthSliderNs;
 
   // private final JSlider pulseNumberSlider;
 
   private final ButtonGroup instructionRadioButtonGroup;
-  private final Box instructionRadioButtonBox;
-  ;
+  private final Box instructionRadioButtonBox;;
 
   private final JLabel sampleRateLabel;
   private final JTextField sampleRateTextField;
@@ -91,7 +90,7 @@ public class ControlPanel extends ExperimentControlPanel {
     c.insets = new Insets(0, 0, 4, 6);
     add(waveformComboBox, c);
 
-    amplitudeSlider = new JSlider(JSlider.HORIZONTAL, -250, 200, 0);
+    amplitudeSlider = new JSlider(JSlider.HORIZONTAL, 0, 300, 0);
     amplitudeSlider.setBorder(BorderFactory.createTitledBorder("Amplitude [V]"));
     amplitudeSlider.setMajorTickSpacing(50);
     amplitudeSlider.setMinorTickSpacing(10);
@@ -99,48 +98,49 @@ public class ControlPanel extends ExperimentControlPanel {
     amplitudeSlider.setPaintLabels(true);
     amplitudeSlider.setSnapToTicks(true);
     Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
-    labelTable.put(-250, new JLabel("-2.5"));
-    labelTable.put(-200, new JLabel("-2"));
-    labelTable.put(-100, new JLabel("-1"));
+    // labelTable.put(-250, new JLabel("-2.5"));
+    // labelTable.put(-200, new JLabel("-2"));
+    // labelTable.put(-100, new JLabel("-1"));
     labelTable.put(0, new JLabel("0"));
     labelTable.put(100, new JLabel("1"));
     labelTable.put(200, new JLabel("2"));
+    labelTable.put(300, new JLabel("3"));
     amplitudeSlider.setLabelTable(labelTable);
     c.gridy++;
     c.insets = new Insets(0, 6, 4, 6);
     amplitudeSlider.setPreferredSize(new Dimension(300, 80));
     add(amplitudeSlider, c);
 
-    pulseWidthSlider = new JSlider(JSlider.HORIZONTAL, 5000, 100000, 5000);
+    pulseWidthSlider = new JSlider(JSlider.HORIZONTAL, 20000, 100000, 60000);
     pulseWidthSlider.setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
     pulseWidthSlider.setMinorTickSpacing(5000);
     pulseWidthSlider.setPaintTicks(true);
     pulseWidthSlider.setPaintLabels(true);
     pulseWidthSlider.setSnapToTicks(true);
     labelTable = new Hashtable<>();
-    labelTable.put(5000, new JLabel("5"));
-    labelTable.put(50000, new JLabel("50"));
+    labelTable.put(20000, new JLabel("20"));
+    labelTable.put(60000, new JLabel("60"));
     labelTable.put(100000, new JLabel("100"));
     pulseWidthSlider.setLabelTable(labelTable);
     c.gridy++;
     add(pulseWidthSlider, c);
 
-    pulseWidthSliderNs = new JSlider(JSlider.HORIZONTAL, 500, 5000, 5000);
-    pulseWidthSliderNs.setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
-    pulseWidthSliderNs.setMinorTickSpacing(500);
-    pulseWidthSliderNs.setPaintTicks(true);
-    pulseWidthSliderNs.setPaintLabels(true);
-    pulseWidthSliderNs.setSnapToTicks(true);
-    labelTable = new Hashtable<>();
-    labelTable.put(500, new JLabel(".5"));
-    labelTable.put(1000, new JLabel("1"));
-    labelTable.put(2000, new JLabel("2"));
-    labelTable.put(3000, new JLabel("3"));
-    labelTable.put(4000, new JLabel("4"));
-    labelTable.put(5000, new JLabel("5"));
-    pulseWidthSliderNs.setLabelTable(labelTable);
-    c.gridy++;
-    add(pulseWidthSliderNs, c);
+    // pulseWidthSliderNs = new JSlider(JSlider.HORIZONTAL, 500, 5000, 5000);
+    // pulseWidthSliderNs.setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
+    // pulseWidthSliderNs.setMinorTickSpacing(500);
+    // pulseWidthSliderNs.setPaintTicks(true);
+    // pulseWidthSliderNs.setPaintLabels(true);
+    // pulseWidthSliderNs.setSnapToTicks(true);
+    // labelTable = new Hashtable<>();
+    // labelTable.put(500, new JLabel(".5"));
+    // labelTable.put(1000, new JLabel("1"));
+    // labelTable.put(2000, new JLabel("2"));
+    // labelTable.put(3000, new JLabel("3"));
+    // labelTable.put(4000, new JLabel("4"));
+    // labelTable.put(5000, new JLabel("5"));
+    // pulseWidthSliderNs.setLabelTable(labelTable);
+    // c.gridy++;
+    // add(pulseWidthSliderNs, c);
 
     // pulseNumberSlider = new JSlider(JSlider.HORIZONTAL, 1, 10, 1);
     // pulseNumberSlider.setBorder(BorderFactory.createTitledBorder("Pulse Number"));
@@ -198,7 +198,7 @@ public class ControlPanel extends ExperimentControlPanel {
     waveformComboBox.setEnabled(enabled);
     amplitudeSlider.setEnabled(enabled);
     pulseWidthSlider.setEnabled(enabled);
-    pulseWidthSliderNs.setEnabled(enabled);
+    // pulseWidthSliderNs.setEnabled(enabled);
     // pulseNumberSlider.setEnabled(enabled);
     instructionRadioButtonBox.setEnabled(enabled);
     Enumeration<AbstractButton> enumeration = instructionRadioButtonGroup.getElements();
@@ -223,12 +223,13 @@ public class ControlPanel extends ExperimentControlPanel {
     return pulseWidthSlider;
   }
 
-  public JSlider getPulseWidthSliderNs() {
-
-    return pulseWidthSliderNs;
-  }
+  // public JSlider getPulseWidthSliderNs() {
+  //
+  // return pulseWidthSliderNs;
+  // }
 
   public JTextField getSampleRateTextField() {
+
     return sampleRateTextField;
   }
 

@@ -43,6 +43,7 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
 import org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.consol.ConsolPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.control.ControlModel;
@@ -65,15 +66,14 @@ public class BoardCheckExperiment extends Experiment {
   private final static float V_SWITCH_RESISTANCE = 1;// the voltage used to test the switch resistance
 
   private final static float V_MEMINLINE_READ = .1f;
-  private final static float V_MEMINLINE_WRITE = 1.1f;
+  private final static float V_MEMINLINE_WRITE = 1.5f;
   private final static float V_MEMINLINE_RESET = -1.5f;
   private final static float V_MEMINLINE_HARD_RESET = -2.0f;
 
-  private float MEMINLINE_MIN_Q = 3;// minimum ratio between erase/write resistance
+  private float MEMINLINE_MIN_Q = 2;// minimum ratio between erase/write resistance
 
   private int meminline_numFailed = 0;
 
-  private final static float R_SWITCH = 73F;// Resistance of one of the DG445 switches. Old AD Switches are ~50.
   private final static float R_CALIBRATE = 0;// Line trace resistance, AD2 Calibration.
 
   private int COL_WIDTH = 12;
@@ -217,7 +217,7 @@ public class BoardCheckExperiment extends Experiment {
     // System.out.println("seriesResistance: " + seriesResistance);
 
     float I = Math.abs(vMeasure[1] / seriesResistance);
-    float rSwitch = (Math.abs(vMeasure[0] - vMeasure[1]) / I) - 2 * R_SWITCH - R_CALIBRATE;
+    float rSwitch = (Math.abs(vMeasure[0] - vMeasure[1]) / I) - 2 * ExperimentPreferences.R_SWITCH - R_CALIBRATE;
 
     return rSwitch / 1000;// to kilohms
   }

@@ -65,11 +65,11 @@ public class PlotPanel extends ExperimentPlotPanel {
     gChart.getStyler().setLegendPosition(LegendPosition.InsideSE);
     // gChart.getStyler().setYAxisMin(0.0);
 
-    XYSeries series1 = gChart.addSeries("G(M1)", new double[]{0}, new double[]{0});
+    XYSeries series1 = gChart.addSeries("G(Ma)", new double[] { 0 }, new double[] { 0 });
     series1.setMarker(SeriesMarkers.NONE);
-    XYSeries series2 = gChart.addSeries("G(M2)", new double[]{0}, new double[]{0});
+    XYSeries series2 = gChart.addSeries("G(Mb)", new double[] { 0 }, new double[] { 0 });
     series2.setMarker(SeriesMarkers.NONE);
-    XYSeries series3 = gChart.addSeries("G(M1-M2)", new double[]{0}, new double[]{0});
+    XYSeries series3 = gChart.addSeries("G(Ma-Mb)", new double[] { 0 }, new double[] { 0 });
     series3.setMarker(SeriesMarkers.NONE);
 
     gChartPanel = new XChartPanel<>(gChart);
