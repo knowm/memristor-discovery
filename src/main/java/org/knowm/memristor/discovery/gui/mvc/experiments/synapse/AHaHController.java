@@ -13,12 +13,8 @@ import org.knowm.waveforms4j.DWF;
 public class AHaHController {
 
   private DWFProxy dWFProxy;
-
-  ControlModel controlModel;
-
-  // private SynapsePreferences.Waveform waveform;
-  // private double calculatedFrequency;
-  // private double amplitude;
+  private ControlModel controlModel;
+  private final double MIN_V_RESOLUTION = .0025;
 
   private double vy;// last read value
   private double ga;
@@ -46,7 +42,7 @@ public class AHaHController {
 
     double[] W1 = WaveformUtils.generateCustomWaveform(controlModel.getWaveform(), W1Amplitude, controlModel.getCalculatedFrequency());
 
-    if (instruction == Instruction.FFLV || instruction == Instruction.RFLV) {
+    if (instruction == Instruction.FFLV) {
 
       dWFProxy.getDwf().startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency() * 300, 300 * 1);
       dWFProxy.waitUntilArmed();
@@ -56,29 +52,49 @@ public class AHaHController {
       boolean success = dWFProxy.capturePulseData(controlModel.getCalculatedFrequency(), 1);
       if (success) {
         int validSamples = dWFProxy.getDwf().FDwfAnalogInStatusSamplesValid();
-        double[] v1 = dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
-        double[] v2 = dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
-        double peakV1 = Util.maxAbs(v1);
-        double peakV2 = Util.maxAbs(v2);
+        double peakV1 = Util.maxAbs(dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples));
+        double peakV2 = Util.maxAbs(dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples));
 
-        double I = peakV1 / controlModel.getSeriesResistance();
-
-        double va = W1Amplitude - ExperimentPreferences.R_SWITCH * I;
+        // note: if V1 is less than resolution of scope, the measurments will be useless
         double vb = peakV2;
-        // double vc = vb - ExperimentPreferences.R_SWITCH * I;
-        double vc = peakV1;
+        this.vy = (vb - peakV1 - (W1Amplitude - peakV1) / 2.0) / (W1Amplitude - peakV1);
 
-        this.ga = I / (va - vb);
+        if (peakV1 > MIN_V_RESOLUTION) {
 
-        double r_mb = (vb - vc) / I - ExperimentPreferences.R_SWITCH;
+          double I = peakV1 / controlModel.getSeriesResistance();
+          double va = W1Amplitude - ExperimentPreferences.R_SWITCH * I;
+          double vc = peakV1 + ExperimentPreferences.R_SWITCH * I;
 
-        this.gb = 1 / (r_mb);
-        this.vy = vb - vc;
+          System.out.println("va=" + va);
+          System.out.println("vb=" + vb);
+          System.out.println("vc=" + vc);
+          System.out.println("I=" + I);
 
-        System.out.println("va=" + va);
-        System.out.println("vb=" + vb);
-        System.out.println("vc=" + vc);
-        System.out.println("I=" + I);
+          if ((va - vb > MIN_V_RESOLUTION)) {
+            this.ga = I / (va - vb);
+
+          }
+          else {
+            System.out.println("voltage drop across Ma too small too measure.");
+            this.ga = Double.NaN;
+          }
+
+          if (((vb - vc) > MIN_V_RESOLUTION)) {
+            this.gb = 1 / ((vb - vc) / I);
+
+          }
+          else {
+            System.out.println("voltage drop across Mb too small too measure.");
+            this.gb = Double.NaN;
+          }
+
+        }
+        else {
+
+          System.out.println("Current too low to measure. peakV1=" + peakV1);
+          this.ga = Double.NaN;
+          this.gb = Double.NaN;
+        }
 
       }
       else {
@@ -122,18 +138,14 @@ public class AHaHController {
 
     // @formatter:off
     FFLV(0b0001_1011_0000_0000, .1f),
-    FF(0b1101_1011_0000_0000, 1),
-    RFLV(0b0001_1011_0000_0000, -.1f),
-    RF(0b1101_1011_0000_0000, -1),
-
-    RH_A_UP(0b1001_1011_0000_0000, 1),
+    FF(0b1101_1011_0000_0000, 2f),
     RH_B_DN(0b1011_1011_0000_0000, 1), // w2-->Y, w1-->B
-    RL_B_UP(0b1011_1011_0000_0000, -1),
-    RL_A_DN(0b1001_1011_0000_0000, -1); // w2-->Y, w1-->A
+    RL_A_DN(0b1001_1011_0000_0000, -1), // w2-->Y, w1-->A
+    RFLV(0b0001_1011_0000_0000, -.1f),
+    RF(0b1101_1011_0000_0000, -2f),
+    RH_A_UP(0b1001_1011_0000_0000, 1),
+    RL_B_UP(0b1011_1011_0000_0000, -1);
 
-
-
-    ;
     // @formatter:on
     // RZ;
 

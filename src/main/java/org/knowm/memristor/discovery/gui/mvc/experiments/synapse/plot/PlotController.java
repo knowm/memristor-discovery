@@ -31,6 +31,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 
@@ -38,6 +40,8 @@ public class PlotController implements PropertyChangeListener {
 
   private final PlotPanel plotPanel;
   private final PlotControlModel plotModel;
+
+  private Long startTime = null;
 
   /**
    * Constructor
@@ -81,19 +85,87 @@ public class PlotController implements PropertyChangeListener {
         }
       }
     });
+
+    plotPanel.getResistanceConductanceCheckBox().addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+
+        // change data-->
+        plotModel.setGr1Data(toOneOver(plotModel.getGr1Data()));
+        plotModel.setGr2Data(toOneOver(plotModel.getGr2Data()));
+
+        // update series-->
+        plotPanel.getGChart().updateXYSeries("A", null, plotModel.getGr1Data(), null);
+        plotPanel.getGChart().updateXYSeries("B", null, plotModel.getGr2Data(), null);
+
+        if (plotPanel.getResistanceConductanceCheckBox().isSelected()) {
+          plotPanel.getGChart().setYAxisGroupTitle(0, "Resistance (Ω)");
+        }
+        else {
+          plotPanel.getGChart().setYAxisGroupTitle(0, "Conductance (S)");
+        }
+        repaintYChart();
+      }
+    });
+
   }
 
-  public void updateYChartData(double g_a, double g_b) {
+  private List<Double> toOneOver(List<Double> array) {
 
-    plotModel.getGM1Data().add(g_a);
-    plotModel.getGM2Data().add(g_b);
-    plotModel.getGM3Data().add(g_a - g_b);
-    // plotPanel.getGChart().getStyler().setYAxisMax(plotModel.getyMaxGV());
-    // plotPanel.getGChart().getStyler().setYAxisMin(plotModel.getyMinGV());
-    plotPanel.getGChart().updateXYSeries("G(Ma)", null, plotModel.getGM1Data(), null);
-    plotPanel.getGChart().updateXYSeries("G(Mb)", null, plotModel.getGM2Data(), null);
-    plotPanel.getGChart().updateXYSeries("G(Ma-Mb)", null, plotModel.getGM3Data(), null);
-    // plotPanel.getGChart().updateXYSeries("ylast", new double[]{1, plotModel.getGData().size()}, new double[]{conductance, conductance}, null);
+    List<Double> r = new ArrayList<Double>();
+    for (int i = 0; i < array.size(); i++) {
+      r.add(1 / array.get(i));
+    }
+    return r;
+
+  }
+
+  public void updateYChartData(Double g_a, Double g_b, Double vy) {
+
+    if (startTime == null) {
+      startTime = System.currentTimeMillis();
+    }
+
+    double timeFromStart = (System.currentTimeMillis() - startTime) / 1000.0;
+
+    if (plotPanel.getResistanceConductanceCheckBox().isSelected()) {
+
+      if (!g_a.isNaN()) {
+        plotModel.getGr1Data().add(1 / g_a);
+      }
+
+      if (!g_b.isNaN()) {
+        plotModel.getGr2Data().add(1 / g_b);
+      }
+
+    }
+    else {
+      if (!g_a.isNaN()) {
+        plotModel.getGr1Data().add(g_a);
+      }
+
+      if (!g_b.isNaN()) {
+        plotModel.getGr2Data().add(g_b);
+      }
+
+    }
+    if (!vy.isNaN()) {
+      plotModel.getVyData().add(vy);
+      plotModel.getTimeVyData().add(timeFromStart);
+    }
+
+    if (!g_a.isNaN()) {
+      plotModel.getTime1Data().add(timeFromStart);
+    }
+    if (!g_b.isNaN()) {
+      plotModel.getTime2Data().add(timeFromStart);
+    }
+
+    plotPanel.getGChart().updateXYSeries("A", plotModel.getTime1Data(), plotModel.getGr1Data(), null);
+    plotPanel.getGChart().updateXYSeries("B", plotModel.getTime2Data(), plotModel.getGr2Data(), null);
+    plotPanel.getGChart().updateXYSeries("Vy", plotModel.getTimeVyData(), plotModel.getVyData(), null);
+
   }
 
   public void repaintYChart() {

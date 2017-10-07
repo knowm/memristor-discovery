@@ -138,7 +138,7 @@ public class SynapseExperiment extends Experiment {
         aHaHController.executeInstruction(Instruction.FFLV);
         System.out.println("Vy=" + aHaHController.getVy());
 
-        publish(aHaHController.getGa(), aHaHController.getGb());
+        publish(aHaHController.getGa(), aHaHController.getGb(), aHaHController.getVy());
 
       }
       return true;
@@ -147,7 +147,7 @@ public class SynapseExperiment extends Experiment {
     @Override
     protected void process(List<Double> chunks) {
 
-      plotController.updateYChartData(chunks.get(0), chunks.get(chunks.size() - 1));
+      plotController.updateYChartData(chunks.get(0), chunks.get(1), chunks.get(2));
       plotController.repaintYChart();
     }
   }

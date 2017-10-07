@@ -90,7 +90,7 @@ public class ControlPanel extends ExperimentControlPanel {
     c.insets = new Insets(0, 0, 4, 6);
     add(waveformComboBox, c);
 
-    amplitudeSlider = new JSlider(JSlider.HORIZONTAL, 0, 300, 0);
+    amplitudeSlider = new JSlider(JSlider.HORIZONTAL, 0, 150, 12);
     amplitudeSlider.setBorder(BorderFactory.createTitledBorder("Amplitude [V]"));
     amplitudeSlider.setMajorTickSpacing(50);
     amplitudeSlider.setMinorTickSpacing(10);
@@ -102,24 +102,24 @@ public class ControlPanel extends ExperimentControlPanel {
     // labelTable.put(-200, new JLabel("-2"));
     // labelTable.put(-100, new JLabel("-1"));
     labelTable.put(0, new JLabel("0"));
+    labelTable.put(50, new JLabel(".5"));
     labelTable.put(100, new JLabel("1"));
-    labelTable.put(200, new JLabel("2"));
-    labelTable.put(300, new JLabel("3"));
+    labelTable.put(150, new JLabel("1.5"));
     amplitudeSlider.setLabelTable(labelTable);
     c.gridy++;
     c.insets = new Insets(0, 6, 4, 6);
     amplitudeSlider.setPreferredSize(new Dimension(300, 80));
     add(amplitudeSlider, c);
 
-    pulseWidthSlider = new JSlider(JSlider.HORIZONTAL, 20000, 100000, 60000);
+    pulseWidthSlider = new JSlider(JSlider.HORIZONTAL, 1000, 100000, 50000);
     pulseWidthSlider.setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
     pulseWidthSlider.setMinorTickSpacing(5000);
     pulseWidthSlider.setPaintTicks(true);
     pulseWidthSlider.setPaintLabels(true);
     pulseWidthSlider.setSnapToTicks(true);
     labelTable = new Hashtable<>();
-    labelTable.put(20000, new JLabel("20"));
-    labelTable.put(60000, new JLabel("60"));
+    labelTable.put(1000, new JLabel("1"));
+    labelTable.put(50000, new JLabel("50"));
     labelTable.put(100000, new JLabel("100"));
     pulseWidthSlider.setLabelTable(labelTable);
     c.gridy++;
@@ -148,10 +148,10 @@ public class ControlPanel extends ExperimentControlPanel {
     // pulseNumberSlider.setPaintTicks(true);
     // pulseNumberSlider.setPaintLabels(true);
     // pulseNumberSlider.setSnapToTicks(true);
-    labelTable = new Hashtable<>();
-    labelTable.put(1, new JLabel("1"));
-    labelTable.put(5, new JLabel("5"));
-    labelTable.put(10, new JLabel("10"));
+    // labelTable = new Hashtable<>();
+    // labelTable.put(1, new JLabel("1"));
+    // labelTable.put(5, new JLabel("5"));
+    // labelTable.put(10, new JLabel("10"));
     // pulseNumberSlider.setLabelTable(labelTable);
     c.gridy++;
     // add(pulseNumberSlider, c);

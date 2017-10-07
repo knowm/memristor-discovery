@@ -567,28 +567,26 @@ public class BoardCheckExperiment extends Experiment {
 
     private String verifyMemInlineReads(float[][] reads) {
 
-      // float min_hrs = 50;// minimum high resistance state;
-      // float max_lrs = 150;// maximum low resistant state;
-
+      // System.out.println("WTF MATE?");
       meminline_numFailed = 0;
       StringBuilder b = new StringBuilder();
       for (int i = 0; i < reads[0].length; i++) {
-
+        // System.out.println("WTF MATE 2?");
         String testResult = "✓";
         if (i == 0) {// this is all switches off. R1, R2 and R3 should all be over 10mOhm
           if (reads[0][0] < 1000) {// should be in high resistance state.
-            testResult = "BAD SWITCHES!";
+            testResult = "SWITCHES FAILED!";
+            appendWhiteSpace(testResult, b, COL_WIDTH + 1);
             break;
-          }
-          else {
-            testResult = " ";
           }
         }
         else {// memristor
+          // System.out.println("WTF MATE 3?");
 
           float q1 = reads[0][i] / reads[1][i];
           float q2 = reads[2][i] / reads[1][i];
 
+          // System.out.println("WTF MATE 4?");
           System.out.println("q1=" + q1);
           System.out.println("q2=" + q2);
 
