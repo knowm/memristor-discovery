@@ -71,6 +71,13 @@ public class BoardCheckExperiment extends Experiment {
   private final static float V_MEMINLINE_HARD_RESET = -2.0f;
 
   private float MEMINLINE_MIN_Q = 2;// minimum ratio between erase/write resistance
+  private float MEMINLINE_MIN_R = 10;// if all state are below this (kiloohms), its stuck low
+  private float MEMINLINE_MAX_R = 100;// if all state are above this (kilohms), its stuck low
+  private float MEMINLINE_MIN_SWITCH_OFF = 1000;// if switch is below this resistance (kOhm) when OFF then its a bad switch
+
+  /*
+   * NOTE
+   */
 
   private int meminline_numFailed = 0;
 
@@ -513,18 +520,26 @@ public class BoardCheckExperiment extends Experiment {
 
       float[][] reads = new float[3][9];
       measureAllSwitchResistances(V_MEMINLINE_WRITE, 0, true);// first call to measureAllSwitchResistances will set the muxes.
+      Thread.sleep(50);
+
       measureAllSwitchResistances(V_MEMINLINE_RESET, 0, false);
+      Thread.sleep(50);
 
       reads[0] = measureAllSwitchResistances(V_MEMINLINE_READ, 0, false);
+      Thread.sleep(50);
       consolPanel.println(formatResistanceArray("ERASE       ", reads[0]));
 
       measureAllSwitchResistances(V_MEMINLINE_WRITE, 0, false);
+      Thread.sleep(50);
 
       reads[1] = measureAllSwitchResistances(V_MEMINLINE_READ, 0, false);
+      Thread.sleep(50);
       consolPanel.println(formatResistanceArray("WRITE       ", reads[1]));
       measureAllSwitchResistances(V_MEMINLINE_RESET, 0, false);
+      Thread.sleep(50);
 
       reads[2] = measureAllSwitchResistances(V_MEMINLINE_READ, 0, false);
+      Thread.sleep(50);
       consolPanel.println(formatResistanceArray("ERASE2      ", reads[2]));
 
       consolPanel.println("RESULT      " + verifyMemInlineReads(reads));
@@ -543,25 +558,6 @@ public class BoardCheckExperiment extends Experiment {
         consolPanel.println("REJECT");
       }
 
-      // try {
-      // float[] delta_12 = new float[9];
-      // float[] delta_23 = new float[9];
-      // for (int i = 0; i < delta_12.length; i++) {
-      // delta_12[i] = reads[0][i] - reads[1][i];
-      // delta_23[i] = reads[1][i] - reads[2][i];
-      // }
-      //
-      // // System.out.println("delta_12:" + Arrays.toString(delta_12));
-      // // System.out.println("delta_23:" + Arrays.toString(delta_23));
-      //
-      // consolPanel.println(formatResistanceArray("DIFF(1,2)   ", delta_12));
-      // consolPanel.println(formatResistanceArray("DIFF(2,3)   ", delta_23));
-      //
-      //
-      // } catch (Exception e) {
-      // e.printStackTrace();
-      // }
-
       return true;
     }
 
@@ -574,7 +570,7 @@ public class BoardCheckExperiment extends Experiment {
         // System.out.println("WTF MATE 2?");
         String testResult = "✓";
         if (i == 0) {// this is all switches off. R1, R2 and R3 should all be over 10mOhm
-          if (reads[0][0] < 1000) {// should be in high resistance state.
+          if (reads[0][0] < MEMINLINE_MIN_SWITCH_OFF) {// should be in high resistance state.
             testResult = "SWITCHES FAILED!";
             appendWhiteSpace(testResult, b, COL_WIDTH + 1);
             break;
@@ -590,14 +586,23 @@ public class BoardCheckExperiment extends Experiment {
           System.out.println("q1=" + q1);
           System.out.println("q2=" + q2);
 
-          if (q1 < MEMINLINE_MIN_Q) {
-            testResult = "X";
+          if (reads[0][i] < MEMINLINE_MIN_R && reads[1][i] < MEMINLINE_MIN_R && reads[2][i] < MEMINLINE_MIN_R) {
+            testResult = "X [STK LOW]";
+            meminline_numFailed++;
+          }
+          else if (reads[0][i] > MEMINLINE_MAX_R && reads[1][i] > MEMINLINE_MAX_R && reads[2][i] > MEMINLINE_MAX_R) {
+            testResult = "X [STK HIGH]";
+            meminline_numFailed++;
+          }
+          else if (q1 < MEMINLINE_MIN_Q) {
+            testResult = "X [Q2<MIN]";
             meminline_numFailed++;
           }
           else if (q2 < MEMINLINE_MIN_Q) {
-            testResult = "X";
+            testResult = "X [Q2<MIN]";
             meminline_numFailed++;
           }
+
           // else if (reads[0][i] < min_hrs) {
           // testResult = "X";
           // meminline_numFailed++;

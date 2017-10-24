@@ -115,7 +115,14 @@ public class PlotController implements PropertyChangeListener {
 
     List<Double> r = new ArrayList<Double>();
     for (int i = 0; i < array.size(); i++) {
-      r.add(1 / array.get(i));
+
+      if (array.get(i) > 0) {
+        r.add(1 / array.get(i));
+      }
+      else {
+        r.add(1000000.0);// assume 1MOhm
+      }
+
     }
     return r;
 
@@ -162,9 +169,20 @@ public class PlotController implements PropertyChangeListener {
       plotModel.getTime2Data().add(timeFromStart);
     }
 
-    plotPanel.getGChart().updateXYSeries("A", plotModel.getTime1Data(), plotModel.getGr1Data(), null);
-    plotPanel.getGChart().updateXYSeries("B", plotModel.getTime2Data(), plotModel.getGr2Data(), null);
-    plotPanel.getGChart().updateXYSeries("Vy", plotModel.getTimeVyData(), plotModel.getVyData(), null);
+    System.out.println(plotModel.getGr1Data());
+    System.out.println(plotModel.getGr2Data());
+
+    if (plotModel.getGr1Data() != null && plotModel.getGr1Data().size() > 0) {
+      plotPanel.getGChart().updateXYSeries("A", plotModel.getTime1Data(), plotModel.getGr1Data(), null);
+    }
+
+    if (plotModel.getGr2Data() != null && plotModel.getGr2Data().size() > 0) {
+      plotPanel.getGChart().updateXYSeries("B", plotModel.getTime2Data(), plotModel.getGr2Data(), null);
+    }
+
+    if (plotModel.getVyData() != null && plotModel.getVyData().size() > 0) {
+      plotPanel.getGChart().updateXYSeries("Vy", plotModel.getTimeVyData(), plotModel.getVyData(), null);
+    }
 
   }
 

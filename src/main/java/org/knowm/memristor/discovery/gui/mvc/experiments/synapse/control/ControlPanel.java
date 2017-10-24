@@ -111,16 +111,16 @@ public class ControlPanel extends ExperimentControlPanel {
     amplitudeSlider.setPreferredSize(new Dimension(300, 80));
     add(amplitudeSlider, c);
 
-    pulseWidthSlider = new JSlider(JSlider.HORIZONTAL, 1000, 100000, 50000);
+    pulseWidthSlider = new JSlider(JSlider.HORIZONTAL, 1000, 1000000, 100000);
     pulseWidthSlider.setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
-    pulseWidthSlider.setMinorTickSpacing(5000);
+    pulseWidthSlider.setMinorTickSpacing(10000);
     pulseWidthSlider.setPaintTicks(true);
     pulseWidthSlider.setPaintLabels(true);
     pulseWidthSlider.setSnapToTicks(true);
     labelTable = new Hashtable<>();
     labelTable.put(1000, new JLabel("1"));
-    labelTable.put(50000, new JLabel("50"));
     labelTable.put(100000, new JLabel("100"));
+    labelTable.put(1000000, new JLabel("1000"));
     pulseWidthSlider.setLabelTable(labelTable);
     c.gridy++;
     add(pulseWidthSlider, c);

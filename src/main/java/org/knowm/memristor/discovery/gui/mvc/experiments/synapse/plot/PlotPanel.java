@@ -65,7 +65,7 @@ public class PlotPanel extends ExperimentPlotPanel {
     // G Chart ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    gChart = new XYChartBuilder().width(100).title("Synapse State").height(250).xAxisTitle("Seconds From Start").build();
+    gChart = new XYChartBuilder().width(100).title("Synapse State").height(250).xAxisTitle("Seconds from Start").build();
     gChart.getStyler().setLegendVisible(true);
     gChart.getStyler().setLegendPosition(LegendPosition.InsideSW);
     gChart.getStyler().setYAxisGroupPosition(1, Styler.YAxisPosition.Right);
@@ -97,6 +97,10 @@ public class PlotPanel extends ExperimentPlotPanel {
 
     gChartPanel.getChart().setYAxisGroupTitle(0, "Conductance (S)");
     gChartPanel.getChart().setYAxisGroupTitle(1, "Vy");
+
+    // gChartPanel.getChart().getStyler().setYAxisMax(1.0);
+    // gChartPanel.getChart().getStyler().setYAxisMin(-1.0);
+    //
 
     // ///////////////////////////////////////////////////////////
     // Chart Panel ////////////////////////////////////////////

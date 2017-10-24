@@ -27,6 +27,55 @@ public class AHaHController {
 
   public void executeInstruction(Instruction instruction) {
 
+    if (instruction == Instruction.FF_RH) {
+
+      execute(Instruction.FF);
+      // NOTE: Delay between executions as measured by scope (@MANC Cave) is ~6ms.
+      execute(Instruction.RHbdn);
+
+      return;
+    }
+    else if (instruction == Instruction.FF_RL) {
+
+      execute(Instruction.FF);
+      // NOTE: Delay between executions as measured by scope (@MANC Cave) is ~6ms
+      execute(Instruction.RLadn);
+
+      return;
+    }
+    else if (instruction == Instruction.FF_RA) {
+
+      execute(Instruction.FF);
+
+      if (vy >= 0) {
+        execute(Instruction.RLadn);
+      }
+      else {
+        execute(Instruction.RHbdn);
+      }
+
+      return;
+    }
+    else if (instruction == Instruction.FF_RU) {
+
+      execute(Instruction.FF);
+
+      if (vy >= 0) {
+        execute(Instruction.RHbdn);
+      }
+      else {
+        execute(Instruction.RLadn);
+      }
+
+      return;
+    }
+    else {
+      execute(instruction);
+    }
+  }
+
+  private void execute(Instruction instruction) {
+
     // 1. the IO-bits are set
     dWFProxy.setUpper8IOStates(instruction.getBits());
 
@@ -138,13 +187,17 @@ public class AHaHController {
 
     // @formatter:off
     FFLV(0b0001_1011_0000_0000, .1f),
-    FF(0b1101_1011_0000_0000, 2f),
-    RH_B_DN(0b1011_1011_0000_0000, 1), // w2-->Y, w1-->B
-    RL_A_DN(0b1001_1011_0000_0000, -1), // w2-->Y, w1-->A
+    FF_RL(0b1001_1011_0000_0000, -1),
+    FF_RH(0b1011_1011_0000_0000, 1f),
+    FF_RU(0b1011_1011_0000_0000, 1f),
+    FF_RA(0b1011_1011_0000_0000, 1f),
+    FF(0b1101_1011_0000_0000, 2.5f),
+    RHbdn(0b1011_1011_0000_0000, 1f), // w2-->Y, w1-->B
+    RLadn(0b1001_1011_0000_0000, -1f), // w2-->Y, w1-->A
     RFLV(0b0001_1011_0000_0000, -.1f),
-    RF(0b1101_1011_0000_0000, -2f),
-    RH_A_UP(0b1001_1011_0000_0000, 1),
-    RL_B_UP(0b1011_1011_0000_0000, -1);
+    RF(0b1101_1011_0000_0000, -2.5f),
+    RHaup(0b1001_1011_0000_0000, 1),
+    RLbup(0b1011_1011_0000_0000, -1);
 
     // @formatter:on
     // RZ;
