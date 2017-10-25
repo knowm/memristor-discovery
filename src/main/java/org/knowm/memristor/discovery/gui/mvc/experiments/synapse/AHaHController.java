@@ -76,6 +76,8 @@ public class AHaHController {
 
   private void execute(Instruction instruction) {
 
+    System.out.println("Instruction: " + instruction);
+
     // 1. the IO-bits are set
     dWFProxy.setUpper8IOStates(instruction.getBits());
 
@@ -100,54 +102,10 @@ public class AHaHController {
 
       boolean success = dWFProxy.capturePulseData(controlModel.getCalculatedFrequency(), 1);
       if (success) {
-        int validSamples = dWFProxy.getDwf().FDwfAnalogInStatusSamplesValid();
-        double peakV1 = Util.maxAbs(dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples));
-        double peakV2 = Util.maxAbs(dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples));
-
-        // note: if V1 is less than resolution of scope, the measurments will be useless
-        double vb = peakV2;
-        this.vy = (vb - peakV1 - (W1Amplitude - peakV1) / 2.0) / (W1Amplitude - peakV1);
-
-        if (peakV1 > MIN_V_RESOLUTION) {
-
-          double I = peakV1 / controlModel.getSeriesResistance();
-          double va = W1Amplitude - ExperimentPreferences.R_SWITCH * I;
-          double vc = peakV1 + ExperimentPreferences.R_SWITCH * I;
-
-          System.out.println("va=" + va);
-          System.out.println("vb=" + vb);
-          System.out.println("vc=" + vc);
-          System.out.println("I=" + I);
-
-          if ((va - vb > MIN_V_RESOLUTION)) {
-            this.ga = I / (va - vb);
-
-          }
-          else {
-            System.out.println("voltage drop across Ma too small too measure.");
-            this.ga = Double.NaN;
-          }
-
-          if (((vb - vc) > MIN_V_RESOLUTION)) {
-            this.gb = 1 / ((vb - vc) / I);
-
-          }
-          else {
-            System.out.println("voltage drop across Mb too small too measure.");
-            this.gb = Double.NaN;
-          }
-
-        }
-        else {
-
-          System.out.println("Current too low to measure. peakV1=" + peakV1);
-          this.ga = Double.NaN;
-          this.gb = Double.NaN;
-        }
-
+        setVy(W1Amplitude);
       }
       else {
-        System.out.println("did not capture!");
+        System.out.println("capture failed!");
       }
 
     }
@@ -166,6 +124,57 @@ public class AHaHController {
       Thread.sleep(1);
     } catch (InterruptedException e) {
 
+    }
+
+  }
+
+  private void setVy(double W1Amplitude) {
+
+    int validSamples = dWFProxy.getDwf().FDwfAnalogInStatusSamplesValid();
+    double peakV1 = Util.maxAbs(dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples));
+    double peakV2 = Util.maxAbs(dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples));
+
+    // note: if V1 is less than resolution of scope, the measurments will be useless
+    double vb = peakV2;
+    this.vy = (vb - peakV1 - (W1Amplitude - peakV1) / 2.0) / (W1Amplitude - peakV1);
+
+    System.out.println("vy=" + vy);
+
+    if (peakV1 > MIN_V_RESOLUTION) {
+
+      double I = peakV1 / controlModel.getSeriesResistance();
+      double va = W1Amplitude - ExperimentPreferences.R_SWITCH * I;
+      double vc = peakV1 + ExperimentPreferences.R_SWITCH * I;
+
+      System.out.println("va=" + va);
+      System.out.println("vb=" + vb);
+      System.out.println("vc=" + vc);
+      System.out.println("I=" + I);
+
+      if ((va - vb > MIN_V_RESOLUTION)) {
+        this.ga = I / (va - vb);
+
+      }
+      else {
+        System.out.println("voltage drop across Ma too small too measure.");
+        this.ga = Double.NaN;
+      }
+
+      if (((vb - vc) > MIN_V_RESOLUTION)) {
+        this.gb = 1 / ((vb - vc) / I);
+
+      }
+      else {
+        System.out.println("voltage drop across Mb too small too measure.");
+        this.gb = Double.NaN;
+      }
+
+    }
+    else {
+
+      System.out.println("Current too low to measure. peakV1=" + peakV1);
+      this.ga = Double.NaN;
+      this.gb = Double.NaN;
     }
 
   }
