@@ -27,8 +27,6 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control;
 
-import java.beans.PropertyChangeListener;
-
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.HysteresisPreferences;
@@ -71,16 +69,6 @@ public class ControlModel extends ExperimentControlModel {
     amplitude = experimentPreferences.getFloat(HysteresisPreferences.AMPLITUDE_INIT_FLOAT_KEY, HysteresisPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
     frequency = experimentPreferences.getInteger(HysteresisPreferences.FREQUENCY_INIT_KEY, HysteresisPreferences.FREQUENCY_INIT_DEFAULT_VALUE);
     swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_PREFERENCES_UPDATE, true, false);
-  }
-
-  /**
-   * Here is where the Controller registers itself as a listener to model changes.
-   *
-   * @param listener
-   */
-  public void addListener(PropertyChangeListener listener) {
-
-    swingPropertyChangeSupport.addPropertyChangeListener(listener);
   }
 
   /**

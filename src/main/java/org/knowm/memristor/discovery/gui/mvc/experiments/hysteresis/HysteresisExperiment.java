@@ -165,7 +165,11 @@ public class HysteresisExperiment extends Experiment {
             publish(new double[][]{rawdata1, voltage, conductance});
           }
         }
+        if (Math.random() < 0.01) {
+          getControlModel().swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_NEW_CONSOLE_LOG, "Hi", "Blah");
+        }
       }
+
       return true;
     }
 
@@ -194,7 +198,7 @@ public class HysteresisExperiment extends Experiment {
       }
 
       // Throttle GUI updates at some FPS rate.
-      long duration = (System.nanoTime() - start) / 1000_000;
+      long duration = (System.nanoTime() - start) / 1_000_000;
       try {
         Thread.sleep(Util.SLEEP_TIME - duration);
       } catch (InterruptedException e) {
@@ -208,6 +212,8 @@ public class HysteresisExperiment extends Experiment {
    */
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
+
+    System.out.println("evt.getPropertyName() = " + evt.getPropertyName());
 
     switch (evt.getPropertyName()) {
 

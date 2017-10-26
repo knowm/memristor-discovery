@@ -45,13 +45,14 @@ public abstract class ExperimentControlModel {
   public static final String EVENT_WAVEFORM_UPDATE = "EVENT_WAVEFORM_UPDATE";
   public static final String EVENT_FREQUENCY_UPDATE = "EVENT_FREQUENCY_UPDATE";
   public static final String EVENT_PREFERENCES_UPDATE = "EVENT_PREFERENCES_UPDATE";
+  public static final String EVENT_NEW_CONSOLE_LOG = "EVENT_NEW_CONSOLE_LOG";
 
   public abstract ExperimentPreferences initAppPreferences();
 
   public abstract void loadModelFromPrefs();
 
   protected ExperimentPreferences experimentPreferences;
-  protected SwingPropertyChangeSupport swingPropertyChangeSupport;
+  public SwingPropertyChangeSupport swingPropertyChangeSupport;
 
   /**
    * Constructor

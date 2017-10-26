@@ -27,8 +27,6 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.conductance.control;
 
-import java.beans.PropertyChangeListener;
-
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
@@ -108,15 +106,6 @@ public class ControlModel extends ExperimentControlModel {
     // System.out.println("Arrays.toString(waveformAmplitudeData) = " + Arrays.toString(waveformAmplitudeData));
   }
 
-  /**
-   * Here is where the Controller registers itself as a listener to model changes.
-   *
-   * @param listener
-   */
-  public void addListener(PropertyChangeListener listener) {
-
-    swingPropertyChangeSupport.addPropertyChangeListener(listener);
-  }
 
   /////////////////////////////////////////////////////////////
   // GETTERS AND SETTERS //////////////////////////////////////

@@ -34,6 +34,8 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.net.URL;
 
 import javax.swing.AbstractAction;
@@ -46,7 +48,9 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.knowm.memristor.discovery.gui.AboutDialog;
+import org.knowm.memristor.discovery.gui.ConsoleDialog;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentHelpDialog;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ahah.AHaHExperiment;
@@ -80,7 +84,8 @@ import org.multibit.platform.listener.GenericQuitEvent;
 import org.multibit.platform.listener.GenericQuitEventListener;
 import org.multibit.platform.listener.GenericQuitResponse;
 
-public class MemristorDiscovery implements GenericQuitEventListener, GenericPreferencesEventListener, GenericAboutEventListener {
+public class MemristorDiscovery implements GenericQuitEventListener, GenericPreferencesEventListener, GenericAboutEventListener,
+    PropertyChangeListener {
 
   private final static String FRAME_TITLE_BASE = "Knowm Memristor Discovery - ";
 
@@ -99,6 +104,7 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
   private JFrame mainFrame;
   private HeaderPanel headerPanel;
   private FooterPanel footerPanel;
+  private ConsoleDialog consoleDialog;
 
   public static void main(String[] args) {
 
@@ -221,7 +227,6 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
             case "QC":
               experiment = new QCExperiment(dwf, mainFrame.getContentPane(), isV1Board);
               break;
-
             case "BoardCheck":
               experiment = new BoardCheckExperiment(dwf, mainFrame.getContentPane(), isV1Board);
               break;
@@ -229,6 +234,7 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
             default:
               break;
           }
+
           experiment.createAndShowGUI();
 
           dwf.startupAD2();
@@ -236,6 +242,7 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
           mainFrame.setTitle(FRAME_TITLE_BASE + e.getActionCommand());
         }
       });
+
       appMenuItem.setActionCommand(appMenuItem.getName());
       menu.add(appMenuItem);
     }
@@ -306,6 +313,18 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
     helpMenuItem.setActionCommand(helpMenuItem.getName());
     menu.add(helpMenuItem);
 
+    JMenuItem consoleMenuItem = new JMenuItem(new AbstractAction("Console") {
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+
+        consoleDialog = new ConsoleDialog();
+        consoleDialog.setVisible(true);
+      }
+    });
+    consoleMenuItem.setActionCommand(consoleMenuItem.getName());
+    menu.add(consoleMenuItem);
+
     if (!genericApplication.isMac()) {
 
       JMenuItem prefsMenuItem = new JMenuItem(new AbstractAction("Preferences") {
@@ -372,6 +391,9 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
     // experiment = new PulseExperiment(dwf, mainFrameContainer);
     // experiment.createAndShowGUI();
     // appID = "Pulse";
+
+    // for console message from experiments
+    experiment.getControlModel().addListener(this);
 
     mainFrame.setTitle(FRAME_TITLE_BASE + appID);
 
@@ -463,5 +485,25 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
   public void onAboutEvent(GenericAboutEvent event) {
 
     new AboutDialog(mainFrame);
+  }
+
+  @Override
+  public void propertyChange(PropertyChangeEvent evt) {
+
+    System.out.println("PC");
+
+    switch (evt.getPropertyName()) {
+
+      case ExperimentControlModel.EVENT_NEW_CONSOLE_LOG:
+
+        if (consoleDialog != null) {
+//          System.out.println("evt = " + evt);
+          consoleDialog.addConsoleMessage((String) evt.getNewValue());
+        }
+        break;
+
+      default:
+        break;
+    }
   }
 }

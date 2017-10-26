@@ -27,8 +27,6 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.dc.control;
 
-import java.beans.PropertyChangeListener;
-
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCPreferences;
@@ -98,15 +96,6 @@ public class ControlModel extends ExperimentControlModel {
     } while (++counter < waveformTimeData.length);
   }
 
-  /**
-   * Here is where the Controller registers itself as a listener to model changes.
-   *
-   * @param listener
-   */
-  public void addListener(PropertyChangeListener listener) {
-
-    swingPropertyChangeSupport.addPropertyChangeListener(listener);
-  }
 
   /////////////////////////////////////////////////////////////
   // GETTERS AND SETTERS //////////////////////////////////////
