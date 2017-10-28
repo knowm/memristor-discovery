@@ -25,7 +25,7 @@
  * If you have any questions regarding our licensing policy, please
  * contact us at `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.experiments.ahah;
+package org.knowm.memristor.discovery.gui.mvc.experiments.logic;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 
@@ -34,12 +34,12 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
  *
  * @author timmolter
  */
-public class AHaHPreferences extends ExperimentPreferences {
+public class LogicPreferences extends ExperimentPreferences {
 
   private static final String PREFIX = "SYNAPSE_";
 
   public static final String WAVEFORM_INIT_STRING_KEY = PREFIX + "WAVEFORM_INIT_STRING_KEY";
-  public static final String WAVEFORM_INIT_STRING_DEFAULT_VALUE = "QuarterSine";
+  public static final String WAVEFORM_INIT_STRING_DEFAULT_VALUE = "HalfSine";
 
   public static final String NUM_PULSES_INIT_KEY = PREFIX + "NUM_PULSES_INIT_KEY";
   public static final int NUM_PULSES_INIT_DEFAULT_VALUE = 2;
@@ -51,12 +51,12 @@ public class AHaHPreferences extends ExperimentPreferences {
   public static final float AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE = 1f;
 
   public static final String PULSE_WIDTH_INIT_KEY = PREFIX + "PERIOD_INIT_KEY";
-  public static final int PULSE_WIDTH_INIT_DEFAULT_VALUE = 5_000;
+  public static final int PULSE_WIDTH_INIT_DEFAULT_VALUE = 50_000;
 
-  public static final String SAMPLE_RATE_INIT_KEY = PREFIX + "SAMPLE_RATE_INIT_KEY";
-  public static final int SAMPLE_RATE_INIT_DEFAULT_VALUE = 1;
+  public static final String NUM_EXECUTIONS_INIT_KEY = PREFIX + "NUM_EXECUTIONS_INIT_KEY";
+  public static final int NUM_EXECUTIONS_INIT_DEFAULT_VALUE = 50;
 
-  ///////////////////////////////////////////////////////////////////////////////////////
+  // /////////////////////////////////////////////////////////////////////////////////////
 
   public static final CurrentUnits CURRENT_UNIT = CurrentUnits.MicroAmps;
   public static final ResistanceUnits RESISTANCE_UNIT = ResistanceUnits.KiloOhms;
@@ -65,13 +65,14 @@ public class AHaHPreferences extends ExperimentPreferences {
 
   // public static final int CAPTURE_BUFFER_SIZE = DWF.AD2_MAX_BUFFER_SIZE;
   public static final int CAPTURE_BUFFER_SIZE = 8000;
+
   // public static final int CAPTURE_BUFFER_SIZE = 8192 / 11; // AD2 buffer size / most pulses allowed.
 
   /**
    * Constructor
    */
-  public AHaHPreferences() {
+  public LogicPreferences() {
 
-    super(AHaHPreferences.class);
+    super(LogicPreferences.class);
   }
 }

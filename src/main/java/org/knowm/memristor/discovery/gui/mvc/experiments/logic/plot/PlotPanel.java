@@ -25,9 +25,11 @@
  * If you have any questions regarding our licensing policy, please
  * contact us at `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.experiments.ahah.plot;
+package org.knowm.memristor.discovery.gui.mvc.experiments.logic.plot;
 
 import java.awt.BorderLayout;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
@@ -38,12 +40,15 @@ import org.knowm.xchart.XChartPanel;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
 import org.knowm.xchart.XYSeries;
+import org.knowm.xchart.style.Styler;
 import org.knowm.xchart.style.Styler.LegendPosition;
 import org.knowm.xchart.style.markers.SeriesMarkers;
 
 public class PlotPanel extends ExperimentPlotPanel {
 
   private final JCheckBox freezeYAxisCheckBoxIV;
+  private final JCheckBox resistanceConductanceCheckBox;
+
   XYChart gChart;
   XChartPanel<XYChart> gChartPanel;
   private final JPanel gvChartControlPanel;
@@ -60,19 +65,42 @@ public class PlotPanel extends ExperimentPlotPanel {
     // G Chart ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    gChart = new XYChartBuilder().width(100).title("Synapse Conductance").height(250).xAxisTitle("Sample").yAxisTitle("Conductance (mS)").build();
+    gChart = new XYChartBuilder().width(100).title("Synapse State").height(250).xAxisTitle("Seconds from Start").build();
     gChart.getStyler().setLegendVisible(true);
-    gChart.getStyler().setLegendPosition(LegendPosition.InsideSE);
-    // gChart.getStyler().setYAxisMin(0.0);
+    gChart.getStyler().setLegendPosition(LegendPosition.InsideSW);
+    gChart.getStyler().setYAxisGroupPosition(1, Styler.YAxisPosition.Right);
 
-    XYSeries series1 = gChart.addSeries("G(M1)", new double[]{0}, new double[]{0});
-    series1.setMarker(SeriesMarkers.NONE);
-    XYSeries series2 = gChart.addSeries("G(M2)", new double[]{0}, new double[]{0});
-    series2.setMarker(SeriesMarkers.NONE);
-    XYSeries series3 = gChart.addSeries("G(M1-M2)", new double[]{0}, new double[]{0});
-    series3.setMarker(SeriesMarkers.NONE);
+    // gChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);
+
+    List<Double> time = new ArrayList<>();
+    time.add((double) 0);
+    List<Double> value = new ArrayList<>();
+    value.add((double) 0);
+
+    XYSeries series1 = gChart.addSeries("A", time, value);
+    series1.setMarker(SeriesMarkers.CIRCLE);
+    series1.setLineWidth(1);
+
+    XYSeries series2 = gChart.addSeries("B", time, value);
+    series2.setMarker(SeriesMarkers.CIRCLE);
+    series2.setLineWidth(1);
+
+    // XYSeries series3 = gChart.addSeries("G(Ma-Mb)", new double[] { 0 }, new double[] { 0 });
+    // series3.setMarker(SeriesMarkers.NONE);
+
+    XYSeries series4 = gChart.addSeries("Vy", time, value);
+    series4.setYAxisGroup(1);
+    series4.setMarker(SeriesMarkers.DIAMOND);
+    series4.setLineWidth(1);
 
     gChartPanel = new XChartPanel<>(gChart);
+
+    gChartPanel.getChart().setYAxisGroupTitle(0, "Conductance (S)");
+    gChartPanel.getChart().setYAxisGroupTitle(1, "Vy");
+
+    // gChartPanel.getChart().getStyler().setYAxisMax(1.0);
+    // gChartPanel.getChart().getStyler().setYAxisMin(-1.0);
+    //
 
     // ///////////////////////////////////////////////////////////
     // Chart Panel ////////////////////////////////////////////
@@ -86,9 +114,12 @@ public class PlotPanel extends ExperimentPlotPanel {
     // ///////////////////////////////////////////////////////////
 
     freezeYAxisCheckBoxIV = new JCheckBox("Freeze Y-Axis");
+    resistanceConductanceCheckBox = new JCheckBox("Display Resistance");
     gvChartControlPanel = new JPanel();
     gvChartControlPanel.add(freezeYAxisCheckBoxIV);
+    gvChartControlPanel.add(resistanceConductanceCheckBox);
     add(gvChartControlPanel, BorderLayout.NORTH);
+
   }
 
   public void switch2GVChart() {
@@ -120,5 +151,21 @@ public class PlotPanel extends ExperimentPlotPanel {
   public double getYChartMin() {
 
     return gChart.getSeriesMap().get("y").getYMin();
+  }
+
+  /**
+   * @return the gvChartControlPanel
+   */
+  public JPanel getGvChartControlPanel() {
+
+    return gvChartControlPanel;
+  }
+
+  /**
+   * @return the resistanceConductanceCheckBox
+   */
+  public JCheckBox getResistanceConductanceCheckBox() {
+
+    return resistanceConductanceCheckBox;
   }
 }

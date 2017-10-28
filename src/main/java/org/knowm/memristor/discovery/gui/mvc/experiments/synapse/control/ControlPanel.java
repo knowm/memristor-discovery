@@ -48,7 +48,7 @@ import javax.swing.JTextField;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
-import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.AHaHController.Instruction;
+import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.AHaHController_21.Instruction;
 import org.knowm.memristor.discovery.utils.Util;
 
 /**

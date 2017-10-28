@@ -25,14 +25,14 @@
  * If you have any questions regarding our licensing policy, please
  * contact us at `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.experiments.ahah.control;
+package org.knowm.memristor.discovery.gui.mvc.experiments.logic.control;
 
 import java.text.DecimalFormat;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ahah.AHaHController.Instruction;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ahah.AHaHPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.logic.AHaHController_21.AHaHLogicRoutine;
+import org.knowm.memristor.discovery.gui.mvc.experiments.logic.LogicPreferences;
 import org.knowm.memristor.discovery.utils.driver.Driver;
 import org.knowm.memristor.discovery.utils.driver.HalfSine;
 import org.knowm.memristor.discovery.utils.driver.QuarterSine;
@@ -46,9 +46,9 @@ public class ControlModel extends ExperimentControlModel {
   /**
    * Waveform
    */
-  public AHaHPreferences.Waveform waveform;
+  public LogicPreferences.Waveform waveform;
 
-  public Instruction instruction = Instruction.FFLV;
+  public AHaHLogicRoutine routine = AHaHLogicRoutine.FFRU_Trace;
   /**
    * Events
    */
@@ -61,10 +61,10 @@ public class ControlModel extends ExperimentControlModel {
   private double lastY;
   public DecimalFormat ohmFormatter = new DecimalFormat("#,### Ω");
 
-  private final double[] waveformTimeData = new double[AHaHPreferences.CAPTURE_BUFFER_SIZE];
-  private final double[] waveformAmplitudeData = new double[AHaHPreferences.CAPTURE_BUFFER_SIZE];
+  private final double[] waveformTimeData = new double[LogicPreferences.CAPTURE_BUFFER_SIZE];
+  private final double[] waveformAmplitudeData = new double[LogicPreferences.CAPTURE_BUFFER_SIZE];
 
-  private int sampleRate;
+  private int numExecutions;
 
   /**
    * Constructor
@@ -77,13 +77,12 @@ public class ControlModel extends ExperimentControlModel {
   @Override
   public void loadModelFromPrefs() {
 
-    waveform = AHaHPreferences.Waveform
-        .valueOf(experimentPreferences.getString(AHaHPreferences.WAVEFORM_INIT_STRING_KEY, AHaHPreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
-    seriesResistance = experimentPreferences.getInteger(AHaHPreferences.SERIES_R_INIT_KEY, AHaHPreferences.SERIES_R_INIT_DEFAULT_VALUE);
-    amplitude = experimentPreferences.getFloat(AHaHPreferences.AMPLITUDE_INIT_FLOAT_KEY, AHaHPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
-    pulseWidth = experimentPreferences.getInteger(AHaHPreferences.PULSE_WIDTH_INIT_KEY, AHaHPreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
-    pulseNumber = experimentPreferences.getInteger(AHaHPreferences.NUM_PULSES_INIT_KEY, AHaHPreferences.NUM_PULSES_INIT_DEFAULT_VALUE);
-    sampleRate = experimentPreferences.getInteger(AHaHPreferences.SAMPLE_RATE_INIT_KEY, AHaHPreferences.SAMPLE_RATE_INIT_DEFAULT_VALUE);
+    waveform = LogicPreferences.Waveform.valueOf(experimentPreferences.getString(LogicPreferences.WAVEFORM_INIT_STRING_KEY, LogicPreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
+    seriesResistance = experimentPreferences.getInteger(LogicPreferences.SERIES_R_INIT_KEY, LogicPreferences.SERIES_R_INIT_DEFAULT_VALUE);
+    amplitude = experimentPreferences.getFloat(LogicPreferences.AMPLITUDE_INIT_FLOAT_KEY, LogicPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
+    pulseWidth = experimentPreferences.getInteger(LogicPreferences.PULSE_WIDTH_INIT_KEY, LogicPreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
+    pulseNumber = experimentPreferences.getInteger(LogicPreferences.NUM_PULSES_INIT_KEY, LogicPreferences.NUM_PULSES_INIT_DEFAULT_VALUE);
+    numExecutions = experimentPreferences.getInteger(LogicPreferences.NUM_EXECUTIONS_INIT_KEY, LogicPreferences.NUM_EXECUTIONS_INIT_DEFAULT_VALUE);
     swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
@@ -94,35 +93,35 @@ public class ControlModel extends ExperimentControlModel {
 
     Driver driver;
     switch (waveform) {
-      case Sawtooth:
-        driver = new Sawtooth("Sawtooth", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
-        break;
-      case QuarterSine:
-        driver = new QuarterSine("QuarterSine", 0, 0, amplitude, getCalculatedFrequency());
-        break;
-      case Triangle:
-        driver = new Triangle("Triangle", 0, 0, amplitude, getCalculatedFrequency());
-        break;
-      case Square:
-        driver = new Square("Square", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
-        break;
-      case SquareSmooth:
-        driver = new SquareSmooth("SquareSmooth", 0, 0, amplitude, getCalculatedFrequency());
-        break;
-      default:
-        driver = new HalfSine("HalfSine", 0, 0, amplitude, getCalculatedFrequency());
-        break;
+    case Sawtooth:
+      driver = new Sawtooth("Sawtooth", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
+      break;
+    case QuarterSine:
+      driver = new QuarterSine("QuarterSine", 0, 0, amplitude, getCalculatedFrequency());
+      break;
+    case Triangle:
+      driver = new Triangle("Triangle", 0, 0, amplitude, getCalculatedFrequency());
+      break;
+    case Square:
+      driver = new Square("Square", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
+      break;
+    case SquareSmooth:
+      driver = new SquareSmooth("SquareSmooth", 0, 0, amplitude, getCalculatedFrequency());
+      break;
+    default:
+      driver = new HalfSine("HalfSine", 0, 0, amplitude, getCalculatedFrequency());
+      break;
     }
 
     double stopTime = 1 / getCalculatedFrequency() * pulseNumber;
-    double timeStep = 1 / getCalculatedFrequency() / AHaHPreferences.CAPTURE_BUFFER_SIZE * pulseNumber;
+    double timeStep = 1 / getCalculatedFrequency() / LogicPreferences.CAPTURE_BUFFER_SIZE * pulseNumber;
 
     int counter = 0;
     for (double i = 0.0; i < stopTime; i = i + timeStep) {
-      if (counter >= AHaHPreferences.CAPTURE_BUFFER_SIZE) {
+      if (counter >= LogicPreferences.CAPTURE_BUFFER_SIZE) {
         break;
       }
-      waveformTimeData[counter] = i * AHaHPreferences.TIME_UNIT.getDivisor();
+      waveformTimeData[counter] = i * LogicPreferences.TIME_UNIT.getDivisor();
       waveformAmplitudeData[counter++] = driver.getSignal(i);
     }
   }
@@ -180,12 +179,12 @@ public class ControlModel extends ExperimentControlModel {
     swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
-  public AHaHPreferences.Waveform getWaveform() {
+  public LogicPreferences.Waveform getWaveform() {
 
     return waveform;
   }
 
-  public void setWaveform(AHaHPreferences.Waveform waveform) {
+  public void setWaveform(LogicPreferences.Waveform waveform) {
 
     this.waveform = waveform;
     swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
@@ -193,33 +192,35 @@ public class ControlModel extends ExperimentControlModel {
 
   public void setWaveform(String text) {
 
-    this.waveform = Enum.valueOf(AHaHPreferences.Waveform.class, text);
+    this.waveform = Enum.valueOf(LogicPreferences.Waveform.class, text);
     swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
-  public Instruction getInstruction() {
+  public AHaHLogicRoutine getRoutine() {
 
-    return instruction;
+    return routine;
   }
 
-  public void setInstruction(Instruction instruction) {
+  public void setAHaHLogicRoutine(AHaHLogicRoutine routine) {
 
-    this.instruction = instruction;
+    this.routine = routine;
     swingPropertyChangeSupport.firePropertyChange(EVENT_INSTRUCTION_UPDATE, true, false);
   }
 
   public void setInstruction(String text) {
 
-    this.instruction = Enum.valueOf(Instruction.class, text);
+    this.routine = Enum.valueOf(AHaHLogicRoutine.class, text);
     swingPropertyChangeSupport.firePropertyChange(EVENT_INSTRUCTION_UPDATE, true, false);
   }
 
-  public int getSampleRate() {
-    return sampleRate;
+  public int getNumExecutions() {
+
+    return numExecutions;
   }
 
-  public void setSampleRate(int sampleRate) {
-    this.sampleRate = sampleRate;
+  public void setNumExecutions(int sampleRate) {
+
+    this.numExecutions = sampleRate;
   }
 
   public double getLastY() {
@@ -235,6 +236,6 @@ public class ControlModel extends ExperimentControlModel {
   @Override
   public ExperimentPreferences initAppPreferences() {
 
-    return new AHaHPreferences();
+    return new LogicPreferences();
   }
 }

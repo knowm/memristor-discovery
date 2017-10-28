@@ -25,7 +25,7 @@
  * If you have any questions regarding our licensing policy, please
  * contact us at `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.experiments.ahah.plot;
+package org.knowm.memristor.discovery.gui.mvc.experiments.logic.plot;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ import java.util.List;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ahah.AHaHPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.logic.LogicPreferences;
 
 public class PlotControlModel extends ExperimentControlModel {
 
@@ -46,15 +46,22 @@ public class PlotControlModel extends ExperimentControlModel {
   Double yMaxGV = null;
   Double yMinGV = null;
 
-  List<Double> gm1Data = new ArrayList<>();
-  List<Double> gm2Data = new ArrayList<>();
-  List<Double> gm3Data = new ArrayList<>();
+  List<Double> time1Data = new ArrayList<>();
+  List<Double> time2Data = new ArrayList<>();
+  List<Double> timeVyData = new ArrayList<>();
+
+  List<Double> gr1Data = new ArrayList<>();
+  List<Double> gr2Data = new ArrayList<>();
+  // List<Double> gr3Data = new ArrayList<>();
+
+  List<Double> vyData = new ArrayList<>();
 
   /**
    * Here is where the Controller registers itself as a listener to model changes.
    *
    * @param listener
    */
+  @Override
   public void addListener(PropertyChangeListener listener) {
 
     swingPropertyChangeSupport.addPropertyChangeListener(listener);
@@ -103,7 +110,7 @@ public class PlotControlModel extends ExperimentControlModel {
   @Override
   public ExperimentPreferences initAppPreferences() {
 
-    return new AHaHPreferences();
+    return new LogicPreferences();
   }
 
   @Override
@@ -111,18 +118,115 @@ public class PlotControlModel extends ExperimentControlModel {
 
   }
 
-  public List<Double> getGM1Data() {
+  /**
+   * @return the vyData
+   */
+  public List<Double> getVyData() {
 
-    return gm1Data;
+    return vyData;
   }
 
-  public List<Double> getGM2Data() {
+  /**
+   * @param vyData the vyData to set
+   */
+  public void setVyData(List<Double> vyData) {
 
-    return gm2Data;
+    this.vyData = vyData;
   }
 
-  public List<Double> getGM3Data() {
+  /**
+   * @return the gr1Data
+   */
+  public List<Double> getGr1Data() {
 
-    return gm3Data;
+    return gr1Data;
   }
+
+  /**
+   * @param gr1Data the gr1Data to set
+   */
+  public void setGr1Data(List<Double> gr1Data) {
+
+    this.gr1Data = gr1Data;
+  }
+
+  /**
+   * @return the gr2Data
+   */
+  public List<Double> getGr2Data() {
+
+    return gr2Data;
+  }
+
+  /**
+   * @param gr2Data the gr2Data to set
+   */
+  public void setGr2Data(List<Double> gr2Data) {
+
+    this.gr2Data = gr2Data;
+  }
+
+  /**
+   * @return the time1Data
+   */
+  public List<Double> getTime1Data() {
+
+    return time1Data;
+  }
+
+  /**
+   * @param time1Data the time1Data to set
+   */
+  public void setTime1Data(List<Double> time1Data) {
+
+    this.time1Data = time1Data;
+  }
+
+  /**
+   * @return the time2Data
+   */
+  public List<Double> getTime2Data() {
+
+    return time2Data;
+  }
+
+  /**
+   * @param time2Data the time2Data to set
+   */
+  public void setTime2Data(List<Double> time2Data) {
+
+    this.time2Data = time2Data;
+  }
+
+  /**
+   * @return the time3Data
+   */
+  public List<Double> getTimeVyData() {
+
+    return timeVyData;
+  }
+
+  /**
+   * @param time3Data the time3Data to set
+   */
+  public void setTimeVyData(List<Double> timeVyData) {
+
+    this.timeVyData = timeVyData;
+  }
+
+  // /**
+  // * @return the gr3Data
+  // */
+  // public List<Double> getGr3Data() {
+  //
+  // return gr3Data;
+  // }
+  //
+  // /**
+  // * @param gr3Data the gr3Data to set
+  // */
+  // public void setGr3Data(List<Double> gr3Data) {
+  //
+  // this.gr3Data = gr3Data;
+  // }
 }

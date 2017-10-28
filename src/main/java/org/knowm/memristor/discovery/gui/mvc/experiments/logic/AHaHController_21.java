@@ -1,8 +1,8 @@
-package org.knowm.memristor.discovery.gui.mvc.experiments.synapse;
+package org.knowm.memristor.discovery.gui.mvc.experiments.logic;
 
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
-import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.logic.control.ControlModel;
 import org.knowm.memristor.discovery.utils.Util;
 import org.knowm.memristor.discovery.utils.WaveformUtils;
 import org.knowm.waveforms4j.DWF;
@@ -10,7 +10,7 @@ import org.knowm.waveforms4j.DWF;
 /**
  * Created by timmolter on 5/25/17.
  */
-public class AHaHController {
+public class AHaHController_21 {
 
   private DWFProxy dWFProxy;
   private ControlModel controlModel;
@@ -20,7 +20,7 @@ public class AHaHController {
   private double ga;
   private double gb;
 
-  public AHaHController(ControlModel controlModel) {
+  public AHaHController_21(ControlModel controlModel) {
 
     this.controlModel = controlModel;
   }
@@ -176,6 +176,12 @@ public class AHaHController {
       this.ga = Double.NaN;
       this.gb = Double.NaN;
     }
+
+  }
+
+  public enum AHaHLogicRoutine {
+
+    FFRU_Trace, Reset,
 
   }
 

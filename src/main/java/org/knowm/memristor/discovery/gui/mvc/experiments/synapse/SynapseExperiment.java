@@ -40,7 +40,7 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.AHaHController.Instruction;
+import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.AHaHController_21.Instruction;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlPanel;
@@ -58,7 +58,7 @@ public class SynapseExperiment extends Experiment {
   private final PlotControlModel plotModel = new PlotControlModel();
   private final PlotController plotController;
 
-  private AHaHController aHaHController;
+  private AHaHController_21 aHaHController;
   private final MuxController muxController;
 
   /**
@@ -78,7 +78,7 @@ public class SynapseExperiment extends Experiment {
     System.out.println(controlModel.getInstruction());
     dwfProxy.setUpper8IOStates(controlModel.getInstruction().getBits());
 
-    aHaHController = new AHaHController(controlModel);
+    aHaHController = new AHaHController_21(controlModel);
     aHaHController.setdWFProxy(dwfProxy);
     // aHaHController.setAmplitude(controlModel.getAmplitude());
     // aHaHController.setCalculatedFrequency(controlModel.getCalculatedFrequency());

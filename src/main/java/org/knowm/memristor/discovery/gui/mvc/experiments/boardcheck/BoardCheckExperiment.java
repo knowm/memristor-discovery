@@ -27,8 +27,6 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck;
 
-import static org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlModel.EVENT_INSTRUCTION_UPDATE;
-
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -676,18 +674,18 @@ public class BoardCheckExperiment extends Experiment {
 
     String propName = evt.getPropertyName();
 
-    switch (propName) {
-
-    case EVENT_INSTRUCTION_UPDATE:
-
-      // System.out.println(controlModel.getInstruction());
-      // dwfProxy.setUpper8IOStates(controlModel.getInstruction().getBits());
-
-      break;
-
-    default:
-      break;
-    }
+    // switch (propName) {
+    //
+    // case EVENT_INSTRUCTION_UPDATE:
+    //
+    // // System.out.println(controlModel.getInstruction());
+    // // dwfProxy.setUpper8IOStates(controlModel.getInstruction().getBits());
+    //
+    // break;
+    //
+    // default:
+    // break;
+    // }
   }
 
   @Override

@@ -38,6 +38,7 @@ import javax.swing.SwingUtilities;
 public class ConsoleDialog extends JDialog {
 
   private final JTextArea textArea;
+
   /**
    * Constructor
    */
@@ -49,19 +50,23 @@ public class ConsoleDialog extends JDialog {
     setTitle("Console");
     getContentPane().setLayout(new BorderLayout());
 
-      textArea = new JTextArea(15, 30);
-    add(new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-        JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER);
+    textArea = new JTextArea(15, 30);
+    add(new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER);
 
     pack();
     setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
   }
 
-  public void addConsoleMessage(String text){
+  public void addConsoleMessage(String text) {
+
+    System.out.println("addConsoleMessage(" + text + ")");
 
     SwingUtilities.invokeLater(new Runnable() {
+
+      @Override
       public void run() {
+
         textArea.append(text + "\n");
       }
     });

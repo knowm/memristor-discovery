@@ -25,7 +25,7 @@
  * If you have any questions regarding our licensing policy, please
  * contact us at `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.experiments.ahah;
+package org.knowm.memristor.discovery.gui.mvc.experiments.logic;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -38,7 +38,7 @@ import javax.swing.JTextField;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferencesPanel;
 
-public class AHaHPreferencesPanel extends ExperimentPreferencesPanel {
+public class LogicPreferencesPanel extends ExperimentPreferencesPanel {
 
   private JLabel seriesResistorLabel;
   private JTextField seriesResistorTextField;
@@ -49,15 +49,15 @@ public class AHaHPreferencesPanel extends ExperimentPreferencesPanel {
   private JLabel pulseWidthLabel;
   private JTextField pulseWidthTextField;
 
-  private JLabel sampleRateLabel;
-  private JTextField sampleRateTextField;
+  private JLabel numExecutionsLabel;
+  private JTextField numExecutionsTextField;
 
   /**
    * Constructor
    *
    * @param owner
    */
-  public AHaHPreferencesPanel(JFrame owner) {
+  public LogicPreferencesPanel(JFrame owner) {
 
     super(owner);
   }
@@ -76,7 +76,7 @@ public class AHaHPreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.seriesResistorTextField = new JTextField(12);
-    this.seriesResistorTextField.setText(String.valueOf(experimentPreferences.getInteger(AHaHPreferences.SERIES_R_INIT_KEY, AHaHPreferences.SERIES_R_INIT_DEFAULT_VALUE)));
+    this.seriesResistorTextField.setText(String.valueOf(experimentPreferences.getInteger(LogicPreferences.SERIES_R_INIT_KEY, LogicPreferences.SERIES_R_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(seriesResistorTextField, gc);
 
     gc.gridy++;
@@ -87,7 +87,7 @@ public class AHaHPreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.amplitudeTextField = new JTextField(12);
-    this.amplitudeTextField.setText(String.valueOf(experimentPreferences.getFloat(AHaHPreferences.AMPLITUDE_INIT_FLOAT_KEY, AHaHPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
+    this.amplitudeTextField.setText(String.valueOf(experimentPreferences.getFloat(LogicPreferences.AMPLITUDE_INIT_FLOAT_KEY, LogicPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
     preferencesPanel.add(amplitudeTextField, gc);
 
     gc.gridy++;
@@ -98,18 +98,19 @@ public class AHaHPreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.pulseWidthTextField = new JTextField(12);
-    this.pulseWidthTextField.setText(String.valueOf(experimentPreferences.getInteger(AHaHPreferences.PULSE_WIDTH_INIT_KEY, AHaHPreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE)));
+    this.pulseWidthTextField.setText(String.valueOf(experimentPreferences.getInteger(LogicPreferences.PULSE_WIDTH_INIT_KEY, LogicPreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(pulseWidthTextField, gc);
 
+    gc.gridy++;
+
     gc.gridx = 0;
-    this.sampleRateLabel = new JLabel("Sample Rate [s]:");
-    preferencesPanel.add(sampleRateLabel, gc);
+    this.numExecutionsLabel = new JLabel("Sample Rate [s]:");
+    preferencesPanel.add(numExecutionsLabel, gc);
 
     gc.gridx = 1;
-    this.sampleRateTextField = new JTextField(12);
-    this.sampleRateTextField.setText(String.valueOf(experimentPreferences.getInteger(AHaHPreferences.SAMPLE_RATE_INIT_KEY, AHaHPreferences
-        .SAMPLE_RATE_INIT_DEFAULT_VALUE)));
-    preferencesPanel.add(sampleRateTextField, gc);
+    this.numExecutionsTextField = new JTextField(12);
+    this.numExecutionsTextField.setText(String.valueOf(experimentPreferences.getInteger(LogicPreferences.NUM_EXECUTIONS_INIT_KEY, LogicPreferences.NUM_EXECUTIONS_INIT_DEFAULT_VALUE)));
+    preferencesPanel.add(numExecutionsTextField, gc);
 
   }
 
@@ -117,17 +118,17 @@ public class AHaHPreferencesPanel extends ExperimentPreferencesPanel {
   public void doSavePreferences() {
 
     // TODO add num pulses prefs.
-    // experimentPreferences.setInteger(SynapsePreferences.NUM_PULSES_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
-    experimentPreferences.setInteger(AHaHPreferences.SERIES_R_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
-    experimentPreferences.setFloat(AHaHPreferences.AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(amplitudeTextField.getText()));
-    experimentPreferences.setInteger(AHaHPreferences.PULSE_WIDTH_INIT_KEY, Integer.parseInt(pulseWidthTextField.getText()));
-    experimentPreferences.setInteger(AHaHPreferences.SAMPLE_RATE_INIT_KEY, Integer.parseInt(sampleRateTextField.getText()));
+    // experimentPreferences.setInteger(LogicPreferences.NUM_PULSES_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
+    experimentPreferences.setInteger(LogicPreferences.SERIES_R_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
+    experimentPreferences.setFloat(LogicPreferences.AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(amplitudeTextField.getText()));
+    experimentPreferences.setInteger(LogicPreferences.PULSE_WIDTH_INIT_KEY, Integer.parseInt(pulseWidthTextField.getText()));
+    experimentPreferences.setInteger(LogicPreferences.NUM_EXECUTIONS_INIT_KEY, Integer.parseInt(numExecutionsTextField.getText()));
   }
 
   @Override
   public ExperimentPreferences initAppPreferences() {
 
-    return new AHaHPreferences();
+    return new LogicPreferences();
   }
 
   @Override
