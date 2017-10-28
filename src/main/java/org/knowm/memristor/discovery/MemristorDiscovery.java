@@ -236,13 +236,14 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
           }
 
           experiment.createAndShowGUI();
+          // for console message from experiments
+          experiment.getControlModel().addListener(MemristorDiscovery.this);
 
           dwf.startupAD2();
 
           mainFrame.setTitle(FRAME_TITLE_BASE + e.getActionCommand());
         }
       });
-
       appMenuItem.setActionCommand(appMenuItem.getName());
       menu.add(appMenuItem);
     }
@@ -286,6 +287,8 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
                 break;
             }
             experiment.createAndShowGUI();
+            // for console message from experiments
+            experiment.getControlModel().addListener(MemristorDiscovery.this);
 
             dwf.startupAD2();
 
@@ -490,7 +493,7 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
 
-    System.out.println("PC");
+//    System.out.println("PC");
 
     switch (evt.getPropertyName()) {
 
