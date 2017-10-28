@@ -213,7 +213,7 @@ public class HysteresisExperiment extends Experiment {
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
 
-    System.out.println("evt.getPropertyName() = " + evt.getPropertyName());
+//    System.out.println("evt.getPropertyName() = " + evt.getPropertyName());
 
     switch (evt.getPropertyName()) {
 
