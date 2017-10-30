@@ -32,11 +32,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
-import java.util.Enumeration;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
@@ -46,6 +47,7 @@ import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
+import org.knowm.memristor.discovery.gui.mvc.experiments.logic.LogicPreferences.DataStructure;
 
 public class ControlController extends ExperimentControlController {
 
@@ -81,28 +83,18 @@ public class ControlController extends ExperimentControlController {
 
   private void initGUIComponentsFromModel() {
 
-    // Util.setButtonGroup(controlModel.getInstruction().name(), controlPanel.getInstructionRadioButtonGroup().getElements());
-
     controlPanel.getWaveformComboBox().setSelectedItem(controlModel.getWaveform());
     controlPanel.getWaveformComboBox().setModel(new DefaultComboBoxModel<>(new Waveform[] { Waveform.SquareSmooth, Waveform.Square, Waveform.QuarterSine, Waveform.HalfSine, Waveform.Triangle }));
 
+    controlPanel.getDataStructureComboBox().setSelectedItem(controlModel.getDataStructure());
+    controlPanel.getDataStructureComboBox().setModel(new DefaultComboBoxModel<>(new DataStructure[] { DataStructure.TwoPattern, DataStructure.ThreePattern }));
+
     controlPanel.getAmplitudeSlider().setValue((int) (controlModel.getAmplitude() * 100));
     controlPanel.getAmplitudeSlider().setBorder(BorderFactory.createTitledBorder("Amplitude [V] = " + controlModel.getAmplitude()));
-    // if (controlModel.getPulseWidth() >= 5000) {
-    controlPanel.getPulseWidthSlider().setValue((controlModel.getPulseWidth()));
-    // controlPanel.getPulseWidthSliderNs().setValue(0);
 
-    // System.out.println("init pulse width value=" + (controlModel.getPulseWidth()));
+    controlPanel.getPulseWidthSlider().setValue((controlModel.getPulseWidth()));
 
     controlPanel.getPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + controlModel.getPulseWidth() / 1000f));
-    // controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
-    // }
-    // else {
-    // controlPanel.getPulseWidthSlider().setValue(0);
-    // // controlPanel.getPulseWidthSliderNs().setValue(controlModel.getPulseWidth());
-    // controlPanel.getPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
-    // // controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + controlModel.getPulseWidth() / 1000));
-    // }
     controlPanel.getNumExecutionsTextField().setText("" + controlModel.getNumExecutions());
   }
 
@@ -112,9 +104,20 @@ public class ControlController extends ExperimentControlController {
   @Override
   public void doSetUpViewEvents() {
 
-    for (Enumeration<AbstractButton> buttons = controlPanel.getInstructionRadioButtonGroup().getElements(); buttons.hasMoreElements();) {
-      AbstractButton button = buttons.nextElement();
-      button.addActionListener(instructionRadioButtonActionListener);
+    // for (Enumeration<AbstractButton> buttons = controlPanel.getInstructionRadioButtonGroup().getElements(); buttons.hasMoreElements();) {
+    // AbstractButton button = buttons.nextElement();
+    // button.addActionListener(instructionRadioButtonActionListener);
+    // }
+
+    for (JRadioButton jrb : controlPanel.getInputAMaskRadioButtons()) {
+      jrb.addActionListener(inputMaskAActionListener);
+    }
+
+    for (JRadioButton jrb : controlPanel.getInputBMaskRadioButtons()) {
+      jrb.addActionListener(inputMaskBActionListener);
+    }
+    for (JRadioButton jrb : controlPanel.getBiasMaskRadioButtons()) {
+      jrb.addActionListener(inputBiasMaskActionListener);
     }
 
     controlPanel.getWaveformComboBox().addActionListener(new ActionListener() {
@@ -123,6 +126,15 @@ public class ControlController extends ExperimentControlController {
       public void actionPerformed(ActionEvent e) {
 
         controlModel.setWaveform(controlPanel.getWaveformComboBox().getSelectedItem().toString());
+      }
+    });
+
+    controlPanel.getDataStructureComboBox().addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+
+        controlModel.setDataStructure(controlPanel.getDataStructureComboBox().getSelectedItem().toString());
       }
     });
 
@@ -153,19 +165,6 @@ public class ControlController extends ExperimentControlController {
       }
     });
 
-    // controlPanel.getPulseWidthSliderNs().addChangeListener(new ChangeListener() {
-    //
-    // @Override
-    // public void stateChanged(ChangeEvent e) {
-    //
-    // JSlider source = (JSlider) e.getSource();
-    // if (!(source.getValueIsAdjusting())) {
-    // controlModel.setPulseWidth(source.getValue());
-    // controlPanel.getPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
-    // controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + (double) controlModel.getPulseWidth() / 1000));
-    // }
-    // }
-    // });
     controlPanel.getNumExecutionsTextField().addKeyListener(new KeyAdapter() {
 
       @Override
@@ -184,31 +183,58 @@ public class ControlController extends ExperimentControlController {
       }
     });
 
-    // controlPanel.getPulseNumberSlider().addChangeListener(new ChangeListener() {
-    //
-    // @Override
-    // public void stateChanged(ChangeEvent e) {
-    //
-    // JSlider source = (JSlider) e.getSource();
-    // if (!(source.getValueIsAdjusting())) {
-    // controlModel.setPulseNumber(source.getValue());
-    // controlPanel.getPulseNumberSlider().setBorder(BorderFactory.createTitledBorder("Pulse Number = " + controlModel.getPulseNumber()));
-    // }
-    // }
-    // });
   }
 
-  ActionListener instructionRadioButtonActionListener = new ActionListener() {
+  ActionListener inputMaskAActionListener = new ActionListener() {
 
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
 
-      for (Enumeration<AbstractButton> buttons = controlPanel.getInstructionRadioButtonGroup().getElements(); buttons.hasMoreElements();) {
-        AbstractButton button = buttons.nextElement();
-        if (button.isSelected()) {
-          controlModel.setInstruction(button.getText());
+      List<Integer> maskA = new ArrayList<Integer>();
+
+      for (int i = 0; i < controlPanel.getInputAMaskRadioButtons().size(); i++) {
+        if (controlPanel.getInputAMaskRadioButtons().get(i).isSelected()) {
+          maskA.add(i);
         }
       }
+
+      controlModel.setInputMaskA(maskA);
+
+    }
+  };
+  ActionListener inputMaskBActionListener = new ActionListener() {
+
+    @Override
+    public void actionPerformed(ActionEvent actionEvent) {
+
+      List<Integer> maskB = new ArrayList<Integer>();
+
+      for (int i = 0; i < controlPanel.getInputBMaskRadioButtons().size(); i++) {
+        if (controlPanel.getInputBMaskRadioButtons().get(i).isSelected()) {
+          maskB.add(i);
+        }
+      }
+
+      controlModel.setInputMaskB(maskB);
+
+    }
+  };
+
+  ActionListener inputBiasMaskActionListener = new ActionListener() {
+
+    @Override
+    public void actionPerformed(ActionEvent actionEvent) {
+
+      List<Integer> biasMask = new ArrayList<Integer>();
+
+      for (int i = 0; i < controlPanel.getBiasMaskRadioButtons().size(); i++) {
+        if (controlPanel.getBiasMaskRadioButtons().get(i).isSelected()) {
+          biasMask.add(i);
+        }
+      }
+
+      controlModel.setInputBiasMask(biasMask);
+
     }
   };
 

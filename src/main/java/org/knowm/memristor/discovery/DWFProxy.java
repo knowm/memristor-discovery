@@ -28,6 +28,7 @@
 package org.knowm.memristor.discovery;
 
 import java.beans.PropertyChangeListener;
+import java.util.List;
 
 import javax.swing.SwingWorker;
 import javax.swing.event.SwingPropertyChangeSupport;
@@ -150,7 +151,8 @@ public class DWFProxy {
         if (isV1Board) {
           digitalIOStates = DEFAULT_SELECTOR_DIO;
           // System.out.println(Integer.toBinaryString(digitalIOStates));
-        } else {
+        }
+        else {
           digitalIOStates = ALL_DIO_OFF;
         }
         dwf.FDwfDigitalIOOutputSet(digitalIOStates);
@@ -182,7 +184,8 @@ public class DWFProxy {
 
         // Set this to false (default=true). Need to call FDwfAnalogOutConfigure(true), FDwfAnalogInConfigure(true) in order for *Set* methods to take effect.
         dwf.FDwfDeviceAutoConfigureSet(false);
-      } else {
+      }
+      else {
 
         System.out.println(dwf.FDwfGetLastErrorMsg());
       }
@@ -240,6 +243,30 @@ public class DWFProxy {
     // }
   }
 
+  public void update2DigitalIOStatesAtOnce(List<Integer> mask, boolean isOn) {
+
+    // logger.debug("toggleClickedID: " + toggleClickedID);
+    int oldValDigitalIO = digitalIOStates;
+
+    // Update model
+    for (int i = 0; i < mask.size(); i++) {
+      if (isOn) {
+        digitalIOStates = digitalIOStates | (1 << mask.get(i));
+      }
+      else {
+        digitalIOStates = digitalIOStates & ~(1 << mask.get(i));
+      }
+    }
+
+    boolean successful = dwf.FDwfDigitalIOOutputSet(digitalIOStates);
+    // logger.debug("AD2 Device Digital I/O Written: " + successful);
+    dwf.FDwfDigitalIOConfigure();
+
+    digitalIOStates = dwf.getDigitalIOStatus();
+    swingPropertyChangeSupport.firePropertyChange(DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
+
+  }
+
   /**
    * A GUI element was clicked, so we need to update the model. Don't need to fire a property change for the GUI since the change came from the GUI.
    *
@@ -254,7 +281,8 @@ public class DWFProxy {
     // Update model
     if (isOn) {
       digitalIOStates = digitalIOStates | (1 << toggleClickedID);
-    } else {
+    }
+    else {
       digitalIOStates = digitalIOStates & ~(1 << toggleClickedID);
     }
 
@@ -276,12 +304,14 @@ public class DWFProxy {
     // Update model
     if (value1) {
       digitalIOStates = digitalIOStates | (1 << io1);
-    } else {
+    }
+    else {
       digitalIOStates = digitalIOStates & ~(1 << io1);
     }
     if (value2) {
       digitalIOStates = digitalIOStates | (1 << io2);
-    } else {
+    }
+    else {
       digitalIOStates = digitalIOStates & ~(1 << io2);
     }
 

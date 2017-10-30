@@ -66,6 +66,11 @@ public class LogicPreferences extends ExperimentPreferences {
   // public static final int CAPTURE_BUFFER_SIZE = DWF.AD2_MAX_BUFFER_SIZE;
   public static final int CAPTURE_BUFFER_SIZE = 8000;
 
+  public enum DataStructure {
+
+    TwoPattern, ThreePattern;
+  }
+
   // public static final int CAPTURE_BUFFER_SIZE = 8192 / 11; // AD2 buffer size / most pulses allowed.
 
   /**

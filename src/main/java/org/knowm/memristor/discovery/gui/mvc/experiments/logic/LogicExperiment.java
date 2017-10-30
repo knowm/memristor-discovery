@@ -33,6 +33,7 @@ import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.SwingWorker;
@@ -42,17 +43,19 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.logic.AHaHController_21.Instruction;
+import org.knowm.memristor.discovery.gui.mvc.experiments.logic.LogicPreferences.DataStructure;
 import org.knowm.memristor.discovery.gui.mvc.experiments.logic.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.logic.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.logic.control.ControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.logic.plot.PlotControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.logic.plot.PlotController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.logic.plot.PlotPanel;
-import org.knowm.memristor.discovery.utils.gpio.MuxController;
 
 public class LogicExperiment extends Experiment {
 
   private SwingWorker routineWorker;
+  private SwingWorker resetWorker;
 
   private final ControlModel controlModel = new ControlModel();
   private ControlPanel controlPanel;
@@ -62,7 +65,6 @@ public class LogicExperiment extends Experiment {
   private final PlotController plotController;
 
   private AHaHController_21 aHaHController;
-  private final MuxController muxController;
 
   /**
    * Constructor
@@ -78,11 +80,9 @@ public class LogicExperiment extends Experiment {
     plotPanel = new PlotPanel();
     plotController = new PlotController(plotPanel, plotModel);
     new ControlController(controlPanel, controlModel, dwfProxy);
-    System.out.println(controlModel.getRoutine());
 
     aHaHController = new AHaHController_21(controlModel);
     aHaHController.setdWFProxy(dwfProxy);
-    muxController = new MuxController();
 
   }
 
@@ -94,33 +94,130 @@ public class LogicExperiment extends Experiment {
       @Override
       public void actionPerformed(ActionEvent e) {
 
-        routineWorker = new RoutineWorker();
+        routineWorker = new FFRUTraceWorker();
         routineWorker.execute();
 
       }
     });
+    controlPanel.resetButton.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+
+        resetWorker = new ResetWorker();
+        resetWorker.execute();
+
+      }
+    });
+
   }
 
-  private class RoutineWorker extends SwingWorker<Boolean, Double> {
+  private class ResetWorker extends SwingWorker<Boolean, Double> {
 
     @Override
     protected Boolean doInBackground() throws Exception {
 
       // aHaHController.executeInstruction(controlModel.getInstruction());
+      System.out.println("RESET WORKER");
 
-      System.out.println("Routine: " + controlModel.getRoutine());
-      System.out.println("NumExecutions: " + controlModel.getNumExecutions());
+      dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskA(), false);
 
       // publish(aHaHController.getGa(), aHaHController.getGb(), aHaHController.getVy());
       return true;
     }
 
-    @Override
-    protected void process(List<Double> chunks) {
+  }
 
-      plotController.updateYChartData(chunks.get(0), chunks.get(1), chunks.get(2));
-      plotController.repaintYChart();
+  private class FFRUTraceWorker extends SwingWorker<Boolean, Double> {
+
+    @Override
+    protected Boolean doInBackground() throws Exception {
+
+      System.out.println("FFRUTraceWorker");
+      System.out.println("NumExecutions: " + controlModel.getNumExecutions());
+      System.out.println("MaskA: " + controlModel.getInputMaskA());
+      System.out.println("MaskB: " + controlModel.getInputMaskB());
+      System.out.println("BiasMask: " + controlModel.getInputBiasMask());
+
+      List<TraceDatum> trace = new ArrayList<TraceDatum>();
+
+      for (int i = 0; i < controlModel.getNumExecutions(); i++) {
+        List<Integer> pattern = getNextPattern();
+        dwfProxy.update2DigitalIOStatesAtOnce(pattern, true);
+
+        // execute instruction over pattern-->
+        aHaHController.executeInstruction(Instruction.FFLV);// need this to make FF-RU work
+        aHaHController.executeInstruction(Instruction.FF_RU);
+        // turn off pattern-->
+        dwfProxy.update2DigitalIOStatesAtOnce(pattern, false);
+
+        // measure each synapse seperatly with FFLV
+
+        // synapse A
+        dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskA(), true);
+        aHaHController.executeInstruction(Instruction.FFLV);
+        double vy_a = aHaHController.getVy();
+        double ga_a = aHaHController.getGa();
+        double gb_a = aHaHController.getGb();
+        dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskA(), false);
+
+        // synapse b
+        dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskB(), true);
+        aHaHController.executeInstruction(Instruction.FFLV);
+        double vy_b = aHaHController.getVy();
+        double ga_b = aHaHController.getGa();
+        double gb_b = aHaHController.getGb();
+        dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskB(), false);
+
+        TraceDatum traceDatum = new TraceDatum(vy_a, ga_a, gb_a, vy_b, ga_b, gb_b);
+        trace.add(traceDatum);
+
+        // publish(aHaHController.getGa(), aHaHController.getGb(), aHaHController.getVy());
+
+        Thread.sleep(500);
+
+      }
+
+      plotController.addTrace(trace);
+
+      return true;
     }
+
+  }
+
+  private List<Integer> getNextPattern() {
+
+    if (controlModel.getDataStructure() == DataStructure.TwoPattern) {
+      if (Math.random() < .5) {
+        return controlModel.getInputMaskA();
+      }
+      else {
+        return controlModel.getInputMaskB();
+      }
+    }
+    else if (controlModel.getDataStructure() == DataStructure.ThreePattern) {
+
+      double r = Math.random();
+
+      if (r < .3333) {
+        return controlModel.getInputMaskA();
+      }
+      else if (r < .6666) {
+        return controlModel.getInputMaskB();
+      }
+      else {
+
+        List<Integer> combined = new ArrayList<Integer>();
+        combined.addAll(controlModel.getInputMaskA());
+        combined.addAll(controlModel.getInputMaskB());
+
+        return combined;
+      }
+    }
+    else {
+      return null;
+    }
+
   }
 
   /**
@@ -168,6 +265,6 @@ public class LogicExperiment extends Experiment {
   @Override
   public SwingWorker getCaptureWorker() {
 
-    return new RoutineWorker();
+    return new FFRUTraceWorker();
   }
 }

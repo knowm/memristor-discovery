@@ -83,7 +83,7 @@ public class RightBarPanel extends JPanel {
     setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
     c.insets = new Insets(0, 6, 4, 16);
 
-    oscilloscopeProbe10RadioButton = new JRadioButton("No");
+    oscilloscopeProbe10RadioButton = new JRadioButton("E");
     oscilloscopeProbe1ARadioButton = new JRadioButton("A");
     oscilloscopeProbe1BRadioButton = new JRadioButton("B");
     oscilloscopeProbe1YRadioButton = new JRadioButton("Y");
@@ -106,7 +106,7 @@ public class RightBarPanel extends JPanel {
     c.gridy++;
     add(oscilloscopeProbe1RadioButtonBox, c);
 
-    oscilloscopeProbe20RadioButton = new JRadioButton("No");
+    oscilloscopeProbe20RadioButton = new JRadioButton("E");
     oscilloscopeProbe2ARadioButton = new JRadioButton("A");
     oscilloscopeProbe2BRadioButton = new JRadioButton("B");
     oscilloscopeProbe2YRadioButton = new JRadioButton("Y");
@@ -128,7 +128,7 @@ public class RightBarPanel extends JPanel {
     c.gridy++;
     add(oscilloscopeProbe2RadioButtonBox, c);
 
-    awg10RadioButton = new JRadioButton("No");
+    awg10RadioButton = new JRadioButton("E");
     awg1ARadioButton = new JRadioButton("A");
     awg1BRadioButton = new JRadioButton("B");
     awg1YRadioButton = new JRadioButton("Y");
@@ -150,7 +150,7 @@ public class RightBarPanel extends JPanel {
     c.gridy++;
     add(awg1RadioButtonBox, c);
 
-    awg20RadioButton = new JRadioButton("No");
+    awg20RadioButton = new JRadioButton("E");
     awg2ARadioButton = new JRadioButton("A");
     awg2BRadioButton = new JRadioButton("B");
     awg2YRadioButton = new JRadioButton("Y");
@@ -282,11 +282,14 @@ public class RightBarPanel extends JPanel {
     int highBit = (digitalIOStates >> 9) & 1;
     if (lowBit == 0 && highBit == 0) {
       oscilloscopeProbe10RadioButton.setSelected(true);
-    } else if (lowBit == 0 && highBit == 1) {
+    }
+    else if (lowBit == 0 && highBit == 1) {
       oscilloscopeProbe1YRadioButton.setSelected(true);
-    } else if (lowBit == 1 && highBit == 0) {
+    }
+    else if (lowBit == 1 && highBit == 0) {
       oscilloscopeProbe1ARadioButton.setSelected(true);
-    } else {
+    }
+    else {
       oscilloscopeProbe1BRadioButton.setSelected(true);
     }
 
@@ -294,11 +297,14 @@ public class RightBarPanel extends JPanel {
     highBit = (digitalIOStates >> 11) & 1;
     if (lowBit == 0 && highBit == 0) {
       oscilloscopeProbe20RadioButton.setSelected(true);
-    } else if (lowBit == 0 && highBit == 1) {
+    }
+    else if (lowBit == 0 && highBit == 1) {
       oscilloscopeProbe2YRadioButton.setSelected(true);
-    } else if (lowBit == 1 && highBit == 0) {
+    }
+    else if (lowBit == 1 && highBit == 0) {
       oscilloscopeProbe2ARadioButton.setSelected(true);
-    } else {
+    }
+    else {
       oscilloscopeProbe2BRadioButton.setSelected(true);
     }
 
@@ -306,11 +312,14 @@ public class RightBarPanel extends JPanel {
     highBit = (digitalIOStates >> 13) & 1;
     if (lowBit == 0 && highBit == 0) {
       awg10RadioButton.setSelected(true);
-    } else if (lowBit == 0 && highBit == 1) {
+    }
+    else if (lowBit == 0 && highBit == 1) {
       awg1YRadioButton.setSelected(true);
-    } else if (lowBit == 1 && highBit == 0) {
+    }
+    else if (lowBit == 1 && highBit == 0) {
       awg1ARadioButton.setSelected(true);
-    } else {
+    }
+    else {
       awg1BRadioButton.setSelected(true);
     }
 
@@ -318,11 +327,14 @@ public class RightBarPanel extends JPanel {
     highBit = (digitalIOStates >> 15) & 1;
     if (lowBit == 0 && highBit == 0) {
       awg20RadioButton.setSelected(true);
-    } else if (lowBit == 0 && highBit == 1) {
+    }
+    else if (lowBit == 0 && highBit == 1) {
       awg2YRadioButton.setSelected(true);
-    } else if (lowBit == 1 && highBit == 0) {
+    }
+    else if (lowBit == 1 && highBit == 0) {
       awg2ARadioButton.setSelected(true);
-    } else {
+    }
+    else {
       awg2BRadioButton.setSelected(true);
     }
   }

@@ -32,13 +32,12 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.util.Enumeration;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
-import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -48,7 +47,7 @@ import javax.swing.JTextField;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
-import org.knowm.memristor.discovery.gui.mvc.experiments.logic.AHaHController_21.AHaHLogicRoutine;
+import org.knowm.memristor.discovery.gui.mvc.experiments.logic.LogicPreferences.DataStructure;
 import org.knowm.memristor.discovery.utils.Util;
 
 /**
@@ -63,20 +62,24 @@ public class ControlPanel extends ExperimentControlPanel {
   private final JSlider amplitudeSlider;
   private final JSlider pulseWidthSlider;
 
-  private final ButtonGroup routineRadioButtonGroup;
-  private final Box routineRadioButtonBox;
+  // private final ButtonGroup routineRadioButtonGroup;
+  // private final Box routineRadioButtonBox;
 
-  // private final ButtonGroup inputAButtonGroup;
+  private JComboBox<DataStructure> dataStructureComboBox;
+
   private final Box inputAButtonBox;
   private final Box inputBButtonBox;
+  private final Box biasButtonBox;
 
-  // private final ButtonGroup inputBButtonGroup;
-  // private final Box inputBButtonBox;
+  private List<JRadioButton> inputAMaskRadioButtons;
+  private List<JRadioButton> inputBMaskRadioButtons;
+  private List<JRadioButton> biasMaskRadioButtons;
 
   private final JLabel numExecutionsLabel;
   private final JTextField numExecutionsTextField;
 
   public JButton runRoutineButton;
+  public JButton resetButton;
 
   /**
    * Constructor
@@ -132,49 +135,69 @@ public class ControlPanel extends ExperimentControlPanel {
     add(pulseWidthSlider, c);
     c.gridy++;
 
-    // input A
-    inputAButtonBox = Box.createHorizontalBox();
-    inputAButtonBox.setBorder(BorderFactory.createTitledBorder("Input A"));
+    // data
+    this.dataStructureComboBox = new JComboBox<>();
+    dataStructureComboBox.setFocusable(false);
+    c.gridy++;
+    c.insets = new Insets(0, 0, 4, 6);
+    add(dataStructureComboBox, c);
 
+    // Input A
+    inputAButtonBox = Box.createHorizontalBox();
+    inputAButtonBox.setBorder(BorderFactory.createTitledBorder("Input A Mask"));
+    inputAMaskRadioButtons = new ArrayList<JRadioButton>();
     for (int i = 0; i < 8; i++) {
       JRadioButton radioButton = new JRadioButton("" + (i + 1));
       add(radioButton);
       inputAButtonBox.add(radioButton);
+      inputAMaskRadioButtons.add(radioButton);
     }
-
     c.gridy++;
     c.insets = new Insets(0, 6, 4, 6);
     add(inputAButtonBox, c);
 
-    // input B
-
+    // Input B
     inputBButtonBox = Box.createHorizontalBox();
-    inputBButtonBox.setBorder(BorderFactory.createTitledBorder("Input B"));
-
+    inputBButtonBox.setBorder(BorderFactory.createTitledBorder("Input B Mask"));
+    inputBMaskRadioButtons = new ArrayList<JRadioButton>();
     for (int i = 0; i < 8; i++) {
       JRadioButton radioButton = new JRadioButton("" + (i + 1));
       add(radioButton);
       inputBButtonBox.add(radioButton);
+      inputBMaskRadioButtons.add(radioButton);
     }
-
     c.gridy++;
     c.insets = new Insets(0, 6, 4, 6);
     add(inputBButtonBox, c);
 
-    // routine
-    routineRadioButtonGroup = new ButtonGroup();
-    routineRadioButtonBox = Box.createVerticalBox();
-    routineRadioButtonBox.setBorder(BorderFactory.createTitledBorder("Routine"));
-    for (AHaHLogicRoutine routine : AHaHLogicRoutine.values()) {
-      JRadioButton radioButton = new JRadioButton(routine.name());
-      routineRadioButtonGroup.add(radioButton);
+    // Bias B
+    biasButtonBox = Box.createHorizontalBox();
+    biasButtonBox.setBorder(BorderFactory.createTitledBorder("Input Bias Mask"));
+    biasMaskRadioButtons = new ArrayList<JRadioButton>();
+    for (int i = 0; i < 8; i++) {
+      JRadioButton radioButton = new JRadioButton("" + (i + 1));
       add(radioButton);
-      routineRadioButtonBox.add(radioButton);
+      biasButtonBox.add(radioButton);
+      biasMaskRadioButtons.add(radioButton);
     }
-
     c.gridy++;
     c.insets = new Insets(0, 6, 4, 6);
-    add(routineRadioButtonBox, c);
+    add(biasButtonBox, c);
+
+    // // routine
+    // routineRadioButtonGroup = new ButtonGroup();
+    // routineRadioButtonBox = Box.createVerticalBox();
+    // routineRadioButtonBox.setBorder(BorderFactory.createTitledBorder("Routine"));
+    // for (AHaHLogicRoutine routine : AHaHLogicRoutine.values()) {
+    // JRadioButton radioButton = new JRadioButton(routine.name());
+    // routineRadioButtonGroup.add(radioButton);
+    // add(radioButton);
+    // routineRadioButtonBox.add(radioButton);
+    // }
+    //
+    // c.gridy++;
+    // c.insets = new Insets(0, 6, 4, 6);
+    // add(routineRadioButtonBox, c);
 
     numExecutionsLabel = new JLabel("Number of Executions");
     numExecutionsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -188,11 +211,17 @@ public class ControlPanel extends ExperimentControlPanel {
     c.insets = new Insets(0, 5, 14, 5);
     add(numExecutionsTextField, c);
 
-    runRoutineButton = new JButton("Go");
+    runRoutineButton = new JButton("Run");
     runRoutineButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.gridy++;
     c.insets = new Insets(0, 0, 0, 0);
     add(runRoutineButton, c);
+
+    resetButton = new JButton("Reset");
+    resetButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.gridy++;
+    c.insets = new Insets(0, 0, 0, 0);
+    add(resetButton, c);
 
     c.gridy++;
     JLabel logoLabel = new JLabel(Util.createImageIcon("img/logo_200.png"));
@@ -206,13 +235,13 @@ public class ControlPanel extends ExperimentControlPanel {
     pulseWidthSlider.setEnabled(enabled);
     runRoutineButton.setEnabled(enabled);
     inputAButtonBox.setEnabled(enabled);
-    inputAButtonBox.setEnabled(enabled);
+    inputBButtonBox.setEnabled(enabled);
 
-    routineRadioButtonBox.setEnabled(enabled);
-    Enumeration<AbstractButton> enumeration = routineRadioButtonGroup.getElements();
-    while (enumeration.hasMoreElements()) {
-      enumeration.nextElement().setEnabled(enabled);
-    }
+    // routineRadioButtonBox.setEnabled(enabled);
+    // Enumeration<AbstractButton> enumeration = routineRadioButtonGroup.getElements();
+    // while (enumeration.hasMoreElements()) {
+    // enumeration.nextElement().setEnabled(enabled);
+    // }
     // startStopButton.setEnabled(enabled);
   }
 
@@ -236,8 +265,34 @@ public class ControlPanel extends ExperimentControlPanel {
     return numExecutionsTextField;
   }
 
-  public ButtonGroup getInstructionRadioButtonGroup() {
+  // public ButtonGroup getInstructionRadioButtonGroup() {
+  //
+  // return routineRadioButtonGroup;
+  // }
 
-    return routineRadioButtonGroup;
+  public List<JRadioButton> getInputAMaskRadioButtons() {
+
+    return inputAMaskRadioButtons;
   }
+
+  public List<JRadioButton> getInputBMaskRadioButtons() {
+
+    return inputBMaskRadioButtons;
+  }
+
+  public JComboBox<DataStructure> getDataStructureComboBox() {
+
+    return dataStructureComboBox;
+  }
+
+  public List<JRadioButton> getBiasMaskRadioButtons() {
+
+    return biasMaskRadioButtons;
+  }
+
+  public JButton getResetButton() {
+
+    return resetButton;
+  }
+
 }

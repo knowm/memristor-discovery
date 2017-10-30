@@ -28,11 +28,13 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.logic.control;
 
 import java.text.DecimalFormat;
+import java.util.List;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.logic.AHaHController_21.AHaHLogicRoutine;
 import org.knowm.memristor.discovery.gui.mvc.experiments.logic.LogicPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.logic.LogicPreferences.DataStructure;
 import org.knowm.memristor.discovery.utils.driver.Driver;
 import org.knowm.memristor.discovery.utils.driver.HalfSine;
 import org.knowm.memristor.discovery.utils.driver.QuarterSine;
@@ -65,6 +67,12 @@ public class ControlModel extends ExperimentControlModel {
   private final double[] waveformAmplitudeData = new double[LogicPreferences.CAPTURE_BUFFER_SIZE];
 
   private int numExecutions;
+
+  private List<Integer> inputMaskA;
+  private List<Integer> inputMaskB;
+  private List<Integer> inputBiasMask;
+
+  public LogicPreferences.DataStructure dataStructure = DataStructure.TwoPattern;
 
   /**
    * Constructor
@@ -237,5 +245,45 @@ public class ControlModel extends ExperimentControlModel {
   public ExperimentPreferences initAppPreferences() {
 
     return new LogicPreferences();
+  }
+
+  public List<Integer> getInputMaskA() {
+
+    return inputMaskA;
+  }
+
+  public void setInputMaskA(List<Integer> inputMaskA) {
+
+    this.inputMaskA = inputMaskA;
+  }
+
+  public List<Integer> getInputMaskB() {
+
+    return inputMaskB;
+  }
+
+  public void setInputMaskB(List<Integer> inputMaskB) {
+
+    this.inputMaskB = inputMaskB;
+  }
+
+  public LogicPreferences.DataStructure getDataStructure() {
+
+    return dataStructure;
+  }
+
+  public void setDataStructure(String text) {
+
+    this.dataStructure = Enum.valueOf(LogicPreferences.DataStructure.class, text);
+  }
+
+  public List<Integer> getInputBiasMask() {
+
+    return inputBiasMask;
+  }
+
+  public void setInputBiasMask(List<Integer> inputBiasMask) {
+
+    this.inputBiasMask = inputBiasMask;
   }
 }

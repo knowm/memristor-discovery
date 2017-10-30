@@ -27,21 +27,20 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.logic.plot;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.Color;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.logic.TraceDatum;
+import org.knowm.xchart.XYSeries;
+import org.knowm.xchart.style.markers.SeriesMarkers;
 
 public class PlotController implements PropertyChangeListener {
 
   private final PlotPanel plotPanel;
   private final PlotControlModel plotModel;
-
-  private Long startTime = null;
 
   /**
    * Constructor
@@ -54,142 +53,46 @@ public class PlotController implements PropertyChangeListener {
     this.plotPanel = plotPanel;
     this.plotModel = plotModel;
 
-    initGUIComponents();
-    setUpViewEvents();
   }
 
-  public void initGUIComponents() {
+  public void addTrace(List<TraceDatum> trace) {
 
-    plotPanel.getFreezeYAxisCheckBoxIV().setSelected(false);
-    initGUIComponentsFromModel();
-  }
+    System.out.println("PlotController.addTrace()");
 
-  private void initGUIComponentsFromModel() {
+    int traceNum = plotModel.getNumTraces();
 
-  }
+    // green dot for first data point
+    XYSeries series1 = plotPanel.chart.addSeries(traceNum + "_1", new double[] { trace.get(0).vy_a }, new double[] { trace.get(0).vy_b });
+    series1.setMarker(SeriesMarkers.CIRCLE);
+    series1.setMarkerColor(Color.green);
 
-  private void setUpViewEvents() {
+    // blue trace
 
-    plotPanel.getFreezeYAxisCheckBoxIV().addActionListener(new ActionListener() {
+    double[] vy_a = new double[trace.size()];
+    double[] vy_b = new double[trace.size()];
+    for (int i = 0; i < vy_b.length; i++) {
+      vy_a[i] = trace.get(i).vy_a;
+      vy_b[i] = trace.get(i).vy_b;
+    }
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+    XYSeries series2 = plotPanel.chart.addSeries(traceNum + "_2", vy_a, vy_b);
+    series2.setMarker(SeriesMarkers.NONE);
+    series2.setLineColor(Color.blue);
 
-        if (plotPanel.getFreezeYAxisCheckBoxIV().isSelected()) {
-          plotModel.setyMaxIV(plotPanel.getYChartMax());
-          plotModel.setyMinIV(plotPanel.getYChartMin());
-        }
-        else {
-          plotModel.setyMaxIV(null);
-          plotModel.setyMinIV(null);
-        }
-      }
-    });
+    // red dot for last data point.
+    XYSeries series3 = plotPanel.chart.addSeries(traceNum + "_3", new double[] { trace.get(trace.size() - 1).vy_a }, new double[] { trace.get(trace.size() - 1).vy_b });
+    series3.setMarker(SeriesMarkers.CIRCLE);
+    series3.setMarkerColor(Color.red);
 
-    plotPanel.getResistanceConductanceCheckBox().addActionListener(new ActionListener() {
-
-      @Override
-      public void actionPerformed(ActionEvent e) {
-
-        // change data-->
-        plotModel.setGr1Data(toOneOver(plotModel.getGr1Data()));
-        plotModel.setGr2Data(toOneOver(plotModel.getGr2Data()));
-
-        // update series-->
-        plotPanel.getGChart().updateXYSeries("A", null, plotModel.getGr1Data(), null);
-        plotPanel.getGChart().updateXYSeries("B", null, plotModel.getGr2Data(), null);
-
-        if (plotPanel.getResistanceConductanceCheckBox().isSelected()) {
-          plotPanel.getGChart().setYAxisGroupTitle(0, "Resistance (Ω)");
-        }
-        else {
-          plotPanel.getGChart().setYAxisGroupTitle(0, "Conductance (S)");
-        }
-        repaintYChart();
-      }
-    });
+    plotModel.addTrace(trace);
+    repaintChart();
 
   }
 
-  private List<Double> toOneOver(List<Double> array) {
+  public void repaintChart() {
 
-    List<Double> r = new ArrayList<Double>();
-    for (int i = 0; i < array.size(); i++) {
-
-      if (array.get(i) > 0) {
-        r.add(1 / array.get(i));
-      }
-      else {
-        r.add(1000000.0);// assume 1MOhm
-      }
-
-    }
-    return r;
-
-  }
-
-  public void updateYChartData(Double g_a, Double g_b, Double vy) {
-
-    if (startTime == null) {
-      startTime = System.currentTimeMillis();
-    }
-
-    double timeFromStart = (System.currentTimeMillis() - startTime) / 1000.0;
-
-    if (plotPanel.getResistanceConductanceCheckBox().isSelected()) {
-
-      if (!g_a.isNaN()) {
-        plotModel.getGr1Data().add(1 / g_a);
-      }
-
-      if (!g_b.isNaN()) {
-        plotModel.getGr2Data().add(1 / g_b);
-      }
-
-    }
-    else {
-      if (!g_a.isNaN()) {
-        plotModel.getGr1Data().add(g_a);
-      }
-
-      if (!g_b.isNaN()) {
-        plotModel.getGr2Data().add(g_b);
-      }
-
-    }
-    if (!vy.isNaN()) {
-      plotModel.getVyData().add(vy);
-      plotModel.getTimeVyData().add(timeFromStart);
-    }
-
-    if (!g_a.isNaN()) {
-      plotModel.getTime1Data().add(timeFromStart);
-    }
-    if (!g_b.isNaN()) {
-      plotModel.getTime2Data().add(timeFromStart);
-    }
-
-    System.out.println(plotModel.getGr1Data());
-    System.out.println(plotModel.getGr2Data());
-
-    if (plotModel.getGr1Data() != null && plotModel.getGr1Data().size() > 0) {
-      plotPanel.getGChart().updateXYSeries("A", plotModel.getTime1Data(), plotModel.getGr1Data(), null);
-    }
-
-    if (plotModel.getGr2Data() != null && plotModel.getGr2Data().size() > 0) {
-      plotPanel.getGChart().updateXYSeries("B", plotModel.getTime2Data(), plotModel.getGr2Data(), null);
-    }
-
-    if (plotModel.getVyData() != null && plotModel.getVyData().size() > 0) {
-      plotPanel.getGChart().updateXYSeries("Vy", plotModel.getTimeVyData(), plotModel.getVyData(), null);
-    }
-
-  }
-
-  public void repaintYChart() {
-
-    plotPanel.getGChartPanel().revalidate();
-    plotPanel.getGChartPanel().repaint();
+    plotPanel.getChartPanel().revalidate();
+    plotPanel.getChartPanel().repaint();
   }
 
   /**
@@ -203,7 +106,6 @@ public class PlotController implements PropertyChangeListener {
 
     case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
 
-      initGUIComponentsFromModel();
       break;
 
     default:

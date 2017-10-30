@@ -25,42 +25,29 @@
  * If you have any questions regarding our licensing policy, please
  * contact us at `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.experiments.logic.plot;
+package org.knowm.memristor.discovery.gui.mvc.experiments.logic;
 
-import java.awt.BorderLayout;
+/**
+ * @author alexnugent
+ */
+public class TraceDatum {
 
-import javax.swing.BorderFactory;
+  public final double vy_a;
+  public final double ga_a;
+  public final double gb_a;
 
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
-import org.knowm.xchart.XChartPanel;
-import org.knowm.xchart.XYChart;
-import org.knowm.xchart.XYChartBuilder;
+  public final double vy_b;
+  public final double ga_b;
+  public final double gb_b;
 
-public class PlotPanel extends ExperimentPlotPanel {
+  public TraceDatum(double vy_a, double ga_a, double gb_a, double vy_b, double ga_b, double gb_b) {
 
-  XYChart chart;
-  XChartPanel<XYChart> chartPanel;
-
-  /**
-   * Constructor
-   */
-  public PlotPanel() {
-
-    setLayout(new BorderLayout());
-    setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
-
-    chart = new XYChartBuilder().width(200).title("Synaptic State Traces").height(200).xAxisTitle("Sa").yAxisTitle("Sb").build();
-    chart.getStyler().setLegendVisible(false);
-    chartPanel = new XChartPanel<>(chart);
-
-    chartPanel.setLayout(new BorderLayout());
-    add(chartPanel, BorderLayout.CENTER);
-
-  }
-
-  public XChartPanel<XYChart> getChartPanel() {
-
-    return chartPanel;
+    this.vy_a = vy_a;
+    this.ga_a = ga_a;
+    this.gb_a = gb_a;
+    this.vy_b = vy_b;
+    this.ga_b = ga_b;
+    this.gb_b = gb_b;
   }
 
 }
