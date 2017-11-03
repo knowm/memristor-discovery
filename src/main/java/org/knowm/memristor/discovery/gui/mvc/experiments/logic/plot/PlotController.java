@@ -55,7 +55,42 @@ public class PlotController implements PropertyChangeListener {
 
   }
 
-  public void addTrace(List<TraceDatum> trace) {
+  public void addFFRATrace(List<TraceDatum> trace) {
+
+    System.out.println("PlotController.addTrace()");
+
+    int traceNum = plotModel.getNumTraces();
+
+    // // green dot for first data point
+    // XYSeries series1 = plotPanel.chart.addSeries(traceNum + "_1", new double[] { trace.get(0).vy_a }, new double[] { trace.get(0).vy_b });
+    // series1.setMarker(SeriesMarkers.CIRCLE);
+    // series1.setMarkerColor(Color.green);
+
+    // blue trace
+
+    double[] vy_a = new double[trace.size()];
+    double[] vy_b = new double[trace.size()];
+    for (int i = 0; i < vy_b.length; i++) {
+      vy_a[i] = trace.get(i).vy_a;
+      vy_b[i] = trace.get(i).vy_b;
+    }
+
+    XYSeries series2 = plotPanel.chart.addSeries(traceNum + "_2", vy_a, vy_b);
+    series2.setMarker(SeriesMarkers.NONE);
+    series2.setLineColor(Color.gray);
+    series2.setLineWidth(.2f);
+
+    // // red dot for last data point.
+    // XYSeries series3 = plotPanel.chart.addSeries(traceNum + "_3", new double[] { trace.get(trace.size() - 1).vy_a }, new double[] { trace.get(trace.size() - 1).vy_b });
+    // series3.setMarker(SeriesMarkers.CIRCLE);
+    // series3.setMarkerColor(Color.red);
+
+    plotModel.addTrace(trace);
+    repaintChart();
+
+  }
+
+  public void addFFRUTrace(List<TraceDatum> trace) {
 
     System.out.println("PlotController.addTrace()");
 

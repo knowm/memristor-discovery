@@ -234,6 +234,14 @@ public class AHaHController_21 {
 
   public double getVy() {
 
+    // this is a quick way to deal with measurement noise.
+    if (vy > .5) {
+      return .5;
+    }
+    else if (vy < -.5) {
+      return -.5;
+    }
+
     return vy;
   }
 

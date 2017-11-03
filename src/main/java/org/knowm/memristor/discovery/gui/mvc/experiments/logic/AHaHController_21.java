@@ -146,10 +146,10 @@ public class AHaHController_21 {
       double va = W1Amplitude - ExperimentPreferences.R_SWITCH * I;
       double vc = peakV1 + ExperimentPreferences.R_SWITCH * I;
 
-      System.out.println("va=" + va);
-      System.out.println("vb=" + vb);
-      System.out.println("vc=" + vc);
-      System.out.println("I=" + I);
+      // System.out.println("va=" + va);
+      // System.out.println("vb=" + vb);
+      // System.out.println("vc=" + vc);
+      // System.out.println("I=" + I);
 
       if ((va - vb > MIN_V_RESOLUTION)) {
         this.ga = I / (va - vb);
@@ -206,11 +206,11 @@ public class AHaHController_21 {
     FF_RH(0b1011_1011_0000_0000, 1f),
     FF_RU(0b1011_1011_0000_0000, 1f),
     FF_RA(0b1011_1011_0000_0000, 1f),
-    FF(0b1101_1011_0000_0000, 2.0f),
+    FF(0b1101_1011_0000_0000, 1.0f),
     RHbdn(0b1011_1011_0000_0000, 1f), // w2-->Y, w1-->B
     RLadn(0b1001_1011_0000_0000, -1f), // w2-->Y, w1-->A
     RFLV(0b0001_1011_0000_0000, -.1f),
-    RF(0b1101_1011_0000_0000, -2.0f),
+    RF(0b1101_1011_0000_0000, -1.0f),
     RHaup(0b1001_1011_0000_0000, 1),
     RLbup(0b1011_1011_0000_0000, -1);
 

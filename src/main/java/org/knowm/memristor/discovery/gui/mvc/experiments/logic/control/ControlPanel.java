@@ -78,8 +78,10 @@ public class ControlPanel extends ExperimentControlPanel {
   private final JLabel numExecutionsLabel;
   private final JTextField numExecutionsTextField;
 
-  public JButton runRoutineButton;
-  public JButton resetButton;
+  public JButton FFRUButton;
+  public JButton FFRAButton;
+  public JButton resetAllButton;
+  public JButton runTrialsButton;
 
   /**
    * Constructor
@@ -184,22 +186,7 @@ public class ControlPanel extends ExperimentControlPanel {
     c.insets = new Insets(0, 6, 4, 6);
     add(biasButtonBox, c);
 
-    // // routine
-    // routineRadioButtonGroup = new ButtonGroup();
-    // routineRadioButtonBox = Box.createVerticalBox();
-    // routineRadioButtonBox.setBorder(BorderFactory.createTitledBorder("Routine"));
-    // for (AHaHLogicRoutine routine : AHaHLogicRoutine.values()) {
-    // JRadioButton radioButton = new JRadioButton(routine.name());
-    // routineRadioButtonGroup.add(radioButton);
-    // add(radioButton);
-    // routineRadioButtonBox.add(radioButton);
-    // }
-    //
-    // c.gridy++;
-    // c.insets = new Insets(0, 6, 4, 6);
-    // add(routineRadioButtonBox, c);
-
-    numExecutionsLabel = new JLabel("Number of Executions");
+    numExecutionsLabel = new JLabel("NumExecutions (NE)");
     numExecutionsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.gridy++;
     c.insets = new Insets(0, 10, 4, 0);
@@ -211,17 +198,29 @@ public class ControlPanel extends ExperimentControlPanel {
     c.insets = new Insets(0, 5, 14, 5);
     add(numExecutionsTextField, c);
 
-    runRoutineButton = new JButton("Run");
-    runRoutineButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    FFRUButton = new JButton("FFRU X NE");
+    FFRUButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.gridy++;
     c.insets = new Insets(0, 0, 0, 0);
-    add(runRoutineButton, c);
+    add(FFRUButton, c);
 
-    resetButton = new JButton("Reset");
-    resetButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    FFRAButton = new JButton("FFRA X NE");
+    FFRAButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.gridy++;
     c.insets = new Insets(0, 0, 0, 0);
-    add(resetButton, c);
+    add(FFRAButton, c);
+
+    resetAllButton = new JButton("Reset");
+    resetAllButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.gridy++;
+    c.insets = new Insets(0, 0, 0, 0);
+    add(resetAllButton, c);
+
+    runTrialsButton = new JButton("Reset->[FFRU X NE] X25");
+    runTrialsButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.gridy++;
+    c.insets = new Insets(0, 0, 0, 0);
+    add(runTrialsButton, c);
 
     c.gridy++;
     JLabel logoLabel = new JLabel(Util.createImageIcon("img/logo_200.png"));
@@ -233,16 +232,12 @@ public class ControlPanel extends ExperimentControlPanel {
     waveformComboBox.setEnabled(enabled);
     amplitudeSlider.setEnabled(enabled);
     pulseWidthSlider.setEnabled(enabled);
-    runRoutineButton.setEnabled(enabled);
+    FFRUButton.setEnabled(enabled);
+    FFRAButton.setEnabled(enabled);
+    runTrialsButton.setEnabled(enabled);
     inputAButtonBox.setEnabled(enabled);
     inputBButtonBox.setEnabled(enabled);
 
-    // routineRadioButtonBox.setEnabled(enabled);
-    // Enumeration<AbstractButton> enumeration = routineRadioButtonGroup.getElements();
-    // while (enumeration.hasMoreElements()) {
-    // enumeration.nextElement().setEnabled(enabled);
-    // }
-    // startStopButton.setEnabled(enabled);
   }
 
   public JComboBox<Waveform> getWaveformComboBox() {
@@ -290,9 +285,9 @@ public class ControlPanel extends ExperimentControlPanel {
     return biasMaskRadioButtons;
   }
 
-  public JButton getResetButton() {
+  public JButton getFFRAButton() {
 
-    return resetButton;
+    return FFRAButton;
   }
 
 }

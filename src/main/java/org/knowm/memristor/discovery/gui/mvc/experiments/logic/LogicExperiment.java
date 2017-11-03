@@ -55,6 +55,7 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.logic.plot.PlotPanel;
 public class LogicExperiment extends Experiment {
 
   private SwingWorker routineWorker;
+  private SwingWorker runTrialsWorker;
   private SwingWorker resetWorker;
 
   private final ControlModel controlModel = new ControlModel();
@@ -65,6 +66,8 @@ public class LogicExperiment extends Experiment {
   private final PlotController plotController;
 
   private AHaHController_21 aHaHController;
+
+  private static final double MAX_G = .0005;// init of synapses will terminate at this conductance
 
   /**
    * Constructor
@@ -89,17 +92,37 @@ public class LogicExperiment extends Experiment {
   @Override
   public void doCreateAndShowGUI() {
 
-    controlPanel.runRoutineButton.addActionListener(new ActionListener() {
+    controlPanel.FFRUButton.addActionListener(new ActionListener() {
 
       @Override
       public void actionPerformed(ActionEvent e) {
 
-        routineWorker = new FFRUTraceWorker();
+        routineWorker = new TraceWorker(Instruction.FF_RU);
         routineWorker.execute();
 
       }
     });
-    controlPanel.resetButton.addActionListener(new ActionListener() {
+    controlPanel.FFRAButton.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+
+        routineWorker = new TraceWorker(Instruction.FF_RA);
+        routineWorker.execute();
+
+      }
+    });
+    controlPanel.runTrialsButton.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+
+        runTrialsWorker = new RunTrialsWorker();
+        runTrialsWorker.execute();
+
+      }
+    });
+    controlPanel.resetAllButton.addActionListener(new ActionListener() {
 
       @Override
       public void actionPerformed(ActionEvent e) {
@@ -109,7 +132,6 @@ public class LogicExperiment extends Experiment {
 
       }
     });
-
   }
 
   private class ResetWorker extends SwingWorker<Boolean, Double> {
@@ -117,41 +139,131 @@ public class LogicExperiment extends Experiment {
     @Override
     protected Boolean doInBackground() throws Exception {
 
-      // aHaHController.executeInstruction(controlModel.getInstruction());
-      System.out.println("RESET WORKER");
+      int initPulseWidth = controlModel.getPulseWidth();
+
+      System.out.println("initPulseWidth=" + initPulseWidth);
+
+      // turn on all synapses
+      dwfProxy.update2DigitalIOStatesAtOnce(getCombinedPattern(), true);
+
+      // drive memristors low with long pulse (1mS)
+      controlModel.setPulseWidth(1000000);
+
+      // INIT ALL MEMRISTORS LOW.
+      for (int i = 0; i < 10; i++) {
+        aHaHController.executeInstruction(Instruction.RLadn);
+        aHaHController.executeInstruction(Instruction.RHbdn);
+      }
+
+      // INIT SYNAPSE PAIRS TO HIGH CONDUCTANCE
+      // turn off B. A is now selected.
+      dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskB(), false);
+
+      System.out.println("Driving Synapse A to high conductance");
+      for (int i = 0; i < 50; i++) {
+        aHaHController.executeInstruction(Instruction.FF);
+        aHaHController.executeInstruction(Instruction.FFLV);
+        System.out.println("Ga=" + aHaHController.getGa() + ", Gb=" + aHaHController.getGb());
+        if (aHaHController.getGa() > MAX_G || aHaHController.getGb() > MAX_G) {
+          System.out.println("MaxG reached for Synapse A");
+          break;
+        }
+      }
+      dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskA(), false);
+
+      // B is now selected
+      dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskB(), true);
+      for (int i = 0; i < 50; i++) {
+        aHaHController.executeInstruction(Instruction.FF);
+        aHaHController.executeInstruction(Instruction.FFLV);
+        System.out.println("Ga=" + aHaHController.getGa() + ", Gb=" + aHaHController.getGb());
+        if (aHaHController.getGa() > MAX_G || aHaHController.getGb() > MAX_G) {
+          System.out.println("MaxG Reached for Synapse B");
+          break;
+        }
+      }
+
+      // ZERO EACH SYNAPSE
+      controlModel.setPulseWidth(initPulseWidth);
+
+      // synapse B
+      zeroSynapse(100);
+
+      dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskB(), false);
+      dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskA(), true);
+      // synapse A is now selected
+      zeroSynapse(100);
 
       dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskA(), false);
 
-      // publish(aHaHController.getGa(), aHaHController.getGb(), aHaHController.getVy());
+      return true;
+    }
+  }
+
+  private void zeroSynapse(int maxPulses) {
+
+    int c = 0;
+    int cMax = Math.random() > .5 ? 2 : 1;
+
+    aHaHController.executeInstruction(Instruction.FFLV);
+    boolean state = aHaHController.getVy() > 0;
+    for (int i = 0; i < maxPulses; i++) {
+      aHaHController.executeInstruction(Instruction.FF_RA);
+      aHaHController.executeInstruction(Instruction.FFLV);
+      boolean newState = aHaHController.getVy() > 0;
+      if (newState != state) {
+        c++;
+      }
+
+      if (c >= cMax) {// this insures some randomness in the initializations
+        break;
+      }
+
+      state = newState;
+
+    }
+  }
+
+  private class RunTrialsWorker extends SwingWorker<Boolean, Double> {
+
+    @Override
+    protected Boolean doInBackground() throws Exception {
+
+      ResetWorker worker_reset = new ResetWorker();
+      TraceWorker worker_RU = new TraceWorker(Instruction.FF_RU);
+      for (int i = 0; i < 25; i++) {
+
+        worker_RU.doInBackground();
+        worker_reset.doInBackground();
+
+      }
+
       return true;
     }
 
   }
 
-  private class FFRUTraceWorker extends SwingWorker<Boolean, Double> {
+  private class TraceWorker extends SwingWorker<Boolean, Double> {
+
+    private Instruction instruction;
+
+    public TraceWorker(Instruction instruction) {
+
+      this.instruction = instruction;
+    }
 
     @Override
     protected Boolean doInBackground() throws Exception {
 
-      System.out.println("FFRUTraceWorker");
-      System.out.println("NumExecutions: " + controlModel.getNumExecutions());
-      System.out.println("MaskA: " + controlModel.getInputMaskA());
-      System.out.println("MaskB: " + controlModel.getInputMaskB());
-      System.out.println("BiasMask: " + controlModel.getInputBiasMask());
+      // System.out.println("FFRUTraceWorker");
+      // System.out.println("NumExecutions: " + controlModel.getNumExecutions());
+      // System.out.println("MaskA: " + controlModel.getInputMaskA());
+      // System.out.println("MaskB: " + controlModel.getInputMaskB());
+      // System.out.println("BiasMask: " + controlModel.getInputBiasMask());
 
       List<TraceDatum> trace = new ArrayList<TraceDatum>();
 
       for (int i = 0; i < controlModel.getNumExecutions(); i++) {
-        List<Integer> pattern = getNextPattern();
-        dwfProxy.update2DigitalIOStatesAtOnce(pattern, true);
-
-        // execute instruction over pattern-->
-        aHaHController.executeInstruction(Instruction.FFLV);// need this to make FF-RU work
-        aHaHController.executeInstruction(Instruction.FF_RU);
-        // turn off pattern-->
-        dwfProxy.update2DigitalIOStatesAtOnce(pattern, false);
-
-        // measure each synapse seperatly with FFLV
 
         // synapse A
         dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskA(), true);
@@ -172,13 +284,23 @@ public class LogicExperiment extends Experiment {
         TraceDatum traceDatum = new TraceDatum(vy_a, ga_a, gb_a, vy_b, ga_b, gb_b);
         trace.add(traceDatum);
 
-        // publish(aHaHController.getGa(), aHaHController.getGb(), aHaHController.getVy());
+        List<Integer> pattern = getNextPattern();
+        dwfProxy.update2DigitalIOStatesAtOnce(pattern, true);
 
-        Thread.sleep(500);
+        // execute instruction over pattern-->
+        aHaHController.executeInstruction(Instruction.FFLV);// need this to make FF-RU work
+        aHaHController.executeInstruction(instruction);
+        // turn off pattern-->
+        dwfProxy.update2DigitalIOStatesAtOnce(pattern, false);
 
       }
 
-      plotController.addTrace(trace);
+      if (instruction == Instruction.FF_RU) {
+        plotController.addFFRUTrace(trace);
+      }
+      else {
+        plotController.addFFRATrace(trace);
+      }
 
       return true;
     }
@@ -207,10 +329,7 @@ public class LogicExperiment extends Experiment {
       }
       else {
 
-        List<Integer> combined = new ArrayList<Integer>();
-        combined.addAll(controlModel.getInputMaskA());
-        combined.addAll(controlModel.getInputMaskB());
-
+        List<Integer> combined = getCombinedPattern();
         return combined;
       }
     }
@@ -218,6 +337,15 @@ public class LogicExperiment extends Experiment {
       return null;
     }
 
+  }
+
+  private List<Integer> getCombinedPattern() {
+
+    List<Integer> combined = new ArrayList<Integer>();
+    combined.addAll(controlModel.getInputMaskA());
+    combined.addAll(controlModel.getInputMaskB());
+
+    return combined;
   }
 
   /**
@@ -265,6 +393,7 @@ public class LogicExperiment extends Experiment {
   @Override
   public SwingWorker getCaptureWorker() {
 
-    return new FFRUTraceWorker();
+    return null;
   }
+
 }
