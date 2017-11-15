@@ -2,6 +2,8 @@
 
 This app allows you to drive a memristor in series with a resistor with a sinusoidal or triangle waveform and observe the response as either a time series (V1+/T and V2+/T), I/V or G/V plot, revealing the signature hysteresis behavior of the memristor.
 
+![](file://help/Hysteresis.png)
+
 ## Connections
 
 1.  Arbitrary Waveform Generator W1 (Analog Discovery 2's "W1" and "gnd" connectors) is connected across the memristor (M) and series resistor (R).

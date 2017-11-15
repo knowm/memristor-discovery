@@ -2,6 +2,8 @@
 
 This app allows you to drive a memristor in series with a resistor with one or more square pulse waveforms and observe the response as either a time series (V1+/T and V2+/T), I-T or G-T plot, revealing the incremental conductance behavior of the memristor.
 
+![](file://help/Pulse.png)
+
 ## Connections
 
 1.  Arbitrary Waveform Generator W1 (Analog Discovery 2's "W1" and "gnd" connectors) is connected across the memristor (M) and series resistor (R).

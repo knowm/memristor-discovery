@@ -2,6 +2,8 @@
 
 This app allows you to drive a 2-1 synapse with base kT-RAM instructions and observe a continuous response in synaptic conductances via repeated `FFLV` instructions. It does this by measuring the voltage drops across the two memristors and the series resistor. 
 
+![](file://help/Synapse.png)
+
 ## Connections
 
 1. The jumper on the left side of memristor #1 connects to node `A`.

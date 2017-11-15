@@ -88,12 +88,20 @@ public class Util {
     }
 
     java.net.URL imgURL = Util.class.getClassLoader().getResource(path);
+//    System.out.println("imgURL = " + imgURL);
     if (imgURL != null) {
       return new ImageIcon(imgURL);
     } else {
       logger.error("Could not find file: " + path);
       return null;
     }
+  }
+
+  public static String getResourceFullPath(String resource) {
+
+    java.net.URL resourceURL = Util.class.getClassLoader().getResource(resource);
+//    System.out.println("resourceURL = " + resourceURL);
+    return resourceURL.toString();
   }
 
   public static double maxAbs(double[] x) {

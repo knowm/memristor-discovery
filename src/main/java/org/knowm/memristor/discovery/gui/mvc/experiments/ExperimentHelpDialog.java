@@ -34,13 +34,15 @@ import javax.swing.BorderFactory;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 
 import org.knowm.memristor.discovery.utils.FileUtils;
 import org.knowm.memristor.discovery.utils.Util;
-import org.pegdown.PegDownProcessor;
+
+import com.vladsch.flexmark.ast.Node;
+import com.vladsch.flexmark.html.HtmlRenderer;
+import com.vladsch.flexmark.parser.Parser;
 
 public class ExperimentHelpDialog {
 
@@ -52,16 +54,19 @@ public class ExperimentHelpDialog {
    */
   public ExperimentHelpDialog(JFrame parentFrame, String appName) {
 
-    JPanel helpPanel = new JPanel();
 
-    JLabel picLabel = new JLabel(Util.createImageIcon("help" + File.separatorChar + appName + ".png"));
-    helpPanel.add(picLabel);
-
-    // System.out.println("markdownString = " + "help" + File.separatorChar + appName + ".md");
     String markdownString = FileUtils.readFileFromClasspathToString("help" + File.separatorChar + appName + ".md");
-    PegDownProcessor processor = new PegDownProcessor();
-    String htmlString = processor.markdownToHtml(markdownString);
-    JLabel textlabel = new JLabel("<html>" + htmlString + "</html>");
+    Parser parser = Parser.builder().build();
+    HtmlRenderer renderer = HtmlRenderer.builder().build();
+    Node document = parser.parse(markdownString);
+    String htmlString = renderer.render(document);
+//    System.out.println("htmlString = " + htmlString);
+
+    String helpResourceFullPath = Util.getResourceFullPath("help");
+    String replacedHTMLString = htmlString.replaceAll("file://help/", helpResourceFullPath + File.separatorChar);
+//    System.out.println("replacedHTMLString = " + replacedHTMLString);
+
+    JLabel textlabel = new JLabel("<html>" + replacedHTMLString + "</html>");
     textlabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
     JTextPane textPane = new JTextPane();
@@ -69,12 +74,11 @@ public class ExperimentHelpDialog {
 
     JScrollPane sp = new JScrollPane(textPane);
     sp.setBorder(null);
-    sp.setPreferredSize(new Dimension(400, 500));
+    sp.setPreferredSize(new Dimension(1000, 800));
 
-    helpPanel.add(sp);
 
     final JDialog dialog = new JDialog(parentFrame, appName + " Help", false);
-    dialog.getContentPane().add(helpPanel);
+    dialog.getContentPane().add(sp);
     dialog.pack();
     dialog.setVisible(true);
   }
