@@ -265,6 +265,8 @@ public class DWFProxy {
     digitalIOStates = dwf.getDigitalIOStatus();
     swingPropertyChangeSupport.firePropertyChange(DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
 
+    // System.out.println("digitalIO states= " + Integer.toBinaryString(digitalIOStates));
+
   }
 
   /**

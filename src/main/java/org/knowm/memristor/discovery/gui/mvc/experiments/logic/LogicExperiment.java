@@ -67,7 +67,7 @@ public class LogicExperiment extends Experiment {
 
   private AHaHController_21 aHaHController;
 
-  private static final double MAX_G = .0005;// init of synapses will terminate at this conductance
+  private static final double MAX_G = .001;// init of synapses will terminate if one or the other memristor exceeds this conductance
 
   /**
    * Constructor
@@ -139,87 +139,146 @@ public class LogicExperiment extends Experiment {
     @Override
     protected Boolean doInBackground() throws Exception {
 
-      int initPulseWidth = controlModel.getPulseWidth();
+      try {
+        int initPulseWidth = controlModel.getPulseWidth();
 
-      System.out.println("initPulseWidth=" + initPulseWidth);
+        System.out.println("initPulseWidth=" + initPulseWidth);
 
-      // turn on all synapses
-      dwfProxy.update2DigitalIOStatesAtOnce(getCombinedPattern(), true);
-
-      // drive memristors low with long pulse (1mS)
-      controlModel.setPulseWidth(1000000);
-
-      // INIT ALL MEMRISTORS LOW.
-      for (int i = 0; i < 10; i++) {
-        aHaHController.executeInstruction(Instruction.RLadn);
-        aHaHController.executeInstruction(Instruction.RHbdn);
-      }
-
-      // INIT SYNAPSE PAIRS TO HIGH CONDUCTANCE
-      // turn off B. A is now selected.
-      dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskB(), false);
-
-      System.out.println("Driving Synapse A to high conductance");
-      for (int i = 0; i < 50; i++) {
-        aHaHController.executeInstruction(Instruction.FF);
-        aHaHController.executeInstruction(Instruction.FFLV);
-        System.out.println("Ga=" + aHaHController.getGa() + ", Gb=" + aHaHController.getGb());
-        if (aHaHController.getGa() > MAX_G || aHaHController.getGb() > MAX_G) {
-          System.out.println("MaxG reached for Synapse A");
-          break;
+        // turn on all synapses
+        List<Integer> allSynapses = getCombinedPattern();
+        if (controlModel.getInputBiasMask() != null) {
+          allSynapses.addAll(controlModel.getInputBiasMask());
         }
-      }
-      dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskA(), false);
 
-      // B is now selected
-      dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskB(), true);
-      for (int i = 0; i < 50; i++) {
-        aHaHController.executeInstruction(Instruction.FF);
-        aHaHController.executeInstruction(Instruction.FFLV);
-        System.out.println("Ga=" + aHaHController.getGa() + ", Gb=" + aHaHController.getGb());
-        if (aHaHController.getGa() > MAX_G || aHaHController.getGb() > MAX_G) {
-          System.out.println("MaxG Reached for Synapse B");
-          break;
+        System.out.println("allSynapses=" + allSynapses);
+
+        dwfProxy.update2DigitalIOStatesAtOnce(allSynapses, true);
+
+        // drive memristors low with long pulse (1mS)
+        controlModel.setPulseWidth(1_000_000);// 1mS
+
+        System.out.println("Drive all memristors low.");
+
+        // INIT ALL MEMRISTORS LOW.
+        for (int i = 0; i < 2; i++) {
+          aHaHController.executeInstruction(Instruction.RLadn);
+          aHaHController.executeInstruction(Instruction.RHbdn);
         }
+
+        // INIT SYNAPSE PAIRS TO HIGH CONDUCTANCE
+
+        // turn off B and bias. A is now selected.
+        dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskB(), false);
+        if (controlModel.getInputBiasMask() != null) {
+          dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputBiasMask(), false);
+        }
+
+        System.out.println("Driving Synapse A to high conductance");
+        for (int i = 0; i < 50; i++) {
+          aHaHController.executeInstruction(Instruction.FF);
+          aHaHController.executeInstruction(Instruction.FFLV);
+          System.out.println("Ga=" + aHaHController.getGa() + ", Gb=" + aHaHController.getGb());
+          if (aHaHController.getGa() > MAX_G || aHaHController.getGb() > MAX_G) {
+            System.out.println("MaxG reached for Synapse A");
+            break;
+          }
+        }
+
+        // // B is now selected
+        // turn off a
+        dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskA(), false);
+        dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskB(), true);
+
+        for (int i = 0; i < 50; i++) {
+          aHaHController.executeInstruction(Instruction.FF);
+          aHaHController.executeInstruction(Instruction.FFLV);
+          System.out.println("Ga=" + aHaHController.getGa() + ", Gb=" + aHaHController.getGb());
+          if (aHaHController.getGa() > MAX_G || aHaHController.getGb() > MAX_G) {
+            System.out.println("MaxG Reached for Synapse B");
+            break;
+          }
+        }
+
+        // Bias is now selected
+        dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskB(), false);
+        if (controlModel.getInputBiasMask() != null) {
+          dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputBiasMask(), true);
+
+          for (int i = 0; i < 50; i++) {
+            aHaHController.executeInstruction(Instruction.FF);
+            aHaHController.executeInstruction(Instruction.FFLV);
+            System.out.println("Ga=" + aHaHController.getGa() + ", Gb=" + aHaHController.getGb());
+            if (aHaHController.getGa() > MAX_G || aHaHController.getGb() > MAX_G) {
+              System.out.println("MaxG Reached for Synapse B");
+              break;
+            }
+          }
+
+          // bias
+          System.out.println("Zeroing Bias");
+          zeroSynapse(50, 50_000);
+        }
+
+        dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskB(), true);
+
+        if (controlModel.getInputBiasMask() != null) {
+          dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputBiasMask(), false);
+        }
+
+        // synapse B
+        System.out.println("Zeroing Synapse B");
+        zeroSynapse(50, 50_000);
+
+        dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskB(), false);
+        dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskA(), true);
+        // synapse A is now selected
+
+        // synapse A
+        System.out.println("Zeroing Synapse A ");
+        zeroSynapse(50, 50_000);
+
+        dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskA(), false);
+
+        // return to whatever value is set in the slider
+        controlModel.setPulseWidth(initPulseWidth);
+
+      } catch (Exception e) {
+        e.printStackTrace();
       }
-
-      // ZERO EACH SYNAPSE
-      controlModel.setPulseWidth(initPulseWidth);
-
-      // synapse B
-      zeroSynapse(100);
-
-      dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskB(), false);
-      dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskA(), true);
-      // synapse A is now selected
-      zeroSynapse(100);
-
-      dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskA(), false);
 
       return true;
     }
-  }
 
-  private void zeroSynapse(int maxPulses) {
+    private void zeroSynapse(int maxPulses, int pulseWidthInNs) {
 
-    int c = 0;
-    int cMax = Math.random() > .5 ? 2 : 1;
+      controlModel.setPulseWidth(pulseWidthInNs);
 
-    aHaHController.executeInstruction(Instruction.FFLV);
-    boolean state = aHaHController.getVy() > 0;
-    for (int i = 0; i < maxPulses; i++) {
-      aHaHController.executeInstruction(Instruction.FF_RA);
+      // TODO: work to get ride of this. Should be possible through gradual reduction of pulse width or voltage in a deterministic routine.
+      int c = 0;
+      int cMax = Math.random() > .5 ? 2 : 1;
+
       aHaHController.executeInstruction(Instruction.FFLV);
-      boolean newState = aHaHController.getVy() > 0;
-      if (newState != state) {
-        c++;
-      }
+      boolean state = aHaHController.getVy() > 0;
+      for (int i = 0; i < maxPulses; i++) {
+        aHaHController.executeInstruction(Instruction.FF_RA);
+        aHaHController.executeInstruction(Instruction.FFLV);
+        boolean newState = aHaHController.getVy() > 0;
+        if (newState != state) {
+          c++;
+        }
 
-      if (c >= cMax) {// this insures some randomness in the initializations
-        break;
-      }
+        if (c >= cMax) {// this insures some randomness in the initializations
+          System.out.println("Synapse zeroed on pulse #" + i);
+          break;
 
-      state = newState;
+        }
+
+        state = newState;
+
+        if (i == maxPulses - 1) {
+          System.out.println("Synapse could not be zeroes" + i);
+        }
+      }
 
     }
   }
@@ -229,13 +288,18 @@ public class LogicExperiment extends Experiment {
     @Override
     protected Boolean doInBackground() throws Exception {
 
-      ResetWorker worker_reset = new ResetWorker();
-      TraceWorker worker_RU = new TraceWorker(Instruction.FF_RU);
-      for (int i = 0; i < 25; i++) {
+      try {
+        ResetWorker worker_reset = new ResetWorker();
+        TraceWorker worker_RU = new TraceWorker(Instruction.FF_RU);
+        for (int i = 0; i < 25; i++) {
 
-        worker_RU.doInBackground();
-        worker_reset.doInBackground();
+          worker_RU.doInBackground();
+          worker_reset.doInBackground();
 
+        }
+
+      } catch (Exception e) {
+        e.printStackTrace();
       }
 
       return true;
@@ -254,12 +318,6 @@ public class LogicExperiment extends Experiment {
 
     @Override
     protected Boolean doInBackground() throws Exception {
-
-      // System.out.println("FFRUTraceWorker");
-      // System.out.println("NumExecutions: " + controlModel.getNumExecutions());
-      // System.out.println("MaskA: " + controlModel.getInputMaskA());
-      // System.out.println("MaskB: " + controlModel.getInputMaskB());
-      // System.out.println("BiasMask: " + controlModel.getInputBiasMask());
 
       List<TraceDatum> trace = new ArrayList<TraceDatum>();
 
@@ -284,14 +342,36 @@ public class LogicExperiment extends Experiment {
         TraceDatum traceDatum = new TraceDatum(vy_a, ga_a, gb_a, vy_b, ga_b, gb_b);
         trace.add(traceDatum);
 
-        List<Integer> pattern = getNextPattern();
+        List<Integer> pattern = getNextPatternWithBias();
         dwfProxy.update2DigitalIOStatesAtOnce(pattern, true);
 
+        System.out.println("pattern with bias = " + pattern);
+
         // execute instruction over pattern-->
-        aHaHController.executeInstruction(Instruction.FFLV);// need this to make FF-RU work
+        aHaHController.executeInstruction(Instruction.FFLV);// need this to make FF-RU/FF-RA work
+
+        if (controlModel.getInputBiasMask() != null) {
+          dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputBiasMask(), false);// turn off bias for FF-RU/FF-RA update
+        }
         aHaHController.executeInstruction(instruction);
-        // turn off pattern-->
-        dwfProxy.update2DigitalIOStatesAtOnce(pattern, false);
+
+        // now give bias FF-RA if there are any .
+        if (controlModel.getInputBiasMask() != null) {
+          dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskA(), false);// turn off A
+          dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskB(), false);// turn off B
+          dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputBiasMask(), true);// turn bias back on
+          // bias synapse are now on
+
+          aHaHController.executeInstruction(Instruction.FF_RA);
+
+          dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputBiasMask(), false);// turn off B
+          // all off now
+        }
+        else {// no bias. just turn everything off
+          // turn off pattern-->
+          dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskA(), false);// turn off A
+          dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskB(), false);// turn off B
+        }
 
       }
 
@@ -307,14 +387,16 @@ public class LogicExperiment extends Experiment {
 
   }
 
-  private List<Integer> getNextPattern() {
+  private List<Integer> getNextPatternWithBias() {
+
+    List<Integer> patternOut = new ArrayList<Integer>();
 
     if (controlModel.getDataStructure() == DataStructure.TwoPattern) {
       if (Math.random() < .5) {
-        return controlModel.getInputMaskA();
+        patternOut.addAll(controlModel.getInputMaskA());
       }
       else {
-        return controlModel.getInputMaskB();
+        patternOut.addAll(controlModel.getInputMaskB());
       }
     }
     else if (controlModel.getDataStructure() == DataStructure.ThreePattern) {
@@ -322,20 +404,31 @@ public class LogicExperiment extends Experiment {
       double r = Math.random();
 
       if (r < .3333) {
-        return controlModel.getInputMaskA();
+        patternOut.addAll(controlModel.getInputMaskA());
       }
       else if (r < .6666) {
-        return controlModel.getInputMaskB();
+        patternOut.addAll(controlModel.getInputMaskB());
       }
       else {
 
-        List<Integer> combined = getCombinedPattern();
-        return combined;
+        patternOut = getCombinedPattern();
+
       }
     }
-    else {
-      return null;
+
+    if (controlModel.getInputBiasMask() != null) {
+      // System.out.println("getNextPatternWithBias()");
+      // System.out.println("PatternOut=" + patternOut);
+      // System.out.println("  MaskA=" + controlModel.getInputMaskA());
+      // System.out.println("  MaskB=" + controlModel.getInputMaskB());
+      // System.out.println("  BiasMask()=" + controlModel.getInputBiasMask());
+
+      patternOut.addAll(controlModel.getInputBiasMask());
+      // System.out.println("PatternOut=" + patternOut);
+
     }
+
+    return patternOut;
 
   }
 

@@ -76,7 +76,7 @@ public class AHaHController_21 {
 
   private void execute(Instruction instruction) {
 
-    System.out.println("Instruction: " + instruction);
+    // System.out.println("Instruction: " + instruction);
 
     // 1. the IO-bits are set
     dWFProxy.setUpper8IOStates(instruction.getBits());
@@ -138,7 +138,7 @@ public class AHaHController_21 {
     double vb = peakV2;
     this.vy = (vb - peakV1 - (W1Amplitude - peakV1) / 2.0) / (W1Amplitude - peakV1);
 
-    System.out.println("vy=" + vy);
+    // System.out.println("vy=" + vy);
 
     if (peakV1 > MIN_V_RESOLUTION) {
 
