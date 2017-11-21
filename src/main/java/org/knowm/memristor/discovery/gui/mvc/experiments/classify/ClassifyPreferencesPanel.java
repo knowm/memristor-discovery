@@ -25,7 +25,7 @@
  * If you have any questions regarding our licensing policy, please
  * contact us at `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.experiments.synapse;
+package org.knowm.memristor.discovery.gui.mvc.experiments.classify;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
@@ -38,7 +38,7 @@ import javax.swing.JTextField;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferencesPanel;
 
-public class SynapsePreferencesPanel extends ExperimentPreferencesPanel {
+public class ClassifyPreferencesPanel extends ExperimentPreferencesPanel {
 
   private JLabel seriesResistorLabel;
   private JTextField seriesResistorTextField;
@@ -49,15 +49,15 @@ public class SynapsePreferencesPanel extends ExperimentPreferencesPanel {
   private JLabel pulseWidthLabel;
   private JTextField pulseWidthTextField;
 
-  private JLabel sampleRateLabel;
-  private JTextField sampleRateTextField;
+  private JLabel numTrainEpochsLabel;
+  private JTextField numTrainEpochsTextField;
 
   /**
    * Constructor
    *
    * @param owner
    */
-  public SynapsePreferencesPanel(JFrame owner) {
+  public ClassifyPreferencesPanel(JFrame owner) {
 
     super(owner);
   }
@@ -76,8 +76,8 @@ public class SynapsePreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.seriesResistorTextField = new JTextField(12);
-    this.seriesResistorTextField.setText(String.valueOf(experimentPreferences.getInteger(SynapsePreferences.SERIES_R_INIT_KEY,
-        SynapsePreferences.SERIES_R_INIT_DEFAULT_VALUE)));
+    this.seriesResistorTextField.setText(String.valueOf(experimentPreferences.getInteger(ClassifyPreferences.SERIES_R_INIT_KEY,
+        ClassifyPreferences.SERIES_R_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(seriesResistorTextField, gc);
 
     gc.gridy++;
@@ -88,8 +88,8 @@ public class SynapsePreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.amplitudeTextField = new JTextField(12);
-    this.amplitudeTextField.setText(String.valueOf(experimentPreferences.getFloat(SynapsePreferences.AMPLITUDE_INIT_FLOAT_KEY,
-        SynapsePreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
+    this.amplitudeTextField.setText(String.valueOf(experimentPreferences.getFloat(ClassifyPreferences.AMPLITUDE_INIT_FLOAT_KEY,
+        ClassifyPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
     preferencesPanel.add(amplitudeTextField, gc);
 
     gc.gridy++;
@@ -100,44 +100,42 @@ public class SynapsePreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.pulseWidthTextField = new JTextField(12);
-    this.pulseWidthTextField.setText(String.valueOf(experimentPreferences.getInteger(SynapsePreferences.PULSE_WIDTH_INIT_KEY,
-        SynapsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE)));
+    this.pulseWidthTextField.setText(String.valueOf(experimentPreferences.getInteger(ClassifyPreferences.PULSE_WIDTH_INIT_KEY,
+        ClassifyPreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(pulseWidthTextField, gc);
 
     gc.gridy++;
 
     gc.gridx = 0;
-    this.sampleRateLabel = new JLabel("Sample Rate [s]:");
-    preferencesPanel.add(sampleRateLabel, gc);
+    this.numTrainEpochsLabel = new JLabel("Sample Rate [s]:");
+    preferencesPanel.add(numTrainEpochsLabel, gc);
 
     gc.gridx = 1;
-    this.sampleRateTextField = new JTextField(12);
-    this.sampleRateTextField.setText(String.valueOf(experimentPreferences.getInteger(SynapsePreferences.SAMPLE_RATE_INIT_KEY,
-        SynapsePreferences.SAMPLE_RATE_INIT_DEFAULT_VALUE)));
-    preferencesPanel.add(sampleRateTextField, gc);
+    this.numTrainEpochsTextField = new JTextField(12);
+    this.numTrainEpochsTextField.setText(String.valueOf(experimentPreferences.getInteger(ClassifyPreferences.NUM_TRAIN_EPOCHS_INIT_KEY,
+        ClassifyPreferences.NUM_TRAIN_EPOCHS_INIT_DEFAULT_VALUE)));
+    preferencesPanel.add(numTrainEpochsTextField, gc);
 
   }
 
   @Override
   public void doSavePreferences() {
 
-    // TODO add num pulses prefs.
-    // experimentPreferences.setInteger(SynapsePreferences.NUM_PULSES_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
-    experimentPreferences.setInteger(SynapsePreferences.SERIES_R_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
-    experimentPreferences.setFloat(SynapsePreferences.AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(amplitudeTextField.getText()));
-    experimentPreferences.setInteger(SynapsePreferences.PULSE_WIDTH_INIT_KEY, Integer.parseInt(pulseWidthTextField.getText()));
-    experimentPreferences.setInteger(SynapsePreferences.SAMPLE_RATE_INIT_KEY, Integer.parseInt(sampleRateTextField.getText()));
+    experimentPreferences.setInteger(ClassifyPreferences.SERIES_R_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
+    experimentPreferences.setFloat(ClassifyPreferences.AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(amplitudeTextField.getText()));
+    experimentPreferences.setInteger(ClassifyPreferences.PULSE_WIDTH_INIT_KEY, Integer.parseInt(pulseWidthTextField.getText()));
+    experimentPreferences.setInteger(ClassifyPreferences.NUM_TRAIN_EPOCHS_INIT_KEY, Integer.parseInt(numTrainEpochsTextField.getText()));
   }
 
   @Override
   public ExperimentPreferences initAppPreferences() {
 
-    return new SynapsePreferences();
+    return new ClassifyPreferences();
   }
 
   @Override
   public String getAppName() {
 
-    return "Synapse";
+    return "Classify";
   }
 }

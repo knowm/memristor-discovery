@@ -76,7 +76,8 @@ public class LogicPreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.seriesResistorTextField = new JTextField(12);
-    this.seriesResistorTextField.setText(String.valueOf(experimentPreferences.getInteger(LogicPreferences.SERIES_R_INIT_KEY, LogicPreferences.SERIES_R_INIT_DEFAULT_VALUE)));
+    this.seriesResistorTextField.setText(String.valueOf(experimentPreferences.getInteger(LogicPreferences.SERIES_R_INIT_KEY,
+        LogicPreferences.SERIES_R_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(seriesResistorTextField, gc);
 
     gc.gridy++;
@@ -87,7 +88,8 @@ public class LogicPreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.amplitudeTextField = new JTextField(12);
-    this.amplitudeTextField.setText(String.valueOf(experimentPreferences.getFloat(LogicPreferences.AMPLITUDE_INIT_FLOAT_KEY, LogicPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
+    this.amplitudeTextField.setText(String.valueOf(experimentPreferences.getFloat(LogicPreferences.AMPLITUDE_INIT_FLOAT_KEY,
+        LogicPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
     preferencesPanel.add(amplitudeTextField, gc);
 
     gc.gridy++;
@@ -98,7 +100,8 @@ public class LogicPreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.pulseWidthTextField = new JTextField(12);
-    this.pulseWidthTextField.setText(String.valueOf(experimentPreferences.getInteger(LogicPreferences.PULSE_WIDTH_INIT_KEY, LogicPreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE)));
+    this.pulseWidthTextField.setText(String.valueOf(experimentPreferences.getInteger(LogicPreferences.PULSE_WIDTH_INIT_KEY,
+        LogicPreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(pulseWidthTextField, gc);
 
     gc.gridy++;
@@ -109,7 +112,8 @@ public class LogicPreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.numExecutionsTextField = new JTextField(12);
-    this.numExecutionsTextField.setText(String.valueOf(experimentPreferences.getInteger(LogicPreferences.NUM_EXECUTIONS_INIT_KEY, LogicPreferences.NUM_EXECUTIONS_INIT_DEFAULT_VALUE)));
+    this.numExecutionsTextField.setText(String.valueOf(experimentPreferences.getInteger(LogicPreferences.NUM_EXECUTIONS_INIT_KEY,
+        LogicPreferences.NUM_EXECUTIONS_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(numExecutionsTextField, gc);
 
   }
@@ -134,6 +138,6 @@ public class LogicPreferencesPanel extends ExperimentPreferencesPanel {
   @Override
   public String getAppName() {
 
-    return "Pulse";
+    return "Logic";
   }
 }
