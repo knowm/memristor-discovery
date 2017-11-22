@@ -45,6 +45,10 @@ public class PlotControlModel extends ExperimentControlModel {
     traces.add(trace);
   }
 
+  public void clearAllTraces() {
+    traces.clear();
+  }
+
   public int getNumTraces() {
 
     return traces.size();

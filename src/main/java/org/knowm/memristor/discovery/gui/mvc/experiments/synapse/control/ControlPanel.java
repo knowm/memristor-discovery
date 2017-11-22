@@ -71,7 +71,7 @@ public class ControlPanel extends ExperimentControlPanel {
 
   private final JLabel sampleRateLabel;
   private final JTextField sampleRateTextField;
-
+  public JButton clearPlotButton;
   /**
    * Constructor
    */
@@ -181,12 +181,22 @@ public class ControlPanel extends ExperimentControlPanel {
     c.gridy++;
     c.insets = new Insets(0, 5, 14, 5);
     add(sampleRateTextField, c);
+    
+    clearPlotButton = new JButton("Clear Plot");
+    clearPlotButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.gridy++;
+    c.insets = new Insets(0, 0, 0, 0);
+    add(clearPlotButton, c);
 
     startStopButton = new JButton("Start");
     startStopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.gridy++;
     c.insets = new Insets(0, 0, 0, 0);
     add(startStopButton, c);
+    
+    
+    
+    
 
     c.gridy++;
     JLabel logoLabel = new JLabel(Util.createImageIcon("img/logo_200.png"));

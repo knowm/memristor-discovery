@@ -82,6 +82,7 @@ public class ControlPanel extends ExperimentControlPanel {
   public JButton FFRAButton;
   public JButton resetAllButton;
   public JButton runTrialsButton;
+  public JButton clearPlotButton;
 
   /**
    * Constructor
@@ -221,6 +222,14 @@ public class ControlPanel extends ExperimentControlPanel {
     c.gridy++;
     c.insets = new Insets(0, 0, 0, 0);
     add(runTrialsButton, c);
+    
+    
+    clearPlotButton = new JButton("Clear Plot");
+    clearPlotButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.gridy++;
+    c.insets = new Insets(0, 0, 0, 0);
+    add(clearPlotButton, c);
+    
 
     c.gridy++;
     JLabel logoLabel = new JLabel(Util.createImageIcon("img/logo_200.png"));
@@ -235,6 +244,7 @@ public class ControlPanel extends ExperimentControlPanel {
     FFRUButton.setEnabled(enabled);
     FFRAButton.setEnabled(enabled);
     runTrialsButton.setEnabled(enabled);
+    clearPlotButton.setEnabled(enabled);
     inputAButtonBox.setEnabled(enabled);
     inputBButtonBox.setEnabled(enabled);
 

@@ -85,9 +85,6 @@ public class PlotPanel extends ExperimentPlotPanel {
     series2.setMarker(SeriesMarkers.CIRCLE);
     series2.setLineWidth(1);
 
-    // XYSeries series3 = gChart.addSeries("G(Ma-Mb)", new double[] { 0 }, new double[] { 0 });
-    // series3.setMarker(SeriesMarkers.NONE);
-
     XYSeries series4 = gChart.addSeries("Vy", time, value);
     series4.setYAxisGroup(1);
     series4.setMarker(SeriesMarkers.DIAMOND);
