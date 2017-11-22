@@ -51,7 +51,7 @@ public class ClassifyPreferences extends ExperimentPreferences {
   public static final int PULSE_WIDTH_INIT_DEFAULT_VALUE = 50_000;
 
   public static final String NUM_TRAIN_EPOCHS_INIT_KEY = PREFIX + "NUM_TRAIN_EPOCHS_INIT_KEY";
-  public static final int NUM_TRAIN_EPOCHS_INIT_DEFAULT_VALUE = 3;
+  public static final int NUM_TRAIN_EPOCHS_INIT_DEFAULT_VALUE = 10;
 
   // /////////////////////////////////////////////////////////////////////////////////////
 
@@ -65,7 +65,25 @@ public class ClassifyPreferences extends ExperimentPreferences {
 
   public enum Datasets {
 
-    SevenSegment_0, SevenSegment_1, SevenSegment_2, SevenSegment_3, SevenSegment_4, SevenSegment_5, SevenSegment_6, SevenSegment_7, SevenSegment_8, SevenSegment_9;
+    SevenSegment0(0, "Zero"), SevenSegment1(1, "One"), SevenSegment2(2, "Two"), SevenSegment3(3, "Three"), SevenSegment4(4, "Four"), SevenSegment5(5,
+        "Five"), SevenSegment6(6, "Six"), SevenSegment7(7, "Seven"), SevenSegment8(8, "Eight"), SevenSegment9(9, "Nine");
+
+    private final int patternID;
+    private final String name;
+
+    private Datasets(int patternID, String name) {
+      this.patternID = patternID;
+      this.name = name;
+    }
+
+    public int getPatternID() {
+      return patternID;
+    }
+
+    public String getName() {
+      return name;
+    }
+
   }
 
   // public static final int CAPTURE_BUFFER_SIZE = 8192 / 11; // AD2 buffer size / most pulses allowed.

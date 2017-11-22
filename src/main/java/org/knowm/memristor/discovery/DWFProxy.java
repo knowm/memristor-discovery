@@ -80,7 +80,8 @@ public class DWFProxy {
   }
 
   /**
-   * This is called by the main app once on start up or during a switch-triggered shut off event. Here, the AD2 is started up and the GUI will reflect its startup state.
+   * This is called by the main app once on start up or during a switch-triggered shut off event. Here, the AD2 is started up and the GUI will reflect
+   * its startup state.
    */
   public void startupAD2() {
 
@@ -151,8 +152,7 @@ public class DWFProxy {
         if (isV1Board) {
           digitalIOStates = DEFAULT_SELECTOR_DIO;
           // System.out.println(Integer.toBinaryString(digitalIOStates));
-        }
-        else {
+        } else {
           digitalIOStates = ALL_DIO_OFF;
         }
         dwf.FDwfDigitalIOOutputSet(digitalIOStates);
@@ -184,8 +184,7 @@ public class DWFProxy {
 
         // Set this to false (default=true). Need to call FDwfAnalogOutConfigure(true), FDwfAnalogInConfigure(true) in order for *Set* methods to take effect.
         dwf.FDwfDeviceAutoConfigureSet(false);
-      }
-      else {
+      } else {
 
         System.out.println(dwf.FDwfGetLastErrorMsg());
       }
@@ -243,6 +242,17 @@ public class DWFProxy {
     // }
   }
 
+  public void turnOffAllSwitches() {
+
+    int oldValDigitalIO = digitalIOStates;
+    Integer mask = Integer.valueOf("1111111100000000", 2);
+    digitalIOStates = digitalIOStates & mask;
+    boolean successful = dwf.FDwfDigitalIOOutputSet(digitalIOStates);
+    dwf.FDwfDigitalIOConfigure();
+    digitalIOStates = dwf.getDigitalIOStatus();
+    swingPropertyChangeSupport.firePropertyChange(DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
+  }
+
   public void update2DigitalIOStatesAtOnce(List<Integer> mask, boolean isOn) {
 
     // logger.debug("toggleClickedID: " + toggleClickedID);
@@ -252,8 +262,7 @@ public class DWFProxy {
     for (int i = 0; i < mask.size(); i++) {
       if (isOn) {
         digitalIOStates = digitalIOStates | (1 << mask.get(i));
-      }
-      else {
+      } else {
         digitalIOStates = digitalIOStates & ~(1 << mask.get(i));
       }
     }
@@ -283,8 +292,7 @@ public class DWFProxy {
     // Update model
     if (isOn) {
       digitalIOStates = digitalIOStates | (1 << toggleClickedID);
-    }
-    else {
+    } else {
       digitalIOStates = digitalIOStates & ~(1 << toggleClickedID);
     }
 
@@ -306,14 +314,12 @@ public class DWFProxy {
     // Update model
     if (value1) {
       digitalIOStates = digitalIOStates | (1 << io1);
-    }
-    else {
+    } else {
       digitalIOStates = digitalIOStates & ~(1 << io1);
     }
     if (value2) {
       digitalIOStates = digitalIOStates | (1 << io2);
-    }
-    else {
+    } else {
       digitalIOStates = digitalIOStates & ~(1 << io2);
     }
 

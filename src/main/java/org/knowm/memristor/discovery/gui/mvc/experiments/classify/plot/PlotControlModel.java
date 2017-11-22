@@ -28,12 +28,25 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.classify.plot;
 
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.ClassifyPreferences;
 
 public class PlotControlModel extends ExperimentControlModel {
+
+  private List<Double> trainAccuracy = new ArrayList<>();
+  private List<List<Double>> synapticWeights = new ArrayList<>();
+
+  public PlotControlModel() {
+
+    for (int i = 0; i < 8; i++) {
+      synapticWeights.add(new ArrayList<Double>());
+    }
+
+  }
 
   /**
    * Here is where the Controller registers itself as a listener to model changes.
@@ -55,6 +68,24 @@ public class PlotControlModel extends ExperimentControlModel {
   @Override
   public void loadModelFromPrefs() {
 
+  }
+
+  public List<Double> getTrainAccuracy() {
+    return trainAccuracy;
+  }
+
+  public void addSynapticWeightValues(List<Double> synapticWeightValues) {
+    for (int i = 0; i < synapticWeightValues.size(); i++) {
+      synapticWeights.get(i).add(synapticWeightValues.get(i));
+    }
+  }
+
+  public List<Double> getSynapseWeightHistory(int synapse) {
+    return synapticWeights.get(synapse);
+  }
+
+  public void addTrainAccuracyDataPoint(Double trainAccuracy) {
+    this.trainAccuracy.add(trainAccuracy);
   }
 
 }

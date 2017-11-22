@@ -29,6 +29,7 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.classify.plot;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.List;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 
@@ -50,10 +51,21 @@ public class PlotController implements PropertyChangeListener {
 
   }
 
-  public void repaintChart() {
+  public void addTrainAccuracyDataPoint(double accuracy) {
+    plotModel.getTrainAccuracy().add(accuracy);
+    plotPanel.getTrainChart().updateXYSeries("Train Accuracy", null, plotModel.getTrainAccuracy(), null);
+    plotPanel.repaint();
+  }
 
-    plotPanel.getChartPanel().revalidate();
-    plotPanel.getChartPanel().repaint();
+  public void addSynapticWeightValuesPoint(List<Double> synapseValues) {
+
+    plotModel.addSynapticWeightValues(synapseValues);
+
+    for (int i = 0; i < 8; i++) {
+      plotPanel.getSynapticWeightsChart().updateXYSeries("Synapse " + i, null, plotModel.getSynapseWeightHistory(i), null);
+    }
+    plotPanel.repaint();
+
   }
 
   /**

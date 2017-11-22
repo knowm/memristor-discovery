@@ -58,6 +58,7 @@ public class ControlPanel extends ExperimentControlPanel {
   private final JSlider amplitudeSlider;
   private final JSlider pulseWidthSlider;
 
+  private final JLabel datasetLabel;
   private JComboBox<Datasets> datasetComboBox;
 
   private final JLabel numTrainEpochsLabel;
@@ -118,13 +119,19 @@ public class ControlPanel extends ExperimentControlPanel {
     c.gridy++;
 
     // data
+    datasetLabel = new JLabel("Dataset");
+    datasetLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.gridy++;
+    c.insets = new Insets(0, 10, 4, 0);
+    add(datasetLabel, c);
+
     this.datasetComboBox = new JComboBox<>();
     datasetComboBox.setFocusable(false);
     c.gridy++;
     c.insets = new Insets(0, 0, 4, 6);
     add(datasetComboBox, c);
 
-    numTrainEpochsLabel = new JLabel("NumExecutions (NE)");
+    numTrainEpochsLabel = new JLabel("Train Epochs");
     numTrainEpochsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.gridy++;
     c.insets = new Insets(0, 10, 4, 0);
@@ -136,7 +143,7 @@ public class ControlPanel extends ExperimentControlPanel {
     c.insets = new Insets(0, 5, 14, 5);
     add(numTrainEpochsTextField, c);
 
-    resetAllButton = new JButton("Reset");
+    resetAllButton = new JButton("Random Reset");
     resetAllButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.gridy++;
     c.insets = new Insets(0, 0, 0, 0);

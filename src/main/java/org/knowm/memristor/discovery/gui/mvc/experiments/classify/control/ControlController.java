@@ -82,15 +82,15 @@ public class ControlController extends ExperimentControlController {
 
     controlPanel.getWaveformComboBox().setSelectedItem(controlModel.getWaveform());
     controlPanel.getWaveformComboBox()
-    .setModel(
-        new DefaultComboBoxModel<>(new Waveform[]{Waveform.SquareSmooth, Waveform.Square, Waveform.QuarterSine, Waveform.HalfSine,
-            Waveform.Triangle}));
+        .setModel(
+            new DefaultComboBoxModel<>(new Waveform[]{Waveform.SquareSmooth, Waveform.Square, Waveform.QuarterSine, Waveform.HalfSine,
+                Waveform.Triangle}));
 
     controlPanel.getDatasetComboBox().setSelectedItem(controlModel.getDataset());
     controlPanel.getDatasetComboBox().setModel(
-        new DefaultComboBoxModel<>(new Datasets[]{Datasets.SevenSegment_0, Datasets.SevenSegment_1, Datasets.SevenSegment_2, Datasets.SevenSegment_3,
-            Datasets.SevenSegment_4, Datasets.SevenSegment_5, Datasets.SevenSegment_6, Datasets.SevenSegment_7, Datasets.SevenSegment_8,
-            Datasets.SevenSegment_9}));
+        new DefaultComboBoxModel<>(new Datasets[]{Datasets.SevenSegment0, Datasets.SevenSegment1, Datasets.SevenSegment2, Datasets.SevenSegment3,
+            Datasets.SevenSegment4, Datasets.SevenSegment5, Datasets.SevenSegment6, Datasets.SevenSegment7, Datasets.SevenSegment8,
+            Datasets.SevenSegment9}));
 
     controlPanel.getAmplitudeSlider().setValue((int) (controlModel.getAmplitude() * 100));
     controlPanel.getAmplitudeSlider().setBorder(BorderFactory.createTitledBorder("Amplitude [V] = " + controlModel.getAmplitude()));
@@ -98,7 +98,7 @@ public class ControlController extends ExperimentControlController {
     controlPanel.getPulseWidthSlider().setValue((controlModel.getPulseWidth()));
 
     controlPanel.getPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + controlModel.getPulseWidth() / 1000f));
-    controlPanel.getNumTrainEpochsTextField().setText("" + controlModel.getNumExecutions());
+    controlPanel.getNumTrainEpochsTextField().setText("" + controlModel.getNumTrainEpochs());
   }
 
   /**
@@ -171,7 +171,7 @@ public class ControlController extends ExperimentControlController {
           controlModel.setNumTrainEpochs(newValue);
         } catch (Exception ex) {
           // parsing error, default back to previous value
-          textField.setText(Integer.toString(controlModel.getNumExecutions()));
+          textField.setText(Integer.toString(controlModel.getNumTrainEpochs()));
         }
       }
     });

@@ -28,6 +28,8 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.classify.plot;
 
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.util.Arrays;
 
 import javax.swing.BorderFactory;
 
@@ -35,32 +37,77 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
 import org.knowm.xchart.XChartPanel;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
+import org.knowm.xchart.XYSeries;
+import org.knowm.xchart.style.markers.SeriesMarkers;
 
 public class PlotPanel extends ExperimentPlotPanel {
 
-  XYChart chart;
-  XChartPanel<XYChart> chartPanel;
+  XYChart trainChart;
+  XChartPanel<XYChart> trainChartPanel;
+
+  XYChart synapticWeightsChart;
+  XChartPanel<XYChart> synapticWeightChartPanel;
 
   /**
    * Constructor
    */
   public PlotPanel() {
 
-    setLayout(new BorderLayout());
+    // setLayout(new BorderLayout());
+    setLayout(new GridLayout(2, 1));
     setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
 
-    chart = new XYChartBuilder().width(200).title("Synaptic State Traces").height(200).xAxisTitle("Sa").yAxisTitle("Sb").build();
-    chart.getStyler().setLegendVisible(false);
-    chartPanel = new XChartPanel<>(chart);
+    trainChart = new XYChartBuilder().width(200).title("Train Accuracy").height(200).xAxisTitle("Time Step").yAxisTitle("Cummulative Accuracy")
+        .build();
+    trainChart.getStyler().setLegendVisible(false);
 
-    chartPanel.setLayout(new BorderLayout());
-    add(chartPanel, BorderLayout.CENTER);
+    XYSeries series1 = trainChart.addSeries("Train Accuracy", null, Arrays.asList(0.0));
+    series1.setMarker(SeriesMarkers.NONE);
+    series1.setLineWidth(1f);
+
+    trainChartPanel = new XChartPanel<>(trainChart);
+    trainChartPanel.setLayout(new BorderLayout());
+    add(trainChartPanel, BorderLayout.CENTER);
+
+    synapticWeightsChart = new XYChartBuilder().width(200).title("Synaptic Weights").height(200).xAxisTitle("Epoch").yAxisTitle("Value").build();
+    synapticWeightsChart.getStyler().setLegendVisible(true);
+
+    for (int i = 0; i < 8; i++) {
+      XYSeries series = synapticWeightsChart.addSeries("Synapse " + i, null, Arrays.asList(0.0));
+      series.setMarker(SeriesMarkers.NONE);
+      series.setLineWidth(1f);
+    }
+
+    synapticWeightChartPanel = new XChartPanel<>(synapticWeightsChart);
+    synapticWeightChartPanel.setLayout(new BorderLayout());
+    add(synapticWeightChartPanel, BorderLayout.CENTER);
 
   }
 
-  public XChartPanel<XYChart> getChartPanel() {
+  //  @Override
+  //  public void repaint() {
+  //
+  //    if (trainChartPanel != null) {
+  //      trainChartPanel.revalidate();
+  //      trainChartPanel.repaint();
+  //
+  //      testChartPanel.revalidate();
+  //      testChartPanel.repaint();
+  //    }
+  //
+  //  }
 
-    return chartPanel;
+  public XYChart getSynapticWeightsChart() {
+    return synapticWeightsChart;
   }
+
+  public XYChart getTrainChart() {
+    return trainChart;
+  }
+
+  //  public XChartPanel<XYChart> getChartPanel() {
+  //
+  //    return testChartPanel;
+  //  }
 
 }
