@@ -30,7 +30,9 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.logic.plot;
 import java.awt.Color;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.logic.TraceDatum;
@@ -55,18 +57,29 @@ public class PlotController implements PropertyChangeListener {
 
   }
 
+  public void resetChart() {
+
+    System.out.println("clearing plot");
+    Set<String> seriesNames = plotPanel.chart.getSeriesMap().keySet();
+
+    List<String> toDelete = new ArrayList<String>();
+
+    for (String name : seriesNames) {
+      toDelete.add(name);
+
+    }
+
+    for (int i = 0; i < toDelete.size(); i++) {
+      plotPanel.chart.removeSeries(toDelete.get(i));
+    }
+
+    repaintChart();
+
+  }
+
   public void addFFRATrace(List<TraceDatum> trace) {
 
-    System.out.println("PlotController.addTrace()");
-
     int traceNum = plotModel.getNumTraces();
-
-    // // green dot for first data point
-    // XYSeries series1 = plotPanel.chart.addSeries(traceNum + "_1", new double[] { trace.get(0).vy_a }, new double[] { trace.get(0).vy_b });
-    // series1.setMarker(SeriesMarkers.CIRCLE);
-    // series1.setMarkerColor(Color.green);
-
-    // blue trace
 
     double[] vy_a = new double[trace.size()];
     double[] vy_b = new double[trace.size()];
@@ -80,24 +93,17 @@ public class PlotController implements PropertyChangeListener {
     series2.setLineColor(Color.gray);
     series2.setLineWidth(.2f);
 
-    // // red dot for last data point.
-    // XYSeries series3 = plotPanel.chart.addSeries(traceNum + "_3", new double[] { trace.get(trace.size() - 1).vy_a }, new double[] { trace.get(trace.size() - 1).vy_b });
-    // series3.setMarker(SeriesMarkers.CIRCLE);
-    // series3.setMarkerColor(Color.red);
-
     plotModel.addTrace(trace);
     repaintChart();
 
   }
 
-  public void addFFRUTrace(List<TraceDatum> trace) {
-
-    System.out.println("PlotController.addTrace()");
+  public void addFFRUTrace(List<TraceDatum> trace, String logicState) {
 
     int traceNum = plotModel.getNumTraces();
 
     // green dot for first data point
-    XYSeries series1 = plotPanel.chart.addSeries(traceNum + "_1", new double[] { trace.get(0).vy_a }, new double[] { trace.get(0).vy_b });
+    XYSeries series1 = plotPanel.chart.addSeries(traceNum + "_1", new double[]{trace.get(0).vy_a}, new double[]{trace.get(0).vy_b});
     series1.setMarker(SeriesMarkers.CIRCLE);
     series1.setMarkerColor(Color.green);
 
@@ -113,11 +119,20 @@ public class PlotController implements PropertyChangeListener {
     XYSeries series2 = plotPanel.chart.addSeries(traceNum + "_2", vy_a, vy_b);
     series2.setMarker(SeriesMarkers.NONE);
     series2.setLineColor(Color.blue);
+    series2.setLineWidth(.3f);
 
     // red dot for last data point.
-    XYSeries series3 = plotPanel.chart.addSeries(traceNum + "_3", new double[] { trace.get(trace.size() - 1).vy_a }, new double[] { trace.get(trace.size() - 1).vy_b });
+    XYSeries series3 = plotPanel.chart.addSeries(traceNum + "_3", new double[]{trace.get(trace.size() - 1).vy_a},
+        new double[]{trace.get(trace.size() - 1).vy_b});
     series3.setMarker(SeriesMarkers.CIRCLE);
-    series3.setMarkerColor(Color.red);
+
+    if (logicState.equalsIgnoreCase("000") | logicState.equalsIgnoreCase("111")) {//A
+      series3.setMarkerColor(Color.red);
+    } else if (logicState.equalsIgnoreCase("010") | logicState.equalsIgnoreCase("101")) {//B
+      series3.setMarkerColor(Color.orange);
+    } else if (logicState.equalsIgnoreCase("011") | logicState.equalsIgnoreCase("100")) {//C
+      series3.setMarkerColor(Color.magenta);
+    }
 
     plotModel.addTrace(trace);
     repaintChart();
@@ -131,20 +146,20 @@ public class PlotController implements PropertyChangeListener {
   }
 
   /**
-   * These property change events are triggered in the model in the case where the underlying model is updated. Here, the controller can respond to those events and make sure the corresponding GUI
-   * components get updated.
+   * These property change events are triggered in the model in the case where the underlying model is updated. Here, the controller can respond to
+   * those events and make sure the corresponding GUI components get updated.
    */
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
 
     switch (evt.getPropertyName()) {
 
-    case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
+      case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
 
-      break;
+        break;
 
-    default:
-      break;
+      default:
+        break;
     }
   }
 }

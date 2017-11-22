@@ -33,8 +33,11 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
+import org.knowm.xchart.XYSeries;
+import org.knowm.xchart.style.markers.SeriesMarkers;
 
 public class PlotController implements PropertyChangeListener {
 
@@ -56,6 +59,12 @@ public class PlotController implements PropertyChangeListener {
 
     initGUIComponents();
     setUpViewEvents();
+  }
+  
+  public void resetChart() {
+    plotModel.clearData();
+    startTime=System.currentTimeMillis();
+    repaintYChart();
   }
 
   public void initGUIComponents() {
@@ -169,8 +178,8 @@ public class PlotController implements PropertyChangeListener {
       plotModel.getTime2Data().add(timeFromStart);
     }
 
-    System.out.println(plotModel.getGr1Data());
-    System.out.println(plotModel.getGr2Data());
+//    System.out.println(plotModel.getGr1Data());
+//    System.out.println(plotModel.getGr2Data());
 
     if (plotModel.getGr1Data() != null && plotModel.getGr1Data().size() > 0) {
       plotPanel.getGChart().updateXYSeries("A", plotModel.getTime1Data(), plotModel.getGr1Data(), null);

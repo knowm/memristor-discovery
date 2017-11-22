@@ -52,8 +52,6 @@ public class PlotControlModel extends ExperimentControlModel {
 
   List<Double> gr1Data = new ArrayList<>();
   List<Double> gr2Data = new ArrayList<>();
-  // List<Double> gr3Data = new ArrayList<>();
-
   List<Double> vyData = new ArrayList<>();
 
   /**
@@ -67,6 +65,20 @@ public class PlotControlModel extends ExperimentControlModel {
     swingPropertyChangeSupport.addPropertyChangeListener(listener);
   }
 
+  
+  public void clearData() {
+   
+    time1Data.clear();
+    time2Data.clear();
+    timeVyData.clear();
+    gr1Data.clear();
+    gr2Data.clear();
+    vyData.clear();
+
+    
+  }
+  
+  
   public Double getyMaxIV() {
 
     return yMaxIV;

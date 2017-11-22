@@ -49,7 +49,8 @@ public class PlotPanel extends ExperimentPlotPanel {
     setLayout(new BorderLayout());
     setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
 
-    chart = new XYChartBuilder().width(200).title("Synaptic State Traces").height(200).xAxisTitle("Sa").yAxisTitle("Sb").build();
+    chart = new XYChartBuilder().width(200).title("Synaptic Logic State Traces [A/~A:Red, B/~B:Orange, C/~C:Magenta").height(200).xAxisTitle("Sa")
+        .yAxisTitle("Sb").build();
     chart.getStyler().setLegendVisible(false);
     chartPanel = new XChartPanel<>(chart);
 

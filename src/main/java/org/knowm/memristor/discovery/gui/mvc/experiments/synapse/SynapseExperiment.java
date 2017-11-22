@@ -30,6 +30,8 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.synapse;
 import static org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlModel.EVENT_INSTRUCTION_UPDATE;
 
 import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.util.List;
 
@@ -90,7 +92,15 @@ public class SynapseExperiment extends Experiment {
 
   @Override
   public void doCreateAndShowGUI() {
+    controlPanel.clearPlotButton.addActionListener(new ActionListener() {
 
+      @Override
+      public void actionPerformed(ActionEvent e) {
+
+       plotController.resetChart();
+
+      }
+    });
   }
 
   private class CaptureWorker extends SwingWorker<Boolean, Double> {
