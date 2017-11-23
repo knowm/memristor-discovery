@@ -35,6 +35,7 @@ import java.util.List;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.ClassifyPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.classify.ClassifyPreferences.AHaHRoutine;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.ClassifyPreferences.Datasets;
 import org.knowm.memristor.discovery.utils.driver.Driver;
 import org.knowm.memristor.discovery.utils.driver.HalfSine;
@@ -59,15 +60,12 @@ public class ControlModel extends ExperimentControlModel {
   private float amplitude;
   private int pulseWidth; // model store pulse width in nanoseconds
   // private int pulseNumber = 1;
-
   public DecimalFormat ohmFormatter = new DecimalFormat("#,### Ω");
-
   private final double[] waveformTimeData = new double[ClassifyPreferences.CAPTURE_BUFFER_SIZE];
   private final double[] waveformAmplitudeData = new double[ClassifyPreferences.CAPTURE_BUFFER_SIZE];
-
   private int numTrainEpochs;
-
-  public ClassifyPreferences.Datasets dataset = Datasets.SevenSegment1;
+  public ClassifyPreferences.Datasets dataset = Datasets.Orthogonal2Pattern;
+  public AHaHRoutine ahahroutine = AHaHRoutine.LearnAlways;
 
   private List<List<Integer>> sevenSegmentData = null;
 
@@ -104,8 +102,8 @@ public class ControlModel extends ExperimentControlModel {
   @Override
   public void loadModelFromPrefs() {
 
-    waveform = ClassifyPreferences.Waveform.valueOf(experimentPreferences.getString(ClassifyPreferences.WAVEFORM_INIT_STRING_KEY,
-        ClassifyPreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
+    waveform = ClassifyPreferences.Waveform.valueOf(
+        experimentPreferences.getString(ClassifyPreferences.WAVEFORM_INIT_STRING_KEY, ClassifyPreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
     seriesResistance = experimentPreferences.getInteger(ClassifyPreferences.SERIES_R_INIT_KEY, ClassifyPreferences.SERIES_R_INIT_DEFAULT_VALUE);
     amplitude = experimentPreferences.getFloat(ClassifyPreferences.AMPLITUDE_INIT_FLOAT_KEY, ClassifyPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
     pulseWidth = experimentPreferences.getInteger(ClassifyPreferences.PULSE_WIDTH_INIT_KEY, ClassifyPreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
@@ -249,6 +247,10 @@ public class ControlModel extends ExperimentControlModel {
   public void setDataStructure(String text) {
 
     this.dataset = Enum.valueOf(ClassifyPreferences.Datasets.class, text);
+  }
+
+  public AHaHRoutine getAhahroutine() {
+    return ahahroutine;
   }
 
 }

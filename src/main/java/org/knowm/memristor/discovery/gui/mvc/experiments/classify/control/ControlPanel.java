@@ -43,6 +43,7 @@ import javax.swing.JTextField;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
+import org.knowm.memristor.discovery.gui.mvc.experiments.classify.ClassifyPreferences.AHaHRoutine;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.ClassifyPreferences.Datasets;
 import org.knowm.memristor.discovery.utils.Util;
 
@@ -57,6 +58,9 @@ public class ControlPanel extends ExperimentControlPanel {
 
   private final JSlider amplitudeSlider;
   private final JSlider pulseWidthSlider;
+
+  private final JLabel ahahRoutineLabel;
+  private JComboBox<AHaHRoutine> ahahRoutineComboBox;
 
   private final JLabel datasetLabel;
   private JComboBox<Datasets> datasetComboBox;
@@ -118,6 +122,19 @@ public class ControlPanel extends ExperimentControlPanel {
     add(pulseWidthSlider, c);
     c.gridy++;
 
+    //learn method
+    ahahRoutineLabel = new JLabel("AHaH Routine");
+    ahahRoutineLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.gridy++;
+    c.insets = new Insets(0, 10, 4, 0);
+    add(ahahRoutineLabel, c);
+
+    this.ahahRoutineComboBox = new JComboBox<>();
+    ahahRoutineComboBox.setFocusable(false);
+    c.gridy++;
+    c.insets = new Insets(0, 0, 4, 6);
+    add(ahahRoutineComboBox, c);
+
     // data
     datasetLabel = new JLabel("Dataset");
     datasetLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -131,6 +148,8 @@ public class ControlPanel extends ExperimentControlPanel {
     c.insets = new Insets(0, 0, 4, 6);
     add(datasetComboBox, c);
 
+    //num epochs
+
     numTrainEpochsLabel = new JLabel("Train Epochs");
     numTrainEpochsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.gridy++;
@@ -143,13 +162,13 @@ public class ControlPanel extends ExperimentControlPanel {
     c.insets = new Insets(0, 5, 14, 5);
     add(numTrainEpochsTextField, c);
 
-    resetAllButton = new JButton("Random Reset");
+    resetAllButton = new JButton("Scramble");
     resetAllButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.gridy++;
     c.insets = new Insets(0, 0, 0, 0);
     add(resetAllButton, c);
 
-    runTrialButton = new JButton("Run");
+    runTrialButton = new JButton("Learn");
     runTrialButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.gridy++;
     c.insets = new Insets(0, 0, 0, 0);
@@ -191,6 +210,10 @@ public class ControlPanel extends ExperimentControlPanel {
   public JComboBox<Datasets> getDatasetComboBox() {
 
     return datasetComboBox;
+  }
+
+  public JComboBox<AHaHRoutine> getAhahRoutineComboBox() {
+    return ahahRoutineComboBox;
   }
 
 }

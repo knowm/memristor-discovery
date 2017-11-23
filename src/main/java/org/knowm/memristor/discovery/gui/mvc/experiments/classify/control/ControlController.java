@@ -44,6 +44,7 @@ import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
+import org.knowm.memristor.discovery.gui.mvc.experiments.classify.ClassifyPreferences.AHaHRoutine;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.ClassifyPreferences.Datasets;
 
 public class ControlController extends ExperimentControlController {
@@ -81,16 +82,14 @@ public class ControlController extends ExperimentControlController {
   private void initGUIComponentsFromModel() {
 
     controlPanel.getWaveformComboBox().setSelectedItem(controlModel.getWaveform());
-    controlPanel.getWaveformComboBox()
-        .setModel(
-            new DefaultComboBoxModel<>(new Waveform[]{Waveform.SquareSmooth, Waveform.Square, Waveform.QuarterSine, Waveform.HalfSine,
-                Waveform.Triangle}));
+    controlPanel.getWaveformComboBox().setModel(new DefaultComboBoxModel<>(
+        new Waveform[]{Waveform.SquareSmooth, Waveform.Square, Waveform.QuarterSine, Waveform.HalfSine, Waveform.Triangle}));
+
+    controlPanel.getAhahRoutineComboBox().setSelectedItem(controlModel.getAhahroutine());
+    controlPanel.getAhahRoutineComboBox().setModel(new DefaultComboBoxModel<AHaHRoutine>(AHaHRoutine.values()));
 
     controlPanel.getDatasetComboBox().setSelectedItem(controlModel.getDataset());
-    controlPanel.getDatasetComboBox().setModel(
-        new DefaultComboBoxModel<>(new Datasets[]{Datasets.SevenSegment0, Datasets.SevenSegment1, Datasets.SevenSegment2, Datasets.SevenSegment3,
-            Datasets.SevenSegment4, Datasets.SevenSegment5, Datasets.SevenSegment6, Datasets.SevenSegment7, Datasets.SevenSegment8,
-            Datasets.SevenSegment9}));
+    controlPanel.getDatasetComboBox().setModel(new DefaultComboBoxModel<>(Datasets.values()));
 
     controlPanel.getAmplitudeSlider().setValue((int) (controlModel.getAmplitude() * 100));
     controlPanel.getAmplitudeSlider().setBorder(BorderFactory.createTitledBorder("Amplitude [V] = " + controlModel.getAmplitude()));
@@ -151,8 +150,8 @@ public class ControlController extends ExperimentControlController {
         JSlider source = (JSlider) e.getSource();
         if (!(source.getValueIsAdjusting())) {
           controlModel.setPulseWidth(source.getValue());
-          controlPanel.getPulseWidthSlider().setBorder(
-              BorderFactory.createTitledBorder("Pulse Width [µs] = " + (double) controlModel.getPulseWidth() / 1000));
+          controlPanel.getPulseWidthSlider()
+              .setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + (double) controlModel.getPulseWidth() / 1000));
           // controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
         }
       }

@@ -27,6 +27,10 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.classify;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 
 /**
@@ -63,27 +67,97 @@ public class ClassifyPreferences extends ExperimentPreferences {
   // public static final int CAPTURE_BUFFER_SIZE = DWF.AD2_MAX_BUFFER_SIZE;
   public static final int CAPTURE_BUFFER_SIZE = 8000;
 
+  public enum AHaHRoutine {
+
+    LearnOnMistakes, LearnAlways, LearnCombo;
+
+  }
+
   public enum Datasets {
 
-    SevenSegment0(0, "Zero"), SevenSegment1(1, "One"), SevenSegment2(2, "Two"), SevenSegment3(3, "Three"), SevenSegment4(4, "Four"), SevenSegment5(5,
-        "Five"), SevenSegment6(6, "Six"), SevenSegment7(7, "Seven"), SevenSegment8(8, "Eight"), SevenSegment9(9, "Nine");
+    Orthogonal2Pattern(orthogonal2Pattern()), Orthogonal4Pattern(orthogonal4Pattern()), Orthogonal8Pattern(
+        orthogonal8Pattern()), AntiOrthogonal2Pattern(
+            antiOrthogonal2Pattern()), AntiOrthogonal4Pattern(antiOrthogonal4Pattern()), AntiOrthogonal8Pattern(antiOrthogonal8Pattern());
 
-    private final int patternID;
-    private final String name;
+    private final List<SupervisedPattern> dataset;
 
-    private Datasets(int patternID, String name) {
-      this.patternID = patternID;
-      this.name = name;
+    private Datasets(List<SupervisedPattern> dataset) {
+      this.dataset = dataset;
     }
 
-    public int getPatternID() {
-      return patternID;
+    public List<SupervisedPattern> getDataset() {
+      return dataset;
     }
 
-    public String getName() {
-      return name;
+    private static List<SupervisedPattern> orthogonal2Pattern() {
+
+      List<SupervisedPattern> dataset = new ArrayList<SupervisedPattern>();
+      dataset.add(new SupervisedPattern(true, Arrays.asList(0, 1, 2, 3)));
+      dataset.add(new SupervisedPattern(false, Arrays.asList(4, 5, 6, 7)));
+
+      return dataset;
     }
 
+    private static List<SupervisedPattern> antiOrthogonal2Pattern() {
+
+      List<SupervisedPattern> dataset = new ArrayList<SupervisedPattern>();
+      dataset.add(new SupervisedPattern(false, Arrays.asList(0, 1, 2, 3)));
+      dataset.add(new SupervisedPattern(true, Arrays.asList(4, 5, 6, 7)));
+
+      return dataset;
+    }
+
+    private static List<SupervisedPattern> orthogonal4Pattern() {
+
+      List<SupervisedPattern> dataset = new ArrayList<SupervisedPattern>();
+      dataset.add(new SupervisedPattern(true, Arrays.asList(0, 1)));
+      dataset.add(new SupervisedPattern(true, Arrays.asList(2, 3)));
+      dataset.add(new SupervisedPattern(false, Arrays.asList(4, 5)));
+      dataset.add(new SupervisedPattern(false, Arrays.asList(6, 7)));
+
+      return dataset;
+    }
+
+    private static List<SupervisedPattern> antiOrthogonal4Pattern() {
+
+      List<SupervisedPattern> dataset = new ArrayList<SupervisedPattern>();
+      dataset.add(new SupervisedPattern(false, Arrays.asList(0, 1)));
+      dataset.add(new SupervisedPattern(false, Arrays.asList(2, 3)));
+      dataset.add(new SupervisedPattern(true, Arrays.asList(4, 5)));
+      dataset.add(new SupervisedPattern(true, Arrays.asList(6, 7)));
+
+      return dataset;
+    }
+
+    private static List<SupervisedPattern> orthogonal8Pattern() {
+
+      List<SupervisedPattern> dataset = new ArrayList<SupervisedPattern>();
+      dataset.add(new SupervisedPattern(true, Arrays.asList(0)));
+      dataset.add(new SupervisedPattern(true, Arrays.asList(1)));
+      dataset.add(new SupervisedPattern(true, Arrays.asList(2)));
+      dataset.add(new SupervisedPattern(true, Arrays.asList(3)));
+      dataset.add(new SupervisedPattern(false, Arrays.asList(4)));
+      dataset.add(new SupervisedPattern(false, Arrays.asList(5)));
+      dataset.add(new SupervisedPattern(false, Arrays.asList(6)));
+      dataset.add(new SupervisedPattern(false, Arrays.asList(7)));
+
+      return dataset;
+    }
+
+    private static List<SupervisedPattern> antiOrthogonal8Pattern() {
+
+      List<SupervisedPattern> dataset = new ArrayList<SupervisedPattern>();
+      dataset.add(new SupervisedPattern(false, Arrays.asList(0)));
+      dataset.add(new SupervisedPattern(false, Arrays.asList(1)));
+      dataset.add(new SupervisedPattern(false, Arrays.asList(2)));
+      dataset.add(new SupervisedPattern(false, Arrays.asList(3)));
+      dataset.add(new SupervisedPattern(true, Arrays.asList(4)));
+      dataset.add(new SupervisedPattern(true, Arrays.asList(5)));
+      dataset.add(new SupervisedPattern(true, Arrays.asList(6)));
+      dataset.add(new SupervisedPattern(true, Arrays.asList(7)));
+
+      return dataset;
+    }
   }
 
   // public static final int CAPTURE_BUFFER_SIZE = 8192 / 11; // AD2 buffer size / most pulses allowed.
