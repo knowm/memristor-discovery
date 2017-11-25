@@ -70,6 +70,7 @@ public class ControlPanel extends ExperimentControlPanel {
 
   public JButton resetAllButton;
   public JButton runTrialButton;
+  public JButton clearPlotButton;
 
   /**
    * Constructor
@@ -161,6 +162,12 @@ public class ControlPanel extends ExperimentControlPanel {
     c.gridy++;
     c.insets = new Insets(0, 5, 14, 5);
     add(numTrainEpochsTextField, c);
+
+    clearPlotButton = new JButton("Clear Plot");
+    clearPlotButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.gridy++;
+    c.insets = new Insets(0, 0, 0, 0);
+    add(clearPlotButton, c);
 
     resetAllButton = new JButton("Scramble");
     resetAllButton.setAlignmentX(Component.CENTER_ALIGNMENT);

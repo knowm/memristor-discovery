@@ -28,9 +28,6 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.classify.control;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
@@ -64,10 +61,8 @@ public class ControlModel extends ExperimentControlModel {
   private final double[] waveformTimeData = new double[ClassifyPreferences.CAPTURE_BUFFER_SIZE];
   private final double[] waveformAmplitudeData = new double[ClassifyPreferences.CAPTURE_BUFFER_SIZE];
   private int numTrainEpochs;
-  public ClassifyPreferences.Datasets dataset = Datasets.Orthogonal2Pattern;
+  public ClassifyPreferences.Datasets dataset = Datasets.Ortho4Pattern;
   public AHaHRoutine ahahroutine = AHaHRoutine.LearnAlways;
-
-  private List<List<Integer>> sevenSegmentData = null;
 
   /**
    * Constructor
@@ -77,33 +72,11 @@ public class ControlModel extends ExperimentControlModel {
     updateWaveformChartData();
   }
 
-  public List<List<Integer>> getSevenSegmentDataWithBias() {
-
-    if (sevenSegmentData != null) {
-      return sevenSegmentData;
-    }
-
-    sevenSegmentData = new ArrayList<List<Integer>>();
-
-    sevenSegmentData.add(Arrays.asList(0, 1, 2, 3, 4, 6, 7));//0
-    sevenSegmentData.add(Arrays.asList(6, 4, 7));//1
-    sevenSegmentData.add(Arrays.asList(0, 6, 5, 2, 3, 7));//2
-    sevenSegmentData.add(Arrays.asList(0, 6, 5, 4, 3, 7));//3
-    sevenSegmentData.add(Arrays.asList(1, 5, 6, 4, 7));//4
-    sevenSegmentData.add(Arrays.asList(0, 1, 5, 4, 3, 7));//5
-    sevenSegmentData.add(Arrays.asList(0, 1, 2, 3, 4, 5, 7));//6
-    sevenSegmentData.add(Arrays.asList(0, 6, 4, 7));//7
-    sevenSegmentData.add(Arrays.asList(0, 1, 2, 3, 4, 5, 6, 7));//8
-    sevenSegmentData.add(Arrays.asList(0, 1, 5, 6, 7));//9
-
-    return sevenSegmentData;
-  }
-
   @Override
   public void loadModelFromPrefs() {
 
-    waveform = ClassifyPreferences.Waveform.valueOf(
-        experimentPreferences.getString(ClassifyPreferences.WAVEFORM_INIT_STRING_KEY, ClassifyPreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
+    waveform = ClassifyPreferences.Waveform.valueOf(experimentPreferences.getString(ClassifyPreferences.WAVEFORM_INIT_STRING_KEY,
+        ClassifyPreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
     seriesResistance = experimentPreferences.getInteger(ClassifyPreferences.SERIES_R_INIT_KEY, ClassifyPreferences.SERIES_R_INIT_DEFAULT_VALUE);
     amplitude = experimentPreferences.getFloat(ClassifyPreferences.AMPLITUDE_INIT_FLOAT_KEY, ClassifyPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
     pulseWidth = experimentPreferences.getInteger(ClassifyPreferences.PULSE_WIDTH_INIT_KEY, ClassifyPreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);

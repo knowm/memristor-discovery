@@ -62,7 +62,7 @@ public class PlotController implements PropertyChangeListener {
     plotModel.addSynapticWeightValues(synapseValues);
 
     for (int i = 0; i < 8; i++) {
-      plotPanel.getSynapticWeightsChart().updateXYSeries("Synapse " + i, null, plotModel.getSynapseWeightHistory(i), null);
+      plotPanel.getSynapticWeightsChart().updateXYSeries("Synapse " + (i + 1), null, plotModel.getSynapseWeightHistory(i), null);
     }
     plotPanel.repaint();
 
@@ -84,5 +84,11 @@ public class PlotController implements PropertyChangeListener {
       default:
         break;
     }
+  }
+
+  public void resetChart() {
+
+    plotModel.clearData();
+
   }
 }

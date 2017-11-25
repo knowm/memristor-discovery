@@ -73,7 +73,7 @@ public class PlotPanel extends ExperimentPlotPanel {
     synapticWeightsChart.getStyler().setLegendVisible(true);
 
     for (int i = 0; i < 8; i++) {
-      XYSeries series = synapticWeightsChart.addSeries("Synapse " + i, null, Arrays.asList(0.0));
+      XYSeries series = synapticWeightsChart.addSeries("Synapse " + (i + 1), null, Arrays.asList(0.0));
       series.setMarker(SeriesMarkers.NONE);
       series.setLineWidth(1f);
     }

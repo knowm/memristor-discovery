@@ -93,6 +93,17 @@ public class ClassifyExperiment extends Experiment {
   @Override
   public void doCreateAndShowGUI() {
 
+    controlPanel.clearPlotButton.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        System.out.println("should reset chart now");
+        plotController.resetChart();
+
+      }
+
+    });
+
     controlPanel.runTrialButton.addActionListener(new ActionListener() {
 
       @Override
@@ -139,7 +150,7 @@ public class ClassifyExperiment extends Experiment {
 
       } catch (
 
-      Exception e) {
+          Exception e) {
         e.printStackTrace();
       }
 
@@ -230,6 +241,11 @@ public class ClassifyExperiment extends Experiment {
   }
 
   private void readAllSynapses() {
+
+    int pw = controlModel.getPulseWidth();
+
+    controlModel.setPulseWidth(500_000);//for RC effects due to high resistances.
+
     List<Double> synapticWeights = new ArrayList<Double>();
     for (int i = 0; i < 8; i++) {
       List<Integer> spike = Arrays.asList(i);
@@ -238,6 +254,9 @@ public class ClassifyExperiment extends Experiment {
       synapticWeights.add(aHaHController.getVy());
     }
     plotController.addSynapticWeightValuesPoint(synapticWeights);
+
+    controlModel.setPulseWidth(pw);
+
   }
 
   private void loadSpikePattern(List<Integer> spikes) {

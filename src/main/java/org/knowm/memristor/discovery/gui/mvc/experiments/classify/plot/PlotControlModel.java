@@ -88,4 +88,13 @@ public class PlotControlModel extends ExperimentControlModel {
     this.trainAccuracy.add(trainAccuracy);
   }
 
+  public void clearData() {
+    trainAccuracy.clear();
+
+    for (int i = 0; i < 8; i++) {
+      synapticWeights.get(i).clear();
+    }
+
+  }
+
 }

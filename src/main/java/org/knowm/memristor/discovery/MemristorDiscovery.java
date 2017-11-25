@@ -87,7 +87,7 @@ import org.multibit.platform.listener.GenericQuitEventListener;
 import org.multibit.platform.listener.GenericQuitResponse;
 
 public class MemristorDiscovery implements GenericQuitEventListener, GenericPreferencesEventListener, GenericAboutEventListener,
-PropertyChangeListener {
+    PropertyChangeListener {
 
   private final static String FRAME_TITLE_BASE = "Knowm Memristor Discovery - ";
 
@@ -139,14 +139,13 @@ PropertyChangeListener {
 
     this.isV1Board = isV1Board;
     this.isTest = isTest;
-
-    // add board check if `test` arg is present
     if (isTest) {
-      this.appsV0 = new String[]{"Hysteresis", "DC", "Pulse", "BoardCheck"};
-      this.appsV1 = new String[]{"Synapse", "Logic", "Classify", "BoardCheck"};
+      this.appsV1 = new String[]{"Synapse", "Logic", "Classify"};
+      this.appsV0 = new String[]{"BoardCheck", "Hysteresis", "DC", "Pulse",};
     } else {
       this.appsV0 = new String[]{"Hysteresis", "DC", "Pulse"};
-      this.appsV1 = new String[]{"Synapse", "Classify", "Logic"};
+      this.appsV1 = new String[]{"Synapse", "Logic", "Classify"};
+
     }
 
     this.dwf = new DWFProxy(isV1Board);

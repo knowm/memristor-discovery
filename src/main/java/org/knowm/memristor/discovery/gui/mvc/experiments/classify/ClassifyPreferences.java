@@ -55,7 +55,7 @@ public class ClassifyPreferences extends ExperimentPreferences {
   public static final int PULSE_WIDTH_INIT_DEFAULT_VALUE = 50_000;
 
   public static final String NUM_TRAIN_EPOCHS_INIT_KEY = PREFIX + "NUM_TRAIN_EPOCHS_INIT_KEY";
-  public static final int NUM_TRAIN_EPOCHS_INIT_DEFAULT_VALUE = 10;
+  public static final int NUM_TRAIN_EPOCHS_INIT_DEFAULT_VALUE = 50;
 
   // /////////////////////////////////////////////////////////////////////////////////////
 
@@ -75,9 +75,9 @@ public class ClassifyPreferences extends ExperimentPreferences {
 
   public enum Datasets {
 
-    Orthogonal2Pattern(orthogonal2Pattern()), Orthogonal4Pattern(orthogonal4Pattern()), Orthogonal8Pattern(
-        orthogonal8Pattern()), AntiOrthogonal2Pattern(
-            antiOrthogonal2Pattern()), AntiOrthogonal4Pattern(antiOrthogonal4Pattern()), AntiOrthogonal8Pattern(antiOrthogonal8Pattern());
+    Ortho2Pattern(orthogonal2Pattern()), AntiOrtho2Pattern(antiOrthogonal2Pattern()), Ortho4Pattern(orthogonal4Pattern()), AntiOrtho4Pattern(
+        antiOrthogonal4Pattern()), Ortho8Pattern(orthogonal8Pattern()), AntiOrtho8Pattern(antiOrthogonal8Pattern()), TwoPattern25Frustrated(
+        twoPattern25Frustrated()), TwoPattern2345Frustrated(twoPattern2345Frustrated());
 
     private final List<SupervisedPattern> dataset;
 
@@ -158,6 +158,25 @@ public class ClassifyPreferences extends ExperimentPreferences {
 
       return dataset;
     }
+
+    private static List<SupervisedPattern> twoPattern25Frustrated() {
+
+      List<SupervisedPattern> dataset = new ArrayList<SupervisedPattern>();
+      dataset.add(new SupervisedPattern(true, Arrays.asList(0, 1, 2, 3, 5)));
+      dataset.add(new SupervisedPattern(false, Arrays.asList(4, 5, 6, 7, 2)));
+
+      return dataset;
+    }
+
+    private static List<SupervisedPattern> twoPattern2345Frustrated() {
+
+      List<SupervisedPattern> dataset = new ArrayList<SupervisedPattern>();
+      dataset.add(new SupervisedPattern(true, Arrays.asList(0, 1, 2, 3, 4, 5)));
+      dataset.add(new SupervisedPattern(false, Arrays.asList(4, 5, 6, 7, 2, 3)));
+
+      return dataset;
+    }
+
   }
 
   // public static final int CAPTURE_BUFFER_SIZE = 8192 / 11; // AD2 buffer size / most pulses allowed.
@@ -165,7 +184,7 @@ public class ClassifyPreferences extends ExperimentPreferences {
   /**
    * Constructor
    */
-  public ClassifyPreferences() {
+   public ClassifyPreferences() {
 
     super(ClassifyPreferences.class);
   }
