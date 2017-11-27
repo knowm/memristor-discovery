@@ -139,13 +139,20 @@ public class PlotController implements PropertyChangeListener {
         JTextField textField = (JTextField) e.getSource();
         String text = textField.getText();
 
-        try {
-          double newKValue = Double.parseDouble(text);
-          plotModel.setK(newKValue);
-        } catch (Exception ex) {
-          // parsing error, default back to previous value
-          plotPanel.getkTextFieldGV().setText(Double.toString(plotModel.getK()));
+        if (text.equalsIgnoreCase(".")) {
+          //do nothing
+        } else {
+          try {
+            double newKValue = Double.parseDouble(text);
+
+            plotModel.setK(newKValue);
+            plotPanel.getkTextFieldGV().setText(Double.toString(plotModel.getK()));//this reverts back to acceptable range (0-1)
+          } catch (Exception ex) {
+            // parsing error, default back to previous value
+            plotPanel.getkTextFieldGV().setText(Double.toString(plotModel.getK()));
+          }
         }
+
       }
     });
   }
@@ -158,7 +165,8 @@ public class PlotController implements PropertyChangeListener {
     plotPanel.getWaveformChartPanel().repaint();
   }
 
-  public void udpateVtChartData(double[] captureAmplitudeData1, double[] captureAmplitudeData2, double[] timeData, int frequency, double amplitude, double offset) {
+  public void udpateVtChartData(double[] captureAmplitudeData1, double[] captureAmplitudeData2, double[] timeData, int frequency, double amplitude,
+      double offset) {
 
     plotPanel.getCaptureChart().setTitle(getVtChartTitle(amplitude, frequency, offset));
     plotPanel.getCaptureChart().updateXYSeries("V1", timeData, captureAmplitudeData1, null);
@@ -182,7 +190,8 @@ public class PlotController implements PropertyChangeListener {
     plotPanel.getIvChartPanel().repaint();
   }
 
-  public void updateGVChartData(double[] captureAmplitudeData1, double[] vMemristor, double[] conductance, int frequency, double amplitude, double offset) {
+  public void updateGVChartData(double[] captureAmplitudeData1, double[] vMemristor, double[] conductance, int frequency, double amplitude,
+      double offset) {
 
     plotPanel.getGvChart().getStyler().setYAxisMax(plotModel.getyMaxGV());
     plotPanel.getGvChart().setTitle(getGVChartTitle(amplitude, frequency, offset));
@@ -214,7 +223,8 @@ public class PlotController implements PropertyChangeListener {
 
   private String getWaveform(double amplitude, int frequency, double offset) {
 
-    return "Amplitude = " + getFormattedAmplitude(amplitude) + " V, Frequency = " + frequency + " Hz, Offset = " + getFormattedAmplitude(offset) + " V";
+    return "Amplitude = " + getFormattedAmplitude(amplitude) + " V, Frequency = " + frequency + " Hz, Offset = " + getFormattedAmplitude(offset)
+        + " V";
   }
 
   private double getFormattedAmplitude(double amplitude) {
@@ -223,8 +233,8 @@ public class PlotController implements PropertyChangeListener {
   }
 
   /**
-   * These property change events are triggered in the model in the case where the underlying model is updated. Here, the controller can respond to those events and make sure the corresponding GUI
-   * components get updated.
+   * These property change events are triggered in the model in the case where the underlying model is updated. Here, the controller can respond to
+   * those events and make sure the corresponding GUI components get updated.
    */
   @Override
   public void propertyChange(PropertyChangeEvent evt) {

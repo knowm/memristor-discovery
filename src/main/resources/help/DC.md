@@ -1,6 +1,6 @@
 # DC App
 
-This app allows you to drive a memristor in series with a resistor with various ramping functions including sawtooth, sawtoothupdown, triangle and triangleupdown. The number of applied ramping signals can be chosen and the response can be observed as either a time series (V1+/T and V2+/T), I/V or G/V plot, revealing the DC behavior of the memristor.
+The DC app allows you to drive a memristor in series with a resistor with various ramping functions including sawtooth, sawtoothupdown, triangle and triangleupdown at time scale from 10 to 1000ms. The number of applied ramping signals can be selected and the response can be observed as either a time series (V1+ vs T and V2+ vs T), I vs V or G vs V plot, revealing the behavior of the memristor at slow timescales.
 
 ![](file://help/DC.png)
 

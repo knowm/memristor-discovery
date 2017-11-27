@@ -76,7 +76,8 @@ public class ControlModel extends ExperimentControlModel {
   @Override
   public void loadModelFromPrefs() {
 
-    waveform = PulsePreferences.Waveform.valueOf(experimentPreferences.getString(PulsePreferences.WAVEFORM_INIT_STRING_KEY, PulsePreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
+    waveform = PulsePreferences.Waveform.valueOf(experimentPreferences.getString(PulsePreferences.WAVEFORM_INIT_STRING_KEY,
+        PulsePreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
     seriesResistance = experimentPreferences.getInteger(PulsePreferences.SERIES_R_INIT_KEY, PulsePreferences.SERIES_R_INIT_DEFAULT_VALUE);
     amplitude = experimentPreferences.getFloat(PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY, PulsePreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
     appliedAmplitude = amplitude;
@@ -149,7 +150,7 @@ public class ControlModel extends ExperimentControlModel {
   public double getCalculatedFrequency() {
 
     // System.out.println("pulseWidth = " + pulseWidth);
-    return (1.0 / (2.0 * (double) pulseWidth) * 1_000_000_000); // 50% duty cycle
+    return (1.0 / (2.0 * pulseWidth) * 1_000_000_000); // 50% duty cycle
   }
 
   public void setPulseWidth(int pulseWidth) {
@@ -270,13 +271,15 @@ public class ControlModel extends ExperimentControlModel {
       } else {
         this.appliedAmplitude = amplitude;
       }
-      this.appliedCurrent = appliedAmplitude / (getLastR() + seriesResistance + Util.getSwitchesSeriesResistance()) * PulsePreferences.CURRENT_UNIT.getDivisor();
-      this.appliedEnergy = appliedAmplitude * appliedAmplitude / (getLastR() + seriesResistance + Util.getSwitchesSeriesResistance()) * pulseNumber * pulseWidth / 2;// divided by two to guestimate the energy savings of a quarter sine wave vs a square wave.
+      this.appliedCurrent = appliedAmplitude / (getLastR() + seriesResistance + Util.getSwitchesSeriesResistance())
+          * PulsePreferences.CURRENT_UNIT.getDivisor();
+      this.appliedEnergy = appliedAmplitude * appliedAmplitude / (getLastR() + seriesResistance + Util.getSwitchesSeriesResistance()) * pulseNumber
+          * pulseWidth;
 
       // V=IR =
       double voltageDropOnMemristor = appliedCurrent / PulsePreferences.CURRENT_UNIT.getDivisor() * getLastR();
       // System.out.println("voltageDropOnMemristor = " + voltageDropOnMemristor);
-      this.appliedMemristorEnergy = voltageDropOnMemristor * voltageDropOnMemristor / getLastR() * pulseNumber * pulseWidth / 2 * 1000;// divided by two to guestimate the energy savings of a quarter sine wave vs a square wave.
+      this.appliedMemristorEnergy = voltageDropOnMemristor * voltageDropOnMemristor / getLastR() * pulseNumber * pulseWidth / 1000;
       // System.out.println("appliedMemristorEnergy = " + appliedMemristorEnergy);
     } else {
       this.appliedAmplitude = amplitude;

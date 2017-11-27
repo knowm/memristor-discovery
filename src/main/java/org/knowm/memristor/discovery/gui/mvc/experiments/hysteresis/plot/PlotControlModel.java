@@ -55,6 +55,7 @@ public class PlotControlModel extends ExperimentControlModel {
    *
    * @param listener
    */
+  @Override
   public void addListener(PropertyChangeListener listener) {
 
     swingPropertyChangeSupport.addPropertyChangeListener(listener);
@@ -77,7 +78,14 @@ public class PlotControlModel extends ExperimentControlModel {
 
   public void setK(double k) {
 
-    this.k = k;
+    if (k > 1) {
+      this.k = 1;
+    } else if (k < 0) {
+      this.k = 0;
+    } else {
+      this.k = k;
+    }
+
   }
 
   public Double getyMaxIV() {

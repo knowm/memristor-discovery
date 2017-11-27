@@ -1,13 +1,23 @@
 # Pulse App
 
-This app allows you to drive a memristor in series with a resistor with one or more square pulse waveforms and observe the response as either a time series (V1+/T and V2+/T), I-T or G-T plot, revealing the incremental conductance behavior of the memristor.
+The Pulse App allows you to drive a memristor in series with a resistor with one or more pulse waveforms and observe the instantaneous and post-puslse response. The instantaneous response is displayed on the upper chart as a time series of voltage (V1+ vs T) and (V2+ vs T), current (I vs T) or conductance (G vs T). The lower plot shows the conductance of the memristor, as measured by a low-voltage (.1V) pulse. The sampling rate of these measurments can be set on the control panel. 
+
+*note:*
+
+1. A memristor undergoes a dynamic internal change after receiving an impulse, and this response can extend *beyond* the timescale of the impulse. We have observed 'cascades', where the conductance of the memristor continues to fall (or climb) *after* application of a pulse. In addition, non-linearities in equipment and devices can result in measurement deviations if two different read voltages are used to measure conductance at two moments in time. Hence, the changes in a memristor is revealed when measurments are performed over time scales longer than the impulse and constant read voltages are used. 
+
+2. The energy estimations are calculated from the following equation: 
+
+AppliedEnergy = AppliedAmplitude * AppliedAmplitude / (MemristorResistance + SeriesResistorResistance + SwitchResistances) * PulseNumber * PulseWidth;
+
+
 
 ![](file://help/Pulse.png)
 
 ## Connections
 
-1.  Arbitrary Waveform Generator W1 (Analog Discovery 2's "W1" and "gnd" connectors) is connected across the memristor (M) and series resistor (R).
-2.  Oscilloscope Probe V1+ (Analog Discovery 2's "1+" and "1-" connectors) is connected across the memristor (M) and series resistor (Rs).
+1.  Arbitrary Waveform Generator W1 (AD2's W1 and Gnd connectors) are connected across the memristor M and series resistor R.
+2.  Oscilloscope Probe V1+ (AD2's 1+ and 1- connectors) is connected across the memristor M and series resistor Rs.
 3.  Oscilloscope Probe V2+ (Analog Discovery 2's "2+" and "2-" connectors) is connected across the series resistor (R).
 
 ## Memristor Selection
@@ -25,9 +35,7 @@ The series resistor provide two important functions:
 
 The control panel can be used to adjust the driver waveform of W1. The series resistor value control should correspond to the actual series resistance value used in the experimental setup in order to calculate an accurate current value.
 
-## Conductance Plot
-
-The conductance plot (G-V) uses a running average value, k, to smooth the data. A k value of 0 will eliminate all averaging. The larger k is, the more averaging will occur. If k is too big you may unknowingly hide important memristor behavior so it is best to keep k as low as possible.
+The Sample Rate determines how many seconds elapse between each read measurement. 
 
 ## Exporting Data
 
