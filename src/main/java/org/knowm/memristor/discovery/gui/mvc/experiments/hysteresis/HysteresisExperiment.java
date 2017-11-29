@@ -165,9 +165,10 @@ public class HysteresisExperiment extends Experiment {
             publish(new double[][]{rawdata1, voltage, conductance});
           }
         }
-        if (Math.random() < 0.01) {
-          getControlModel().swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_NEW_CONSOLE_LOG, "Hi", "Blah");
-        }
+        //testing the consol
+        //        if (Math.random() < 0.01) {
+        //          getControlModel().swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_NEW_CONSOLE_LOG, "Hi", "Blah");
+        //        }
       }
 
       return true;
@@ -213,7 +214,7 @@ public class HysteresisExperiment extends Experiment {
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
 
-//    System.out.println("evt.getPropertyName() = " + evt.getPropertyName());
+    //    System.out.println("evt.getPropertyName() = " + evt.getPropertyName());
 
     switch (evt.getPropertyName()) {
 

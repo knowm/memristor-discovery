@@ -39,7 +39,7 @@ public class SynapsePreferences extends ExperimentPreferences {
   private static final String PREFIX = "SYNAPSE_";
 
   public static final String WAVEFORM_INIT_STRING_KEY = PREFIX + "WAVEFORM_INIT_STRING_KEY";
-  public static final String WAVEFORM_INIT_STRING_DEFAULT_VALUE = "HalfSine";
+  public static final String WAVEFORM_INIT_STRING_DEFAULT_VALUE = "SquareSmooth";
 
   public static final String NUM_PULSES_INIT_KEY = PREFIX + "NUM_PULSES_INIT_KEY";
   public static final int NUM_PULSES_INIT_DEFAULT_VALUE = 2;

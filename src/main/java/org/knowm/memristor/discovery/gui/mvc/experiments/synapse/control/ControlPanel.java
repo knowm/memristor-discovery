@@ -72,6 +72,9 @@ public class ControlPanel extends ExperimentControlPanel {
   private final JLabel sampleRateLabel;
   private final JTextField sampleRateTextField;
   public JButton clearPlotButton;
+
+  public JButton initSynapseButton;
+
   /**
    * Constructor
    */
@@ -125,37 +128,7 @@ public class ControlPanel extends ExperimentControlPanel {
     c.gridy++;
     add(pulseWidthSlider, c);
 
-    // pulseWidthSliderNs = new JSlider(JSlider.HORIZONTAL, 500, 5000, 5000);
-    // pulseWidthSliderNs.setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
-    // pulseWidthSliderNs.setMinorTickSpacing(500);
-    // pulseWidthSliderNs.setPaintTicks(true);
-    // pulseWidthSliderNs.setPaintLabels(true);
-    // pulseWidthSliderNs.setSnapToTicks(true);
-    // labelTable = new Hashtable<>();
-    // labelTable.put(500, new JLabel(".5"));
-    // labelTable.put(1000, new JLabel("1"));
-    // labelTable.put(2000, new JLabel("2"));
-    // labelTable.put(3000, new JLabel("3"));
-    // labelTable.put(4000, new JLabel("4"));
-    // labelTable.put(5000, new JLabel("5"));
-    // pulseWidthSliderNs.setLabelTable(labelTable);
-    // c.gridy++;
-    // add(pulseWidthSliderNs, c);
-
-    // pulseNumberSlider = new JSlider(JSlider.HORIZONTAL, 1, 10, 1);
-    // pulseNumberSlider.setBorder(BorderFactory.createTitledBorder("Pulse Number"));
-    // pulseNumberSlider.setMinorTickSpacing(1);
-    // pulseNumberSlider.setPaintTicks(true);
-    // pulseNumberSlider.setPaintLabels(true);
-    // pulseNumberSlider.setSnapToTicks(true);
-    // labelTable = new Hashtable<>();
-    // labelTable.put(1, new JLabel("1"));
-    // labelTable.put(5, new JLabel("5"));
-    // labelTable.put(10, new JLabel("10"));
-    // pulseNumberSlider.setLabelTable(labelTable);
     c.gridy++;
-    // add(pulseNumberSlider, c);
-
     instructionRadioButtonGroup = new ButtonGroup();
     instructionRadioButtonBox = Box.createVerticalBox();
     instructionRadioButtonBox.setBorder(BorderFactory.createTitledBorder("Instruction"));
@@ -181,7 +154,13 @@ public class ControlPanel extends ExperimentControlPanel {
     c.gridy++;
     c.insets = new Insets(0, 5, 14, 5);
     add(sampleRateTextField, c);
-    
+
+    initSynapseButton = new JButton("Initialize Synapse");
+    initSynapseButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.gridy++;
+    c.insets = new Insets(0, 0, 0, 0);
+    add(initSynapseButton, c);
+
     clearPlotButton = new JButton("Clear Plot");
     clearPlotButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.gridy++;
@@ -193,10 +172,6 @@ public class ControlPanel extends ExperimentControlPanel {
     c.gridy++;
     c.insets = new Insets(0, 0, 0, 0);
     add(startStopButton, c);
-    
-    
-    
-    
 
     c.gridy++;
     JLabel logoLabel = new JLabel(Util.createImageIcon("img/logo_200.png"));
@@ -216,6 +191,7 @@ public class ControlPanel extends ExperimentControlPanel {
       enumeration.nextElement().setEnabled(enabled);
     }
     startStopButton.setEnabled(enabled);
+    initSynapseButton.setEnabled(enabled);
   }
 
   public JComboBox<Waveform> getWaveformComboBox() {

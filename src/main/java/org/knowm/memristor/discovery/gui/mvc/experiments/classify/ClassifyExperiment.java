@@ -150,7 +150,7 @@ public class ClassifyExperiment extends Experiment {
 
       } catch (
 
-          Exception e) {
+      Exception e) {
         e.printStackTrace();
       }
 
@@ -225,17 +225,17 @@ public class ClassifyExperiment extends Experiment {
   }
 
   private void learnAlways(SupervisedPattern pattern, double Vy) {
-    if (pattern.state) {//mistake
+    if (pattern.state) {
       aHaHController.executeInstruction(Instruction.FF_RH);
-    } else {//mistake
+    } else {
       aHaHController.executeInstruction(Instruction.FF_RL);
     }
   }
 
   private void learnOnMistakes(SupervisedPattern pattern, double Vy) {
-    if (Vy < 0 && pattern.state) {//mistake
+    if (Vy < 0 && pattern.state) {
       aHaHController.executeInstruction(Instruction.FF_RH);
-    } else if (Vy > 0 && !pattern.state) {//mistake
+    } else if (Vy > 0 && !pattern.state) {
       aHaHController.executeInstruction(Instruction.FF_RL);
     }
   }

@@ -48,6 +48,8 @@ public class FileUtils {
    */
   public static String readFileFromClasspathToString(String fileName) {
 
+    System.out.println("fileName=" + fileName);
+
     BufferedReader reader = new BufferedReader(new InputStreamReader(FileUtils.class.getClassLoader().getResourceAsStream(fileName)));
     String result = readerToString(reader);
 

@@ -60,7 +60,7 @@ public class ConsoleDialog extends JDialog {
 
   public void addConsoleMessage(String text) {
 
-    System.out.println("addConsoleMessage(" + text + ")");
+    // System.out.println("addConsoleMessage(" + text + ")");
 
     SwingUtilities.invokeLater(new Runnable() {
 

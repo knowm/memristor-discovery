@@ -1,6 +1,7 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.synapse;
 
 import org.knowm.memristor.discovery.DWFProxy;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlModel;
 import org.knowm.memristor.discovery.utils.Util;
@@ -34,49 +35,44 @@ public class AHaHController_21 {
       execute(Instruction.RHbdn);
 
       return;
-    }
-    else if (instruction == Instruction.FF_RL) {
+    } else if (instruction == Instruction.FF_RL) {
 
       execute(Instruction.FF);
       // NOTE: Delay between executions as measured by scope (@MANC Cave) is ~6ms
       execute(Instruction.RLadn);
 
       return;
-    }
-    else if (instruction == Instruction.FF_RA) {
+    } else if (instruction == Instruction.FF_RA) {
 
       execute(Instruction.FF);
 
       if (vy >= 0) {
         execute(Instruction.RLadn);
-      }
-      else {
+      } else {
         execute(Instruction.RHbdn);
       }
 
       return;
-    }
-    else if (instruction == Instruction.FF_RU) {
+    } else if (instruction == Instruction.FF_RU) {
 
       execute(Instruction.FF);
 
       if (vy >= 0) {
         execute(Instruction.RHbdn);
-      }
-      else {
+      } else {
         execute(Instruction.RLadn);
       }
 
       return;
-    }
-    else {
+    } else {
       execute(instruction);
     }
   }
 
   private void execute(Instruction instruction) {
 
-    System.out.println("Instruction: " + instruction);
+    getControlModel().swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_NEW_CONSOLE_LOG, null,
+        "Executing Instruction: " + instruction);
 
     // 1. the IO-bits are set
     dWFProxy.setUpper8IOStates(instruction.getBits());
@@ -86,8 +82,7 @@ public class AHaHController_21 {
     // hard-set the FFLV amplitude, as this is used for reads and should never change and be low that adaptation never occures.
     if (instruction == Instruction.FFLV) {
       W1Amplitude = .1f;
-    }
-    else if (instruction == Instruction.RFLV) {
+    } else if (instruction == Instruction.RFLV) {
       W1Amplitude = -.1f;
     }
 
@@ -95,7 +90,8 @@ public class AHaHController_21 {
 
     if (instruction == Instruction.FFLV) {
 
-      dWFProxy.getDwf().startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency() * 300, 300 * 1);
+      dWFProxy.getDwf().startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency() * 300,
+          300 * 1);
       dWFProxy.waitUntilArmed();
       dWFProxy.getDwf().setCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, 1, W1);
       dWFProxy.getDwf().startPulseTrain(DWF.WAVEFORM_CHANNEL_1);
@@ -103,13 +99,13 @@ public class AHaHController_21 {
       boolean success = dWFProxy.capturePulseData(controlModel.getCalculatedFrequency(), 1);
       if (success) {
         setVy(W1Amplitude);
-      }
-      else {
-        System.out.println("capture failed!");
+      } else {
+        getControlModel().swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_NEW_CONSOLE_LOG, null,
+            "Capture has failed! This is usually due to noise/interference. Try a shorter cable or use a magnetic choke.");
+        //System.out.println("capture failed!");
       }
 
-    }
-    else {
+    } else {
       dWFProxy.getDwf().setCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, 1, W1);
       // note w2 amplitude is zero (gnd).
       double[] W2 = WaveformUtils.generateCustomWaveform(controlModel.getWaveform(), 0.0, controlModel.getCalculatedFrequency());
@@ -138,7 +134,7 @@ public class AHaHController_21 {
     double vb = peakV2;
     this.vy = (vb - peakV1 - (W1Amplitude - peakV1) / 2.0) / (W1Amplitude - peakV1);
 
-    System.out.println("vy=" + vy);
+    //System.out.println("vy=" + vy);
 
     if (peakV1 > MIN_V_RESOLUTION) {
 
@@ -146,33 +142,35 @@ public class AHaHController_21 {
       double va = W1Amplitude - ExperimentPreferences.R_SWITCH * I;
       double vc = peakV1 + ExperimentPreferences.R_SWITCH * I;
 
-      System.out.println("va=" + va);
-      System.out.println("vb=" + vb);
-      System.out.println("vc=" + vc);
-      System.out.println("I=" + I);
+      //      System.out.println("va=" + va);
+      //      System.out.println("vb=" + vb);
+      //      System.out.println("vc=" + vc);
+      //      System.out.println("I=" + I);
 
       if ((va - vb > MIN_V_RESOLUTION)) {
         this.ga = I / (va - vb);
 
-      }
-      else {
-        System.out.println("voltage drop across Ma too small too measure.");
+      } else {
+        getControlModel().swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_NEW_CONSOLE_LOG, null,
+            "Voltage drop across Ma too small too measure.");
+        // System.out.println("voltage drop across Ma too small too measure.");
         this.ga = Double.NaN;
       }
 
       if (((vb - vc) > MIN_V_RESOLUTION)) {
         this.gb = 1 / ((vb - vc) / I);
 
-      }
-      else {
-        System.out.println("voltage drop across Mb too small too measure.");
+      } else {
+        getControlModel().swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_NEW_CONSOLE_LOG, null,
+            "Voltage drop across Mb too small too measure.");
+        //System.out.println("voltage drop across Mb too small too measure.");
         this.gb = Double.NaN;
       }
 
-    }
-    else {
-
-      System.out.println("Current too low to measure. peakV1=" + peakV1);
+    } else {
+      getControlModel().swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_NEW_CONSOLE_LOG, null,
+          "Current too low to measure. peakV1=" + String.format("%.4f", (double) peakV1));
+      //System.out.println("Current too low to measure. peakV1=" + peakV1);
       this.ga = Double.NaN;
       this.gb = Double.NaN;
     }
@@ -182,10 +180,9 @@ public class AHaHController_21 {
   public enum Instruction {
 
     /*
-     * NOTE: Charge injection from the MUX can affect voltage across memristors when routing the scopes.
-     * The scope configuration [1011] is chosen because this is the configuration used to measure the state of the synapse,
-     * resulting in minor charge injection. It is unclear if charge injection for waveform generators is an issue, but currently (7/29/2017)
-     * appears to not be.
+     * NOTE: Charge injection from the MUX can affect voltage across memristors when routing the scopes. The scope configuration [1011] is chosen
+     * because this is the configuration used to measure the state of the synapse, resulting in minor charge injection. It is unclear if charge
+     * injection for waveform generators is an issue, but currently (7/29/2017) appears to not be.
      */
 
     // Order ==> W2, W1, 2+, 1+
@@ -195,18 +192,10 @@ public class AHaHController_21 {
     // 11 B
 
     // @formatter:off
-    FFLV(0b0001_1011_0000_0000, .1f),
-    FF_RL(0b1001_1011_0000_0000, -1),
-    FF_RH(0b1011_1011_0000_0000, 1f),
-    FF_RU(0b1011_1011_0000_0000, 1f),
-    FF_RA(0b1011_1011_0000_0000, 1f),
-    FF(0b1101_1011_0000_0000, 1.0f),
-    RHbdn(0b1011_1011_0000_0000, 1f), // w2-->Y, w1-->B
+    FFLV(0b0001_1011_0000_0000, .1f), FF_RL(0b1001_1011_0000_0000, -1), FF_RH(0b1011_1011_0000_0000, 1f), FF_RU(0b1011_1011_0000_0000,
+        1f), FF_RA(0b1011_1011_0000_0000, 1f), FF(0b1101_1011_0000_0000, 1.0f), RHbdn(0b1011_1011_0000_0000, 1f), // w2-->Y, w1-->B
     RLadn(0b1001_1011_0000_0000, -1f), // w2-->Y, w1-->A
-    RFLV(0b0001_1011_0000_0000, -.1f),
-    RF(0b1101_1011_0000_0000, -1.0f),
-    RHaup(0b1001_1011_0000_0000, 1),
-    RLbup(0b1011_1011_0000_0000, -1);
+    RFLV(0b0001_1011_0000_0000, -.1f), RF(0b1101_1011_0000_0000, -1.0f), RHaup(0b1001_1011_0000_0000, 1), RLbup(0b1011_1011_0000_0000, -1);
 
     // @formatter:on
     // RZ;
@@ -237,8 +226,7 @@ public class AHaHController_21 {
     // this is a quick way to deal with measurement noise.
     if (vy > .5) {
       return .5;
-    }
-    else if (vy < -.5) {
+    } else if (vy < -.5) {
       return -.5;
     }
 
