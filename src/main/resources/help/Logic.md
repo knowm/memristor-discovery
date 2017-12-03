@@ -8,7 +8,7 @@ This experiment requires the discrete 2-1 X 8 AHaH Node adapter board and at lea
 
 ![](file://help/MDV1X_21AHaHX3R_Adaptor.png)
 
-The adapter board can be used to form 8 distinct 2-1 synapses from 2, 4 or 6 discrete memristor chips. Use 4 or 6 chips for 2X and 3X redundancy, respectivly. To use the adapter board, remove all jumpers and plug the adapter board in over the dip socket.
+The adapter board can be used to form 8 distinct 2-1 synapses from 2, 4 or 6 discrete memristor chips. Use 4 or 6 chips for 2X and 3X redundancy, respectively. To use the adapter board, remove all jumpers and plug the adapter board in over the dip socket.
 
 ## Controls
 
