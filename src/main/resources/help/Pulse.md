@@ -1,6 +1,6 @@
 # Pulse App
 
-The Pulse App allows you to drive a memristor in series with a resistor with one or more pulse waveforms and observe the instantaneous and post-puslse response. The instantaneous response is displayed on the upper chart as a time series of voltage (V1+ vs T) and (V2+ vs T), current (I vs T) or conductance (G vs T). The lower plot shows the conductance of the memristor, as measured by a low-voltage (.1V) pulse. The sampling rate of these measurments can be set on the control panel. 
+The Pulse App allows you to drive a memristor in series with a resistor with one or more pulse waveforms and observe the instantaneous and post-pulse response. The instantaneous response is displayed on the upper chart as a time series of voltage (V1+ vs T) and (V2+ vs T), current (I vs T) or conductance (G vs T). The lower plot shows the conductance of the memristor, as measured by a low-voltage (.1V) pulse. The sampling rate of these measurements can be set on the control panel. 
 
 *note:*
 
@@ -12,13 +12,18 @@ AppliedEnergy = AppliedAmplitude * AppliedAmplitude / (MemristorResistance + Ser
 
 
 
-![](file://help/Pulse.png)
+![](file://Pulse.png)
 
 ## Connections
 
 1.  Arbitrary Waveform Generator W1 (AD2's W1 and Gnd connectors) are connected across the memristor M and series resistor R.
 2.  Oscilloscope Probe V1+ (AD2's 1+ and 1- connectors) is connected across the memristor M and series resistor Rs.
 3.  Oscilloscope Probe V2+ (Analog Discovery 2's "2+" and "2-" connectors) is connected across the series resistor (R).
+
+
+## V1.X Jumper Connections
+
+![](file://HysteresisV1Board.png)
 
 ## Memristor Selection
 

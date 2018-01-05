@@ -2,15 +2,19 @@
 
 This app allows you to drive a memristor in series with a resistor with a sinusoidal or triangle waveform and observe the response as either a time series (V1+ vs T) and (V2+ vs T), (I vs V) or (G vs V) plot, revealing the signature hysteresis behavior of the memristor. The user can adjust the input signal voltage, frequency and offset and observe the response in real-time.
 
-![](file://help/Hysteresis.png)
+![](file://Hysteresis.png)
 
 ## Connections
 
 1.  Arbitrary Waveform Generator W1 (AD2's W1 and Gnd connectors) is connected across the memristor (M) and series resistor (R).
 2.  Oscilloscope Probe V1+ (AD2's 1+ and 1- connectors) is connected across the memristor (M) and series resistor (Rs).
-3.  Oscilloscope Probe V2+ (AD2's 2+ and 2- connectors) is connected across the series resistor (R).
+3.  Oscilloscope Probe V2+ (AD2's 2+ and 2- connectors) is connected across the series resistor ( R ).
 
 note: AD2 = Analog Discovery 2
+
+## V1.X Jumper Connections
+
+![](file://HysteresisV1Board.png)
 
 ## Memristor Selection
 
