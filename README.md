@@ -18,16 +18,16 @@ See [Releases](https://github.com/knowm/memristor-discovery/releases) for downlo
 
 ## Install Java 8 Runtime Environment
 
-### Option #1: Download and Install From Oracle
+### Option #1: Download and Install Java 8 From Oracle
 
 Download the Java SE Runtime Environment 8 from [Oracle's Website](http://www.oracle.com/technetwork/java/javase/downloads/jre8-downloads-2133155.html) and run the installer.
 
-### Option #2: Install via Homebrew on Mac OSX
+### Option #2: Install Java 8 via Homebrew on Mac OSX
  
     brew update
     brew cask install java
 
-### Option #3: Install on Ubuntu
+### Option #3: Install Java 8 on Ubuntu
 
     sudo add-apt-repository -y ppa:webupd8team/java
     sudo apt-get update
