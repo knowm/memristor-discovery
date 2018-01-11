@@ -7,7 +7,7 @@ Notes:
 1. The conductance of each memristor in the synapse is calculated by determining a voltage drop across the series resistor during a FFLV operation as well as the voltage drop across each memristor. If the current is very low or the series resistance is low, the voltage drop may not be sufficient to make a measurement as it falls below the resolution of the AD2. In this case, the data is not recorded in the chart and a message is printed to the consol (Menu-->Help--Consol). The synaptic state, Vy, can be measured at all times even if the current is low, although it may become suseptible to noise for very low currents..
 2. RC effects can render the 2-1 synapse partially or totally non-functional if memristors have not been initialized properly. The memristors should been conditioned into a higher conductance state of .1 to 1mS. If both memristors are in a low conductance state, capacitive charge and discharging effects on the Y node become significant, to the point where the voltage polarity across the synapse is reversed. For an FF operation this can lead to an "erase" following a "write", which in turn will undo any conductance increase. That is, the conductance of the memristors will rise during the first part of the pulse, but when the drive signal is removed, capacitive discharge inverts the polarity and causes memristor A to erase. This can have the effect of driving the synaptic state (Vy) low.
 
-![](file://SynapseInitialization.png)
+![](file://help/SynapseInitialization.png)
 
 ## Synapse Initialization
 
@@ -47,7 +47,7 @@ The user must configure the jumpers in such a manner as to form a 2-1 synapse wi
 The discrete 2-1 X 8 AHaH Node adapter board can be used to form 8 distinct 2-1 synapses from 2, 4 or 6 discrete memristor chips. To use the adapter board, remove all jumpers and plug the adapter board in over the dip socket.
 
 
-![](file://MDV1X_21AHaHX3R_Adaptor.png)
+![](file://help/MDV1X_21AHaHX3R_Adaptor.png)
 
 
 ### Method 3: 2-1 X 5 Synapse chips
@@ -55,7 +55,7 @@ The discrete 2-1 X 8 AHaH Node adapter board can be used to form 8 distinct 2-1 
 Configure the jumpers as shown and wire to the 2-1 synapse junction pin to the "Y" node. 
 
 
-![](file://MDV21SynapseAppWith21SynapseChip.png)
+![](file://help/MDV21SynapseAppWith21SynapseChip.png)
 
 
 ## Synapse Selection
@@ -83,7 +83,7 @@ Use the jumpers on the right to select the series resistor and route it to groun
 
 The control panel can be used to adjust the driver waveform, pulse width and kT-RAM instruction. Each instruction applies a voltage pulse across the synapse in a different way given by the table below. Please use the following circuit for reference.
 
-![](file://ABYCircuit.png)
+![](file://help/ABYCircuit.png)
 
 ### Atomic Instructions
 
