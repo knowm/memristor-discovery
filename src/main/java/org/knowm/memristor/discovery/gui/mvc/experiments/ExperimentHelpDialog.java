@@ -50,12 +50,12 @@ public class ExperimentHelpDialog {
    * Constructor
    *
    * @param parentFrame
-   * @param appName
+   * @param experimentName
    */
-  public ExperimentHelpDialog(JFrame parentFrame, String appName) {
+  public ExperimentHelpDialog(JFrame parentFrame, String experimentName) {
 
 
-    String markdownString = FileUtils.readFileFromClasspathToString("help" + File.separatorChar + appName + ".md");
+    String markdownString = FileUtils.readFileFromClasspathToString("help" + File.separatorChar + experimentName + ".md");
     Parser parser = Parser.builder().build();
     HtmlRenderer renderer = HtmlRenderer.builder().build();
     Node document = parser.parse(markdownString);
@@ -77,7 +77,7 @@ public class ExperimentHelpDialog {
     sp.setPreferredSize(new Dimension(1000, 800));
 
 
-    final JDialog dialog = new JDialog(parentFrame, appName + " Help", false);
+    final JDialog dialog = new JDialog(parentFrame, experimentName + " Help", false);
     dialog.getContentPane().add(sp);
     dialog.pack();
     dialog.setVisible(true);
