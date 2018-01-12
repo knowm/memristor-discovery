@@ -6,7 +6,7 @@ This app performs unsupervised (FFRU or 'converge' ) and anti-unsuperved (FFRA '
 
 This experiment requires the discrete 2-1 X 8 AHaH Node adapter board and at least (2) discrete 16-Pin DIP memristor chips.
 
-![](file://help/MDV1X_21AHaHX3R_Adaptor.png)
+![](MDV1X_21AHaHX3R_Adaptor.png)
 
 The adapter board can be used to form 8 distinct 2-1 synapses from 2, 4 or 6 discrete memristor chips. Use 4 or 6 chips for 2X and 3X redundancy, respectively. To use the adapter board, remove all jumpers and plug the adapter board in over the dip socket.
 

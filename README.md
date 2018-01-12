@@ -92,8 +92,5 @@ Maven is used to build the executable jar and it will contain all the dependenci
     mvn clean install
     java -jar memristor-discovery.jar
     
-## Design Notes
-
-1. Help images should be 500 x 500 px.
 
     

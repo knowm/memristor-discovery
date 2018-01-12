@@ -12,7 +12,7 @@ AppliedEnergy = AppliedAmplitude * AppliedAmplitude / (MemristorResistance + Ser
 
 
 
-![](file://help/Pulse.png)
+![](Pulse.png)
 
 ## Connections
 
@@ -23,7 +23,7 @@ AppliedEnergy = AppliedAmplitude * AppliedAmplitude / (MemristorResistance + Ser
 
 ## V1.X Jumper Connections
 
-![](file://help/HysteresisV1Board.png)
+![](HysteresisV1Board.png)
 
 ## Memristor Selection
 

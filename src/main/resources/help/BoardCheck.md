@@ -6,7 +6,7 @@ This app allows you to self-test the functionality of your board and memristor c
 2. 1-4 Muxes  via **1-4 Mux Board Test** Button 
 3. Knowm Discrete Memristor chips. via **Mem-Inline Chip** Button 
 
-![](file://help/BoardCheck.png)
+![](BoardCheck.png)
 
 ## Switch Board Test
 
