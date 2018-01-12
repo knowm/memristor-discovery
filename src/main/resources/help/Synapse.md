@@ -1,4 +1,4 @@
-# Synapse App
+# Synapse Experiment
 
 This app allows you to drive a 2-1 AHaH synapse with elemental kT-RAM instructions and observe a continuous response in synaptic state and synaptic pair conductances via repeated `FFLV` read instructions. When the "Start" button is clicked or the "s" key is pressed , the selected instruction is executed, followed by continuous read instructions executed at the given sample rate. Read instructions will be read until the "Stop" button is clicked or the "s" key is pressed, at which point a new instruction can be selected and the process repeated. The pulse shape, amplitude and width can be varied.
 
@@ -34,7 +34,7 @@ This experiment can be run in multiple configurations depending on available mem
 The user must configure the jumpers in such a manner as to form a 2-1 synapse with available memristors on the discrete chip. While the configuration below will form a 2-1 synapse from memristors 1 and 2, the user can adapt this soas to form a synpase from any other two memristors on the discrete chip. 
 
 
-![](file://Synapse.png)
+![](file://help/Synapse.png)
 
 
 1. The jumper on the left side of memristor #1 connects to node `A`.

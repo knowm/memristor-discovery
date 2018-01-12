@@ -1,4 +1,4 @@
-# Classify App
+# Classify Experiment
 
 This app performs online supervised classification with an 8 input AHaH node. The top plot displays an exponential moving average of the classification accuracy while the bottom plot displays the measured synaptic states after each training epoch. 
 

@@ -1,4 +1,4 @@
-# Conductance App
+# Conductance Experiment
 
 This app allows you to drive a memristor in series with a resistor with continual square pulse waveforms until the memristor is set to the desired conductance value. An experiment can also be run that periodically reads the conductance of the memristor below the threshold voltage in order to capture the decay and endurance behavior of the memristors. Before setting the memristor to a desired conductance, make sure to reset the memristor using a negative potential pulse.
 

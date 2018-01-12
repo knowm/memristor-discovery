@@ -38,13 +38,15 @@ Download the Java SE Runtime Environment 8 from [Oracle's Website](http://www.or
     
 ## Install DWF Framework on Mac OSX
 
-Move the dwf.framework to `/Library/Frameworks`, as indicated during the install of Waveforms from the DMG:
+Download Waveforms .dmg file from here: <https://reference.digilentinc.com/reference/software/waveforms/waveforms-3/start>
+
+Move the dwf.framework to `/Library/Frameworks` and Waveforms 2015 to `Applications`, as indicated during the install of Waveforms from the DMG:
 
 ![](./_img/Framework.png)
 
 ## Install DWF Framework on Linux
 
-Download .deb files from here: <https://reference.digilentinc.com/reference/software/waveforms/waveforms-3/start>
+Download Waveforms .deb file from here: <https://reference.digilentinc.com/reference/software/waveforms/waveforms-3/start>
 
 
     sudo mv ~/Downloads/digilent.adept.runtime_2.16.5-amd64.deb /var/cache/apt/archives

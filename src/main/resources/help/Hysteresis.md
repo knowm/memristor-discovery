@@ -1,4 +1,4 @@
-# Hysteresis App
+# Hysteresis Experiment
 
 This app allows you to drive a memristor in series with a resistor with a sinusoidal or triangle waveform and observe the response as either a time series (V1+ vs T) and (V2+ vs T), (I vs V) or (G vs V) plot, revealing the signature hysteresis behavior of the memristor. The user can adjust the input signal voltage, frequency and offset and observe the response in real-time.
 

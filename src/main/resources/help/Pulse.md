@@ -1,4 +1,4 @@
-# Pulse App
+# Pulse Experiment
 
 The Pulse App allows you to drive a memristor in series with a resistor with one or more pulse waveforms and observe the instantaneous and post-pulse response. The instantaneous response is displayed on the upper chart as a time series of voltage (V1+ vs T) and (V2+ vs T), current (I vs T) or conductance (G vs T). The lower plot shows the conductance of the memristor, as measured by a low-voltage (.1V) pulse. The sampling rate of these measurements can be set on the control panel. 
 
@@ -12,7 +12,7 @@ AppliedEnergy = AppliedAmplitude * AppliedAmplitude / (MemristorResistance + Ser
 
 
 
-![](file://Pulse.png)
+![](file://help/Pulse.png)
 
 ## Connections
 

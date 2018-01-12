@@ -3,7 +3,7 @@
  * and is also available under alternative licenses negotiated directly
  * with Knowm, Inc.
  *
- * Copyright (c) 2016-2017 Knowm Inc. www.knowm.org
+ * Copyright (c) 2016-2018 Knowm Inc. www.knowm.org
  *
  * This package also includes various components that are not part of
  * Memristor-Discovery itself:
@@ -48,7 +48,7 @@ public class FileUtils {
    */
   public static String readFileFromClasspathToString(String fileName) {
 
-    System.out.println("fileName=" + fileName);
+//    System.out.println("fileName=" + fileName);
 
     BufferedReader reader = new BufferedReader(new InputStreamReader(FileUtils.class.getClassLoader().getResourceAsStream(fileName)));
     String result = readerToString(reader);

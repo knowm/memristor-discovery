@@ -3,7 +3,7 @@
  * and is also available under alternative licenses negotiated directly
  * with Knowm, Inc.
  *
- * Copyright (c) 2016-2017 Knowm Inc. www.knowm.org
+ * Copyright (c) 2016-2018 Knowm Inc. www.knowm.org
  *
  * This package also includes various components that are not part of
  * Memristor-Discovery itself:
@@ -130,8 +130,7 @@ public class DWFProxy {
 
   private class AD2StartupWorker extends SwingWorker<Boolean, Void> {
 
-    @Override
-    protected Boolean doInBackground() throws Exception {
+    @Override protected Boolean doInBackground() {
 
       // ///////////////////////////////////////////////////////////
       // Device ///////////////////////////////////////////////////
@@ -192,8 +191,7 @@ public class DWFProxy {
       return isAD2Running;
     }
 
-    @Override
-    protected void done() {
+    @Override protected void done() {
 
       swingPropertyChangeSupport.firePropertyChange(DWFProxy.AD2_STARTUP_CHANGE, !isAD2Running, isAD2Running);
     }

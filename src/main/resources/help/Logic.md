@@ -1,4 +1,4 @@
-# Logic App
+# Logic Experiment
 
 This app performs unsupervised (FFRU or 'converge' ) and anti-unsuperved (FFRA 'reset') AHaH operations over a two-input AHaH node. The synaptic state is plotted as a point on the plane (x,y)=(Synapse A, Synapse B). The state of a synapse is defined as the output voltage Vy when the synapse is selected in isolation and the FFLV instruction is executed.
 

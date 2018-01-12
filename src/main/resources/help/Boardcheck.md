@@ -1,4 +1,4 @@
-# BoardCheck App
+# BoardCheck Experiment
 
 This app allows you to self-test the functionality of your board and memristor chips. Paramount to accurate measurement is validated equipment. This app enables you to check the functionality of:
 
