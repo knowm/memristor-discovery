@@ -50,6 +50,7 @@ public class ControlPanel extends ExperimentControlPanel {
   public JButton meminlineTestButton;
   public JButton muxTestButton;
   public JButton switchTestButton;
+  public JButton aHAH12X7TestButton;
 
   /**
    * Constructor
@@ -76,6 +77,12 @@ public class ControlPanel extends ExperimentControlPanel {
     add(meminlineTestButton, c);
     c.gridy++;
 
+    aHAH12X7TestButton = new JButton("1-2 X 7 AHaH Chip Test");
+    aHAH12X7TestButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.insets = new Insets(0, 0, 0, 0);
+    add(aHAH12X7TestButton, c);
+    c.gridy++;
+
     muxTestButton = new JButton("1-4 Mux Board Test (V1.x)");
     muxTestButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.insets = new Insets(0, 0, 0, 0);
@@ -98,7 +105,7 @@ public class ControlPanel extends ExperimentControlPanel {
     meminlineTestButton.setEnabled(enabled);
     muxTestButton.setEnabled(enabled);
     switchTestButton.setEnabled(enabled);
-
+    aHAH12X7TestButton.setEnabled(enabled);
   }
 
 }
