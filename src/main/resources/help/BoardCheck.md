@@ -6,7 +6,6 @@ This app allows you to self-test the functionality of your board and memristor c
 2. 1-4 Muxes  via **1-4 Mux Board Test** Button 
 3. Knowm Discrete Memristor chips. via **Mem-Inline Chip** Button 
 
-![](BoardCheck.png)
 
 ## Switch Board Test
 
@@ -57,6 +56,16 @@ R0 > MEMINLINE_MAX_R && R1 > MEMINLINE_MAX_R && R2 > MEMINLINE_MAX_R
 q1 < MEMINLINE_MIN_Q
           
 q2 < MEMINLINE_MIN_Q
+
+
+# 1-2 X 7 AHaH Node Chip Test
+
+This test applies a sequence of pulses one the 'Y' node and measures the response at nodes 'A' and 'B' to determine if the memristors in the chip are functional, just like the Mem-Inline Chip.
+
+Board must be configured as follows:
+
+![](BoardCheck12X7AHaHConfig.png)
+
 
 
 ## Preferences

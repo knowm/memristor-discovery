@@ -50,35 +50,35 @@ The dataset defines the supervised learning problem. Each dataset is defines as 
 
 **Ortho2Pattern**
 
-[0, 1, 2, 3]:True, [4, 5, 6, 7]:False
+[0, 1, 2, 3]-->true, [4, 5, 6, 7]-->false
 
 **AntiOrtho2Pattern**
 
-[0, 1, 2, 3]:false, [4, 5, 6, 7]:true
+[0, 1, 2, 3]-->false, [4, 5, 6, 7]-->true
 
 **Ortho4Pattern**
 
-[0, 1]:false,[2, 3]:false,[4, 5]:true,[6, 7]true
+[0, 1]-->false,[2, 3]-->false,[4, 5]-->true,[6, 7]-->true
 
 **AntiOrtho4Pattern**
 
-[0, 1]:true,[2, 3]:true,[4, 5]:false,[6, 7]false
+[0, 1]-->true,[2, 3]-->true,[4, 5]-->false,[6, 7]-->false
 
 **Ortho8Pattern**
 
-[0]:T,[1]:T,[2]:T,[3]:T,[4]:F,[5]:F,[6]:F,[7]:F
+[0]-->true,[1]-->true,[2]-->true,[3]-->true,[4]-->false,[5]-->false,[6]-->false,[7]-->false
 
 **AntiOrtho8Pattern**
 
-[0]:F,[1]:F,[2]:F,[3]:F,[4]:T,[5]:T,[6]:T,[7]:T
+[0]-->false,[1]-->false,[2]-->false,[3]-->false,[4]-->true,[5]-->true,[6]-->true,[7]-->true
 
 **TwoPattern25Frustrated**
 
-[0, 1, 2, 3, 5]:T,[0, 1, 2, 3, 5]:F
+[0, 1, 2, 3, 5]-->true,[2, 4, 5, 6, 7]-->false
 
 **TwoPattern2345Frustrated**
 
-[0, 1, 2, 3, 4, 5]:T,[4, 5, 6, 7, 2, 3]:F
+[0, 1, 2, 3, 4, 5]-->true,[2, 3, 4, 5, 6, 7]-->false
 
 
 ### Train Epochs
