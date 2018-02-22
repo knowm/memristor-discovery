@@ -66,7 +66,13 @@ Board must be configured as follows:
 
 ![](BoardCheck12X7AHaHConfig.png)
 
+# 1-2 & 1-2i Synapase Chip Test
 
+This test applies a sequence of pulses one the 'Y' node and measures the response at nodes 'A' and 'B' to determine if the memristors in the chip are functional, just like the Mem-Inline Chip.
+
+Board must be configured as follows:
+
+![](BoardCheck12SynapseConfig.png)
 
 ## Preferences
 

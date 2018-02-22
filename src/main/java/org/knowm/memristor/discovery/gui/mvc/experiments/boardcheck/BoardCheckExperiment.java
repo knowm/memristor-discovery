@@ -58,6 +58,8 @@ public class BoardCheckExperiment extends Experiment {
   private SwingWorker muxTestWorker;
   private SwingWorker switchTestWorker;
   private SwingWorker clearConsolWorker;
+  private SwingWorker synapse12TestWorker;
+  private SwingWorker synapse12iTestWorker;
 
   private final ControlModel controlModel = new ControlModel();
 
@@ -66,10 +68,12 @@ public class BoardCheckExperiment extends Experiment {
 
   private final static float V_READ = .1f;
   private final static float V_WRITE = 1.5f;
-  private final static float V_RESET = -1.5f;
+  private final static float V_HARD_WRITE = 2.0f;
+  private final static float V_RESET = -2f;
   private final static float V_MEMINLINE_HARD_RESET = -2.5f;
 
-  private float MEMINLINE_MIN_Q = 2;// minimum ratio between erase/write resistance
+  private float MIN_Q = 2;// minimum ratio between erase/write resistance
+
   private float MEMINLINE_MIN_R = 10;// if all state are below this (kiloohms), its stuck low
   private float MEMINLINE_MAX_R = 100;// if all state are above this (kilohms), its stuck low
   private float MEMINLINE_MIN_SWITCH_OFF = 1000;// if switch is below this resistance (kOhm) when OFF then its a bad switch
@@ -112,6 +116,32 @@ public class BoardCheckExperiment extends Experiment {
    */
   @Override
   public void doCreateAndShowGUI() {
+
+    controlPanel.synapse12iTestButton.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+
+        // System.out.println("1-2 X 7 AHaHX Test Button button was clicked. e=" + e.toString());
+
+        synapse12iTestWorker = new Synapse12iTestWorker();
+        synapse12iTestWorker.execute();
+
+      }
+    });
+
+    controlPanel.synapse12TestButton.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+
+        // System.out.println("1-2 X 7 AHaHX Test Button button was clicked. e=" + e.toString());
+
+        synapse12TestWorker = new Synapse12TestWorker();
+        synapse12TestWorker.execute();
+
+      }
+    });
 
     controlPanel.aHAH12X7TestButton.addActionListener(new ActionListener() {
 
@@ -503,28 +533,28 @@ public class BoardCheckExperiment extends Experiment {
         //          System.out.println(Arrays.toString(synapses_0[i]));
         //        }
         //RESET
-        applyPulse(V_RESET);
+        applyPulse(V_MEMINLINE_HARD_RESET);
 
         // READ 1
         float[][] synapses_1 = measureSynapsePairResistances(V_READ);//resistances of each pair
 
-        consolPanel.println("RESET: ");
-        for (int i = 0; i < synapses_1.length; i++) {
-          consolPanel.println(i + "<[" + prependWhiteSpace(ohmFormat.format(synapses_1[i][0]), 13) + ","
-              + prependWhiteSpace(ohmFormat.format(synapses_1[i][1]), 13) + "]>");
-        }
+        //        consolPanel.println("RESET: ");
+        //        for (int i = 0; i < synapses_1.length; i++) {
+        //          consolPanel.println(i + "<[" + prependWhiteSpace(ohmFormat.format(synapses_1[i][0]), 13) + ","
+        //              + prependWhiteSpace(ohmFormat.format(synapses_1[i][1]), 13) + "]>");
+        //        }
 
         //WRITE
-        applyPulse(V_WRITE);
+        applyPulse(V_HARD_WRITE);
 
         // READ 2
         float[][] synapses_2 = measureSynapsePairResistances(V_READ);//resistances of each pair
 
-        consolPanel.println("WRITE: ");
-        for (int i = 0; i < synapses_2.length; i++) {
-          consolPanel.println(i + "<[" + prependWhiteSpace(ohmFormat.format(synapses_2[i][0]), 13) + ","
-              + prependWhiteSpace(ohmFormat.format(synapses_2[i][1]), 13) + "]>");
-        }
+        //        consolPanel.println("WRITE: ");
+        //        for (int i = 0; i < synapses_2.length; i++) {
+        //          consolPanel.println(i + "<[" + prependWhiteSpace(ohmFormat.format(synapses_2[i][0]), 13) + ","
+        //              + prependWhiteSpace(ohmFormat.format(synapses_2[i][1]), 13) + "]>");
+        //        }
 
         //RESET
         applyPulse(V_RESET);
@@ -532,11 +562,11 @@ public class BoardCheckExperiment extends Experiment {
         // READ 1
         float[][] synapses_3 = measureSynapsePairResistances(V_READ);//resistances of each pair
 
-        consolPanel.println("RESET: ");
-        for (int i = 0; i < synapses_3.length; i++) {
-          consolPanel.println(i + "<[" + prependWhiteSpace(ohmFormat.format(synapses_3[i][0]), 13) + ","
-              + prependWhiteSpace(ohmFormat.format(synapses_3[i][1]), 13) + "]>");
-        }
+        //        consolPanel.println("RESET: ");
+        //        for (int i = 0; i < synapses_3.length; i++) {
+        //          consolPanel.println(i + "<[" + prependWhiteSpace(ohmFormat.format(synapses_3[i][0]), 13) + ","
+        //              + prependWhiteSpace(ohmFormat.format(synapses_3[i][1]), 13) + "]>");
+        //        }
 
         //determine Q1 and Q2
 
@@ -551,23 +581,45 @@ public class BoardCheckExperiment extends Experiment {
           Q2[i] = new float[]{(synapses_3[i][0] / synapses_2[i][0]), (synapses_3[i][1] / synapses_2[i][1])};
         }
 
-        consolPanel.println("Q1: ");
-        for (int i = 0; i < Q1.length; i++) {
-          consolPanel
-              .println(i + "<[" + prependWhiteSpace(qFormat.format(Q1[i][0]), 13) + "," + prependWhiteSpace(qFormat.format(Q1[i][1]), 13) + "]>");
-        }
-        consolPanel.println("Q2: ");
-        for (int i = 0; i < Q2.length; i++) {
-          consolPanel
-              .println(i + "<[" + prependWhiteSpace(qFormat.format(Q2[i][0]), 13) + "," + prependWhiteSpace(qFormat.format(Q2[i][1]), 13) + "]>");
-        }
-        consolPanel.println("RESULT: ");
+        //        consolPanel.println("Q1: ");
+        //        for (int i = 0; i < Q1.length; i++) {
+        //          consolPanel
+        //              .println(i + "<[" + prependWhiteSpace(qFormat.format(Q1[i][0]), 13) + "," + prependWhiteSpace(qFormat.format(Q1[i][1]), 13) + "]>");
+        //        }
+        //        consolPanel.println("Q2: ");
+        //        for (int i = 0; i < Q2.length; i++) {
+        //          consolPanel
+        //              .println(i + "<[" + prependWhiteSpace(qFormat.format(Q2[i][0]), 13) + "," + prependWhiteSpace(qFormat.format(Q2[i][1]), 13) + "]>");
+        //        }
+        //        consolPanel.println("RESULT: ");
+
+        int numGood = 0;
         for (int i = 0; i < Q1.length; i++) {
 
-          String a = (Q1[i][0] > MEMINLINE_MIN_Q && Q2[i][0] > MEMINLINE_MIN_Q) == true ? "PASS" : "FAIL";
-          String b = (Q1[i][1] > MEMINLINE_MIN_Q && Q2[i][1] > MEMINLINE_MIN_Q) == true ? "PASS" : "FAIL";
+          boolean aGood = ((Q1[i][0] > 1) && (Q2[i][0] > 1)) && (Q1[i][0] > MIN_Q || Q2[i][0] > MIN_Q);
+          boolean bGood = ((Q1[i][1] > 1) && (Q2[i][1] > 1)) && (Q1[i][1] > MIN_Q || Q2[i][1] > MIN_Q);
 
-          consolPanel.println(i + "<[" + prependWhiteSpace(a, 13) + "," + prependWhiteSpace(b, 13) + "]>");
+          String a = aGood ? "PASS" : "FAIL";
+          String b = bGood ? "PASS" : "FAIL";
+
+          if (aGood && bGood) {
+            consolPanel.println(i + "<[" + prependWhiteSpace(a, 13) + "," + prependWhiteSpace(b, 13) + "]> ✓");
+            numGood++;
+          } else {
+            consolPanel.println(i + "<[" + prependWhiteSpace(a, 13) + "," + prependWhiteSpace(b, 13) + "]> X");
+          }
+
+        }
+
+        consolPanel.println("");
+        if (numGood == 7) {
+          consolPanel.println("Classification: Tier 1");
+        } else if (numGood == 6) {
+          consolPanel.println("Classification: Tier 2");
+        } else if (numGood >= 4) {
+          consolPanel.println("Classification: Burn & Learn");
+        } else {
+          consolPanel.println("Classification: Reject");
         }
 
       } catch (Exception e) {
@@ -654,6 +706,404 @@ public class BoardCheckExperiment extends Experiment {
         synapses[i - 1] = new float[]{Ra, Rb};
 
         dwfProxy.update2DigitalIOStatesAtOnce(i, false);//turn off switch
+      }
+      return synapses;
+    }
+
+  }
+
+  private class Synapse12TestWorker extends SwingWorker<Boolean, Double> {
+
+    private int[] switches = new int[]{0, 2, 3, 5, 7};
+
+    @Override
+    protected Boolean doInBackground() {
+      try {
+        if (!dwfProxy.isV1Board()) {
+          consolPanel.println("Can only perform this test with a V1 board!");
+          return true;
+        }
+
+        consolPanel.println("");
+        consolPanel.println("Synapse 1-2 Chip Test");
+        consolPanel.println("");
+
+        //RESET
+        applyPulse(V_MEMINLINE_HARD_RESET);
+
+        // READ 1
+        float[][] synapses_1 = measureSynapsePairResistances(V_READ);//resistances of each pair
+
+        //        consolPanel.println("RESET: ");
+        //        for (int i = 0; i < synapses_1.length; i++) {
+        //          consolPanel.println(i + "<[" + prependWhiteSpace(ohmFormat.format(synapses_1[i][0]), 13) + ","
+        //              + prependWhiteSpace(ohmFormat.format(synapses_1[i][1]), 13) + "]>");
+        //        }
+
+        //WRITE
+        applyPulse(V_HARD_WRITE);
+
+        // READ 2
+        float[][] synapses_2 = measureSynapsePairResistances(V_READ);//resistances of each pair
+
+        //        consolPanel.println("WRITE: ");
+        //        for (int i = 0; i < synapses_2.length; i++) {
+        //          consolPanel.println(i + "<[" + prependWhiteSpace(ohmFormat.format(synapses_2[i][0]), 13) + ","
+        //              + prependWhiteSpace(ohmFormat.format(synapses_2[i][1]), 13) + "]>");
+        //        }
+
+        //RESET
+        applyPulse(V_RESET);
+
+        // READ 1
+        float[][] synapses_3 = measureSynapsePairResistances(V_READ);//resistances of each pair
+
+        //        consolPanel.println("RESET: ");
+        //        for (int i = 0; i < synapses_3.length; i++) {
+        //          consolPanel.println(i + "<[" + prependWhiteSpace(ohmFormat.format(synapses_3[i][0]), 13) + ","
+        //              + prependWhiteSpace(ohmFormat.format(synapses_3[i][1]), 13) + "]>");
+        //        }
+
+        //determine Q1 and Q2
+
+        //ratio of erase to write
+        float[][] Q1 = new float[5][2];
+        for (int i = 0; i < Q1.length; i++) {
+          Q1[i] = new float[]{(synapses_1[i][0] / synapses_2[i][0]), (synapses_1[i][1] / synapses_2[i][1])};
+        }
+
+        float[][] Q2 = new float[5][2];
+        for (int i = 0; i < Q2.length; i++) {
+          Q2[i] = new float[]{(synapses_3[i][0] / synapses_2[i][0]), (synapses_3[i][1] / synapses_2[i][1])};
+        }
+
+        //        consolPanel.println("Q1: ");
+        //        for (int i = 0; i < Q1.length; i++) {
+        //          consolPanel
+        //              .println(i + "<[" + prependWhiteSpace(qFormat.format(Q1[i][0]), 13) + "," + prependWhiteSpace(qFormat.format(Q1[i][1]), 13) + "]>");
+        //        }
+        //        consolPanel.println("Q2: ");
+        //        for (int i = 0; i < Q2.length; i++) {
+        //          consolPanel
+        //              .println(i + "<[" + prependWhiteSpace(qFormat.format(Q2[i][0]), 13) + "," + prependWhiteSpace(qFormat.format(Q2[i][1]), 13) + "]>");
+        //        }
+        //        consolPanel.println("RESULT: ");
+
+        int numGood = 0;
+        for (int i = 0; i < Q1.length; i++) {
+
+          boolean aGood = ((Q1[i][0] > 1) && (Q2[i][0] > 1)) && (Q1[i][0] > MIN_Q || Q2[i][0] > MIN_Q);
+          boolean bGood = ((Q1[i][1] > 1) && (Q2[i][1] > 1)) && (Q1[i][1] > MIN_Q || Q2[i][1] > MIN_Q);
+
+          String a = aGood ? "PASS" : "FAIL";
+          String b = bGood ? "PASS" : "FAIL";
+
+          if (aGood && bGood) {
+            consolPanel.println(i + "<[" + prependWhiteSpace(a, 13) + "," + prependWhiteSpace(b, 13) + "]> ✓");
+            numGood++;
+          } else {
+            consolPanel.println(i + "<[" + prependWhiteSpace(a, 13) + "," + prependWhiteSpace(b, 13) + "]> X");
+          }
+
+        }
+
+        consolPanel.println("");
+        if (numGood == 5) {
+          consolPanel.println("Classification: Tier 1");
+        } else if (numGood == 4) {
+          consolPanel.println("Classification: Tier 2");
+        } else if (numGood >= 3) {
+          consolPanel.println("Classification: Burn & Learn");
+        } else {
+          consolPanel.println("Classification: Reject");
+        }
+
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+
+      return true;
+
+    }
+
+    public void applyPulse(float pulseVoltage) {
+
+      muxController.setW1(Destination.Y);
+      muxController.setW2(Destination.OUT);
+      muxController.setScope1(Destination.A);
+      muxController.setScope2(Destination.B);
+      dwfProxy.setUpper8IOStates(muxController.getGPIOConfig());
+
+      for (int i : switches) {//cycle through switches
+        dwfProxy.update2DigitalIOStatesAtOnce(i, true);//turn on switch 
+        getScopesAverageVoltage(pulseVoltage, DWF.WAVEFORM_CHANNEL_1);//this applies the pulse and returns captured waveform.
+        dwfProxy.update2DigitalIOStatesAtOnce(i, false);//turn off switch
+      }
+
+    }
+
+    public float[][] measureSynapsePairResistances(float readVoltage) {
+
+      /*
+       * due to loading on W1, determine the actual read pulse aplitude at node Y during a read pulse for each switch..
+       */
+
+      muxController.setW1(Destination.Y);
+      muxController.setW2(Destination.OUT);
+      muxController.setScope1(Destination.Y);
+      muxController.setScope2(Destination.Y);
+      dwfProxy.setUpper8IOStates(muxController.getGPIOConfig());
+
+      float[] Vya = new float[5];
+      float[] Vyb = new float[5];
+
+      int idx = 0;
+      for (int i : switches) {//cycle through switches 
+        dwfProxy.update2DigitalIOStatesAtOnce(i, true);//turn on switch 
+
+        float[] aveV = getScopesAverageVoltage(readVoltage, DWF.WAVEFORM_CHANNEL_1);
+
+        Vya[idx] = aveV[0];
+        Vyb[idx] = aveV[1];
+
+        dwfProxy.update2DigitalIOStatesAtOnce(i, false);//turn off switch
+        idx++;
+      }
+
+      muxController.setScope1(Destination.A);
+      muxController.setScope2(Destination.B);
+      dwfProxy.setUpper8IOStates(muxController.getGPIOConfig());
+
+      float[][] synapses = new float[5][2];
+      idx = 0;
+      for (int i : switches) {//cycle through switches
+        dwfProxy.update2DigitalIOStatesAtOnce(i, true);//turn on switch 
+
+        float[] aveV = getScopesAverageVoltage(readVoltage, DWF.WAVEFORM_CHANNEL_1);
+
+        //compute resistance as voltage drop across series resistors.
+
+        //        System.out.println("readVoltage=" + readVoltage);
+        //        System.out.println("series resistance=" + (float) controlModel.seriesResistance);
+        //        System.out.println("Vya[" + i + "]=" + Vya[i]);
+        //        System.out.println("Vyb[" + i + "]=" + Vyb[i]);
+        //        System.out.println("aveV[0]=" + aveV[0]);
+        //        System.out.println("aveV[1]=" + aveV[1]);
+
+        float Ra = (Vya[idx] - aveV[0]) / (aveV[0] / (float) controlModel.seriesResistance);
+        float Rb = (Vyb[idx] - aveV[1]) / (aveV[1] / (float) controlModel.seriesResistance);
+
+        //could measure negative resistance due to noise if resistance is very high. Just assume it 10MOhms.
+        Ra = Ra < 0 ? 1E4f : (Ra - ExperimentPreferences.R_SWITCH) / 1000.0f;//account for bilateral switch resistance and convert to kiloohms.
+        Rb = Rb < 0 ? 1E4f : (Rb - ExperimentPreferences.R_SWITCH) / 1000.0f;
+
+        //if its really high, its just likely just noise. Set to 10MOhm
+        Ra = Ra > 1E4f ? 1E4f : Ra;
+        Rb = Rb > 1E4f ? 1E4f : Rb;
+
+        synapses[idx] = new float[]{Ra, Rb};
+
+        dwfProxy.update2DigitalIOStatesAtOnce(i, false);//turn off switch
+        idx++;
+      }
+      return synapses;
+    }
+
+  }
+
+  private class Synapse12iTestWorker extends SwingWorker<Boolean, Double> {
+
+    private int[] switches = new int[]{0, 2, 3, 5, 7};
+
+    @Override
+    protected Boolean doInBackground() {
+      try {
+        if (!dwfProxy.isV1Board()) {
+          consolPanel.println("Can only perform this test with a V1 board!");
+          return true;
+        }
+
+        consolPanel.println("");
+        consolPanel.println("Synapse 1-2 Chip Test");
+        consolPanel.println("");
+
+        //RESET
+        applyPulse(-V_MEMINLINE_HARD_RESET);
+
+        // READ 1
+        float[][] synapses_1 = measureSynapsePairResistances(-V_READ);//resistances of each pair
+
+        //        consolPanel.println("RESET: ");
+        //        for (int i = 0; i < synapses_1.length; i++) {
+        //          consolPanel.println(i + "<[" + prependWhiteSpace(ohmFormat.format(synapses_1[i][0]), 13) + ","
+        //              + prependWhiteSpace(ohmFormat.format(synapses_1[i][1]), 13) + "]>");
+        //        }
+
+        //WRITE
+        applyPulse(-V_HARD_WRITE);
+
+        // READ 2
+        float[][] synapses_2 = measureSynapsePairResistances(-V_READ);//resistances of each pair
+
+        //        consolPanel.println("WRITE: ");
+        //        for (int i = 0; i < synapses_2.length; i++) {
+        //          consolPanel.println(i + "<[" + prependWhiteSpace(ohmFormat.format(synapses_2[i][0]), 13) + ","
+        //              + prependWhiteSpace(ohmFormat.format(synapses_2[i][1]), 13) + "]>");
+        //        }
+
+        //RESET
+        applyPulse(-V_RESET);
+
+        // READ 1
+        float[][] synapses_3 = measureSynapsePairResistances(-V_READ);//resistances of each pair
+
+        //        consolPanel.println("RESET: ");
+        //        for (int i = 0; i < synapses_3.length; i++) {
+        //          consolPanel.println(i + "<[" + prependWhiteSpace(ohmFormat.format(synapses_3[i][0]), 13) + ","
+        //              + prependWhiteSpace(ohmFormat.format(synapses_3[i][1]), 13) + "]>");
+        //        }
+
+        //determine Q1 and Q2
+
+        //ratio of erase to write
+        float[][] Q1 = new float[5][2];
+        for (int i = 0; i < Q1.length; i++) {
+          Q1[i] = new float[]{(synapses_1[i][0] / synapses_2[i][0]), (synapses_1[i][1] / synapses_2[i][1])};
+        }
+
+        float[][] Q2 = new float[5][2];
+        for (int i = 0; i < Q2.length; i++) {
+          Q2[i] = new float[]{(synapses_3[i][0] / synapses_2[i][0]), (synapses_3[i][1] / synapses_2[i][1])};
+        }
+
+        //        consolPanel.println("Q1: ");
+        //        for (int i = 0; i < Q1.length; i++) {
+        //          consolPanel
+        //              .println(i + "<[" + prependWhiteSpace(qFormat.format(Q1[i][0]), 13) + "," + prependWhiteSpace(qFormat.format(Q1[i][1]), 13) + "]>");
+        //        }
+        //        consolPanel.println("Q2: ");
+        //        for (int i = 0; i < Q2.length; i++) {
+        //          consolPanel
+        //              .println(i + "<[" + prependWhiteSpace(qFormat.format(Q2[i][0]), 13) + "," + prependWhiteSpace(qFormat.format(Q2[i][1]), 13) + "]>");
+        //        }
+        //        consolPanel.println("RESULT: ");
+
+        int numGood = 0;
+        for (int i = 0; i < Q1.length; i++) {
+
+          boolean aGood = ((Q1[i][0] > 1) && (Q2[i][0] > 1)) && (Q1[i][0] > MIN_Q || Q2[i][0] > MIN_Q);
+          boolean bGood = ((Q1[i][1] > 1) && (Q2[i][1] > 1)) && (Q1[i][1] > MIN_Q || Q2[i][1] > MIN_Q);
+
+          String a = aGood ? "PASS" : "FAIL";
+          String b = bGood ? "PASS" : "FAIL";
+
+          if (aGood && bGood) {
+            consolPanel.println(i + "<[" + prependWhiteSpace(a, 13) + "," + prependWhiteSpace(b, 13) + "]> ✓");
+            numGood++;
+          } else {
+            consolPanel.println(i + "<[" + prependWhiteSpace(a, 13) + "," + prependWhiteSpace(b, 13) + "]> X");
+          }
+
+        }
+
+        consolPanel.println("");
+        if (numGood == 5) {
+          consolPanel.println("Classification: Tier 1");
+        } else if (numGood == 4) {
+          consolPanel.println("Classification: Tier 2");
+        } else if (numGood >= 3) {
+          consolPanel.println("Classification: Burn & Learn");
+        } else {
+          consolPanel.println("Classification: Reject");
+        }
+
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+
+      return true;
+
+    }
+
+    public void applyPulse(float pulseVoltage) {
+
+      muxController.setW1(Destination.Y);
+      muxController.setW2(Destination.OUT);
+      muxController.setScope1(Destination.A);
+      muxController.setScope2(Destination.B);
+      dwfProxy.setUpper8IOStates(muxController.getGPIOConfig());
+
+      for (int i : switches) {//cycle through switches
+        dwfProxy.update2DigitalIOStatesAtOnce(i, true);//turn on switch 
+        getScopesAverageVoltage(pulseVoltage, DWF.WAVEFORM_CHANNEL_1);//this applies the pulse and returns captured waveform.
+        dwfProxy.update2DigitalIOStatesAtOnce(i, false);//turn off switch
+      }
+
+    }
+
+    public float[][] measureSynapsePairResistances(float readVoltage) {
+
+      /*
+       * due to loading on W1, determine the actual read pulse aplitude at node Y during a read pulse for each switch..
+       */
+
+      muxController.setW1(Destination.Y);
+      muxController.setW2(Destination.OUT);
+      muxController.setScope1(Destination.Y);
+      muxController.setScope2(Destination.Y);
+      dwfProxy.setUpper8IOStates(muxController.getGPIOConfig());
+
+      float[] Vya = new float[5];
+      float[] Vyb = new float[5];
+
+      int idx = 0;
+      for (int i : switches) {//cycle through switches 
+        dwfProxy.update2DigitalIOStatesAtOnce(i, true);//turn on switch 
+
+        float[] aveV = getScopesAverageVoltage(readVoltage, DWF.WAVEFORM_CHANNEL_1);
+
+        Vya[idx] = aveV[0];
+        Vyb[idx] = aveV[1];
+
+        dwfProxy.update2DigitalIOStatesAtOnce(i, false);//turn off switch
+        idx++;
+      }
+
+      muxController.setScope1(Destination.A);
+      muxController.setScope2(Destination.B);
+      dwfProxy.setUpper8IOStates(muxController.getGPIOConfig());
+
+      float[][] synapses = new float[5][2];
+      idx = 0;
+      for (int i : switches) {//cycle through switches
+        dwfProxy.update2DigitalIOStatesAtOnce(i, true);//turn on switch 
+
+        float[] aveV = getScopesAverageVoltage(readVoltage, DWF.WAVEFORM_CHANNEL_1);
+
+        //compute resistance as voltage drop across series resistors.
+
+        //        System.out.println("readVoltage=" + readVoltage);
+        //        System.out.println("series resistance=" + (float) controlModel.seriesResistance);
+        //        System.out.println("Vya[" + i + "]=" + Vya[i]);
+        //        System.out.println("Vyb[" + i + "]=" + Vyb[i]);
+        //        System.out.println("aveV[0]=" + aveV[0]);
+        //        System.out.println("aveV[1]=" + aveV[1]);
+
+        float Ra = (Vya[idx] - aveV[0]) / (aveV[0] / (float) controlModel.seriesResistance);
+        float Rb = (Vyb[idx] - aveV[1]) / (aveV[1] / (float) controlModel.seriesResistance);
+
+        //could measure negative resistance due to noise if resistance is very high. Just assume it 10MOhms.
+        Ra = Ra < 0 ? 1E4f : (Ra - ExperimentPreferences.R_SWITCH) / 1000.0f;//account for bilateral switch resistance and convert to kiloohms.
+        Rb = Rb < 0 ? 1E4f : (Rb - ExperimentPreferences.R_SWITCH) / 1000.0f;
+
+        //if its really high, its just likely just noise. Set to 10MOhm
+        Ra = Ra > 1E4f ? 1E4f : Ra;
+        Rb = Rb > 1E4f ? 1E4f : Rb;
+
+        synapses[idx] = new float[]{Ra, Rb};
+
+        dwfProxy.update2DigitalIOStatesAtOnce(i, false);//turn off switch
+        idx++;
       }
       return synapses;
     }
@@ -758,10 +1208,10 @@ public class BoardCheckExperiment extends Experiment {
           } else if (reads[0][i] > MEMINLINE_MAX_R && reads[1][i] > MEMINLINE_MAX_R && reads[2][i] > MEMINLINE_MAX_R) {
             testResult = "X [STK HIGH]";
             meminline_numFailed++;
-          } else if (q1 < MEMINLINE_MIN_Q) {
+          } else if (q1 < MIN_Q) {
             testResult = "X [Q2<MIN]";
             meminline_numFailed++;
-          } else if (q2 < MEMINLINE_MIN_Q) {
+          } else if (q2 < MIN_Q) {
             testResult = "X [Q2<MIN]";
             meminline_numFailed++;
           }
