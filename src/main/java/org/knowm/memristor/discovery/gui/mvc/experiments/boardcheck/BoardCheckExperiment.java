@@ -924,7 +924,7 @@ public class BoardCheckExperiment extends Experiment {
         }
 
         consolPanel.println("");
-        consolPanel.println("Synapse 1-2 Chip Test");
+        consolPanel.println("Synapse 1-2i Chip Test");
         consolPanel.println("");
 
         //RESET
