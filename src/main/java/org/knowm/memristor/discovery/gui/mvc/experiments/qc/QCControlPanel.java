@@ -149,12 +149,12 @@ public class QCControlPanel extends ExperimentControlPanel {
     amplitudeSlider.setPaintLabels(true);
     amplitudeSlider.setSnapToTicks(true);
     Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
-    labelTable.put(new Integer(0), new JLabel("0"));
-    labelTable.put(new Integer(100), new JLabel("1"));
-    labelTable.put(new Integer(200), new JLabel("2"));
-    labelTable.put(new Integer(300), new JLabel("3"));
-    labelTable.put(new Integer(400), new JLabel("4"));
-    labelTable.put(new Integer(500), new JLabel("5"));
+    labelTable.put(0, new JLabel("0"));
+    labelTable.put(100, new JLabel("1"));
+    labelTable.put(200, new JLabel("2"));
+    labelTable.put(300, new JLabel("3"));
+    labelTable.put(400, new JLabel("4"));
+    labelTable.put(500, new JLabel("5"));
     amplitudeSlider.setLabelTable(labelTable);
     amplitudeSlider.setPreferredSize(new Dimension(300, 80));
     c.gridy++;
@@ -169,17 +169,17 @@ public class QCControlPanel extends ExperimentControlPanel {
     offsetSlider.setSnapToTicks(true);
 
     Hashtable<Integer, JLabel> labelTable2 = new Hashtable<>();
-    labelTable2.put(new Integer(0), new JLabel("0"));
-    labelTable2.put(new Integer(20), new JLabel(".2"));
-    labelTable2.put(new Integer(40), new JLabel(".4"));
-    labelTable2.put(new Integer(60), new JLabel(".6"));
-    labelTable2.put(new Integer(80), new JLabel(".8"));
-    labelTable2.put(new Integer(100), new JLabel("1"));
-    labelTable2.put(new Integer(-20), new JLabel("-.2"));
-    labelTable2.put(new Integer(-40), new JLabel("-.4"));
-    labelTable2.put(new Integer(-60), new JLabel("-.6"));
-    labelTable2.put(new Integer(-80), new JLabel("-.8"));
-    labelTable2.put(new Integer(-100), new JLabel("-1"));
+    labelTable2.put(0, new JLabel("0"));
+    labelTable2.put(20, new JLabel(".2"));
+    labelTable2.put(40, new JLabel(".4"));
+    labelTable2.put(60, new JLabel(".6"));
+    labelTable2.put(80, new JLabel(".8"));
+    labelTable2.put(100, new JLabel("1"));
+    labelTable2.put(-20, new JLabel("-.2"));
+    labelTable2.put(-40, new JLabel("-.4"));
+    labelTable2.put(-60, new JLabel("-.6"));
+    labelTable2.put(-80, new JLabel("-.8"));
+    labelTable2.put(-100, new JLabel("-1"));
     offsetSlider.setLabelTable(labelTable2);
 
     c.gridy++;
