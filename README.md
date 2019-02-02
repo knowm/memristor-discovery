@@ -25,7 +25,7 @@ See [Releases](https://github.com/knowm/memristor-discovery/releases) for downlo
 
 ### Windows 10
 
-Download the Java 11 OpenJDK from [java.net](http://jdk.java.net/11/). Follow the instuctions [here](https://stackoverflow.com/a/52531093/1625820).
+Download the Java 11 OpenJDK from [java.net](http://jdk.java.net/11/). Follow the instructions [here](https://stackoverflow.com/a/52531093/1625820).
 
 ### Ubuntu
 
