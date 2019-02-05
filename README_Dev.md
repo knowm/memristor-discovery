@@ -41,3 +41,11 @@ To package the app in an "installer", we need to create a DMG file with a few th
 1. Eject the DMG.
 
 1. Compress it with Disk Utility. Images ==> Convert. Select DMG. Choose `compressed`, which is also read-only. (https://support.apple.com/en-gb/guide/disk-utility/convert-a-disk-image-to-another-format-dskutl1002/mac)
+
+### Windows
+
+### Linux
+
+## Preferences
+
+Preferences are store in ~/Library/org.knowm.memristor. You can read the binary plist files in XCode.

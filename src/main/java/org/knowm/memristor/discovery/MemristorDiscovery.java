@@ -1,29 +1,25 @@
 /**
- * Memristor-Discovery is distributed under the GNU General Public License version 3
- * and is also available under alternative licenses negotiated directly
- * with Knowm, Inc.
+ * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
+ * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * Copyright (c) 2016-2018 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2018 Knowm Inc. www.knowm.org
  *
- * This package also includes various components that are not part of
- * Memristor-Discovery itself:
+ * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
- * * `Multibit`: Copyright 2011 multibit.org, MIT License
- * * `SteelCheckBox`: Copyright 2012 Gerrit, BSD license
+ * <p>* `Multibit`: Copyright 2011 multibit.org, MIT License * `SteelCheckBox`: Copyright 2012
+ * Gerrit, BSD license
  *
- * Knowm, Inc. holds copyright
- * and/or sufficient licenses to all components of the Memristor-Discovery
- * package, and therefore can grant, at its sole discretion, the ability
- * for companies, individuals, or organizations to create proprietary or
- * open source (even if not GPL) modules which may be dynamically linked at
- * runtime with the portions of Memristor-Discovery which fall under our
- * copyright/license umbrella, or are distributed under more flexible
- * licenses than GPL.
+ * <p>Knowm, Inc. holds copyright and/or sufficient licenses to all components of the
+ * Memristor-Discovery package, and therefore can grant, at its sole discretion, the ability for
+ * companies, individuals, or organizations to create proprietary or open source (even if not GPL)
+ * modules which may be dynamically linked at runtime with the portions of Memristor-Discovery which
+ * fall under our copyright/license umbrella, or are distributed under more flexible licenses than
+ * GPL.
  *
- * The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
+ * <p>The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
  *
- * If you have any questions regarding our licensing policy, please
- * contact us at `contact@knowm.org`.
+ * <p>If you have any questions regarding our licensing policy, please contact us at
+ * `contact@knowm.org`.
  */
 package org.knowm.memristor.discovery;
 
@@ -37,16 +33,16 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
-
 import javax.swing.AbstractAction;
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-
 import org.knowm.memristor.discovery.gui.AboutDialog;
 import org.knowm.memristor.discovery.gui.ConsoleDialog;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
@@ -86,16 +82,19 @@ import org.multibit.platform.listener.GenericQuitEvent;
 import org.multibit.platform.listener.GenericQuitEventListener;
 import org.multibit.platform.listener.GenericQuitResponse;
 
-public class MemristorDiscovery implements GenericQuitEventListener, GenericPreferencesEventListener, GenericAboutEventListener,
-    PropertyChangeListener {
+public class MemristorDiscovery
+    implements GenericQuitEventListener,
+        GenericPreferencesEventListener,
+        GenericAboutEventListener,
+        PropertyChangeListener {
 
-  private final static String FRAME_TITLE_BASE = "Knowm Memristor Discovery - ";
+  private static final String FRAME_TITLE_BASE = "Knowm Memristor Discovery - ";
 
-  // Board Version
-  private final boolean isV1Board;
+  private MemristorDiscoveryPreferences memristorDiscoveryPreferences;
+  private boolean isV1Board;
   private final boolean isTest;
 
-  private final DWFProxy dwf;
+  private DWFProxy dwf;
 
   private final String[] appsV0;
   private final String[] appsV1;
@@ -115,49 +114,63 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
     // Set the look and feel to users OS LaF.
     try {
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-    } catch (ClassNotFoundException | InstantiationException | UnsupportedLookAndFeelException | IllegalAccessException e) {
+    } catch (ClassNotFoundException
+        | InstantiationException
+        | UnsupportedLookAndFeelException
+        | IllegalAccessException e) {
       e.printStackTrace();
     }
 
-    boolean isV1Board = args.length > 0 && args[0].equalsIgnoreCase("v1");
-    boolean isTest = args.length > 1 && args[1].equalsIgnoreCase("test");
-    final MemristorDiscovery memristorDiscovery = new MemristorDiscovery(isV1Board, isTest);
+    boolean isTest = args.length > 0 && args[0].equalsIgnoreCase("test");
+    final MemristorDiscovery memristorDiscovery = new MemristorDiscovery(isTest);
 
     // Schedule a job for the event dispatch thread:
     // creating and showing this application's GUI.
-    javax.swing.SwingUtilities.invokeLater(new Runnable() {
+    javax.swing.SwingUtilities.invokeLater(
+        new Runnable() {
 
-      @Override
-      public void run() {
+          @Override
+          public void run() {
 
-        memristorDiscovery.createAndShowGUI();
-      }
-    });
+            memristorDiscovery.createAndShowGUI();
+          }
+        });
   }
 
-  public MemristorDiscovery(boolean isV1Board, boolean isTest) {
+  public MemristorDiscovery(boolean isTest) {
 
-    this.isV1Board = isV1Board;
+    memristorDiscoveryPreferences = new MemristorDiscoveryPreferences();
+    isV1Board = memristorDiscoveryPreferences.getBoardVersion().equalsIgnoreCase("v1");
     this.isTest = isTest;
     if (isTest) {
-      this.appsV1 = new String[]{"Synapse", "Logic", "Classify"};
-      this.appsV0 = new String[]{"BoardCheck", "Hysteresis", "DC", "Pulse",};
+      this.appsV1 = new String[] {"Synapse", "Logic", "Classify"};
+      this.appsV0 =
+          new String[] {
+            "BoardCheck", "Hysteresis", "DC", "Pulse",
+          };
     } else {
-      this.appsV0 = new String[]{"Hysteresis", "DC", "Pulse"};
-      this.appsV1 = new String[]{"Synapse", "Logic", "Classify"};
-
+      this.appsV0 = new String[] {"Hysteresis", "DC", "Pulse"};
+      this.appsV1 = new String[] {"Synapse", "Logic", "Classify"};
     }
-
-    this.dwf = new DWFProxy(isV1Board);
   }
 
   public void createAndShowGUI() {
+
+    // kill main frame if we're switching board version from menu
+    if (mainFrame != null) {
+      //      mainFrame.dispatchEvent(new WindowEvent(mainFrame, WindowEvent.WINDOW_CLOSING));
+      mainFrame.setVisible(false); // you can't see me!
+      mainFrame.dispose(); // Destroy the JFrame object
+      shutdownDWF();
+    }
+    this.dwf = new DWFProxy(isV1Board);
 
     GenericApplicationSpecification specification = new GenericApplicationSpecification();
     specification.getQuitEventListeners().add(this);
     specification.getPreferencesEventListeners().add(this);
     specification.getAboutEventListeners().add(this);
-    GenericApplication genericApplication = GenericApplicationFactory.INSTANCE.buildGenericApplication(specification);
+    GenericApplication genericApplication =
+        GenericApplicationFactory.INSTANCE.buildGenericApplication(specification);
 
     if (genericApplication.isMac()) {
       System.setProperty("apple.laf.useScreenMenuBar", "true");
@@ -171,15 +184,16 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
     // Create and set up the window.
     mainFrame = new JFrame(FRAME_TITLE_BASE + appID);
     mainFrame.setResizable(true);
-    mainFrame.addWindowListener(new java.awt.event.WindowAdapter() {
+    mainFrame.addWindowListener(
+        new java.awt.event.WindowAdapter() {
 
-      @Override
-      public void windowClosing(WindowEvent winEvt) {
+          @Override
+          public void windowClosing(WindowEvent winEvt) {
 
-        System.out.println("windowClosing");
-        quit();
-      }
-    });
+            //            System.out.println("windowClosing");
+            quit();
+          }
+        });
     Container mainFrameContainer = mainFrame.getContentPane();
     mainFrameContainer.setLayout(new BorderLayout(12, 0));
 
@@ -187,64 +201,117 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
     ImageIcon icon = new ImageIcon(iconURL);
     mainFrame.setIconImage(icon.getImage());
 
-    // control menu
+    // menu bar
     JMenuBar menuBar = new JMenuBar();
-    JMenu menu = new JMenu("Experiments");
-    menu.setMnemonic(KeyEvent.VK_A);
+
+    // Board menu
+    JMenu menu = new JMenu("Board");
+    menu.setMnemonic(KeyEvent.VK_B);
+    menuBar.add(menu);
+
+    ButtonGroup group = new ButtonGroup();
+
+    JRadioButtonMenuItem boardMenuItem =
+        new JRadioButtonMenuItem(
+            new AbstractAction("V0") {
+
+              @Override
+              public void actionPerformed(ActionEvent e) {
+
+                System.out.println("V0");
+                updateBoardPreferences("V0");
+              }
+            });
+    boardMenuItem.setActionCommand(boardMenuItem.getName());
+    if (isV1Board) {
+      boardMenuItem.setSelected(false);
+    } else {
+      boardMenuItem.setSelected(true);
+    }
+    group.add(boardMenuItem);
+    menu.add(boardMenuItem);
+
+    boardMenuItem =
+        new JRadioButtonMenuItem(
+            new AbstractAction("V1") {
+
+              @Override
+              public void actionPerformed(ActionEvent e) {
+
+                System.out.println("V1");
+                updateBoardPreferences("V1");
+              }
+            });
+    boardMenuItem.setActionCommand(boardMenuItem.getName());
+    if (isV1Board) {
+      boardMenuItem.setSelected(true);
+    } else {
+      boardMenuItem.setSelected(false);
+    }
+    group.add(boardMenuItem);
+    menu.add(boardMenuItem);
+
+    // Experiments menu
+    menu = new JMenu("Experiments");
+    menu.setMnemonic(KeyEvent.VK_E);
     menuBar.add(menu);
     for (int i = 0; i < appsV0.length; i++) {
 
-      JMenuItem appMenuItem = new JMenuItem(new AbstractAction(appsV0[i]) {
+      JMenuItem appMenuItem =
+          new JMenuItem(
+              new AbstractAction(appsV0[i]) {
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
+                @Override
+                public void actionPerformed(ActionEvent e) {
 
-          try {
-            dwf.shutdownAD2();
-          } catch (DWFException e1) {
-            e1.printStackTrace();
-          }
-          Container mainFrameContainer = mainFrame.getContentPane();
-          mainFrameContainer.removeAll();
-          mainFrameContainer.revalidate();
-          mainFrameContainer.repaint();
-          mainFrameContainer.add(headerPanel, BorderLayout.NORTH);
-          mainFrameContainer.add(footerPanel, BorderLayout.SOUTH);
+                  try {
+                    dwf.shutdownAD2();
+                  } catch (DWFException e1) {
+                    e1.printStackTrace();
+                  }
+                  Container mainFrameContainer = mainFrame.getContentPane();
+                  mainFrameContainer.removeAll();
+                  mainFrameContainer.revalidate();
+                  mainFrameContainer.repaint();
+                  mainFrameContainer.add(headerPanel, BorderLayout.NORTH);
+                  mainFrameContainer.add(footerPanel, BorderLayout.SOUTH);
 
-          experiment = null;
-          appID = e.getActionCommand();
-          // System.out.println(appID);
+                  experiment = null;
+                  appID = e.getActionCommand();
+                  // System.out.println(appID);
 
-          switch (e.getActionCommand()) {
-            case "Hysteresis":
-              experiment = new HysteresisExperiment(dwf, mainFrame.getContentPane(), isV1Board);
-              break;
-            case "Pulse":
-              experiment = new PulseExperiment(dwf, mainFrame.getContentPane(), isV1Board);
-              break;
-            case "DC":
-              experiment = new DCExperiment(dwf, mainFrame.getContentPane(), isV1Board);
-              break;
-            case "QC":
-              experiment = new QCExperiment(dwf, mainFrame.getContentPane(), isV1Board);
-              break;
-            case "BoardCheck":
-              experiment = new BoardCheckExperiment(dwf, mainFrame.getContentPane(), isV1Board);
-              break;
+                  switch (e.getActionCommand()) {
+                    case "Hysteresis":
+                      experiment =
+                          new HysteresisExperiment(dwf, mainFrame.getContentPane(), isV1Board);
+                      break;
+                    case "Pulse":
+                      experiment = new PulseExperiment(dwf, mainFrame.getContentPane(), isV1Board);
+                      break;
+                    case "DC":
+                      experiment = new DCExperiment(dwf, mainFrame.getContentPane(), isV1Board);
+                      break;
+                    case "QC":
+                      experiment = new QCExperiment(dwf, mainFrame.getContentPane(), isV1Board);
+                      break;
+                    case "BoardCheck":
+                      experiment =
+                          new BoardCheckExperiment(dwf, mainFrame.getContentPane(), isV1Board);
+                      break;
 
-            default:
-              break;
-          }
+                    default:
+                      break;
+                  }
 
-          experiment.createAndShowGUI();
-          // for console message from experiments
-          experiment.getControlModel().addListener(MemristorDiscovery.this);
+                  experiment.createAndShowGUI();
+                  // for console message from experiments
+                  experiment.getControlModel().addListener(MemristorDiscovery.this);
 
-          dwf.startupAD2();
+                  dwf.startupAD2();
 
-          mainFrame.setTitle(FRAME_TITLE_BASE + e.getActionCommand());
-        }
-      });
+                  mainFrame.setTitle(FRAME_TITLE_BASE + e.getActionCommand());
+                }
+              });
       appMenuItem.setActionCommand(appMenuItem.getName());
       menu.add(appMenuItem);
     }
@@ -252,53 +319,58 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
     if (isV1Board) {
       for (int i = 0; i < appsV1.length; i++) {
 
-        JMenuItem appMenuItem = new JMenuItem(new AbstractAction(appsV1[i]) {
+        JMenuItem appMenuItem =
+            new JMenuItem(
+                new AbstractAction(appsV1[i]) {
 
-          @Override
-          public void actionPerformed(ActionEvent e) {
+                  @Override
+                  public void actionPerformed(ActionEvent e) {
 
-            try {
-              dwf.shutdownAD2();
-            } catch (DWFException e1) {
-              e1.printStackTrace();
-            }
-            Container mainFrameContainer = mainFrame.getContentPane();
-            mainFrameContainer.removeAll();
-            mainFrameContainer.revalidate();
-            mainFrameContainer.repaint();
-            mainFrameContainer.add(headerPanel, BorderLayout.NORTH);
-            mainFrameContainer.add(footerPanel, BorderLayout.SOUTH);
+                    try {
+                      dwf.shutdownAD2();
+                    } catch (DWFException e1) {
+                      e1.printStackTrace();
+                    }
+                    Container mainFrameContainer = mainFrame.getContentPane();
+                    mainFrameContainer.removeAll();
+                    mainFrameContainer.revalidate();
+                    mainFrameContainer.repaint();
+                    mainFrameContainer.add(headerPanel, BorderLayout.NORTH);
+                    mainFrameContainer.add(footerPanel, BorderLayout.SOUTH);
 
-            experiment = null;
-            appID = e.getActionCommand();
-            // System.out.println(appID);
+                    experiment = null;
+                    appID = e.getActionCommand();
+                    // System.out.println(appID);
 
-            switch (e.getActionCommand()) {
-              case "Synapse":
-                experiment = new SynapseExperiment(dwf, mainFrame.getContentPane(), isV1Board);
-                break;
-              case "Logic":
-                experiment = new LogicExperiment(dwf, mainFrame.getContentPane(), isV1Board);
-                break;
-              case "Classify":
-                experiment = new ClassifyExperiment(dwf, mainFrame.getContentPane(), isV1Board);
-                break;
-              case "BoardCheck":
-                experiment = new BoardCheckExperiment(dwf, mainFrameContainer, isV1Board);
-                break;
+                    switch (e.getActionCommand()) {
+                      case "Synapse":
+                        experiment =
+                            new SynapseExperiment(dwf, mainFrame.getContentPane(), isV1Board);
+                        break;
+                      case "Logic":
+                        experiment =
+                            new LogicExperiment(dwf, mainFrame.getContentPane(), isV1Board);
+                        break;
+                      case "Classify":
+                        experiment =
+                            new ClassifyExperiment(dwf, mainFrame.getContentPane(), isV1Board);
+                        break;
+                      case "BoardCheck":
+                        experiment = new BoardCheckExperiment(dwf, mainFrameContainer, isV1Board);
+                        break;
 
-              default:
-                break;
-            }
-            experiment.createAndShowGUI();
-            // for console message from experiments
-            experiment.getControlModel().addListener(MemristorDiscovery.this);
+                      default:
+                        break;
+                    }
+                    experiment.createAndShowGUI();
+                    // for console message from experiments
+                    experiment.getControlModel().addListener(MemristorDiscovery.this);
 
-            dwf.startupAD2();
+                    dwf.startupAD2();
 
-            mainFrame.setTitle(FRAME_TITLE_BASE + e.getActionCommand());
-          }
-        });
+                    mainFrame.setTitle(FRAME_TITLE_BASE + e.getActionCommand());
+                  }
+                });
         appMenuItem.setActionCommand(appMenuItem.getName());
         menu.add(appMenuItem);
       }
@@ -309,39 +381,45 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
     menu.setMnemonic(KeyEvent.VK_W);
     menuBar.add(menu);
 
-    JMenuItem helpMenuItem = new JMenuItem(new AbstractAction("Help") {
+    JMenuItem helpMenuItem =
+        new JMenuItem(
+            new AbstractAction("Help") {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+              @Override
+              public void actionPerformed(ActionEvent e) {
 
-        new ExperimentHelpDialog(mainFrame, appID);
-      }
-    });
+                new ExperimentHelpDialog(mainFrame, appID);
+              }
+            });
     helpMenuItem.setActionCommand(helpMenuItem.getName());
     menu.add(helpMenuItem);
 
-    JMenuItem consoleMenuItem = new JMenuItem(new AbstractAction("Console") {
+    JMenuItem consoleMenuItem =
+        new JMenuItem(
+            new AbstractAction("Console") {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+              @Override
+              public void actionPerformed(ActionEvent e) {
 
-        consoleDialog = new ConsoleDialog();
-        consoleDialog.setVisible(true);
-      }
-    });
+                consoleDialog = new ConsoleDialog();
+                consoleDialog.setVisible(true);
+              }
+            });
     consoleMenuItem.setActionCommand(consoleMenuItem.getName());
     menu.add(consoleMenuItem);
 
     if (!genericApplication.isMac()) {
 
-      JMenuItem prefsMenuItem = new JMenuItem(new AbstractAction("Preferences") {
+      JMenuItem prefsMenuItem =
+          new JMenuItem(
+              new AbstractAction("Preferences") {
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
+                @Override
+                public void actionPerformed(ActionEvent e) {
 
-          showPreferences();
-        }
-      });
+                  showPreferences();
+                }
+              });
       prefsMenuItem.setActionCommand(prefsMenuItem.getName());
       menu.add(prefsMenuItem);
     }
@@ -421,6 +499,13 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
     dwf.startupAD2();
   }
 
+  private void updateBoardPreferences(String boardVersion) {
+
+    isV1Board = boardVersion.equalsIgnoreCase("v1");
+    memristorDiscoveryPreferences.updatePreferences(boardVersion);
+    createAndShowGUI();
+  }
+
   @Override
   public void onQuitEvent(GenericQuitEvent event, GenericQuitResponse response) {
 
@@ -430,11 +515,7 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
   private void quit() {
 
     // System.out.println("here0");
-    try {
-      dwf.shutdownAD2();
-    } catch (DWFException e) {
-      e.printStackTrace();
-    }
+    shutdownDWF();
     // dwf.FDwfDeviceCloseAll();
     //
     try {
@@ -445,6 +526,14 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
     // System.out.println("here1");
     // mainFrame.dispose();
     System.exit(0);
+  }
+
+  private void shutdownDWF() {
+    try {
+      dwf.shutdownAD2();
+    } catch (DWFException e) {
+      e.printStackTrace();
+    }
   }
 
   @Override
@@ -503,9 +592,7 @@ public class MemristorDiscovery implements GenericQuitEventListener, GenericPref
     //    System.out.println("PC");
 
     switch (evt.getPropertyName()) {
-
       case ExperimentControlModel.EVENT_NEW_CONSOLE_LOG:
-
         if (consoleDialog != null) {
           // System.out.println("evt = " + evt);
           consoleDialog.addConsoleMessage((String) evt.getNewValue());
