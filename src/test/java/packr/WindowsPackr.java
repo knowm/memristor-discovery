@@ -13,14 +13,14 @@ import java.util.Arrays;
  * https://iconverticons.com/online/
  *
  */
-public class MacOSPackr {
+public class WindowsPackr {
 
-  private static final String JDK_LOCATION = "/Users/timmolter/Downloads/jdk-11.0.2.jdk.zip";
+  private static final String JDK_LOCATION = "/Users/timmolter/Downloads/JDK/Windows/jdk-11.0.2.zip";
 
   public static void main(String[] args) throws IOException {
 
     PackrConfig config = new PackrConfig();
-    config.platform = Platform.MacOS;
+    config.platform = Platform.Windows64;
     config.jdk = JDK_LOCATION;
     config.executable = "Memristor-Discovery";
     config.classpath = Arrays.asList("target/memristor-discovery-0.0.6.jar");
@@ -29,7 +29,7 @@ public class MacOSPackr {
     config.vmArgs = Arrays.asList("Xmx2G");
     config.iconResource = new File("_img/icons.icns");
     config.minimizeJre = "hard";
-    config.outDir = new java.io.File("target/Memristor-Discovery.app");
+    config.outDir = new File("target/Memristor-Discovery_Windows");
 
     new Packr().pack(config);
   }
