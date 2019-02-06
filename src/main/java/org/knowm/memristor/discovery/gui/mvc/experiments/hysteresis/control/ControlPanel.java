@@ -100,8 +100,8 @@ public class ControlPanel extends ExperimentControlPanel {
 
     offsetSlider = new JSlider(JSlider.HORIZONTAL, -200, 100, 0);
     offsetSlider.setBorder(BorderFactory.createTitledBorder("Offset [V]"));
-    offsetSlider.setMajorTickSpacing(20);
-    offsetSlider.setMinorTickSpacing(10);
+    offsetSlider.setMajorTickSpacing(25);
+    offsetSlider.setMinorTickSpacing(5);
     offsetSlider.setPaintTicks(true);
     offsetSlider.setPaintLabels(true);
     offsetSlider.setSnapToTicks(true);
@@ -109,13 +109,9 @@ public class ControlPanel extends ExperimentControlPanel {
     labelTable.put(-200, new JLabel("-2"));
     labelTable.put(-150, new JLabel("-1.5"));
     labelTable.put(-100, new JLabel("-1"));
-    labelTable.put(-75, new JLabel("-.75"));
     labelTable.put(-50, new JLabel("-.5"));
-    labelTable.put(-25, new JLabel("-.25"));
     labelTable.put(0, new JLabel("0"));
-    labelTable.put(25, new JLabel(".25"));
     labelTable.put(50, new JLabel(".5"));
-    labelTable.put(75, new JLabel(".75"));
     labelTable.put(100, new JLabel("1"));
     offsetSlider.setLabelTable(labelTable);
     offsetSlider.setPreferredSize(new Dimension(300, 80));
