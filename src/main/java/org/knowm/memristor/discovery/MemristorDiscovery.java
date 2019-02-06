@@ -92,7 +92,6 @@ public class MemristorDiscovery
 
   private MemristorDiscoveryPreferences memristorDiscoveryPreferences;
   private boolean isV1Board;
-  private final boolean isTest;
 
   private DWFProxy dwf;
 
@@ -121,8 +120,7 @@ public class MemristorDiscovery
       e.printStackTrace();
     }
 
-    boolean isTest = args.length > 0 && args[0].equalsIgnoreCase("test");
-    final MemristorDiscovery memristorDiscovery = new MemristorDiscovery(isTest);
+    final MemristorDiscovery memristorDiscovery = new MemristorDiscovery();
 
     // Schedule a job for the event dispatch thread:
     // creating and showing this application's GUI.
@@ -137,21 +135,15 @@ public class MemristorDiscovery
         });
   }
 
-  public MemristorDiscovery(boolean isTest) {
+  public MemristorDiscovery() {
 
     memristorDiscoveryPreferences = new MemristorDiscoveryPreferences();
     isV1Board = memristorDiscoveryPreferences.getBoardVersion().equalsIgnoreCase("v1");
-    this.isTest = isTest;
-    if (isTest) {
-      this.appsV1 = new String[] {"Synapse", "Logic", "Classify"};
-      this.appsV0 =
-          new String[] {
-            "BoardCheck", "Hysteresis", "DC", "Pulse",
-          };
-    } else {
-      this.appsV0 = new String[] {"Hysteresis", "DC", "Pulse"};
-      this.appsV1 = new String[] {"Synapse", "Logic", "Classify"};
-    }
+    this.appsV1 = new String[] {"Synapse", "Logic", "Classify"};
+    this.appsV0 =
+        new String[] {
+          "BoardCheck", "Hysteresis", "DC", "Pulse",
+        };
   }
 
   public void createAndShowGUI() {
@@ -440,31 +432,17 @@ public class MemristorDiscovery
 
     if (isV1Board) {
 
-      if (!isTest) {
-        // experiment = new HysteresisExperiment(dwf, mainFrameContainer, isV1Board);
-        // experiment.createAndShowGUI();
-        // appID = "Hysteresis";
-        experiment = new SynapseExperiment(dwf, mainFrameContainer, isV1Board);
-        experiment.createAndShowGUI();
-        appID = "Synapse";
-      } else {
-        experiment = new BoardCheckExperiment(dwf, mainFrameContainer, isV1Board);
-        experiment.createAndShowGUI();
-        appID = "BoardCheck";
-      }
+      experiment = new SynapseExperiment(dwf, mainFrameContainer, isV1Board);
+      experiment.createAndShowGUI();
+      appID = "Synapse";
 
     } else {
 
-      if (!isTest) {
-        experiment = new HysteresisExperiment(dwf, mainFrameContainer, isV1Board);
-        experiment.createAndShowGUI();
-        appID = "Hysteresis";
-      } else {
-        experiment = new BoardCheckExperiment(dwf, mainFrameContainer, isV1Board);
-        experiment.createAndShowGUI();
-        appID = "BoardCheck";
-      }
+      experiment = new HysteresisExperiment(dwf, mainFrameContainer, isV1Board);
+      experiment.createAndShowGUI();
+      appID = "Hysteresis";
     }
+
     // experiment = new DCExperiment(dwf, mainFrameContainer);
     // experiment.createAndShowGUI();
     // appID = "DC";
