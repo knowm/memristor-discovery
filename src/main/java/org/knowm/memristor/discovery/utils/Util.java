@@ -101,7 +101,8 @@ public class Util {
 
     java.net.URL resourceURL = Util.class.getClassLoader().getResource(resource);
 //    System.out.println("resourceURL = " + resourceURL);
-    return resourceURL.toString();
+//    return resourceURL.toString();
+    return resourceURL.toString().replaceFirst("/","///");
   }
 
   public static double maxAbs(double[] x) {

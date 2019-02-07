@@ -50,11 +50,11 @@ public class WindowsPackr {
     config.platform = Platform.Windows64;
     config.jdk = JDK_LOCATION;
     config.executable = "Memristor-Discovery";
-    config.classpath = Arrays.asList("target/memristor-discovery-0.0.6.jar");
+    config.classpath = Arrays.asList("target/memristor-discovery-0.0.7.jar");
     //    config.removePlatformLibs = config.classpath;
     config.mainClass = "org.knowm.memristor.discovery.MemristorDiscovery";
     config.vmArgs = Arrays.asList("Xmx2G");
-    config.iconResource = new File("_img/icons.icns");
+    config.iconResource = new File("_exe/icons.icns");
     config.minimizeJre = "hard";
     config.outDir = new File("target/Memristor-Discovery_Windows");
 

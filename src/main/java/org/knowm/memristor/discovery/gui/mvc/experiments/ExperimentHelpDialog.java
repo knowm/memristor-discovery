@@ -27,22 +27,22 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments;
 
+import com.vladsch.flexmark.html.HtmlRenderer;
+import com.vladsch.flexmark.parser.Parser;
+import com.vladsch.flexmark.util.ast.Node;
 import java.awt.Dimension;
 import java.io.File;
-
 import javax.swing.BorderFactory;
 import javax.swing.JDialog;
+import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
-
+import javax.swing.text.Document;
+import javax.swing.text.html.HTMLEditorKit;
 import org.knowm.memristor.discovery.utils.FileUtils;
 import org.knowm.memristor.discovery.utils.Util;
-
-import com.vladsch.flexmark.ast.Node;
-import com.vladsch.flexmark.html.HtmlRenderer;
-import com.vladsch.flexmark.parser.Parser;
 
 public class ExperimentHelpDialog {
 
@@ -62,20 +62,33 @@ public class ExperimentHelpDialog {
 //    System.out.println("htmlString = " + htmlString);
 
     String helpResourceFullPath = Util.getResourceFullPath("help");
-    String replacedHTMLString = htmlString.replaceAll("img src=\"", "img src=\"" + helpResourceFullPath + File.separatorChar);
+    String replacedHTMLString = htmlString.replace("img src=\"", "img src=\"" + helpResourceFullPath + "/");
 //    System.out.println("replacedHTMLString = " + replacedHTMLString);
 
-    JLabel textlabel = new JLabel("<html>" + replacedHTMLString + "</html>");
-    textlabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+//    JLabel textlabel = new JLabel("<html>" + replacedHTMLString + "</html>");
+//    textlabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+//
+//    JTextPane textPane = new JTextPane();
+//    textPane.insertComponent(textlabel);
+    JEditorPane editorPane = new JEditorPane();
+    editorPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-    JTextPane textPane = new JTextPane();
-    textPane.insertComponent(textlabel);
+    HTMLEditorKit kit = new HTMLEditorKit();
+    editorPane.setEditorKit(kit);
+    Document doc = kit.createDefaultDocument();
+    editorPane.setDocument(doc);
 
-    JScrollPane sp = new JScrollPane(textPane);
+    editorPane.setEditable(false);
+    editorPane.setText("<html>" + replacedHTMLString + "</html>");
+//    editorPane.setContentType("text/html");
+
+
+
+    JScrollPane sp = new JScrollPane(editorPane);
     sp.setBorder(null);
     sp.setPreferredSize(new Dimension(1000, 800));
 
-    final JDialog dialog = new JDialog(parentFrame, experimentName + " Help", false);
+    final JDialog dialog = new JDialog(parentFrame, experimentName + " Help", true);
     dialog.getContentPane().add(sp);
     dialog.pack();
     dialog.setVisible(true);
