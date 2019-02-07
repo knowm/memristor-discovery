@@ -15,7 +15,7 @@ import java.util.Arrays;
  */
 public class MacOSPackr {
 
-  private static final String JDK_LOCATION = "/Users/timmolter/Downloads/jdk-11.0.2.jdk.zip";
+  private static final String JDK_LOCATION = "/Users/timmolter/Downloads/JDK/MacOS/jdk-11.0.2.jdk.zip";
 
   public static void main(String[] args) throws IOException {
 
@@ -23,11 +23,11 @@ public class MacOSPackr {
     config.platform = Platform.MacOS;
     config.jdk = JDK_LOCATION;
     config.executable = "Memristor-Discovery";
-    config.classpath = Arrays.asList("target/memristor-discovery-0.0.6.jar");
+    config.classpath = Arrays.asList("target/memristor-discovery-0.0.7.jar");
     //    config.removePlatformLibs = config.classpath;
     config.mainClass = "org.knowm.memristor.discovery.MemristorDiscovery";
     config.vmArgs = Arrays.asList("Xmx2G");
-    config.iconResource = new File("_img/icons.icns");
+    config.iconResource = new File("_exe/icons.icns");
     config.minimizeJre = "hard";
     config.outDir = new java.io.File("target/Memristor-Discovery.app");
 

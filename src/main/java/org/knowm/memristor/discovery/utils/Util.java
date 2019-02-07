@@ -44,7 +44,7 @@ public class Util {
   private static final Logger logger = LoggerFactory.getLogger(Util.class);
 
   public static final String VERSION_PROPERTIES_FILENAME = "/version.properties";
-  public static final String VERSION_PROPERTY_KEY_NAME = "version";
+  public static final String VERSION_PROPERTY_KEY_NAME = "mdversion";
 
   //   public final static long SLEEP_TIME = 40; // 40 ms ==> 25fps
 //      public final static long SLEEP_TIME = 50; // 50 ms ==> 20fps

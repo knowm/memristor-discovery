@@ -18,14 +18,9 @@ See [Releases](https://github.com/knowm/memristor-discovery/releases) for downlo
 
 ## Install Java 11 Runtime Environment
 
-### MacOS X
+### MacOS X and Windows 10
  
-    brew update
-    brew cask install java
-
-### Windows 10
-
-Download the Java 11 OpenJDK from [java.net](http://jdk.java.net/11/). Follow the instructions [here](https://stackoverflow.com/a/52531093/1625820).
+Since version 0.0.7, the Memristor-Discovery app comes bundled with the Java 11 runtime so there is no need to separately install it.
 
 ### Ubuntu
 
@@ -43,7 +38,7 @@ sudo tar -xvzf ~/Downloads/openjdk-11.0.2_linux-x64_bin.tar.gz
 nano ~/.bashrc
 ```
 
-Add to bottom of fine:
+Add to bottom of file:
 
 ```
 export JAVA_HOME=/usr/lib/jvm/jdk-11.0.2

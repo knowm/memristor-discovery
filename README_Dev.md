@@ -1,6 +1,15 @@
 ## Create install files for all 3 operating systems
 
+### Possibilities that will be updated for Java 11 in the future
+
+1. <https://github.com/Jorl17/jar2app>
+1. <https://bitbucket.org/infinitekind/appbundler/overview>
+1. <https://lerks.blog/packaging-a-jar-as-app-for-macos/>
+
+
 ### MacOS
+
+We can look at the [JD-GUI app](https://github.com/java-decompiler/jd-gui/blob/master/src/osx/resources/Info.plist) to see a good and simple example of properly bundling an app for MacOS.
 
 #### Memristor-Discovery.app
 
@@ -20,23 +29,35 @@ Update `JDK_LOCATION` in `MacOSPackr` to reflect the created zip file.
 
 Run `MacOSPackr` in test package. This will create a `*.app` file which could be dragged into `Applications` and clicked on like a normal app.
 
+Open up the *.app folder and add the following to the Info.plist file:
+
+```
+<key>CFBundleLongVersionString</key>
+<string>0.0.7, Copyright 2016-2019 Knowm Inc</string>
+<key>CFBundleShortVersionString</key>
+<string>0.0.7</string>
+```
+
 #### Memristor-Discovery.dmg
+
+<http://chromasoft.blogspot.com/2010/02/building-dmg-installer-for-mac-simple.html>
+<https://stackoverflow.com/a/37310294/1625820>
 
 To package the app in an "installer", we need to create a DMG file with a few things in it. 
 
 1. Open Disk Utility
 1. File ==> New Image ==> Blank Image
 
-![](_img/DiskUtility.png)
+![](_exe/DiskUtility.png)
 
 1. Mount and open the DMG in Finder
 1. Switch to Icon view
 1. Drag `*.app` into it.
-1. In Terminal: `ln -s /Volumes/Memristor-Discovery/Applications Applications`
+1. In Terminal: `cd /Volumes/Memristor-Discovery/` `ln -s /Applications Applications`
 1. Right-click ==> Show View Options
 1. Drag the DMG_Background image as the background picture.
 
-![](_img/DMG_Setup.png)
+![](_exe/DMG_Setup.png)
 
 1. Eject the DMG.
 
