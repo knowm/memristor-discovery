@@ -29,7 +29,6 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.logic.control;
 
 import java.text.DecimalFormat;
 import java.util.List;
-
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.logic.AHaHController_21.AHaHLogicRoutine;

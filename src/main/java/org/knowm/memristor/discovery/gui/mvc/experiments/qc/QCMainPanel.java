@@ -30,10 +30,8 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.qc;
 import java.awt.BorderLayout;
 import java.io.File;
 import java.io.IOException;
-
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
-
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.BitmapEncoder.BitmapFormat;
 import org.knowm.xchart.XChartPanel;

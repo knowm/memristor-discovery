@@ -29,12 +29,10 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.classify;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferencesPanel;
 

@@ -27,11 +27,9 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.header;
 
-import java.awt.Color;
-
-import javax.swing.JPanel;
-
 import eu.hansolo.component.SteelCheckBox;
+import java.awt.Color;
+import javax.swing.JPanel;
 
 public class HeaderPanel extends JPanel {
 

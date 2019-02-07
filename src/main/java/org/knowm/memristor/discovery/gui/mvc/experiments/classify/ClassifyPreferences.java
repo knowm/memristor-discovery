@@ -30,7 +30,6 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.classify;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 
 /**

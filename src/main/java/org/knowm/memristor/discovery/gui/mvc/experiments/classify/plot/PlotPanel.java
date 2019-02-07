@@ -30,9 +30,7 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.classify.plot;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.util.Arrays;
-
 import javax.swing.BorderFactory;
-
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
 import org.knowm.xchart.XChartPanel;
 import org.knowm.xchart.XYChart;

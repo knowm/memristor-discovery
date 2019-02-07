@@ -29,7 +29,6 @@ package org.knowm.memristor.discovery.gui.mvc.experiments;
 
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
-
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;

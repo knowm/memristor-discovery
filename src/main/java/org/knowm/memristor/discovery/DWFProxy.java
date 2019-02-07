@@ -29,10 +29,8 @@ package org.knowm.memristor.discovery;
 
 import java.beans.PropertyChangeListener;
 import java.util.List;
-
 import javax.swing.SwingWorker;
 import javax.swing.event.SwingPropertyChangeSupport;
-
 import org.knowm.waveforms4j.DWF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

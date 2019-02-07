@@ -27,16 +27,14 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.footer;
 
+import eu.hansolo.component.SteelCheckBox;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.waveforms4j.DWFException;
-
-import eu.hansolo.component.SteelCheckBox;
 
 public class FooterController implements PropertyChangeListener {
 

@@ -29,14 +29,12 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.conductance;
 
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferencesPanel;

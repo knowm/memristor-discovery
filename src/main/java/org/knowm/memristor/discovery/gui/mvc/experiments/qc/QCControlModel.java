@@ -29,7 +29,6 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.qc;
 
 import java.beans.PropertyChangeListener;
 import java.io.File;
-
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.utils.driver.Driver;

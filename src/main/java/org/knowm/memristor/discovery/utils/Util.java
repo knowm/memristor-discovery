@@ -32,10 +32,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Enumeration;
 import java.util.Properties;
-
 import javax.swing.AbstractButton;
 import javax.swing.ImageIcon;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

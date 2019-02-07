@@ -28,7 +28,6 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments;
 
 import java.beans.PropertyChangeListener;
-
 import javax.swing.event.SwingPropertyChangeSupport;
 
 public abstract class ExperimentControlModel {

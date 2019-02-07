@@ -28,7 +28,6 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.control;
 
 import java.beans.PropertyChangeEvent;
-
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;

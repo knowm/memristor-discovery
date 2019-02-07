@@ -35,10 +35,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
-
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.rightbar.RightBarController;
 import org.knowm.memristor.discovery.gui.mvc.rightbar.RightBarPanel;

@@ -27,16 +27,13 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.header;
 
+import eu.hansolo.component.SteelCheckBox;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 import javax.swing.JCheckBox;
-
 import org.knowm.memristor.discovery.DWFProxy;
-
-import eu.hansolo.component.SteelCheckBox;
 
 public class HeaderController implements PropertyChangeListener {
 

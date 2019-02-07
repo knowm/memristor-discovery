@@ -30,7 +30,6 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.classify.plot;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
-
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 
 public class PlotController implements PropertyChangeListener {

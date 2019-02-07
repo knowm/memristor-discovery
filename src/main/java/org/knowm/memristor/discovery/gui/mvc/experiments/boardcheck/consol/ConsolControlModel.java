@@ -28,7 +28,6 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.consol;
 
 import java.beans.PropertyChangeListener;
-
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.BoardCheckPreferences;

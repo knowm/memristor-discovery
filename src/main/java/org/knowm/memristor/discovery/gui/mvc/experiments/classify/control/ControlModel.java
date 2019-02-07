@@ -28,7 +28,6 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.classify.control;
 
 import java.text.DecimalFormat;
-
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.ClassifyPreferences;

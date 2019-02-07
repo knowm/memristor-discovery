@@ -33,11 +33,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
-import org.knowm.xchart.XYSeries;
-import org.knowm.xchart.style.markers.SeriesMarkers;
 
 public class PlotController implements PropertyChangeListener {
 

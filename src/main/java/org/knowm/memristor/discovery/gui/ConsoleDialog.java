@@ -29,7 +29,6 @@ package org.knowm.memristor.discovery.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-
 import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;

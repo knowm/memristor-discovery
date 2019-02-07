@@ -30,13 +30,11 @@ package org.knowm.memristor.discovery.gui.mvc.rightbar;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

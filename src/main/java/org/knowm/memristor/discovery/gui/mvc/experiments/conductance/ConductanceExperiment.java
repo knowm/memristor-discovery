@@ -30,9 +30,7 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.conductance;
 import java.awt.Container;
 import java.beans.PropertyChangeEvent;
 import java.util.List;
-
 import javax.swing.SwingWorker;
-
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;

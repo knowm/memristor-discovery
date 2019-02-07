@@ -28,9 +28,7 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.logic.plot;
 
 import java.awt.BorderLayout;
-
 import javax.swing.BorderFactory;
-
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
 import org.knowm.xchart.XChartPanel;
 import org.knowm.xchart.XYChart;

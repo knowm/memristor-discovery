@@ -28,11 +28,10 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control;
 
 import java.text.DecimalFormat;
-
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
-import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.SynapsePreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.AHaHController_21.Instruction;
+import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.SynapsePreferences;
 import org.knowm.memristor.discovery.utils.driver.Driver;
 import org.knowm.memristor.discovery.utils.driver.HalfSine;
 import org.knowm.memristor.discovery.utils.driver.QuarterSine;

@@ -30,7 +30,6 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.conductance.plot;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.ConductancePreferences;

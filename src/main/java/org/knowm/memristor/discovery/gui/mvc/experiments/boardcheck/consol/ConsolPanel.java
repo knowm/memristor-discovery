@@ -32,12 +32,10 @@ import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Date;
-
 import javax.swing.BorderFactory;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.text.DefaultCaret;
-
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
 
 public class ConsolPanel extends ExperimentPlotPanel {
