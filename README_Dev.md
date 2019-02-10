@@ -40,6 +40,7 @@ Open up the *.app folder and add the following to the Info.plist file:
 
 #### Memristor-Discovery.dmg
 
+<https://medium.com/@adam_carroll/java-packager-with-jdk11-31b3d620f4a8>
 <http://chromasoft.blogspot.com/2010/02/building-dmg-installer-for-mac-simple.html>
 <https://stackoverflow.com/a/37310294/1625820>
 
@@ -64,6 +65,8 @@ To package the app in an "installer", we need to create a DMG file with a few th
 1. Compress it with Disk Utility. Images ==> Convert. Select DMG. Choose `compressed`, which is also read-only. (https://support.apple.com/en-gb/guide/disk-utility/convert-a-disk-image-to-another-format-dskutl1002/mac)
 
 ### Windows
+
+Run `WindowsPackr` in test package. This will create a folder called `Memristor-Discovery"`. Zip it.
 
 ### Linux
 
