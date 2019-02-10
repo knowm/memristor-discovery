@@ -42,7 +42,8 @@ import java.util.Arrays;
  */
 public class WindowsPackr {
 
-  private static final String JDK_LOCATION = "/Users/timmolter/Downloads/JDK/Windows/jdk-11.0.2.zip";
+  //  private static final String JDK_LOCATION = "/Users/timmolter/Downloads/JDK/Windows/jdk-11.0.2.zip";
+  private static final String JDK_LOCATION = "C:\\Users\\knowm\\Downloads\\openjdk-11.0.2_windows-x64_bin\\jdk-11.0.2 .zip";
 
   public static void main(String[] args) throws IOException {
 
