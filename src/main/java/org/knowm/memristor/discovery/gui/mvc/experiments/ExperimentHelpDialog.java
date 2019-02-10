@@ -52,7 +52,7 @@ public class ExperimentHelpDialog {
    */
   public ExperimentHelpDialog(JFrame parentFrame, String experimentName) {
 
-    String markdownString = FileUtils.readFileFromClasspathToString("help" + File.separatorChar + experimentName + ".md");
+    String markdownString = FileUtils.readFileFromClasspathToString("help" + "/" + experimentName + ".md");
     Parser parser = Parser.builder().build();
     HtmlRenderer renderer = HtmlRenderer.builder().build();
     Node document = parser.parse(markdownString);

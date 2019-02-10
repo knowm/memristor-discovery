@@ -68,7 +68,7 @@ public class AboutDialog extends JDialog {
     JLabel logoLabel = new JLabel(Util.createImageIcon("img/logo_200.png"));
     panel.add(logoLabel, gc);
 
-    // String markdownString = FileUtils.readFileFromClasspathToString("help" + File.separatorChar + appName + ".md");
+    // String markdownString = FileUtils.readFileFromClasspathToString("help" + "/" + appName + ".md");
     // PegDownProcessor processor = new PegDownProcessor();
     // String htmlString = processor.markdownToHtml(markdownString);
 
