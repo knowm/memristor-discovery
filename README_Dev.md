@@ -79,6 +79,15 @@ On MacOS, Preferences are store in ~/Library/org.knowm.memristor. You can read t
 1. <https://medium.com/@adam_carroll/java-packager-with-jdk11-31b3d620f4a8>
 
 
+### JDEPS
+
+To find out which JRE deps are needed
+
+```bash
+/Library/Java/JavaVirtualMachines/openjdk-11.0.2.jdk/Contents/Home/bin/jdeps --list-deps /Users/timmolter/workspaces/workspace_knowm/memristor-discovery/jar/memristor-discovery-0.0.8-SNAPSHOT.jar
+
+```
+
 ### MacOS
 
 

@@ -22,7 +22,7 @@ ${PACKAGER} \
   --name Memristor-Discovery \
   --main-jar ${JAR} \
   --version ${VERSION} \
-  --add-modules java.base,java.datatransfer,java.desktop,java.scripting,java.xml,jdk.jsobject,jdk.unsupported,jdk.unsupported.desktop,jdk.xml.dom,java.naming,jdk.charsets \
+  --add-modules java.base,java.datatransfer,java.desktop,java.logging,java.prefs,java.xml,jdk.xml.dom \
   --icon $APP_ICON \
   --jvm-args '-Xmx2048m' \
   --copyright "Knowm Inc."
