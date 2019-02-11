@@ -72,4 +72,42 @@ Run `WindowsPackr` in test package. This will create a folder called `Memristor-
 
 ## Preferences
 
-Preferences are store in ~/Library/org.knowm.memristor. You can read the binary plist files in XCode.
+On MacOS, Preferences are store in ~/Library/org.knowm.memristor. You can read the binary plist files in XCode.
+
+## JavaPackager
+
+1. <https://medium.com/@adam_carroll/java-packager-with-jdk11-31b3d620f4a8>
+
+
+### MacOS
+
+
+[Download](https://mail.openjdk.java.net/pipermail/openjfx-dev/2018-September/022500.html) the MacOS binary and place in `usr/local/Cellar`.
+
+
+```
+brew cask install java
+nano ~/.bash_profile
+export JAVA_HOME=`/usr/libexec/java_home`
+echo $JAVA_HOME 
+/usr/local/Cellar/jdk.packager-osx/jpackager --version
+```
+
+```
+mvn package
+```
+Move jar to `jar` folder manually. It needs to be isolated like this in order for `jpackager` to only pull in the jar into the final package.
+
+
+```bash
+cd ~/workspaces/workspace_knowm/memristor-discovery
+./package_macos.sh
+```
+
+
+
+
+
+
+
+

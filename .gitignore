@@ -16,3 +16,5 @@ dependency-reduced-pom.xml
 *.iml
 .idea/
 *.dmg
+*.pkg
+*.jar
