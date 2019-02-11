@@ -85,8 +85,9 @@ To find out which JRE deps are needed
 
 ```bash
 /Library/Java/JavaVirtualMachines/openjdk-11.0.2.jdk/Contents/Home/bin/jdeps --list-deps /Users/timmolter/workspaces/workspace_knowm/memristor-discovery/jar/memristor-discovery-0.0.8-SNAPSHOT.jar
-
 ```
+
+[Source](https://medium.com/azulsystems/using-jlink-to-build-java-runtimes-for-non-modular-applications-9568c5e70ef4)
 
 ### MacOS
 
@@ -113,8 +114,14 @@ cd ~/workspaces/workspace_knowm/memristor-discovery
 ./package_macos.sh
 ```
 
+### Windows
 
+```
+cd /c/Users/knowm/Documents/GitHub/memristor-discovery
+./package_windows.bat
+```
 
+Open the *.iss file in Inno Setup and hit run. An installer will be created in `_exe/Output`.
 
 
 
