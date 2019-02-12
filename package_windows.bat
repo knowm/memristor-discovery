@@ -19,4 +19,5 @@ call "%JAVA_HOME%\bin\java.exe" ^
     --main-jar "%JAR%" ^
     --version "%VERSION%" ^
     --jvm-args "--add-opens javafx.base/com.sun.javafx.reflect=ALL-UNNAMED" ^
-    --icon "%APP_ICON%"
+    --icon "%APP_ICON%" ^
+    --copyright "Knowm Inc."
