@@ -18,5 +18,6 @@ dependency-reduced-pom.xml
 *.dmg
 *.pkg
 *.jar
+*.deb
 _exe/Memristor-Discovery
 _exe/Output
