@@ -5,7 +5,7 @@
 
   <groupId>org.knowm</groupId>
   <artifactId>memristor-discovery</artifactId>
-  <version>0.0.8-SNAPSHOT</version>
+  <version>0.0.8</version>
   <name>Memristor-Discovery</name>
   <packaging>jar</packaging>
   <description>Java Application for automated memristor experiments and data collection based on
@@ -54,7 +54,7 @@
     <dependency>
       <groupId>org.knowm.xchart</groupId>
       <artifactId>xchart</artifactId>
-      <version>3.5.2</version>
+      <version>3.5.3</version>
     </dependency>
     <dependency>
       <groupId>com.vladsch.flexmark</groupId>

@@ -8,7 +8,7 @@ The following screenshots show Memristor-Discovery running on the three supporte
 
 ![Linux](_img/MD_Linux_DC.png)
 
-![Windows 7 & 10](_img/MD_Windows_Pulse.PNG)
+![Windows 10](_img/MD_Windows_Pulse.PNG)
 
 # Installing Memristor-Discovery
 
@@ -16,57 +16,21 @@ See [Releases](https://github.com/knowm/memristor-discovery/releases) for downlo
 
 # Pre-requisites For Running Memristor Discovery
 
-## Install Java 11 Runtime Environment
-
-### MacOS X and Windows 10
- 
-Since version 0.0.7, the Memristor-Discovery app comes bundled with the Java 11 runtime so there is no need to separately install it.
-
-### Ubuntu
-
-As of 30.01.2019, Ubuntu 10.04 LTS doesn't upgrade to Java 11, so we do it manually. Otherwise we could do it with `sudo apt-get install default-jdk` if it wasn't already on Java 11. 
-
-Download OpenJDK from [here](https://jdk.java.net/11/)
-
-```
-sudo apt-get remove openjdk-*
-sudo apt-get purge openjdk-*
-sudo apt autoremove
-
-cd /usr/lib/jvm
-sudo tar -xvzf ~/Downloads/openjdk-11.0.2_linux-x64_bin.tar.gz
-nano ~/.bashrc
-```
-
-Add to bottom of file:
-
-```
-export JAVA_HOME=/usr/lib/jvm/jdk-11.0.2
-export PATH=${PATH}:${JAVA_HOME}/bin
-```
-
-Restart Console.
-
-```
-java -version
-```
-    
 ## Install DWF Framework on MacOS X
 
 Download Waveforms .dmg file from here: <https://reference.digilentinc.com/reference/software/waveforms/waveforms-3/start>
 
-Move the dwf.framework to `/Library/Frameworks` and Waveforms 2015 to `Applications`, as indicated during the install of Waveforms from the DMG:
+Move the dwf.framework to `/Library/Frameworks` and Waveforms to `Applications`, as indicated during the install of Waveforms from the DMG:
 
 ![](./_img/Framework.png)
 
 ## Install DWF Framework on Windows
 
-Download Waveforms 2015 from here: <https://reference.digilentinc.com/reference/software/waveforms/waveforms-3/start> and run the installer.
+Download Waveforms from here: <https://reference.digilentinc.com/reference/software/waveforms/waveforms-3/start> and run the installer.
 
 ## Install DWF Framework on Ubuntu
 
 Download Waveforms .deb file from here: <https://reference.digilentinc.com/reference/software/waveforms/waveforms-3/start>
-
 
 ```
 sudo mv ~/Downloads/digilent.waveforms_3.9.1_amd64.deb /var/cache/apt/archives
@@ -78,11 +42,9 @@ cd /var/cache/apt/archives
 sudo dpkg -i digilent.adept.runtime_2.19.2-amd64.deb
 ```
 
-
 ## Calibrate the AD2 Device
 
-Open up Waveforms 2015 and select from the Menu `Settings ==> Device Manager`. In the Window that pops up, select `Calibrate`. The rest is self explanatory. Make sure to calibrate "Waveform Generator 1 Low Gain" followed by "Oscilloscope".
-
+Open up Waveforms and select from the Menu `Settings ==> Device Manager`. In the Window that pops up, select `Calibrate`. The rest is self explanatory. Make sure to calibrate "Waveform Generator 1 Low Gain" followed by "Oscilloscope".
 
 # For Developers Only
 
