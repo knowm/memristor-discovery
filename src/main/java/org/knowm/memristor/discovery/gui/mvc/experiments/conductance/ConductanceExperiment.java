@@ -1,29 +1,25 @@
 /**
- * Memristor-Discovery is distributed under the GNU General Public License version 3
- * and is also available under alternative licenses negotiated directly
- * with Knowm, Inc.
+ * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
+ * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
  *
- * This package also includes various components that are not part of
- * Memristor-Discovery itself:
+ * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
- * * `Multibit`: Copyright 2011 multibit.org, MIT License
- * * `SteelCheckBox`: Copyright 2012 Gerrit, BSD license
+ * <p>* `Multibit`: Copyright 2011 multibit.org, MIT License * `SteelCheckBox`: Copyright 2012
+ * Gerrit, BSD license
  *
- * Knowm, Inc. holds copyright
- * and/or sufficient licenses to all components of the Memristor-Discovery
- * package, and therefore can grant, at its sole discretion, the ability
- * for companies, individuals, or organizations to create proprietary or
- * open source (even if not GPL) modules which may be dynamically linked at
- * runtime with the portions of Memristor-Discovery which fall under our
- * copyright/license umbrella, or are distributed under more flexible
- * licenses than GPL.
+ * <p>Knowm, Inc. holds copyright and/or sufficient licenses to all components of the
+ * Memristor-Discovery package, and therefore can grant, at its sole discretion, the ability for
+ * companies, individuals, or organizations to create proprietary or open source (even if not GPL)
+ * modules which may be dynamically linked at runtime with the portions of Memristor-Discovery which
+ * fall under our copyright/license umbrella, or are distributed under more flexible licenses than
+ * GPL.
  *
- * The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
+ * <p>The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
  *
- * If you have any questions regarding our licensing policy, please
- * contact us at `contact@knowm.org`.
+ * <p>If you have any questions regarding our licensing policy, please contact us at
+ * `contact@knowm.org`.
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.conductance;
 
@@ -75,9 +71,7 @@ public class ConductanceExperiment extends Experiment {
   }
 
   @Override
-  public void doCreateAndShowGUI() {
-
-  }
+  public void doCreateAndShowGUI() {}
 
   private class ResetCaptureWorker extends SwingWorker<Boolean, double[][]> {
 
@@ -90,9 +84,16 @@ public class ConductanceExperiment extends Experiment {
       // Analog In /////////////////
       // ////////////////////////////////
 
-      int sampleFrequencyMultiplier = 200; // adjust this down if you want to capture more pulses as the buffer size is limited.
-      double sampleFrequency = controlModel.getCalculatedFrequency() * sampleFrequencyMultiplier; // adjust this down if you want to capture more pulses as the buffer size is limited.
-      dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02 * (controlModel.getResetAmplitude() > 0 ? 1 : -1), 8000);
+      int sampleFrequencyMultiplier =
+          200; // adjust this down if you want to capture more pulses as the buffer size is limited.
+      double sampleFrequency =
+          controlModel.getCalculatedFrequency()
+              * sampleFrequencyMultiplier; // adjust this down if you want to capture more pulses as
+      // the buffer size is limited.
+      dwfProxy
+          .getDwf()
+          .startAnalogCaptureBothChannelsLevelTrigger(
+              sampleFrequency, 0.02 * (controlModel.getResetAmplitude() > 0 ? 1 : -1), 8000);
       Thread.sleep(10); // Attempt to allow Analog In to get fired up for the next set of pulses
 
       // ////////////////////////////////
@@ -100,8 +101,15 @@ public class ConductanceExperiment extends Experiment {
       // ////////////////////////////////
 
       // custom waveform
-      double[] customWaveform = WaveformUtils.generateCustomWaveform(controlModel.getResetPulseType(), controlModel.getResetAmplitude(), controlModel.getCalculatedFrequency());
-      dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, 1, customWaveform);
+      double[] customWaveform =
+          WaveformUtils.generateCustomWaveform(
+              controlModel.getResetPulseType(),
+              controlModel.getResetAmplitude(),
+              controlModel.getCalculatedFrequency());
+      dwfProxy
+          .getDwf()
+          .startCustomPulseTrain(
+              DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, 1, customWaveform);
 
       // Read In Data
       boolean success = dwfProxy.capturePulseData(controlModel.getCalculatedFrequency(), 1);
@@ -115,8 +123,10 @@ public class ConductanceExperiment extends Experiment {
 
       // Get Raw Data from Oscilloscope
       int validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
-      double[] v1 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
-      double[] v2 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
+      double[] v1 =
+          dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
+      double[] v2 =
+          dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
       // System.out.println("validSamples: " + validSamples);
 
       // /////////////////////////
@@ -138,7 +148,10 @@ public class ConductanceExperiment extends Experiment {
       // create current data
       double[] current = new double[bufferLength];
       for (int i = 0; i < bufferLength; i++) {
-        current[i] = V2Trimmed[i] / controlModel.getSeriesResistance() * ConductancePreferences.CURRENT_UNIT.getDivisor();
+        current[i] =
+            V2Trimmed[i]
+                / controlModel.getSeriesResistance()
+                * ConductancePreferences.CURRENT_UNIT.getDivisor();
       }
 
       // create conductance data
@@ -146,12 +159,15 @@ public class ConductanceExperiment extends Experiment {
       for (int i = 0; i < bufferLength; i++) {
 
         double I = V2Trimmed[i] / controlModel.getSeriesResistance();
-        double G = I / (V1Trimmed[i] - V2Trimmed[i]) * ConductancePreferences.CONDUCTANCE_UNIT.getDivisor();
+        double G =
+            I
+                / (V1Trimmed[i] - V2Trimmed[i])
+                * ConductancePreferences.CONDUCTANCE_UNIT.getDivisor();
         G = G < 0 ? 0 : G;
         conductance[i] = G;
       }
 
-      publish(new double[][]{timeData, V1Trimmed, V2Trimmed, current, conductance});
+      publish(new double[][] {timeData, V1Trimmed, V2Trimmed, current, conductance});
 
       return true;
     }
@@ -162,9 +178,22 @@ public class ConductanceExperiment extends Experiment {
       double[][] newestChunk = chunks.get(chunks.size() - 1);
       // System.out.println("" + chunks.size());
 
-      plotController.udpateVtChart(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getResetPulseWidth(), controlModel.getResetAmplitude());
-      plotController.udpateIVChart(newestChunk[1], newestChunk[3], controlModel.getResetPulseWidth(), controlModel.getResetAmplitude());
-      plotController.updateGVChartReset(newestChunk[1], newestChunk[4], controlModel.getResetPulseWidth(), controlModel.getResetAmplitude());
+      plotController.udpateVtChart(
+          newestChunk[0],
+          newestChunk[1],
+          newestChunk[2],
+          controlModel.getResetPulseWidth(),
+          controlModel.getResetAmplitude());
+      plotController.udpateIVChart(
+          newestChunk[1],
+          newestChunk[3],
+          controlModel.getResetPulseWidth(),
+          controlModel.getResetAmplitude());
+      plotController.updateGVChartReset(
+          newestChunk[1],
+          newestChunk[4],
+          controlModel.getResetPulseWidth(),
+          controlModel.getResetAmplitude());
 
       if (plotPanel.getCaptureButton().isSelected()) {
         plotController.repaintVtChart();
@@ -201,9 +230,17 @@ public class ConductanceExperiment extends Experiment {
         // Analog In /////////////////
         // ////////////////////////////////
 
-        int sampleFrequencyMultiplier = 200; // adjust this down if you want to capture more pulses as the buffer size is limited.
-        double sampleFrequency = controlModel.getCalculatedFrequency() * sampleFrequencyMultiplier; // adjust this down if you want to capture more pulses as the buffer size is limited.
-        dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02 * (controlModel.getSetAmplitude() > 0 ? 1 : -1), 8000);
+        int sampleFrequencyMultiplier =
+            200; // adjust this down if you want to capture more pulses as the buffer size is
+        // limited.
+        double sampleFrequency =
+            controlModel.getCalculatedFrequency()
+                * sampleFrequencyMultiplier; // adjust this down if you want to capture more pulses
+        // as the buffer size is limited.
+        dwfProxy
+            .getDwf()
+            .startAnalogCaptureBothChannelsLevelTrigger(
+                sampleFrequency, 0.02 * (controlModel.getSetAmplitude() > 0 ? 1 : -1), 8000);
         Thread.sleep(20); // Attempt to allow Analog In to get fired up for the next set of pulses
 
         // ////////////////////////////////
@@ -211,20 +248,34 @@ public class ConductanceExperiment extends Experiment {
         // ////////////////////////////////
 
         // custom waveform
-        double[] customWaveform = WaveformUtils.generateCustomWaveform(Waveform.Square, controlModel.getSetAmplitude(), controlModel.getCalculatedFrequency());
-        dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, 1, customWaveform);
+        double[] customWaveform =
+            WaveformUtils.generateCustomWaveform(
+                Waveform.Square,
+                controlModel.getSetAmplitude(),
+                controlModel.getCalculatedFrequency());
+        dwfProxy
+            .getDwf()
+            .startCustomPulseTrain(
+                DWF.WAVEFORM_CHANNEL_1,
+                controlModel.getCalculatedFrequency(),
+                0,
+                1,
+                customWaveform);
 
         // Get Raw Data from Oscilloscope
         int validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
-        double[] v1 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
-        double[] v2 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
+        double[] v1 =
+            dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
+        double[] v2 =
+            dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
         // System.out.println("validSamples: " + validSamples);
 
         // /////////////////////////
         // Create Chart Data //////
         // /////////////////////////
 
-        double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, controlModel.getSetAmplitude() * .98, 0);
+        double[][] trimmedRawData =
+            PostProcessDataUtils.trimIdleData(v1, v2, controlModel.getSetAmplitude() * .98, 0);
         double[] V1Trimmed = trimmedRawData[0];
         double[] V2Trimmed = trimmedRawData[1];
         int bufferLength = V1Trimmed.length;
@@ -239,10 +290,14 @@ public class ConductanceExperiment extends Experiment {
         // create current data
         double[] current = new double[bufferLength];
         for (int i = 0; i < bufferLength; i++) {
-          current[i] = V2Trimmed[i] / controlModel.getSeriesResistance() * ConductancePreferences.CURRENT_UNIT.getDivisor();
+          current[i] =
+              V2Trimmed[i]
+                  / controlModel.getSeriesResistance()
+                  * ConductancePreferences.CURRENT_UNIT.getDivisor();
         }
 
-        // create conductance data - a single number equal to the average of all points in the trimmed data
+        // create conductance data - a single number equal to the average of all points in the
+        // trimmed data
         double runningTotal = 0.0;
         for (int i = 3; i < bufferLength - 3; i++) {
           double I = V2Trimmed[i] / controlModel.getSeriesResistance();
@@ -251,9 +306,14 @@ public class ConductanceExperiment extends Experiment {
           runningTotal += G;
         }
         // conductance value packed in a one-element array
-        double[] conductance = new double[]{runningTotal / (bufferLength - 6) * ConductancePreferences.CONDUCTANCE_UNIT.getDivisor()};
+        double[] conductance =
+            new double[] {
+              runningTotal
+                  / (bufferLength - 6)
+                  * ConductancePreferences.CONDUCTANCE_UNIT.getDivisor()
+            };
 
-        publish(new double[][]{timeData, V1Trimmed, V2Trimmed, current, conductance});
+        publish(new double[][] {timeData, V1Trimmed, V2Trimmed, current, conductance});
       }
 
       controlPanel.getStartStopButton().doClick();
@@ -267,9 +327,19 @@ public class ConductanceExperiment extends Experiment {
 
       // System.out.println("" + chunks.size());
 
-      plotController.udpateVtChart(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getSetPulseWidth(), controlModel.getSetAmplitude());
-      plotController.udpateIVChart(newestChunk[1], newestChunk[3], controlModel.getSetPulseWidth(), controlModel.getSetAmplitude());
-      plotController.updateGVChart(newestChunk[4], controlModel.getSetPulseWidth(), controlModel.getSetAmplitude());
+      plotController.udpateVtChart(
+          newestChunk[0],
+          newestChunk[1],
+          newestChunk[2],
+          controlModel.getSetPulseWidth(),
+          controlModel.getSetAmplitude());
+      plotController.udpateIVChart(
+          newestChunk[1],
+          newestChunk[3],
+          controlModel.getSetPulseWidth(),
+          controlModel.getSetAmplitude());
+      plotController.updateGVChart(
+          newestChunk[4], controlModel.getSetPulseWidth(), controlModel.getSetAmplitude());
 
       if (plotPanel.getCaptureButton().isSelected()) {
         plotController.repaintVtChart();
@@ -282,25 +352,38 @@ public class ConductanceExperiment extends Experiment {
   }
 
   /**
-   * These property change events are triggered in the controlModel in the case where the underlying controlModel is updated. Here, the controller can respond to those events and make sure the
-   * corresponding GUI
-   * components get updated.
+   * These property change events are triggered in the controlModel in the case where the underlying
+   * controlModel is updated. Here, the controller can respond to those events and make sure the
+   * corresponding GUI components get updated.
    */
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
 
     switch (evt.getPropertyName()) {
-
       case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
-
         if (controlModel.isStartToggled()) {
 
-          double[] customWaveform = WaveformUtils.generateCustomWaveform(Waveform.Square, controlModel.getSetAmplitude(), controlModel.getCalculatedFrequency());
-          dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, 1, customWaveform);
+          double[] customWaveform =
+              WaveformUtils.generateCustomWaveform(
+                  Waveform.Square,
+                  controlModel.getSetAmplitude(),
+                  controlModel.getCalculatedFrequency());
+          dwfProxy
+              .getDwf()
+              .startCustomPulseTrain(
+                  DWF.WAVEFORM_CHANNEL_1,
+                  controlModel.getCalculatedFrequency(),
+                  0,
+                  1,
+                  customWaveform);
         } else {
 
           plotPanel.switch2WaveformChart();
-          plotController.udpateWaveformChart(controlModel.getWaveformTimeData(), controlModel.getWaveformAmplitudeData(), controlModel.getResetAmplitude(), controlModel.getResetPulseWidth());
+          plotController.udpateWaveformChart(
+              controlModel.getWaveformTimeData(),
+              controlModel.getWaveformAmplitudeData(),
+              controlModel.getResetAmplitude(),
+              controlModel.getResetPulseWidth());
         }
         break;
 

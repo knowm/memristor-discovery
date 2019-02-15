@@ -1,29 +1,25 @@
 /**
- * Memristor-Discovery is distributed under the GNU General Public License version 3
- * and is also available under alternative licenses negotiated directly
- * with Knowm, Inc.
+ * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
+ * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
  *
- * This package also includes various components that are not part of
- * Memristor-Discovery itself:
+ * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
- * * `Multibit`: Copyright 2011 multibit.org, MIT License
- * * `SteelCheckBox`: Copyright 2012 Gerrit, BSD license
+ * <p>* `Multibit`: Copyright 2011 multibit.org, MIT License * `SteelCheckBox`: Copyright 2012
+ * Gerrit, BSD license
  *
- * Knowm, Inc. holds copyright
- * and/or sufficient licenses to all components of the Memristor-Discovery
- * package, and therefore can grant, at its sole discretion, the ability
- * for companies, individuals, or organizations to create proprietary or
- * open source (even if not GPL) modules which may be dynamically linked at
- * runtime with the portions of Memristor-Discovery which fall under our
- * copyright/license umbrella, or are distributed under more flexible
- * licenses than GPL.
+ * <p>Knowm, Inc. holds copyright and/or sufficient licenses to all components of the
+ * Memristor-Discovery package, and therefore can grant, at its sole discretion, the ability for
+ * companies, individuals, or organizations to create proprietary or open source (even if not GPL)
+ * modules which may be dynamically linked at runtime with the portions of Memristor-Discovery which
+ * fall under our copyright/license umbrella, or are distributed under more flexible licenses than
+ * GPL.
  *
- * The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
+ * <p>The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
  *
- * If you have any questions regarding our licensing policy, please
- * contact us at `contact@knowm.org`.
+ * <p>If you have any questions regarding our licensing policy, please contact us at
+ * `contact@knowm.org`.
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.classify;
 
@@ -67,16 +63,20 @@ public class ClassifyPreferences extends ExperimentPreferences {
   public static final int CAPTURE_BUFFER_SIZE = 8000;
 
   public enum AHaHRoutine {
-
-    LearnOnMistakes, LearnAlways, LearnCombo;
-
+    LearnOnMistakes,
+    LearnAlways,
+    LearnCombo;
   }
 
   public enum Datasets {
-
-    Ortho2Pattern(orthogonal2Pattern()), AntiOrtho2Pattern(antiOrthogonal2Pattern()), Ortho4Pattern(orthogonal4Pattern()), AntiOrtho4Pattern(
-        antiOrthogonal4Pattern()), Ortho8Pattern(orthogonal8Pattern()), AntiOrtho8Pattern(antiOrthogonal8Pattern()), TwoPattern25Frustrated(
-        twoPattern25Frustrated()), TwoPattern2345Frustrated(twoPattern2345Frustrated());
+    Ortho2Pattern(orthogonal2Pattern()),
+    AntiOrtho2Pattern(antiOrthogonal2Pattern()),
+    Ortho4Pattern(orthogonal4Pattern()),
+    AntiOrtho4Pattern(antiOrthogonal4Pattern()),
+    Ortho8Pattern(orthogonal8Pattern()),
+    AntiOrtho8Pattern(antiOrthogonal8Pattern()),
+    TwoPattern25Frustrated(twoPattern25Frustrated()),
+    TwoPattern2345Frustrated(twoPattern2345Frustrated());
 
     private final List<SupervisedPattern> dataset;
 
@@ -175,15 +175,13 @@ public class ClassifyPreferences extends ExperimentPreferences {
 
       return dataset;
     }
-
   }
 
-  // public static final int CAPTURE_BUFFER_SIZE = 8192 / 11; // AD2 buffer size / most pulses allowed.
+  // public static final int CAPTURE_BUFFER_SIZE = 8192 / 11; // AD2 buffer size / most pulses
+  // allowed.
 
-  /**
-   * Constructor
-   */
-   public ClassifyPreferences() {
+  /** Constructor */
+  public ClassifyPreferences() {
 
     super(ClassifyPreferences.class);
   }

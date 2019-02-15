@@ -1,29 +1,25 @@
 /**
- * Memristor-Discovery is distributed under the GNU General Public License version 3
- * and is also available under alternative licenses negotiated directly
- * with Knowm, Inc.
+ * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
+ * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
  *
- * This package also includes various components that are not part of
- * Memristor-Discovery itself:
+ * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
- * * `Multibit`: Copyright 2011 multibit.org, MIT License
- * * `SteelCheckBox`: Copyright 2012 Gerrit, BSD license
+ * <p>* `Multibit`: Copyright 2011 multibit.org, MIT License * `SteelCheckBox`: Copyright 2012
+ * Gerrit, BSD license
  *
- * Knowm, Inc. holds copyright
- * and/or sufficient licenses to all components of the Memristor-Discovery
- * package, and therefore can grant, at its sole discretion, the ability
- * for companies, individuals, or organizations to create proprietary or
- * open source (even if not GPL) modules which may be dynamically linked at
- * runtime with the portions of Memristor-Discovery which fall under our
- * copyright/license umbrella, or are distributed under more flexible
- * licenses than GPL.
+ * <p>Knowm, Inc. holds copyright and/or sufficient licenses to all components of the
+ * Memristor-Discovery package, and therefore can grant, at its sole discretion, the ability for
+ * companies, individuals, or organizations to create proprietary or open source (even if not GPL)
+ * modules which may be dynamically linked at runtime with the portions of Memristor-Discovery which
+ * fall under our copyright/license umbrella, or are distributed under more flexible licenses than
+ * GPL.
  *
- * The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
+ * <p>The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
  *
- * If you have any questions regarding our licensing policy, please
- * contact us at `contact@knowm.org`.
+ * <p>If you have any questions regarding our licensing policy, please contact us at
+ * `contact@knowm.org`.
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.pulse.control;
 
@@ -73,9 +69,7 @@ public class ControlPanel extends ExperimentControlPanel {
   private final JLabel sampleRateLabel;
   private final JTextField sampleRateTextField;
 
-  /**
-   * Constructor
-   */
+  /** Constructor */
   public ControlPanel() {
 
     setLayout(new GridBagLayout());
@@ -233,10 +227,18 @@ public class ControlPanel extends ExperimentControlPanel {
     startStopButton.setEnabled(enabled);
   }
 
-  public void updateEnergyGUI(double appliedAmplitude, double appliedCurrent, double appliedEnergy, double appliedMemristorEnergy) {
+  public void updateEnergyGUI(
+      double appliedAmplitude,
+      double appliedCurrent,
+      double appliedEnergy,
+      double appliedMemristorEnergy) {
 
     appliedAmplitudeLabel.setText("Applied Amplitude [V]: " + Util.round(appliedAmplitude, 2));
-    currentLabel.setText("Current [" + PulsePreferences.CURRENT_UNIT.getLabel() + "]: " + Util.round(appliedCurrent, 3));
+    currentLabel.setText(
+        "Current ["
+            + PulsePreferences.CURRENT_UNIT.getLabel()
+            + "]: "
+            + Util.round(appliedCurrent, 3));
     energyLabel.setText("Energy M+R [nJ]: " + Util.round(appliedEnergy, 3));
     energyMemRistorOnlyLabel.setText("Energy M [fJ]: " + Util.round(appliedMemristorEnergy, 3));
   }

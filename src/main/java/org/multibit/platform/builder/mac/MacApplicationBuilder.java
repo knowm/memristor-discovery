@@ -1,16 +1,14 @@
 /**
  * Copyright 2011 multibit.org
  *
- * Licensed under the MIT license (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the MIT license (the "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
  *
- * http://opensource.org/licenses/mit-license.php
+ * <p>http://opensource.org/licenses/mit-license.php
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.multibit.platform.builder.mac;
@@ -21,7 +19,6 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-
 import org.multibit.platform.GenericApplication;
 import org.multibit.platform.GenericApplicationSpecification;
 import org.multibit.platform.builder.generic.DefaultApplicationBuilder;
@@ -33,33 +30,29 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <p>
  * [Pattern] to provide the following to {@link Object}:
- * </p>
+ *
  * <ul>
- * <li></li>
+ *   <li>
  * </ul>
- * <p>
- * Example:
- * </p>
+ *
+ * <p>Example:
  *
  * <pre>
  * </pre>
  *
  * @since 1.0.0
- *         
  */
 public class MacApplicationBuilder {
 
   private static final Logger log = LoggerFactory.getLogger(MacApplicationBuilder.class);
 
   /**
-   * <p>
-   * Builds either a {@link GenericApplication} if the platform does not provide EAWT support, or a {@link MacApplication} if it does.
-   * </p>
-   * <p>
-   * Requires reflective code to avoid introducing Apple-specific code. The direct equivalent operation is as follows:
-   * </p>
+   * Builds either a {@link GenericApplication} if the platform does not provide EAWT support, or a
+   * {@link MacApplication} if it does.
+   *
+   * <p>Requires reflective code to avoid introducing Apple-specific code. The direct equivalent
+   * operation is as follows:
    *
    * <pre>
    *
@@ -106,7 +99,7 @@ public class MacApplicationBuilder {
         // Determine if class loading by URL is supported
         if (URLClassLoader.class.isAssignableFrom(systemClassLoaderClass)) {
           // Get the addURL method from the class loader
-          Method addUrl = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
+          Method addUrl = URLClassLoader.class.getDeclaredMethod("addURL", new Class[] {URL.class});
           addUrl.setAccessible(true);
           // Load the Apple JDK classes
           addUrl.invoke(systemClassLoader, file.toURI().toURL());
@@ -118,7 +111,8 @@ public class MacApplicationBuilder {
       // Try to load the EAWT support classes
       Class nativeApplicationClass = Class.forName("com.apple.eawt.Application");
       // Instantiate through getApplication()
-      nativeApplication = nativeApplicationClass.getMethod("getApplication", new Class[0]).invoke(null);
+      nativeApplication =
+          nativeApplicationClass.getMethod("getApplication", new Class[0]).invoke(null);
 
       // Create native instances of the various handlers
       nativeOpenURIHandlerClass = Class.forName("com.apple.eawt.OpenURIHandler");
@@ -180,7 +174,5 @@ public class MacApplicationBuilder {
     // TODO Add the rest later
 
     return macApplication;
-
   }
-
 }

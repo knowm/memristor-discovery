@@ -1,29 +1,25 @@
 /**
- * Memristor-Discovery is distributed under the GNU General Public License version 3
- * and is also available under alternative licenses negotiated directly
- * with Knowm, Inc.
+ * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
+ * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
  *
- * This package also includes various components that are not part of
- * Memristor-Discovery itself:
+ * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
- * * `Multibit`: Copyright 2011 multibit.org, MIT License
- * * `SteelCheckBox`: Copyright 2012 Gerrit, BSD license
+ * <p>* `Multibit`: Copyright 2011 multibit.org, MIT License * `SteelCheckBox`: Copyright 2012
+ * Gerrit, BSD license
  *
- * Knowm, Inc. holds copyright
- * and/or sufficient licenses to all components of the Memristor-Discovery
- * package, and therefore can grant, at its sole discretion, the ability
- * for companies, individuals, or organizations to create proprietary or
- * open source (even if not GPL) modules which may be dynamically linked at
- * runtime with the portions of Memristor-Discovery which fall under our
- * copyright/license umbrella, or are distributed under more flexible
- * licenses than GPL.
+ * <p>Knowm, Inc. holds copyright and/or sufficient licenses to all components of the
+ * Memristor-Discovery package, and therefore can grant, at its sole discretion, the ability for
+ * companies, individuals, or organizations to create proprietary or open source (even if not GPL)
+ * modules which may be dynamically linked at runtime with the portions of Memristor-Discovery which
+ * fall under our copyright/license umbrella, or are distributed under more flexible licenses than
+ * GPL.
  *
- * The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
+ * <p>The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
  *
- * If you have any questions regarding our licensing policy, please
- * contact us at `contact@knowm.org`.
+ * <p>If you have any questions regarding our licensing policy, please contact us at
+ * `contact@knowm.org`.
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.classify.control;
 
@@ -70,9 +66,7 @@ public class ControlPanel extends ExperimentControlPanel {
   public JButton runTrialButton;
   public JButton clearPlotButton;
 
-  /**
-   * Constructor
-   */
+  /** Constructor */
   public ControlPanel() {
 
     setLayout(new GridBagLayout());
@@ -121,7 +115,7 @@ public class ControlPanel extends ExperimentControlPanel {
     add(pulseWidthSlider, c);
     c.gridy++;
 
-    //learn method
+    // learn method
     ahahRoutineLabel = new JLabel("AHaH Routine");
     ahahRoutineLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.gridy++;
@@ -147,7 +141,7 @@ public class ControlPanel extends ExperimentControlPanel {
     c.insets = new Insets(0, 0, 4, 6);
     add(datasetComboBox, c);
 
-    //num epochs
+    // num epochs
 
     numTrainEpochsLabel = new JLabel("Train Epochs");
     numTrainEpochsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -220,5 +214,4 @@ public class ControlPanel extends ExperimentControlPanel {
   public JComboBox<AHaHRoutine> getAhahRoutineComboBox() {
     return ahahRoutineComboBox;
   }
-
 }

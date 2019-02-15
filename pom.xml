@@ -5,7 +5,7 @@
 
   <groupId>org.knowm</groupId>
   <artifactId>memristor-discovery</artifactId>
-  <version>0.0.8-SNAPSHOT</version>
+  <version>0.0.8</version>
   <name>Memristor-Discovery</name>
   <packaging>jar</packaging>
   <description>Java Application for automated memristor experiments and data collection based on
@@ -54,7 +54,7 @@
     <dependency>
       <groupId>org.knowm.xchart</groupId>
       <artifactId>xchart</artifactId>
-      <version>3.5.2</version>
+      <version>3.5.4</version>
     </dependency>
     <dependency>
       <groupId>com.vladsch.flexmark</groupId>
@@ -72,14 +72,6 @@
       <artifactId>slf4j-simple</artifactId>
       <version>1.7.25</version>
     </dependency>
-
-    <dependency>
-      <groupId>com.bladecoder.packr</groupId>
-      <artifactId>packr</artifactId>
-      <version>2.1</version>
-      <scope>test</scope>
-    </dependency>
-
 
   </dependencies>
 
@@ -182,54 +174,22 @@
         </executions>
       </plugin>
 
-
       <plugin>
-        <groupId>com.akathist.maven.plugins.launch4j</groupId>
-        <artifactId>launch4j-maven-plugin</artifactId>
-        <version>1.7.25</version>
+        <groupId>com.coveo</groupId>
+        <artifactId>fmt-maven-plugin</artifactId>
+        <version>2.8</version>
+        <configuration>
+          <filesNamePattern>.*\.java</filesNamePattern>
+          <skip>false</skip>
+        </configuration>
         <executions>
-
-          <!-- GUI exe -->
           <execution>
-            <id>md-gui</id>
-            <phase>package</phase>
             <goals>
-              <goal>launch4j</goal>
+              <goal>format</goal>
             </goals>
-            <configuration>
-              <headerType>gui</headerType>
-              <outfile>target/Memristor-Discovery.exe</outfile>
-              <jar>target/${artifactId}-${version}.jar</jar>
-              <errTitle>App Err</errTitle>
-              <classPath>
-                <mainClass>org.knowm.memristor.discovery.MemristorDiscovery</mainClass>
-              </classPath>
-              <icon>_exe/icons.ico</icon>
-              <jre>
-                <!--<minVersion>1.11.0</minVersion>-->
-                <!--<maxVersion>1.11.2</maxVersion>-->
-                <path>C:\Program Files\Java\jdk-11.0.2</path>
-                <initialHeapSize>128</initialHeapSize>
-                <maxHeapSize>1024</maxHeapSize>
-              </jre>
-              <versionInfo>
-                <fileVersion>1.0.0.0</fileVersion>
-                <txtFileVersion>1.0.0.0</txtFileVersion>
-                <fileDescription>Desc</fileDescription>
-                <copyright>C</copyright>
-                <productVersion>1.0.0.0</productVersion>
-                <txtProductVersion>1.0.0.0</txtProductVersion>
-                <productName>Product</productName>
-                <internalName>Product</internalName>
-                <originalFilename>App.exe</originalFilename>
-              </versionInfo>
-            </configuration>
           </execution>
-
         </executions>
       </plugin>
-
-
 
     </plugins>
   </build>

@@ -1,29 +1,25 @@
 /**
- * Memristor-Discovery is distributed under the GNU General Public License version 3
- * and is also available under alternative licenses negotiated directly
- * with Knowm, Inc.
+ * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
+ * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
  *
- * This package also includes various components that are not part of
- * Memristor-Discovery itself:
+ * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
- * * `Multibit`: Copyright 2011 multibit.org, MIT License
- * * `SteelCheckBox`: Copyright 2012 Gerrit, BSD license
+ * <p>* `Multibit`: Copyright 2011 multibit.org, MIT License * `SteelCheckBox`: Copyright 2012
+ * Gerrit, BSD license
  *
- * Knowm, Inc. holds copyright
- * and/or sufficient licenses to all components of the Memristor-Discovery
- * package, and therefore can grant, at its sole discretion, the ability
- * for companies, individuals, or organizations to create proprietary or
- * open source (even if not GPL) modules which may be dynamically linked at
- * runtime with the portions of Memristor-Discovery which fall under our
- * copyright/license umbrella, or are distributed under more flexible
- * licenses than GPL.
+ * <p>Knowm, Inc. holds copyright and/or sufficient licenses to all components of the
+ * Memristor-Discovery package, and therefore can grant, at its sole discretion, the ability for
+ * companies, individuals, or organizations to create proprietary or open source (even if not GPL)
+ * modules which may be dynamically linked at runtime with the portions of Memristor-Discovery which
+ * fall under our copyright/license umbrella, or are distributed under more flexible licenses than
+ * GPL.
  *
- * The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
+ * <p>The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
  *
- * If you have any questions regarding our licensing policy, please
- * contact us at `contact@knowm.org`.
+ * <p>If you have any questions regarding our licensing policy, please contact us at
+ * `contact@knowm.org`.
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments;
 
@@ -33,7 +29,8 @@ public abstract class ExperimentPreferences {
 
   protected Preferences preferences;
 
-  public final static float R_SWITCH = 73F; // Resistance of one of the DG445 switches. Old AD Switches are ~50.
+  public static final float R_SWITCH =
+      73F; // Resistance of one of the DG445 switches. Old AD Switches are ~50.
 
   /**
    * Constructor
@@ -46,13 +43,22 @@ public abstract class ExperimentPreferences {
   }
 
   public enum Waveform {
-
-    Sine, Triangle, TriangleUpDown, Square, SquareUpDown, SawtoothUpDown, Sawtooth, QuarterSine, HalfSine, SquareSmooth;
+    Sine,
+    Triangle,
+    TriangleUpDown,
+    Square,
+    SquareUpDown,
+    SawtoothUpDown,
+    Sawtooth,
+    QuarterSine,
+    HalfSine,
+    SquareSmooth;
   }
 
   public enum CurrentUnits {
-
-    Amps(1, "A"), Milliamps(1000, "mA"), MicroAmps(1_000_000, "µA");
+    Amps(1, "A"),
+    Milliamps(1000, "mA"),
+    MicroAmps(1_000_000, "µA");
 
     private final double divisor;
     private final String label;
@@ -75,8 +81,9 @@ public abstract class ExperimentPreferences {
   }
 
   public enum ResistanceUnits {
-
-    Ohms(1, "Ω"), KiloOhms(1000, "kΩ"), MegaOhms(1_000_000, "mΩ");
+    Ohms(1, "Ω"),
+    KiloOhms(1000, "kΩ"),
+    MegaOhms(1_000_000, "mΩ");
 
     private final double divisor;
     private final String label;
@@ -99,8 +106,9 @@ public abstract class ExperimentPreferences {
   }
 
   public enum ConductanceUnits {
-
-    Siemens(1, "S"), MilliSiemens(1000, "mS"), MicroSiemens(1_000_000, "µS");
+    Siemens(1, "S"),
+    MilliSiemens(1000, "mS"),
+    MicroSiemens(1_000_000, "µS");
 
     private final double divisor;
     private final String label;
@@ -123,8 +131,9 @@ public abstract class ExperimentPreferences {
   }
 
   public enum TimeUnits {
-
-    Seconds(1, "s"), MilliSeconds(1000, "ms"), MicroSeconds(1_000_000, "µs");
+    Seconds(1, "s"),
+    MilliSeconds(1000, "ms"),
+    MicroSeconds(1_000_000, "µs");
 
     private final double divisor;
     private final String label;

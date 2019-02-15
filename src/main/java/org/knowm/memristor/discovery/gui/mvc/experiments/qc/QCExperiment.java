@@ -1,29 +1,25 @@
 /**
- * Memristor-Discovery is distributed under the GNU General Public License version 3
- * and is also available under alternative licenses negotiated directly
- * with Knowm, Inc.
+ * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
+ * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
  *
- * This package also includes various components that are not part of
- * Memristor-Discovery itself:
+ * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
- * * `Multibit`: Copyright 2011 multibit.org, MIT License
- * * `SteelCheckBox`: Copyright 2012 Gerrit, BSD license
+ * <p>* `Multibit`: Copyright 2011 multibit.org, MIT License * `SteelCheckBox`: Copyright 2012
+ * Gerrit, BSD license
  *
- * Knowm, Inc. holds copyright
- * and/or sufficient licenses to all components of the Memristor-Discovery
- * package, and therefore can grant, at its sole discretion, the ability
- * for companies, individuals, or organizations to create proprietary or
- * open source (even if not GPL) modules which may be dynamically linked at
- * runtime with the portions of Memristor-Discovery which fall under our
- * copyright/license umbrella, or are distributed under more flexible
- * licenses than GPL.
+ * <p>Knowm, Inc. holds copyright and/or sufficient licenses to all components of the
+ * Memristor-Discovery package, and therefore can grant, at its sole discretion, the ability for
+ * companies, individuals, or organizations to create proprietary or open source (even if not GPL)
+ * modules which may be dynamically linked at runtime with the portions of Memristor-Discovery which
+ * fall under our copyright/license umbrella, or are distributed under more flexible licenses than
+ * GPL.
  *
- * The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
+ * <p>The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
  *
- * If you have any questions regarding our licensing policy, please
- * contact us at `contact@knowm.org`.
+ * <p>If you have any questions regarding our licensing policy, please contact us at
+ * `contact@knowm.org`.
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.qc;
 
@@ -83,7 +79,11 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
   private void createAndShowGUI(Container mainFrameContainer) {
 
     controlPanel = new QCControlPanel();
-    JScrollPane jScrollPane = new JScrollPane(controlPanel, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    JScrollPane jScrollPane =
+        new JScrollPane(
+            controlPanel,
+            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     jScrollPane.setBorder(createEmptyBorder());
     mainFrameContainer.add(jScrollPane, BorderLayout.WEST);
 
@@ -91,67 +91,83 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
     // START BUTTON ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    controlPanel.getStartButton().addActionListener(new ActionListener() {
+    controlPanel
+        .getStartButton()
+        .addActionListener(
+            new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+              @Override
+              public void actionPerformed(ActionEvent e) {
 
-        if (model.getSerialNumber() == null || model.getSerialNumber().trim().equalsIgnoreCase("")) {
-          JOptionPane.showMessageDialog(mainFrameContainer, "Please enter the serial number first!", "Error", JOptionPane.ERROR_MESSAGE);
-          return;
-        }
+                if (model.getSerialNumber() == null
+                    || model.getSerialNumber().trim().equalsIgnoreCase("")) {
+                  JOptionPane.showMessageDialog(
+                      mainFrameContainer,
+                      "Please enter the serial number first!",
+                      "Error",
+                      JOptionPane.ERROR_MESSAGE);
+                  return;
+                }
 
-        try {
-          reportLines.clear();
-          String fileName = model.getBasePath() + "report.md";
-          Path filePath = Paths.get(fileName);
-          System.out.println(filePath);
+                try {
+                  reportLines.clear();
+                  String fileName = model.getBasePath() + "report.md";
+                  Path filePath = Paths.get(fileName);
+                  System.out.println(filePath);
 
-          Path parentDir = filePath.getParent();
-          if (!Files.exists(parentDir)) {
-            Files.createDirectories(parentDir);
-          } else {
-            JOptionPane.showMessageDialog(mainFrameContainer, "Folder for this serial number already exixts!", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
-          }
-        } catch (IOException ioException) {
+                  Path parentDir = filePath.getParent();
+                  if (!Files.exists(parentDir)) {
+                    Files.createDirectories(parentDir);
+                  } else {
+                    JOptionPane.showMessageDialog(
+                        mainFrameContainer,
+                        "Folder for this serial number already exixts!",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                    return;
+                  }
+                } catch (IOException ioException) {
 
-          JOptionPane.showMessageDialog(mainFrameContainer, e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
-          ioException.printStackTrace();
-        }
+                  JOptionPane.showMessageDialog(
+                      mainFrameContainer, e.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+                  ioException.printStackTrace();
+                }
 
-        // switchPanel.enableAllRadioButtons(false);
-        // controlPanel.enableAllChildComponents(false);
-        controlPanel.getStartButton().setEnabled(false);
-        controlPanel.getStopButton().setEnabled(true);
+                // switchPanel.enableAllRadioButtons(false);
+                // controlPanel.enableAllChildComponents(false);
+                controlPanel.getStartButton().setEnabled(false);
+                controlPanel.getStopButton().setEnabled(true);
 
-        // switch to iv view
-        mainPanel.switch2IVChart();
+                // switch to iv view
+                mainPanel.switch2IVChart();
 
-        // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
-        captureWorker = new QCCaptureWorker();
-        captureWorker.execute();
-      }
-    });
+                // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
+                captureWorker = new QCCaptureWorker();
+                captureWorker.execute();
+              }
+            });
 
     // ///////////////////////////////////////////////////////////
     // STOP BUTTON //////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    controlPanel.getStopButton().addActionListener(new ActionListener() {
+    controlPanel
+        .getStopButton()
+        .addActionListener(
+            new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+              @Override
+              public void actionPerformed(ActionEvent e) {
 
-        // switchPanel.enableAllRadioButtons(true);
-        // controlPanel.enableAllChildComponents(true);
-        controlPanel.getStartButton().setEnabled(true);
-        controlPanel.getStopButton().setEnabled(false);
+                // switchPanel.enableAllRadioButtons(true);
+                // controlPanel.enableAllChildComponents(true);
+                controlPanel.getStartButton().setEnabled(true);
+                controlPanel.getStopButton().setEnabled(false);
 
-        // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
-        captureWorker.cancel(true);
-      }
-    });
+                // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
+                captureWorker.cancel(true);
+              }
+            });
 
     mainPanel = new QCMainPanel();
     mainFrameContainer.add(mainPanel, BorderLayout.CENTER);
@@ -173,14 +189,31 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
         reportLines.add("## Chip Information");
         reportLines.add("|Type|Serial|Date|");
         reportLines.add("|:--:|:--:|:--:|");
-        reportLines.add("|" + model.getChipType() + "|" + model.getSerialNumber() + "|" + (new Date()).toLocaleString() + "|");
+        reportLines.add(
+            "|"
+                + model.getChipType()
+                + "|"
+                + model.getSerialNumber()
+                + "|"
+                + (new Date()).toLocaleString()
+                + "|");
         reportLines.add("");
 
         reportLines.add("## Testing Conditions");
         reportLines.add("|Waveform|Amplitude|Offset|Frequency|Series Resistor|");
         reportLines.add("|:--:|:--:|:--:|:--:|");
-        reportLines.add("|" + model.getWaveform() + "|" + model.getAmplitude() + "V|" + model.getOffset() + " V|" + model.getFrequency() + " Hz|" + f.format(model.getSeriesResistance() / 1000.0)
-            + "|");
+        reportLines.add(
+            "|"
+                + model.getWaveform()
+                + "|"
+                + model.getAmplitude()
+                + "V|"
+                + model.getOffset()
+                + " V|"
+                + model.getFrequency()
+                + " Hz|"
+                + f.format(model.getSeriesResistance() / 1000.0)
+                + "|");
         reportLines.add("");
 
         reportLines.add("## Test Result");
@@ -198,9 +231,23 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
           dwfProxy.update2DigitalIOStatesAtOnce(j, true);
 
           // start capture
-          dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, model.getWaveform(), model.getFrequency(), model.getAmplitude(), model.getOffset(), 50);
-          dwfProxy.getDwf().startAnalogCaptureBothChannelsImmediately(model.getFrequency() * QCPreferences.CAPTURE_BUFFER_SIZE / QCPreferences.CAPTURE_PERIOD_COUNT, QCPreferences.CAPTURE_BUFFER_SIZE,
-              AcquisitionMode.ScanShift);
+          dwfProxy
+              .getDwf()
+              .startWave(
+                  DWF.WAVEFORM_CHANNEL_1,
+                  model.getWaveform(),
+                  model.getFrequency(),
+                  model.getAmplitude(),
+                  model.getOffset(),
+                  50);
+          dwfProxy
+              .getDwf()
+              .startAnalogCaptureBothChannelsImmediately(
+                  model.getFrequency()
+                      * QCPreferences.CAPTURE_BUFFER_SIZE
+                      / QCPreferences.CAPTURE_PERIOD_COUNT,
+                  QCPreferences.CAPTURE_BUFFER_SIZE,
+                  AcquisitionMode.ScanShift);
 
           int captureCount = 0;
 
@@ -229,16 +276,26 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
 
             if (validSamples > 0) {
 
-              // captureAmplitudeData = dwf.FDwfAnalogInStatusData(OSCILLOSCOPE_CHANNEL_1, validSamples);
-              double[] rawdata1 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
-              double[] rawdata2 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
+              // captureAmplitudeData = dwf.FDwfAnalogInStatusData(OSCILLOSCOPE_CHANNEL_1,
+              // validSamples);
+              double[] rawdata1 =
+                  dwfProxy
+                      .getDwf()
+                      .FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
+              double[] rawdata2 =
+                  dwfProxy
+                      .getDwf()
+                      .FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
 
               // create current data
               double[] current = new double[rawdata2.length];
               double[] voltage = new double[rawdata1.length];
 
               for (int i = 0; i < current.length; i++) {
-                current[i] = rawdata2[i] / model.getSeriesResistance() * QCPreferences.CURRENT_UNIT_DEFAULT_VALUE.getDivisor();
+                current[i] =
+                    rawdata2[i]
+                        / model.getSeriesResistance()
+                        * QCPreferences.CURRENT_UNIT_DEFAULT_VALUE.getDivisor();
               }
 
               double maxV = 0;
@@ -252,7 +309,7 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
                 }
               }
 
-              publish(new double[][]{rawdata1, voltage, current});
+              publish(new double[][] {rawdata1, voltage, current});
 
               // System.out.println("voltage: " + Arrays.toString(voltage));
               // System.out.println("current: " + Arrays.toString(current));
@@ -263,9 +320,11 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
                 for (int i = 0; i < current.length; i++) {
 
                   if (voltage[i] > maxV * QCPreferences.P_BELOW_MAX_MIN_V) {
-                    resistance.add(Math.abs(voltage[i] / (rawdata2[i] / model.getSeriesResistance())));
+                    resistance.add(
+                        Math.abs(voltage[i] / (rawdata2[i] / model.getSeriesResistance())));
                   } else if (voltage[i] < minV * QCPreferences.P_BELOW_MAX_MIN_V) {
-                    resistance.add(Math.abs(voltage[i] / (rawdata2[i] / model.getSeriesResistance())));
+                    resistance.add(
+                        Math.abs(voltage[i] / (rawdata2[i] / model.getSeriesResistance())));
                   }
                 }
 
@@ -289,7 +348,9 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
                 AveMaxMinVar lrs = new AveMaxMinVar(low_resistance_measurments);
                 double q = hrs.getAve() / lrs.getAve();
                 boolean pass = false;
-                if (lrs.getAve() < QCPreferences.R_TARGET && hrs.getAve() > QCPreferences.R_TARGET && q > QCPreferences.MIN_Q) {
+                if (lrs.getAve() < QCPreferences.R_TARGET
+                    && hrs.getAve() > QCPreferences.R_TARGET
+                    && q > QCPreferences.MIN_Q) {
                   pass = true;
                 }
 
@@ -297,7 +358,18 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
                   numpass++;
                 }
 
-                reportLines.add("|" + (j) + "|" + f.format(lrs.getAve() / 1000.0) + "|" + f.format(hrs.getAve() / 1000.0) + "|" + q + "|" + (pass ? "PASS" : "FAIL") + "|");
+                reportLines.add(
+                    "|"
+                        + (j)
+                        + "|"
+                        + f.format(lrs.getAve() / 1000.0)
+                        + "|"
+                        + f.format(hrs.getAve() / 1000.0)
+                        + "|"
+                        + q
+                        + "|"
+                        + (pass ? "PASS" : "FAIL")
+                        + "|");
               } else {
                 reportLines.add("|" + (j) + "| null | null | null | null |");
               }
@@ -306,7 +378,8 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
               try {
                 mainPanel.saveIVChart(model.getBasePath(), j);
               } catch (IOException e) {
-                JOptionPane.showMessageDialog(null, "Problem saving chart", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(
+                    null, "Problem saving chart", "Error", JOptionPane.ERROR_MESSAGE);
               }
               dwfProxy.setAllIOStates(0b0000_0000);
 
@@ -341,7 +414,11 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
 
         reportLines.add(" ");
         reportLines.add("## Notes");
-        reportLines.add(" Device passes QC IFF: Q > " + QCPreferences.MIN_Q + " & HRS>r & LRS<r, where r=" + f.format(QCPreferences.R_TARGET));
+        reportLines.add(
+            " Device passes QC IFF: Q > "
+                + QCPreferences.MIN_Q
+                + " & HRS>r & LRS<r, where r="
+                + f.format(QCPreferences.R_TARGET));
 
         // must save report on its own thread or it will get an interupt exceptions
         class SaveReportThread extends Thread {
@@ -376,9 +453,15 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
 
       // System.out.println("" + chunks.size());
 
-      // Messages received from the doInBackground() (when invoking the publish() method). See: http://www.javacreed.com/swing-worker-example/
+      // Messages received from the doInBackground() (when invoking the publish() method). See:
+      // http://www.javacreed.com/swing-worker-example/
 
-      mainPanel.udpateIVChart(chunks.get(chunks.size() - 1)[0], chunks.get(chunks.size() - 1)[1], chunks.get(chunks.size() - 1)[2], model.getFrequency(), model.getAmplitude());
+      mainPanel.udpateIVChart(
+          chunks.get(chunks.size() - 1)[0],
+          chunks.get(chunks.size() - 1)[1],
+          chunks.get(chunks.size() - 1)[2],
+          model.getFrequency(),
+          model.getAmplitude());
 
       long duration = System.currentTimeMillis() - start;
       // System.out.println("duration" + duration);
@@ -393,8 +476,9 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
   }
 
   /**
-   * These property change events are triggered in the model in the case where the underlying model is updated. Here, the controller can respond to those events and make sure the corresponding GUI
-   * components get updated.
+   * These property change events are triggered in the model in the case where the underlying model
+   * is updated. Here, the controller can respond to those events and make sure the corresponding
+   * GUI components get updated.
    */
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
@@ -404,9 +488,7 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
     // System.out.println("propName: " + propName);
 
     switch (propName) {
-
       case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
-
         if (true) { // TODO fix this when converting to new experiment abstraction
 
           // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
@@ -450,9 +532,7 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
   }
 
   @Override
-  public void doCreateAndShowGUI() {
-
-  }
+  public void doCreateAndShowGUI() {}
 
   @Override
   public ExperimentPlotPanel getPlotPanel() {

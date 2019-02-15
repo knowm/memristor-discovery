@@ -1,29 +1,25 @@
 /**
- * Memristor-Discovery is distributed under the GNU General Public License version 3
- * and is also available under alternative licenses negotiated directly
- * with Knowm, Inc.
+ * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
+ * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
  *
- * This package also includes various components that are not part of
- * Memristor-Discovery itself:
+ * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
- * * `Multibit`: Copyright 2011 multibit.org, MIT License
- * * `SteelCheckBox`: Copyright 2012 Gerrit, BSD license
+ * <p>* `Multibit`: Copyright 2011 multibit.org, MIT License * `SteelCheckBox`: Copyright 2012
+ * Gerrit, BSD license
  *
- * Knowm, Inc. holds copyright
- * and/or sufficient licenses to all components of the Memristor-Discovery
- * package, and therefore can grant, at its sole discretion, the ability
- * for companies, individuals, or organizations to create proprietary or
- * open source (even if not GPL) modules which may be dynamically linked at
- * runtime with the portions of Memristor-Discovery which fall under our
- * copyright/license umbrella, or are distributed under more flexible
- * licenses than GPL.
+ * <p>Knowm, Inc. holds copyright and/or sufficient licenses to all components of the
+ * Memristor-Discovery package, and therefore can grant, at its sole discretion, the ability for
+ * companies, individuals, or organizations to create proprietary or open source (even if not GPL)
+ * modules which may be dynamically linked at runtime with the portions of Memristor-Discovery which
+ * fall under our copyright/license umbrella, or are distributed under more flexible licenses than
+ * GPL.
  *
- * The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
+ * <p>The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
  *
- * If you have any questions regarding our licensing policy, please
- * contact us at `contact@knowm.org`.
+ * <p>If you have any questions regarding our licensing policy, please contact us at
+ * `contact@knowm.org`.
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.synapse;
 
@@ -52,7 +48,7 @@ import org.knowm.memristor.discovery.utils.gpio.MuxController;
 
 public class SynapseExperiment extends Experiment {
 
-  private final static float INIT_CONDUCTANCE = .0002f;
+  private static final float INIT_CONDUCTANCE = .0002f;
 
   private InitSynapseWorker initSynapseWorker;
 
@@ -92,32 +88,30 @@ public class SynapseExperiment extends Experiment {
     // aHaHController.setWaveform(controlModel.getWaveform());
 
     muxController = new MuxController();
-
   }
 
   @Override
   public void doCreateAndShowGUI() {
-    controlPanel.clearPlotButton.addActionListener(new ActionListener() {
+    controlPanel.clearPlotButton.addActionListener(
+        new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+          @Override
+          public void actionPerformed(ActionEvent e) {
 
-        plotController.resetChart();
+            plotController.resetChart();
+          }
+        });
 
-      }
-    });
+    controlPanel.initSynapseButton.addActionListener(
+        new ActionListener() {
 
-    controlPanel.initSynapseButton.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
-
-        initSynapseWorker = new InitSynapseWorker();
-        initSynapseWorker.execute();
-
-      }
-    });
-
+            initSynapseWorker = new InitSynapseWorker();
+            initSynapseWorker.execute();
+          }
+        });
   }
 
   private class CaptureWorker extends SwingWorker<Boolean, Double> {
@@ -135,15 +129,14 @@ public class SynapseExperiment extends Experiment {
 
         }
 
-        //set to constant pulse width for reads to help mitigate RC issues 
+        // set to constant pulse width for reads to help mitigate RC issues
         int pW = controlModel.getPulseWidth();
         controlModel.setPulseWidth(100_000);
         aHaHController.executeInstruction(Instruction.FFLV);
-        controlModel.setPulseWidth(pW);//set it back to whatever it was 
+        controlModel.setPulseWidth(pW); // set it back to whatever it was
 
-        //System.out.println("Vy=" + aHaHController.getVy());
+        // System.out.println("Vy=" + aHaHController.getVy());
         publish(aHaHController.getGa(), aHaHController.getGb(), aHaHController.getVy());
-
       }
       return true;
     }
@@ -157,8 +150,9 @@ public class SynapseExperiment extends Experiment {
   }
 
   /**
-   * These property change events are triggered in the controlModel in the case where the underlying controlModel is updated. Here, the controller can
-   * respond to those events and make sure the corresponding GUI components get updated.
+   * These property change events are triggered in the controlModel in the case where the underlying
+   * controlModel is updated. Here, the controller can respond to those events and make sure the
+   * corresponding GUI components get updated.
    */
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
@@ -166,7 +160,6 @@ public class SynapseExperiment extends Experiment {
     String propName = evt.getPropertyName();
 
     switch (propName) {
-
       case EVENT_INSTRUCTION_UPDATE:
 
         // System.out.println(controlModel.getInstruction());
@@ -212,26 +205,26 @@ public class SynapseExperiment extends Experiment {
         int initPulseWidth = controlModel.getPulseWidth();
         float initVoltage = controlModel.getAmplitude();
 
-        //1. Reset both memristors to low conducting state-->
-        controlModel.setPulseWidth(500_000);//500us.
+        // 1. Reset both memristors to low conducting state-->
+        controlModel.setPulseWidth(500_000); // 500us.
         controlModel.setAmplitude(1.5f);
 
-        //hard reset.
+        // hard reset.
         for (int i = 0; i < 10; i++) {
           aHaHController.executeInstruction(Instruction.RLadn);
           aHaHController.executeInstruction(Instruction.RHbdn);
         }
 
-        //drive each memristor to target conductance.
+        // drive each memristor to target conductance.
         boolean aGood = false;
         boolean bGood = false;
-        for (int i = 0; i < 100; i++) {//drive pulses until conductance reaches threshold
+        for (int i = 0; i < 100; i++) { // drive pulses until conductance reaches threshold
           aHaHController.executeInstruction(Instruction.FFLV);
           if (Double.isNaN(aHaHController.getGa()) || aHaHController.getGa() < INIT_CONDUCTANCE) {
             aHaHController.executeInstruction(Instruction.RHaup);
           } else {
 
-            //System.out.println("Here A: aHaHController.getGa()=" + aHaHController.getGa());
+            // System.out.println("Here A: aHaHController.getGa()=" + aHaHController.getGa());
 
             aGood = true;
           }
@@ -240,23 +233,33 @@ public class SynapseExperiment extends Experiment {
             aHaHController.executeInstruction(Instruction.RLbup);
           } else {
 
-            //System.out.println("Here B: aHaHController.getGb()=" + aHaHController.getGb());
+            // System.out.println("Here B: aHaHController.getGb()=" + aHaHController.getGb());
 
             bGood = true;
           }
 
           if (aGood && bGood) {
 
-            getControlModel().swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_NEW_CONSOLE_LOG, null, "Step 1 Passed.");
+            getControlModel()
+                .swingPropertyChangeSupport
+                .firePropertyChange(
+                    ExperimentControlModel.EVENT_NEW_CONSOLE_LOG, null, "Step 1 Passed.");
             break;
           }
 
-          getControlModel().swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_NEW_CONSOLE_LOG, null,
-              "  A=" + df.format(aHaHController.getGa()) + "mS, B=" + df.format(aHaHController.getGb()) + "mS");
-
+          getControlModel()
+              .swingPropertyChangeSupport
+              .firePropertyChange(
+                  ExperimentControlModel.EVENT_NEW_CONSOLE_LOG,
+                  null,
+                  "  A="
+                      + df.format(aHaHController.getGa())
+                      + "mS, B="
+                      + df.format(aHaHController.getGb())
+                      + "mS");
         }
 
-        if (!aGood || !bGood) {//failed
+        if (!aGood || !bGood) { // failed
 
           String failed = "";
           if (!aGood) {
@@ -271,11 +274,19 @@ public class SynapseExperiment extends Experiment {
             }
           }
 
-          getControlModel().swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_NEW_CONSOLE_LOG, null,
-              "Step 1 Failed. Memristor (" + failed + ") could not reach target of " + INIT_CONDUCTANCE + "mS");
+          getControlModel()
+              .swingPropertyChangeSupport
+              .firePropertyChange(
+                  ExperimentControlModel.EVENT_NEW_CONSOLE_LOG,
+                  null,
+                  "Step 1 Failed. Memristor ("
+                      + failed
+                      + ") could not reach target of "
+                      + INIT_CONDUCTANCE
+                      + "mS");
         }
 
-        //zero them out.
+        // zero them out.
         int stateChangedCount = 0;
         boolean s = true;
         for (int i = 0; i < 8; i++) {
@@ -283,7 +294,7 @@ public class SynapseExperiment extends Experiment {
 
           boolean state = aHaHController.getVy() > 0;
           if (i > 0) {
-            if (state != s) {//state changed
+            if (state != s) { // state changed
               stateChangedCount++;
             }
           }
@@ -292,24 +303,43 @@ public class SynapseExperiment extends Experiment {
         }
 
         if (stateChangedCount == 0) {
-          getControlModel().swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_NEW_CONSOLE_LOG, null,
-              "Step 2 Failed. State did not change upon application of Anti-Hebbian cycles");
+          getControlModel()
+              .swingPropertyChangeSupport
+              .firePropertyChange(
+                  ExperimentControlModel.EVENT_NEW_CONSOLE_LOG,
+                  null,
+                  "Step 2 Failed. State did not change upon application of Anti-Hebbian cycles");
         } else {
 
           float a = (float) (stateChangedCount / 7.0);
 
-          getControlModel().swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_NEW_CONSOLE_LOG, null,
-              "Step 2 Passed. Q=" + df.format(a));
-
+          getControlModel()
+              .swingPropertyChangeSupport
+              .firePropertyChange(
+                  ExperimentControlModel.EVENT_NEW_CONSOLE_LOG,
+                  null,
+                  "Step 2 Passed. Q=" + df.format(a));
         }
 
         if (aGood && bGood && stateChangedCount > 0) {
-          getControlModel().swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_NEW_CONSOLE_LOG, null,
-              "Synapse Initialized Sucessfully");
+          getControlModel()
+              .swingPropertyChangeSupport
+              .firePropertyChange(
+                  ExperimentControlModel.EVENT_NEW_CONSOLE_LOG,
+                  null,
+                  "Synapse Initialized Sucessfully");
         }
 
-        getControlModel().swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_NEW_CONSOLE_LOG, null,
-            "  A=" + df.format(aHaHController.getGa()) + "mS, B=" + df.format(aHaHController.getGb()) + "mS");
+        getControlModel()
+            .swingPropertyChangeSupport
+            .firePropertyChange(
+                ExperimentControlModel.EVENT_NEW_CONSOLE_LOG,
+                null,
+                "  A="
+                    + df.format(aHaHController.getGa())
+                    + "mS, B="
+                    + df.format(aHaHController.getGb())
+                    + "mS");
 
         /*
          * drive both memristors up in conductance until one or the other exceeds target. drive the remaining memristor up until it exceeds the other
@@ -325,6 +355,5 @@ public class SynapseExperiment extends Experiment {
 
       return true;
     }
-
   }
 }

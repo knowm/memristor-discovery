@@ -1,16 +1,14 @@
 /**
  * Copyright 2011 multibit.org
  *
- * Licensed under the MIT license (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the MIT license (the "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
  *
- * http://opensource.org/licenses/mit-license.php
+ * <p>http://opensource.org/licenses/mit-license.php
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package org.multibit.platform.builder.mac;
@@ -20,7 +18,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
-
 import org.multibit.platform.GenericApplication;
 import org.multibit.platform.handler.GenericAboutHandler;
 import org.multibit.platform.handler.GenericOpenURIHandler;
@@ -35,37 +32,32 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * <p>GenericApplication to provide the following to application:</p>
- * <ul>
- * <li>Provision of Apple Mac specific implementations of common methods</li>
- * </ul>
- * <p>TODO Fill in more support code as and when required using the EAWT Javadocs as a reference for non-deprecated methods</p>
- * @see <a href="http://developer.apple.com/library/mac/documentation/Java/Reference/JavaSE6_AppleExtensionsRef/api/index.html?com/apple/eawt/Application.html">The Apple EAWT Javadocs</a>
-
+ * GenericApplication to provide the following to application:
  *
+ * <ul>
+ *   <li>Provision of Apple Mac specific implementations of common methods
+ * </ul>
+ *
+ * <p>TODO Fill in more support code as and when required using the EAWT Javadocs as a reference for
+ * non-deprecated methods
+ *
+ * @see <a
+ *     href="http://developer.apple.com/library/mac/documentation/Java/Reference/JavaSE6_AppleExtensionsRef/api/index.html?com/apple/eawt/Application.html">The
+ *     Apple EAWT Javadocs</a>
  * @since 0.3.0
- *         
  */
 public class MacApplication implements GenericApplication {
 
   private static final Logger log = LoggerFactory.getLogger(MacApplication.class);
 
-  /**
-   * The native EAWT Application instance providing OS events
-   */
+  /** The native EAWT Application instance providing OS events */
   private Object nativeApplication;
 
-  /**
-   * Handles the OpenURI use case
-   */
+  /** Handles the OpenURI use case */
   private Class nativeOpenURIHandlerClass;
-  /**
-   * Handles the Preferences use case
-   */
+  /** Handles the Preferences use case */
   private Class nativePreferencesHandlerClass;
-  /**
-   * Handles the About use case
-   */
+  /** Handles the About use case */
   private Class nativeAboutHandlerClass;
 
   public void addOpenURIHandler(GenericOpenURIHandler openURIHandler) {
@@ -80,21 +72,24 @@ public class MacApplication implements GenericApplication {
     // Load up an instance of the native OpenURIHandler
     // Provide an invocation handler to link the native openURI(AppEvent.OpenURIEvent event)
     // back to the generic handler
-    Object nativeOpenURIHandler = Proxy.newProxyInstance(getClass().getClassLoader(),
-        new Class[]{nativeOpenURIHandlerClass},
-        new OpenURIHandlerInvocationHandler(openURIHandler, GenericOpenURIEvent.class));
+    Object nativeOpenURIHandler =
+        Proxy.newProxyInstance(
+            getClass().getClassLoader(),
+            new Class[] {nativeOpenURIHandlerClass},
+            new OpenURIHandlerInvocationHandler(openURIHandler, GenericOpenURIEvent.class));
 
     // Reflective call as application.setOpenURIHandler(nativeOpenURIHandler)
     // nativeOpenURIHandler is a proxy that actually uses the generic handler
-    callNativeMethod(nativeApplication, "setOpenURIHandler", new Class[]{nativeOpenURIHandlerClass}, new Object[]{nativeOpenURIHandler});
+    callNativeMethod(
+        nativeApplication,
+        "setOpenURIHandler",
+        new Class[] {nativeOpenURIHandlerClass},
+        new Object[] {nativeOpenURIHandler});
 
     log.debug("GenericOpenURIHandler configured");
-
   }
 
-  /**
-   * Handles the Quit use case
-   */
+  /** Handles the Quit use case */
   private Class nativeQuitHandlerClass;
 
   public void addPreferencesHandler(GenericPreferencesHandler preferencesHandler) {
@@ -109,16 +104,22 @@ public class MacApplication implements GenericApplication {
     // Load up an instance of the native PreferencesHandler
     // Provide an invocation handler to link the native preferences(AppEvent.PreferencesEvent event)
     // back to the generic handler
-    Object nativePreferencesHandler = Proxy.newProxyInstance(getClass().getClassLoader(),
-        new Class[]{nativePreferencesHandlerClass},
-        new PreferencesHandlerInvocationHandler(preferencesHandler, GenericPreferencesEvent.class));
+    Object nativePreferencesHandler =
+        Proxy.newProxyInstance(
+            getClass().getClassLoader(),
+            new Class[] {nativePreferencesHandlerClass},
+            new PreferencesHandlerInvocationHandler(
+                preferencesHandler, GenericPreferencesEvent.class));
 
     // Reflective call as application.setPreferencesHandler(nativePreferencesHandler)
     // nativePreferencesHandler is a proxy that actually uses the generic handler
-    callNativeMethod(nativeApplication, "setPreferencesHandler", new Class[]{nativePreferencesHandlerClass}, new Object[]{nativePreferencesHandler});
+    callNativeMethod(
+        nativeApplication,
+        "setPreferencesHandler",
+        new Class[] {nativePreferencesHandlerClass},
+        new Object[] {nativePreferencesHandler});
 
     log.debug("GenericPreferencesHandler configured");
-
   }
 
   public void addAboutHandler(GenericAboutHandler aboutHandler) {
@@ -133,16 +134,21 @@ public class MacApplication implements GenericApplication {
     // Load up an instance of the native AboutHandler
     // Provide an invocation handler to link the native about(AppEvent.AboutEvent event)
     // back to the generic handler
-    Object nativeAboutHandler = Proxy.newProxyInstance(getClass().getClassLoader(),
-        new Class[]{nativeAboutHandlerClass},
-        new AboutHandlerInvocationHandler(aboutHandler, GenericAboutEvent.class));
+    Object nativeAboutHandler =
+        Proxy.newProxyInstance(
+            getClass().getClassLoader(),
+            new Class[] {nativeAboutHandlerClass},
+            new AboutHandlerInvocationHandler(aboutHandler, GenericAboutEvent.class));
 
     // Reflective call as application.setAboutHandler(nativeAboutHandler)
     // nativeAboutHandler is a proxy that actually uses the generic handler
-    callNativeMethod(nativeApplication, "setAboutHandler", new Class[]{nativeAboutHandlerClass}, new Object[]{nativeAboutHandler});
+    callNativeMethod(
+        nativeApplication,
+        "setAboutHandler",
+        new Class[] {nativeAboutHandlerClass},
+        new Object[] {nativeAboutHandler});
 
     log.debug("GenericAboutHandler configured");
-
   }
 
   public void addQuitHandler(GenericQuitHandler quitHandler) {
@@ -157,31 +163,44 @@ public class MacApplication implements GenericApplication {
     // Load up an instance of the native QuitHandler
     // Provide an invocation handler to link the native about(AppEvent.AboutEvent event)
     // back to the generic handler
-    Object nativeQuitHandler = Proxy.newProxyInstance(getClass().getClassLoader(),
-        new Class[]{nativeQuitHandlerClass},
-        new QuitHandlerInvocationHandler(quitHandler, GenericQuitEvent.class, GenericQuitResponse.class));
+    Object nativeQuitHandler =
+        Proxy.newProxyInstance(
+            getClass().getClassLoader(),
+            new Class[] {nativeQuitHandlerClass},
+            new QuitHandlerInvocationHandler(
+                quitHandler, GenericQuitEvent.class, GenericQuitResponse.class));
 
     // Reflective call as application.setQuitHandler(nativeQuitHandler)
     // nativeQuitHandler is a proxy that actually uses the generic handler
-    callNativeMethod(nativeApplication, "setQuitHandler", new Class[]{nativeQuitHandlerClass}, new Object[]{nativeQuitHandler});
+    callNativeMethod(
+        nativeApplication,
+        "setQuitHandler",
+        new Class[] {nativeQuitHandlerClass},
+        new Object[] {nativeQuitHandler});
 
     log.debug("GenericAboutHandler configured");
   }
 
   public void setDockIconImage(Image image) {
 
-    callNativeMethod(nativeApplication, "setDockIconImage", new Class[]{java.awt.Image.class}, new Object[]{image});
+    callNativeMethod(
+        nativeApplication,
+        "setDockIconImage",
+        new Class[] {java.awt.Image.class},
+        new Object[] {image});
   }
 
   /**
    * Calls a non-zero argument method of the given (usually native) object
+   *
    * @param object The object
    * @param methodName The method name
    * @param classes The classes of the arguments in the order they appear in the method signature
    * @param arguments The values of the arguments in the order they appear in the method signature
    * @return The result of the call
    */
-  private Object callNativeMethod(Object object, String methodName, Class[] classes, Object[] arguments) {
+  private Object callNativeMethod(
+      Object object, String methodName, Class[] classes, Object[] arguments) {
     log.debug("Calling methodName {}", methodName);
     try {
       // Build a suitable Class[] for the method signature based on the arguments
@@ -189,7 +208,6 @@ public class MacApplication implements GenericApplication {
         classes = new Class[arguments.length];
         for (int i = 0; i < classes.length; i++) {
           classes[i] = arguments[i].getClass();
-
         }
       }
       Method method = object.getClass().getMethod(methodName, classes);
@@ -238,5 +256,3 @@ public class MacApplication implements GenericApplication {
     this.nativeQuitHandlerClass = quitHandlerClass;
   }
 }
-
-

@@ -1,29 +1,25 @@
 /**
- * Memristor-Discovery is distributed under the GNU General Public License version 3
- * and is also available under alternative licenses negotiated directly
- * with Knowm, Inc.
+ * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
+ * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
  *
- * This package also includes various components that are not part of
- * Memristor-Discovery itself:
+ * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
- * * `Multibit`: Copyright 2011 multibit.org, MIT License
- * * `SteelCheckBox`: Copyright 2012 Gerrit, BSD license
+ * <p>* `Multibit`: Copyright 2011 multibit.org, MIT License * `SteelCheckBox`: Copyright 2012
+ * Gerrit, BSD license
  *
- * Knowm, Inc. holds copyright
- * and/or sufficient licenses to all components of the Memristor-Discovery
- * package, and therefore can grant, at its sole discretion, the ability
- * for companies, individuals, or organizations to create proprietary or
- * open source (even if not GPL) modules which may be dynamically linked at
- * runtime with the portions of Memristor-Discovery which fall under our
- * copyright/license umbrella, or are distributed under more flexible
- * licenses than GPL.
+ * <p>Knowm, Inc. holds copyright and/or sufficient licenses to all components of the
+ * Memristor-Discovery package, and therefore can grant, at its sole discretion, the ability for
+ * companies, individuals, or organizations to create proprietary or open source (even if not GPL)
+ * modules which may be dynamically linked at runtime with the portions of Memristor-Discovery which
+ * fall under our copyright/license umbrella, or are distributed under more flexible licenses than
+ * GPL.
  *
- * The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
+ * <p>The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
  *
- * If you have any questions regarding our licensing policy, please
- * contact us at `contact@knowm.org`.
+ * <p>If you have any questions regarding our licensing policy, please contact us at
+ * `contact@knowm.org`.
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.logic.control;
 
@@ -44,15 +40,11 @@ import org.knowm.memristor.discovery.utils.driver.Triangle;
 
 public class ControlModel extends ExperimentControlModel {
 
-  /**
-   * Waveform
-   */
+  /** Waveform */
   public LogicPreferences.Waveform waveform;
 
   public AHaHLogicRoutine routine = AHaHLogicRoutine.FFRU_Trace;
-  /**
-   * Events
-   */
+  /** Events */
   public static final String EVENT_INSTRUCTION_UPDATE = "EVENT_INSTRUCTION_UPDATE";
 
   private float amplitude;
@@ -73,9 +65,7 @@ public class ControlModel extends ExperimentControlModel {
 
   public LogicPreferences.DataStructure dataStructure = DataStructure.TwoPattern;
 
-  /**
-   * Constructor
-   */
+  /** Constructor */
   public ControlModel() {
 
     updateWaveformChartData();
@@ -84,44 +74,61 @@ public class ControlModel extends ExperimentControlModel {
   @Override
   public void loadModelFromPrefs() {
 
-    waveform = LogicPreferences.Waveform.valueOf(experimentPreferences.getString(LogicPreferences.WAVEFORM_INIT_STRING_KEY, LogicPreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
-    seriesResistance = experimentPreferences.getInteger(LogicPreferences.SERIES_R_INIT_KEY, LogicPreferences.SERIES_R_INIT_DEFAULT_VALUE);
-    amplitude = experimentPreferences.getFloat(LogicPreferences.AMPLITUDE_INIT_FLOAT_KEY, LogicPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
-    pulseWidth = experimentPreferences.getInteger(LogicPreferences.PULSE_WIDTH_INIT_KEY, LogicPreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
-    pulseNumber = experimentPreferences.getInteger(LogicPreferences.NUM_PULSES_INIT_KEY, LogicPreferences.NUM_PULSES_INIT_DEFAULT_VALUE);
-    numExecutions = experimentPreferences.getInteger(LogicPreferences.NUM_EXECUTIONS_INIT_KEY, LogicPreferences.NUM_EXECUTIONS_INIT_DEFAULT_VALUE);
-    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_PREFERENCES_UPDATE, true, false);
+    waveform =
+        LogicPreferences.Waveform.valueOf(
+            experimentPreferences.getString(
+                LogicPreferences.WAVEFORM_INIT_STRING_KEY,
+                LogicPreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
+    seriesResistance =
+        experimentPreferences.getInteger(
+            LogicPreferences.SERIES_R_INIT_KEY, LogicPreferences.SERIES_R_INIT_DEFAULT_VALUE);
+    amplitude =
+        experimentPreferences.getFloat(
+            LogicPreferences.AMPLITUDE_INIT_FLOAT_KEY,
+            LogicPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
+    pulseWidth =
+        experimentPreferences.getInteger(
+            LogicPreferences.PULSE_WIDTH_INIT_KEY, LogicPreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
+    pulseNumber =
+        experimentPreferences.getInteger(
+            LogicPreferences.NUM_PULSES_INIT_KEY, LogicPreferences.NUM_PULSES_INIT_DEFAULT_VALUE);
+    numExecutions =
+        experimentPreferences.getInteger(
+            LogicPreferences.NUM_EXECUTIONS_INIT_KEY,
+            LogicPreferences.NUM_EXECUTIONS_INIT_DEFAULT_VALUE);
+    swingPropertyChangeSupport.firePropertyChange(
+        ExperimentControlModel.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
-  /**
-   * Given the state of the model, update the waveform x and y axis data arrays.
-   */
+  /** Given the state of the model, update the waveform x and y axis data arrays. */
   void updateWaveformChartData() {
 
     Driver driver;
     switch (waveform) {
-    case Sawtooth:
-      driver = new Sawtooth("Sawtooth", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
-      break;
-    case QuarterSine:
-      driver = new QuarterSine("QuarterSine", 0, 0, amplitude, getCalculatedFrequency());
-      break;
-    case Triangle:
-      driver = new Triangle("Triangle", 0, 0, amplitude, getCalculatedFrequency());
-      break;
-    case Square:
-      driver = new Square("Square", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
-      break;
-    case SquareSmooth:
-      driver = new SquareSmooth("SquareSmooth", 0, 0, amplitude, getCalculatedFrequency());
-      break;
-    default:
-      driver = new HalfSine("HalfSine", 0, 0, amplitude, getCalculatedFrequency());
-      break;
+      case Sawtooth:
+        driver =
+            new Sawtooth("Sawtooth", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
+        break;
+      case QuarterSine:
+        driver = new QuarterSine("QuarterSine", 0, 0, amplitude, getCalculatedFrequency());
+        break;
+      case Triangle:
+        driver = new Triangle("Triangle", 0, 0, amplitude, getCalculatedFrequency());
+        break;
+      case Square:
+        driver = new Square("Square", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
+        break;
+      case SquareSmooth:
+        driver = new SquareSmooth("SquareSmooth", 0, 0, amplitude, getCalculatedFrequency());
+        break;
+      default:
+        driver = new HalfSine("HalfSine", 0, 0, amplitude, getCalculatedFrequency());
+        break;
     }
 
     double stopTime = 1 / getCalculatedFrequency() * pulseNumber;
-    double timeStep = 1 / getCalculatedFrequency() / LogicPreferences.CAPTURE_BUFFER_SIZE * pulseNumber;
+    double timeStep =
+        1 / getCalculatedFrequency() / LogicPreferences.CAPTURE_BUFFER_SIZE * pulseNumber;
 
     int counter = 0;
     for (double i = 0.0; i < stopTime; i = i + timeStep) {
@@ -145,7 +152,8 @@ public class ControlModel extends ExperimentControlModel {
   public void setAmplitude(float amplitude) {
 
     this.amplitude = amplitude;
-    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(
+        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public int getPulseWidth() {
@@ -162,7 +170,8 @@ public class ControlModel extends ExperimentControlModel {
   public void setPulseWidth(int pulseWidth) {
 
     this.pulseWidth = pulseWidth;
-    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(
+        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public double[] getWaveformTimeData() {
@@ -183,7 +192,8 @@ public class ControlModel extends ExperimentControlModel {
   public void setPulseNumber(int pulseNumber) {
 
     this.pulseNumber = pulseNumber;
-    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(
+        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public LogicPreferences.Waveform getWaveform() {
@@ -194,13 +204,15 @@ public class ControlModel extends ExperimentControlModel {
   public void setWaveform(LogicPreferences.Waveform waveform) {
 
     this.waveform = waveform;
-    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(
+        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public void setWaveform(String text) {
 
     this.waveform = Enum.valueOf(LogicPreferences.Waveform.class, text);
-    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(
+        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public AHaHLogicRoutine getRoutine() {

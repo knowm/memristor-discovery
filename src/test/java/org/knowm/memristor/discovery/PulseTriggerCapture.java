@@ -1,29 +1,25 @@
 /**
- * Memristor-Discovery is distributed under the GNU General Public License version 3
- * and is also available under alternative licenses negotiated directly
- * with Knowm, Inc.
+ * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
+ * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
  *
- * This package also includes various components that are not part of
- * Memristor-Discovery itself:
+ * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
- * * `Multibit`: Copyright 2011 multibit.org, MIT License
- * * `SteelCheckBox`: Copyright 2012 Gerrit, BSD license
+ * <p>* `Multibit`: Copyright 2011 multibit.org, MIT License * `SteelCheckBox`: Copyright 2012
+ * Gerrit, BSD license
  *
- * Knowm, Inc. holds copyright
- * and/or sufficient licenses to all components of the Memristor-Discovery
- * package, and therefore can grant, at its sole discretion, the ability
- * for companies, individuals, or organizations to create proprietary or
- * open source (even if not GPL) modules which may be dynamically linked at
- * runtime with the portions of Memristor-Discovery which fall under our
- * copyright/license umbrella, or are distributed under more flexible
- * licenses than GPL.
+ * <p>Knowm, Inc. holds copyright and/or sufficient licenses to all components of the
+ * Memristor-Discovery package, and therefore can grant, at its sole discretion, the ability for
+ * companies, individuals, or organizations to create proprietary or open source (even if not GPL)
+ * modules which may be dynamically linked at runtime with the portions of Memristor-Discovery which
+ * fall under our copyright/license umbrella, or are distributed under more flexible licenses than
+ * GPL.
  *
- * The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
+ * <p>The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
  *
- * If you have any questions regarding our licensing policy, please
- * contact us at `contact@knowm.org`.
+ * <p>If you have any questions regarding our licensing policy, please contact us at
+ * `contact@knowm.org`.
  */
 package org.knowm.memristor.discovery;
 
@@ -52,8 +48,8 @@ public class PulseTriggerCapture {
     boolean successful = dwf.FDwfDeviceOpen();
     System.out.println("successful: " + successful);
 
-//    dwf.setPowerSupply(0, 5.0);
-//    dwf.setPowerSupply(1, -5.0);
+    //    dwf.setPowerSupply(0, 5.0);
+    //    dwf.setPowerSupply(1, -5.0);
 
     dwf.FDwfAnalogOutNodeOffsetSet(DWF.WAVEFORM_CHANNEL_1, 0);
     dwf.FDwfAnalogOutNodeOffsetSet(DWF.WAVEFORM_CHANNEL_2, 0);
@@ -81,7 +77,7 @@ public class PulseTriggerCapture {
     // Pulse Out /////////////////
     //////////////////////////////
 
-    ///without this it does not work. why?
+    /// without this it does not work. why?
     try {
       // System.out.println("arm oscilloscope now. ");
       Thread.sleep(1000);
@@ -114,14 +110,20 @@ public class PulseTriggerCapture {
     successful = dwf.FDwfDeviceCloseAll();
     System.out.println("close successful: " + successful);
 
-    XYChart chart = new XYChartBuilder().width(600).height(500).title("Pulse Caputre").xAxisTitle("time").yAxisTitle("voltage").build();
+    XYChart chart =
+        new XYChartBuilder()
+            .width(600)
+            .height(500)
+            .title("Pulse Caputre")
+            .xAxisTitle("time")
+            .yAxisTitle("voltage")
+            .build();
 
     chart.addSeries("V1", v1);
     chart.addSeries("V2", v2);
 
     // Show it
     new SwingWrapper(chart).displayChart();
-
   }
 
   public void waitUntilArmed() {
@@ -163,5 +165,4 @@ public class PulseTriggerCapture {
       }
     }
   }
-
 }

@@ -1,29 +1,25 @@
 /**
- * Memristor-Discovery is distributed under the GNU General Public License version 3
- * and is also available under alternative licenses negotiated directly
- * with Knowm, Inc.
+ * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
+ * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
  *
- * This package also includes various components that are not part of
- * Memristor-Discovery itself:
+ * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
- * * `Multibit`: Copyright 2011 multibit.org, MIT License
- * * `SteelCheckBox`: Copyright 2012 Gerrit, BSD license
+ * <p>* `Multibit`: Copyright 2011 multibit.org, MIT License * `SteelCheckBox`: Copyright 2012
+ * Gerrit, BSD license
  *
- * Knowm, Inc. holds copyright
- * and/or sufficient licenses to all components of the Memristor-Discovery
- * package, and therefore can grant, at its sole discretion, the ability
- * for companies, individuals, or organizations to create proprietary or
- * open source (even if not GPL) modules which may be dynamically linked at
- * runtime with the portions of Memristor-Discovery which fall under our
- * copyright/license umbrella, or are distributed under more flexible
- * licenses than GPL.
+ * <p>Knowm, Inc. holds copyright and/or sufficient licenses to all components of the
+ * Memristor-Discovery package, and therefore can grant, at its sole discretion, the ability for
+ * companies, individuals, or organizations to create proprietary or open source (even if not GPL)
+ * modules which may be dynamically linked at runtime with the portions of Memristor-Discovery which
+ * fall under our copyright/license umbrella, or are distributed under more flexible licenses than
+ * GPL.
  *
- * The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
+ * <p>The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
  *
- * If you have any questions regarding our licensing policy, please
- * contact us at `contact@knowm.org`.
+ * <p>If you have any questions regarding our licensing policy, please contact us at
+ * `contact@knowm.org`.
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.logic;
 
@@ -65,7 +61,8 @@ public class LogicExperiment extends Experiment {
 
   private AHaHController_21 aHaHController;
 
-  // private static final double MAX_G = .001;// init of synapses will terminate if one or the other memristor exceeds this conductance
+  // private static final double MAX_G = .001;// init of synapses will terminate if one or the other
+  // memristor exceeds this conductance
 
   /**
    * Constructor
@@ -84,66 +81,65 @@ public class LogicExperiment extends Experiment {
 
     aHaHController = new AHaHController_21(controlModel);
     aHaHController.setdWFProxy(dwfProxy);
-
   }
 
   @Override
   public void doCreateAndShowGUI() {
 
-    controlPanel.clearPlotButton.addActionListener(new ActionListener() {
+    controlPanel.clearPlotButton.addActionListener(
+        new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+          @Override
+          public void actionPerformed(ActionEvent e) {
 
-        plotModel.clearAllTraces();
-        plotController.resetChart();
+            plotModel.clearAllTraces();
+            plotController.resetChart();
+          }
+        });
 
-      }
-    });
+    controlPanel.FFRUButton.addActionListener(
+        new ActionListener() {
 
-    controlPanel.FFRUButton.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+            routineWorker = new TraceWorker(Instruction.FF_RU);
+            routineWorker.execute();
+          }
+        });
+    controlPanel.FFRAButton.addActionListener(
+        new ActionListener() {
 
-        routineWorker = new TraceWorker(Instruction.FF_RU);
-        routineWorker.execute();
+          @Override
+          public void actionPerformed(ActionEvent e) {
 
-      }
-    });
-    controlPanel.FFRAButton.addActionListener(new ActionListener() {
+            routineWorker = new TraceWorker(Instruction.FF_RA);
+            routineWorker.execute();
+          }
+        });
+    controlPanel.runTrialsButton.addActionListener(
+        new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+          @Override
+          public void actionPerformed(ActionEvent e) {
 
-        routineWorker = new TraceWorker(Instruction.FF_RA);
-        routineWorker.execute();
+            runTrialsWorker = new RunTrialsWorker();
+            runTrialsWorker.execute();
+          }
+        });
+    controlPanel.resetAllButton.addActionListener(
+        new ActionListener() {
 
-      }
-    });
-    controlPanel.runTrialsButton.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
-
-        runTrialsWorker = new RunTrialsWorker();
-        runTrialsWorker.execute();
-
-      }
-    });
-    controlPanel.resetAllButton.addActionListener(new ActionListener() {
-
-      @Override
-      public void actionPerformed(ActionEvent e) {
-
-        resetWorker = new ResetWorker();
-        resetWorker.execute();
-
-      }
-    });
+            resetWorker = new ResetWorker();
+            resetWorker.execute();
+          }
+        });
   }
 
-  //determines the logic state (A, B or C)
+  // determines the logic state (A, B or C)
   private String getLogicState() {
 
     List<Integer> patternOne = new ArrayList<Integer>();
@@ -160,28 +156,26 @@ public class LogicExperiment extends Experiment {
       patternOne.addAll(controlModel.getInputBiasMask());
       patternTwo.addAll(controlModel.getInputBiasMask());
       patternThree.addAll(controlModel.getInputBiasMask());
-
     }
 
     String out = "";
 
     dwfProxy.update2DigitalIOStatesAtOnce(patternOne, true);
-    aHaHController.executeInstruction(Instruction.FFLV);// need this to make FF-RU/FF-RA work
+    aHaHController.executeInstruction(Instruction.FFLV); // need this to make FF-RU/FF-RA work
     out += aHaHController.getVy() > 0 ? "1" : "0";
     dwfProxy.update2DigitalIOStatesAtOnce(patternOne, false);
 
     dwfProxy.update2DigitalIOStatesAtOnce(patternTwo, true);
-    aHaHController.executeInstruction(Instruction.FFLV);// need this to make FF-RU/FF-RA work
+    aHaHController.executeInstruction(Instruction.FFLV); // need this to make FF-RU/FF-RA work
     out += aHaHController.getVy() > 0 ? "1" : "0";
     dwfProxy.update2DigitalIOStatesAtOnce(patternTwo, false);
 
     dwfProxy.update2DigitalIOStatesAtOnce(patternThree, true);
-    aHaHController.executeInstruction(Instruction.FFLV);// need this to make FF-RU/FF-RA work
+    aHaHController.executeInstruction(Instruction.FFLV); // need this to make FF-RU/FF-RA work
     out += aHaHController.getVy() > 0 ? "1" : "0";
     dwfProxy.update2DigitalIOStatesAtOnce(patternThree, false);
 
     return out;
-
   }
 
   private class ResetWorker extends SwingWorker<Boolean, Double> {
@@ -201,7 +195,7 @@ public class LogicExperiment extends Experiment {
         for (int i = 0; i < 20; i++) {
           List<Integer> pattern = getNextPatternWithBias();
           dwfProxy.update2DigitalIOStatesAtOnce(pattern, true);
-          aHaHController.executeInstruction(Instruction.FFLV);// need this to make FF-RU/FF-RA work
+          aHaHController.executeInstruction(Instruction.FFLV); // need this to make FF-RU/FF-RA work
           aHaHController.executeInstruction(Instruction.FF_RA);
           dwfProxy.update2DigitalIOStatesAtOnce(pattern, false);
         }
@@ -232,7 +226,8 @@ public class LogicExperiment extends Experiment {
     //
     //          controlModel.setAmplitude(voltage);
     //          // execute instruction over pattern-->
-    //          aHaHController.executeInstruction(Instruction.FFLV);// need this to make FF-RU/FF-RA work
+    //          aHaHController.executeInstruction(Instruction.FFLV);// need this to make FF-RU/FF-RA
+    // work
     //          double newVy = aHaHController.getVy();
     //          System.out.println("vy=" + newVy);
     //          //          if (i > 0 && newVy * vy < 0) {//the state has changed
@@ -253,7 +248,8 @@ public class LogicExperiment extends Experiment {
     //
     //      controlModel.setPulseWidth(pulseWidthInNs);
     //
-    //      // TODO: work to get ride of this. Should be possible through gradual reduction of pulse width or voltage in a deterministic routine.
+    //      // TODO: work to get ride of this. Should be possible through gradual reduction of pulse
+    // width or voltage in a deterministic routine.
     //      int c = 0;
     //      int cMax = Math.random() > .5 ? 2 : 1;
     //
@@ -295,7 +291,6 @@ public class LogicExperiment extends Experiment {
 
           worker_RU.doInBackground();
           worker_reset.doInBackground();
-
         }
 
       } catch (Exception e) {
@@ -304,7 +299,6 @@ public class LogicExperiment extends Experiment {
 
       return true;
     }
-
   }
 
   private class TraceWorker extends SwingWorker<Boolean, Double> {
@@ -348,30 +342,32 @@ public class LogicExperiment extends Experiment {
         System.out.println("pattern with bias = " + pattern);
 
         // execute instruction over pattern-->
-        aHaHController.executeInstruction(Instruction.FFLV);// need this to make FF-RU/FF-RA work
+        aHaHController.executeInstruction(Instruction.FFLV); // need this to make FF-RU/FF-RA work
 
         if (controlModel.getInputBiasMask() != null) {
-          dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputBiasMask(), false);// turn off bias for FF-RU/FF-RA update
+          dwfProxy.update2DigitalIOStatesAtOnce(
+              controlModel.getInputBiasMask(), false); // turn off bias for FF-RU/FF-RA update
         }
         aHaHController.executeInstruction(instruction);
 
         // now give bias FF-RA if there are any .
         if (controlModel.getInputBiasMask() != null) {
-          dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskA(), false);// turn off A
-          dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskB(), false);// turn off B
-          dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputBiasMask(), true);// turn bias back on
+          dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskA(), false); // turn off A
+          dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskB(), false); // turn off B
+          dwfProxy.update2DigitalIOStatesAtOnce(
+              controlModel.getInputBiasMask(), true); // turn bias back on
           // bias synapse are now on
 
           aHaHController.executeInstruction(Instruction.FF_RA);
 
-          dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputBiasMask(), false);// turn off B
+          dwfProxy.update2DigitalIOStatesAtOnce(
+              controlModel.getInputBiasMask(), false); // turn off B
           // all off now
-        } else {// no bias. just turn everything off
+        } else { // no bias. just turn everything off
           // turn off pattern-->
-          dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskA(), false);// turn off A
-          dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskB(), false);// turn off B
+          dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskA(), false); // turn off A
+          dwfProxy.update2DigitalIOStatesAtOnce(controlModel.getInputMaskB(), false); // turn off B
         }
-
       }
 
       if (instruction == Instruction.FF_RU) {
@@ -382,7 +378,6 @@ public class LogicExperiment extends Experiment {
 
       return true;
     }
-
   }
 
   private List<Integer> getNextPatternWithBias() {
@@ -406,7 +401,6 @@ public class LogicExperiment extends Experiment {
       } else {
 
         patternOut = getCombinedPattern();
-
       }
     }
 
@@ -423,7 +417,6 @@ public class LogicExperiment extends Experiment {
     }
 
     return patternOut;
-
   }
 
   private List<Integer> getCombinedPattern() {
@@ -436,8 +429,9 @@ public class LogicExperiment extends Experiment {
   }
 
   /**
-   * These property change events are triggered in the controlModel in the case where the underlying controlModel is updated. Here, the controller can
-   * respond to those events and make sure the corresponding GUI components get updated.
+   * These property change events are triggered in the controlModel in the case where the underlying
+   * controlModel is updated. Here, the controller can respond to those events and make sure the
+   * corresponding GUI components get updated.
    */
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
@@ -445,7 +439,6 @@ public class LogicExperiment extends Experiment {
     String propName = evt.getPropertyName();
 
     switch (propName) {
-
       case EVENT_INSTRUCTION_UPDATE:
 
         // System.out.println(controlModel.getInstruction());
@@ -481,5 +474,4 @@ public class LogicExperiment extends Experiment {
 
     return null;
   }
-
 }

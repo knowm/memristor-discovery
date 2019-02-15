@@ -1,6 +1,6 @@
 set INPUT=jar
 set OUTPUT=_exe
-set JAR=memristor-discovery-0.0.8-SNAPSHOT.jar
+set JAR=memristor-discovery-0.0.8.jar
 set VERSION=0.0.8
 set APP_ICON=_exe/icons.ico
 

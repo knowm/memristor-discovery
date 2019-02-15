@@ -1,29 +1,25 @@
 /**
- * Memristor-Discovery is distributed under the GNU General Public License version 3
- * and is also available under alternative licenses negotiated directly
- * with Knowm, Inc.
+ * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
+ * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
  *
- * This package also includes various components that are not part of
- * Memristor-Discovery itself:
+ * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
- * * `Multibit`: Copyright 2011 multibit.org, MIT License
- * * `SteelCheckBox`: Copyright 2012 Gerrit, BSD license
+ * <p>* `Multibit`: Copyright 2011 multibit.org, MIT License * `SteelCheckBox`: Copyright 2012
+ * Gerrit, BSD license
  *
- * Knowm, Inc. holds copyright
- * and/or sufficient licenses to all components of the Memristor-Discovery
- * package, and therefore can grant, at its sole discretion, the ability
- * for companies, individuals, or organizations to create proprietary or
- * open source (even if not GPL) modules which may be dynamically linked at
- * runtime with the portions of Memristor-Discovery which fall under our
- * copyright/license umbrella, or are distributed under more flexible
- * licenses than GPL.
+ * <p>Knowm, Inc. holds copyright and/or sufficient licenses to all components of the
+ * Memristor-Discovery package, and therefore can grant, at its sole discretion, the ability for
+ * companies, individuals, or organizations to create proprietary or open source (even if not GPL)
+ * modules which may be dynamically linked at runtime with the portions of Memristor-Discovery which
+ * fall under our copyright/license umbrella, or are distributed under more flexible licenses than
+ * GPL.
  *
- * The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
+ * <p>The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
  *
- * If you have any questions regarding our licensing policy, please
- * contact us at `contact@knowm.org`.
+ * <p>If you have any questions regarding our licensing policy, please contact us at
+ * `contact@knowm.org`.
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.synapse.plot;
 
@@ -56,10 +52,10 @@ public class PlotController implements PropertyChangeListener {
     initGUIComponents();
     setUpViewEvents();
   }
-  
+
   public void resetChart() {
     plotModel.clearData();
-    startTime=System.currentTimeMillis();
+    startTime = System.currentTimeMillis();
     repaintYChart();
   }
 
@@ -69,51 +65,52 @@ public class PlotController implements PropertyChangeListener {
     initGUIComponentsFromModel();
   }
 
-  private void initGUIComponentsFromModel() {
-
-  }
+  private void initGUIComponentsFromModel() {}
 
   private void setUpViewEvents() {
 
-    plotPanel.getFreezeYAxisCheckBoxIV().addActionListener(new ActionListener() {
+    plotPanel
+        .getFreezeYAxisCheckBoxIV()
+        .addActionListener(
+            new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+              @Override
+              public void actionPerformed(ActionEvent e) {
 
-        if (plotPanel.getFreezeYAxisCheckBoxIV().isSelected()) {
-          plotModel.setyMaxIV(plotPanel.getYChartMax());
-          plotModel.setyMinIV(plotPanel.getYChartMin());
-        }
-        else {
-          plotModel.setyMaxIV(null);
-          plotModel.setyMinIV(null);
-        }
-      }
-    });
+                if (plotPanel.getFreezeYAxisCheckBoxIV().isSelected()) {
+                  plotModel.setyMaxIV(plotPanel.getYChartMax());
+                  plotModel.setyMinIV(plotPanel.getYChartMin());
+                } else {
+                  plotModel.setyMaxIV(null);
+                  plotModel.setyMinIV(null);
+                }
+              }
+            });
 
-    plotPanel.getResistanceConductanceCheckBox().addActionListener(new ActionListener() {
+    plotPanel
+        .getResistanceConductanceCheckBox()
+        .addActionListener(
+            new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+              @Override
+              public void actionPerformed(ActionEvent e) {
 
-        // change data-->
-        plotModel.setGr1Data(toOneOver(plotModel.getGr1Data()));
-        plotModel.setGr2Data(toOneOver(plotModel.getGr2Data()));
+                // change data-->
+                plotModel.setGr1Data(toOneOver(plotModel.getGr1Data()));
+                plotModel.setGr2Data(toOneOver(plotModel.getGr2Data()));
 
-        // update series-->
-        plotPanel.getGChart().updateXYSeries("A", null, plotModel.getGr1Data(), null);
-        plotPanel.getGChart().updateXYSeries("B", null, plotModel.getGr2Data(), null);
+                // update series-->
+                plotPanel.getGChart().updateXYSeries("A", null, plotModel.getGr1Data(), null);
+                plotPanel.getGChart().updateXYSeries("B", null, plotModel.getGr2Data(), null);
 
-        if (plotPanel.getResistanceConductanceCheckBox().isSelected()) {
-          plotPanel.getGChart().setYAxisGroupTitle(0, "Resistance (Ω)");
-        }
-        else {
-          plotPanel.getGChart().setYAxisGroupTitle(0, "Conductance (S)");
-        }
-        repaintYChart();
-      }
-    });
-
+                if (plotPanel.getResistanceConductanceCheckBox().isSelected()) {
+                  plotPanel.getGChart().setYAxisGroupTitle(0, "Resistance (Ω)");
+                } else {
+                  plotPanel.getGChart().setYAxisGroupTitle(0, "Conductance (S)");
+                }
+                repaintYChart();
+              }
+            });
   }
 
   private List<Double> toOneOver(List<Double> array) {
@@ -123,14 +120,11 @@ public class PlotController implements PropertyChangeListener {
 
       if (array.get(i) > 0) {
         r.add(1 / array.get(i));
+      } else {
+        r.add(1000000.0); // assume 1MOhm
       }
-      else {
-        r.add(1000000.0);// assume 1MOhm
-      }
-
     }
     return r;
-
   }
 
   public void updateYChartData(Double g_a, Double g_b, Double vy) {
@@ -151,8 +145,7 @@ public class PlotController implements PropertyChangeListener {
         plotModel.getGr2Data().add(1 / g_b);
       }
 
-    }
-    else {
+    } else {
       if (!g_a.isNaN()) {
         plotModel.getGr1Data().add(g_a);
       }
@@ -160,7 +153,6 @@ public class PlotController implements PropertyChangeListener {
       if (!g_b.isNaN()) {
         plotModel.getGr2Data().add(g_b);
       }
-
     }
     if (!vy.isNaN()) {
       plotModel.getVyData().add(vy);
@@ -174,21 +166,26 @@ public class PlotController implements PropertyChangeListener {
       plotModel.getTime2Data().add(timeFromStart);
     }
 
-//    System.out.println(plotModel.getGr1Data());
-//    System.out.println(plotModel.getGr2Data());
+    //    System.out.println(plotModel.getGr1Data());
+    //    System.out.println(plotModel.getGr2Data());
 
     if (plotModel.getGr1Data() != null && plotModel.getGr1Data().size() > 0) {
-      plotPanel.getGChart().updateXYSeries("A", plotModel.getTime1Data(), plotModel.getGr1Data(), null);
+      plotPanel
+          .getGChart()
+          .updateXYSeries("A", plotModel.getTime1Data(), plotModel.getGr1Data(), null);
     }
 
     if (plotModel.getGr2Data() != null && plotModel.getGr2Data().size() > 0) {
-      plotPanel.getGChart().updateXYSeries("B", plotModel.getTime2Data(), plotModel.getGr2Data(), null);
+      plotPanel
+          .getGChart()
+          .updateXYSeries("B", plotModel.getTime2Data(), plotModel.getGr2Data(), null);
     }
 
     if (plotModel.getVyData() != null && plotModel.getVyData().size() > 0) {
-      plotPanel.getGChart().updateXYSeries("Vy", plotModel.getTimeVyData(), plotModel.getVyData(), null);
+      plotPanel
+          .getGChart()
+          .updateXYSeries("Vy", plotModel.getTimeVyData(), plotModel.getVyData(), null);
     }
-
   }
 
   public void repaintYChart() {
@@ -198,21 +195,20 @@ public class PlotController implements PropertyChangeListener {
   }
 
   /**
-   * These property change events are triggered in the model in the case where the underlying model is updated. Here, the controller can respond to those events and make sure the corresponding GUI
-   * components get updated.
+   * These property change events are triggered in the model in the case where the underlying model
+   * is updated. Here, the controller can respond to those events and make sure the corresponding
+   * GUI components get updated.
    */
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
 
     switch (evt.getPropertyName()) {
+      case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
+        initGUIComponentsFromModel();
+        break;
 
-    case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
-
-      initGUIComponentsFromModel();
-      break;
-
-    default:
-      break;
+      default:
+        break;
     }
   }
 }

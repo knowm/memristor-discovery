@@ -1,39 +1,34 @@
 /**
- * Memristor-Discovery is distributed under the GNU General Public License version 3
- * and is also available under alternative licenses negotiated directly
- * with Knowm, Inc.
+ * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
+ * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
  *
- * This package also includes various components that are not part of
- * Memristor-Discovery itself:
+ * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
- * * `Multibit`: Copyright 2011 multibit.org, MIT License
- * * `SteelCheckBox`: Copyright 2012 Gerrit, BSD license
+ * <p>* `Multibit`: Copyright 2011 multibit.org, MIT License * `SteelCheckBox`: Copyright 2012
+ * Gerrit, BSD license
  *
- * Knowm, Inc. holds copyright
- * and/or sufficient licenses to all components of the Memristor-Discovery
- * package, and therefore can grant, at its sole discretion, the ability
- * for companies, individuals, or organizations to create proprietary or
- * open source (even if not GPL) modules which may be dynamically linked at
- * runtime with the portions of Memristor-Discovery which fall under our
- * copyright/license umbrella, or are distributed under more flexible
- * licenses than GPL.
+ * <p>Knowm, Inc. holds copyright and/or sufficient licenses to all components of the
+ * Memristor-Discovery package, and therefore can grant, at its sole discretion, the ability for
+ * companies, individuals, or organizations to create proprietary or open source (even if not GPL)
+ * modules which may be dynamically linked at runtime with the portions of Memristor-Discovery which
+ * fall under our copyright/license umbrella, or are distributed under more flexible licenses than
+ * GPL.
  *
- * The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
+ * <p>The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
  *
- * If you have any questions regarding our licensing policy, please
- * contact us at `contact@knowm.org`.
+ * <p>If you have any questions regarding our licensing policy, please contact us at
+ * `contact@knowm.org`.
  */
 package org.knowm.memristor.discovery.utils;
 
-/**
- * Created by timmolter on 2/20/17.
- */
+/** Created by timmolter on 2/20/17. */
 public class PostProcessDataUtils {
 
   /**
-   * The data is a bit weird, as what's captured is a long window of "idle" voltage before and after the pulses. We clean that now...
+   * The data is a bit weird, as what's captured is a long window of "idle" voltage before and after
+   * the pulses. We clean that now...
    *
    * @param v1
    * @param v2
@@ -41,7 +36,8 @@ public class PostProcessDataUtils {
    * @param windowBuffer - how many data points outside the window should be included
    * @return
    */
-  public static double[][] trimIdleData(double[] v1, double[] v2, double v1Threshold, int windowBuffer) {
+  public static double[][] trimIdleData(
+      double[] v1, double[] v2, double v1Threshold, int windowBuffer) {
 
     double vThresholdAbs = Math.abs(v1Threshold);
     int startIndex = 0;
@@ -69,7 +65,7 @@ public class PostProcessDataUtils {
       V1Cleaned[i] = v1[i + startIndex];
       V2Cleaned[i] = v2[i + startIndex];
     }
-    return new double[][]{V1Cleaned, V2Cleaned};
+    return new double[][] {V1Cleaned, V2Cleaned};
   }
 
   /**

@@ -1,29 +1,25 @@
 /**
- * Memristor-Discovery is distributed under the GNU General Public License version 3
- * and is also available under alternative licenses negotiated directly
- * with Knowm, Inc.
+ * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
+ * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
  *
- * This package also includes various components that are not part of
- * Memristor-Discovery itself:
+ * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
- * * `Multibit`: Copyright 2011 multibit.org, MIT License
- * * `SteelCheckBox`: Copyright 2012 Gerrit, BSD license
+ * <p>* `Multibit`: Copyright 2011 multibit.org, MIT License * `SteelCheckBox`: Copyright 2012
+ * Gerrit, BSD license
  *
- * Knowm, Inc. holds copyright
- * and/or sufficient licenses to all components of the Memristor-Discovery
- * package, and therefore can grant, at its sole discretion, the ability
- * for companies, individuals, or organizations to create proprietary or
- * open source (even if not GPL) modules which may be dynamically linked at
- * runtime with the portions of Memristor-Discovery which fall under our
- * copyright/license umbrella, or are distributed under more flexible
- * licenses than GPL.
+ * <p>Knowm, Inc. holds copyright and/or sufficient licenses to all components of the
+ * Memristor-Discovery package, and therefore can grant, at its sole discretion, the ability for
+ * companies, individuals, or organizations to create proprietary or open source (even if not GPL)
+ * modules which may be dynamically linked at runtime with the portions of Memristor-Discovery which
+ * fall under our copyright/license umbrella, or are distributed under more flexible licenses than
+ * GPL.
  *
- * The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
+ * <p>The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
  *
- * If you have any questions regarding our licensing policy, please
- * contact us at `contact@knowm.org`.
+ * <p>If you have any questions regarding our licensing policy, please contact us at
+ * `contact@knowm.org`.
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.classify;
 
@@ -40,7 +36,7 @@ public class AHaHController_21 {
   private ControlModel controlModel;
   private final double MIN_V_RESOLUTION = .0025;
 
-  private double vy;// last read value
+  private double vy; // last read value
   private double ga;
   private double gb;
 
@@ -101,21 +97,29 @@ public class AHaHController_21 {
 
     double W1Amplitude = controlModel.getAmplitude() * instruction.getW1PulseAmplitudeMultiplier();
 
-    // hard-set the FFLV amplitude, as this is used for reads and should never change and be low that adaptation never occures.
+    // hard-set the FFLV amplitude, as this is used for reads and should never change and be low
+    // that adaptation never occures.
     if (instruction == Instruction.FFLV) {
       W1Amplitude = .1f;
     } else if (instruction == Instruction.RFLV) {
       W1Amplitude = -.1f;
     }
 
-    double[] W1 = WaveformUtils.generateCustomWaveform(controlModel.getWaveform(), W1Amplitude, controlModel.getCalculatedFrequency());
+    double[] W1 =
+        WaveformUtils.generateCustomWaveform(
+            controlModel.getWaveform(), W1Amplitude, controlModel.getCalculatedFrequency());
 
     if (instruction == Instruction.FFLV) {
 
-      dWFProxy.getDwf().startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency() * 300,
-          300 * 1);
+      dWFProxy
+          .getDwf()
+          .startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(
+              DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency() * 300, 300 * 1);
       dWFProxy.waitUntilArmed();
-      dWFProxy.getDwf().setCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, 1, W1);
+      dWFProxy
+          .getDwf()
+          .setCustomPulseTrain(
+              DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, 1, W1);
       dWFProxy.getDwf().startPulseTrain(DWF.WAVEFORM_CHANNEL_1);
 
       boolean success = dWFProxy.capturePulseData(controlModel.getCalculatedFrequency(), 1);
@@ -126,10 +130,18 @@ public class AHaHController_21 {
       }
 
     } else {
-      dWFProxy.getDwf().setCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, 1, W1);
+      dWFProxy
+          .getDwf()
+          .setCustomPulseTrain(
+              DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, 1, W1);
       // note w2 amplitude is zero (gnd).
-      double[] W2 = WaveformUtils.generateCustomWaveform(controlModel.getWaveform(), 0.0, controlModel.getCalculatedFrequency());
-      dWFProxy.getDwf().setCustomPulseTrain(DWF.WAVEFORM_CHANNEL_2, controlModel.getCalculatedFrequency(), 0, 1, W2);
+      double[] W2 =
+          WaveformUtils.generateCustomWaveform(
+              controlModel.getWaveform(), 0.0, controlModel.getCalculatedFrequency());
+      dWFProxy
+          .getDwf()
+          .setCustomPulseTrain(
+              DWF.WAVEFORM_CHANNEL_2, controlModel.getCalculatedFrequency(), 0, 1, W2);
       dWFProxy.getDwf().startPulseTrain(DWF.WAVEFORM_CHANNEL_BOTH);
     }
 
@@ -141,14 +153,17 @@ public class AHaHController_21 {
     } catch (InterruptedException e) {
 
     }
-
   }
 
   private void setVy(double W1Amplitude) {
 
     int validSamples = dWFProxy.getDwf().FDwfAnalogInStatusSamplesValid();
-    double peakV1 = Util.maxAbs(dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples));
-    double peakV2 = Util.maxAbs(dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples));
+    double peakV1 =
+        Util.maxAbs(
+            dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples));
+    double peakV2 =
+        Util.maxAbs(
+            dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples));
 
     // note: if V1 is less than resolution of scope, the measurments will be useless
     double vb = peakV2;
@@ -189,13 +204,11 @@ public class AHaHController_21 {
       this.ga = Double.NaN;
       this.gb = Double.NaN;
     }
-
   }
 
   public enum AHaHLogicRoutine {
-
-    FFRU_Trace, Reset,
-
+    FFRU_Trace,
+    Reset,
   }
 
   public enum Instruction {
@@ -247,7 +260,6 @@ public class AHaHController_21 {
 
       return pulseAmplitudeMultiplier;
     }
-
   }
 
   public double getVy() {
@@ -271,41 +283,31 @@ public class AHaHController_21 {
     this.dWFProxy = dWFProxy;
   }
 
-  /**
-   * @return the controlModel
-   */
+  /** @return the controlModel */
   public ControlModel getControlModel() {
 
     return controlModel;
   }
 
-  /**
-   * @return the ga
-   */
+  /** @return the ga */
   public double getGa() {
 
     return ga;
   }
 
-  /**
-   * @param ga the ga to set
-   */
+  /** @param ga the ga to set */
   public void setGa(double ga) {
 
     this.ga = ga;
   }
 
-  /**
-   * @return the gb
-   */
+  /** @return the gb */
   public double getGb() {
 
     return gb;
   }
 
-  /**
-   * @param gb the gb to set
-   */
+  /** @param gb the gb to set */
   public void setGb(double gb) {
 
     this.gb = gb;

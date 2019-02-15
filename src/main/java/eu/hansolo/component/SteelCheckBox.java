@@ -1,8 +1,6 @@
 package eu.hansolo.component;
 
-/**
- * @author hansolo
- */
+/** @author hansolo */
 public class SteelCheckBox extends javax.swing.JCheckBox {
 
   private final int id;
@@ -14,9 +12,7 @@ public class SteelCheckBox extends javax.swing.JCheckBox {
   protected static final String COLOR_PROPERTY = "color";
   protected static final String RISED_PROPERTY = "rised";
 
-  /**
-   * Constructor
-   */
+  /** Constructor */
   public SteelCheckBox(int id) {
 
     this("" + id, id);

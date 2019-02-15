@@ -1,29 +1,25 @@
 /**
- * Memristor-Discovery is distributed under the GNU General Public License version 3
- * and is also available under alternative licenses negotiated directly
- * with Knowm, Inc.
+ * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
+ * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
  *
- * This package also includes various components that are not part of
- * Memristor-Discovery itself:
+ * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
- * * `Multibit`: Copyright 2011 multibit.org, MIT License
- * * `SteelCheckBox`: Copyright 2012 Gerrit, BSD license
+ * <p>* `Multibit`: Copyright 2011 multibit.org, MIT License * `SteelCheckBox`: Copyright 2012
+ * Gerrit, BSD license
  *
- * Knowm, Inc. holds copyright
- * and/or sufficient licenses to all components of the Memristor-Discovery
- * package, and therefore can grant, at its sole discretion, the ability
- * for companies, individuals, or organizations to create proprietary or
- * open source (even if not GPL) modules which may be dynamically linked at
- * runtime with the portions of Memristor-Discovery which fall under our
- * copyright/license umbrella, or are distributed under more flexible
- * licenses than GPL.
+ * <p>Knowm, Inc. holds copyright and/or sufficient licenses to all components of the
+ * Memristor-Discovery package, and therefore can grant, at its sole discretion, the ability for
+ * companies, individuals, or organizations to create proprietary or open source (even if not GPL)
+ * modules which may be dynamically linked at runtime with the portions of Memristor-Discovery which
+ * fall under our copyright/license umbrella, or are distributed under more flexible licenses than
+ * GPL.
  *
- * The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
+ * <p>The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
  *
- * If you have any questions regarding our licensing policy, please
- * contact us at `contact@knowm.org`.
+ * <p>If you have any questions regarding our licensing policy, please contact us at
+ * `contact@knowm.org`.
  */
 package org.knowm.memristor.discovery.gui.mvc.rightbar;
 
@@ -70,9 +66,7 @@ public class RightBarPanel extends JPanel {
   private final JRadioButton awg2BRadioButton;
   private final JRadioButton awg2YRadioButton;
 
-  /**
-   * Constructor
-   */
+  /** Constructor */
   public RightBarPanel() {
 
     setLayout(new GridBagLayout());
@@ -280,14 +274,11 @@ public class RightBarPanel extends JPanel {
     int highBit = (digitalIOStates >> 9) & 1;
     if (lowBit == 0 && highBit == 0) {
       oscilloscopeProbe10RadioButton.setSelected(true);
-    }
-    else if (lowBit == 0 && highBit == 1) {
+    } else if (lowBit == 0 && highBit == 1) {
       oscilloscopeProbe1YRadioButton.setSelected(true);
-    }
-    else if (lowBit == 1 && highBit == 0) {
+    } else if (lowBit == 1 && highBit == 0) {
       oscilloscopeProbe1ARadioButton.setSelected(true);
-    }
-    else {
+    } else {
       oscilloscopeProbe1BRadioButton.setSelected(true);
     }
 
@@ -295,14 +286,11 @@ public class RightBarPanel extends JPanel {
     highBit = (digitalIOStates >> 11) & 1;
     if (lowBit == 0 && highBit == 0) {
       oscilloscopeProbe20RadioButton.setSelected(true);
-    }
-    else if (lowBit == 0 && highBit == 1) {
+    } else if (lowBit == 0 && highBit == 1) {
       oscilloscopeProbe2YRadioButton.setSelected(true);
-    }
-    else if (lowBit == 1 && highBit == 0) {
+    } else if (lowBit == 1 && highBit == 0) {
       oscilloscopeProbe2ARadioButton.setSelected(true);
-    }
-    else {
+    } else {
       oscilloscopeProbe2BRadioButton.setSelected(true);
     }
 
@@ -310,14 +298,11 @@ public class RightBarPanel extends JPanel {
     highBit = (digitalIOStates >> 13) & 1;
     if (lowBit == 0 && highBit == 0) {
       awg10RadioButton.setSelected(true);
-    }
-    else if (lowBit == 0 && highBit == 1) {
+    } else if (lowBit == 0 && highBit == 1) {
       awg1YRadioButton.setSelected(true);
-    }
-    else if (lowBit == 1 && highBit == 0) {
+    } else if (lowBit == 1 && highBit == 0) {
       awg1ARadioButton.setSelected(true);
-    }
-    else {
+    } else {
       awg1BRadioButton.setSelected(true);
     }
 
@@ -325,14 +310,11 @@ public class RightBarPanel extends JPanel {
     highBit = (digitalIOStates >> 15) & 1;
     if (lowBit == 0 && highBit == 0) {
       awg20RadioButton.setSelected(true);
-    }
-    else if (lowBit == 0 && highBit == 1) {
+    } else if (lowBit == 0 && highBit == 1) {
       awg2YRadioButton.setSelected(true);
-    }
-    else if (lowBit == 1 && highBit == 0) {
+    } else if (lowBit == 1 && highBit == 0) {
       awg2ARadioButton.setSelected(true);
-    }
-    else {
+    } else {
       awg2BRadioButton.setSelected(true);
     }
   }

@@ -1,29 +1,25 @@
 /**
- * Memristor-Discovery is distributed under the GNU General Public License version 3
- * and is also available under alternative licenses negotiated directly
- * with Knowm, Inc.
+ * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
+ * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
  *
- * This package also includes various components that are not part of
- * Memristor-Discovery itself:
+ * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
- * * `Multibit`: Copyright 2011 multibit.org, MIT License
- * * `SteelCheckBox`: Copyright 2012 Gerrit, BSD license
+ * <p>* `Multibit`: Copyright 2011 multibit.org, MIT License * `SteelCheckBox`: Copyright 2012
+ * Gerrit, BSD license
  *
- * Knowm, Inc. holds copyright
- * and/or sufficient licenses to all components of the Memristor-Discovery
- * package, and therefore can grant, at its sole discretion, the ability
- * for companies, individuals, or organizations to create proprietary or
- * open source (even if not GPL) modules which may be dynamically linked at
- * runtime with the portions of Memristor-Discovery which fall under our
- * copyright/license umbrella, or are distributed under more flexible
- * licenses than GPL.
+ * <p>Knowm, Inc. holds copyright and/or sufficient licenses to all components of the
+ * Memristor-Discovery package, and therefore can grant, at its sole discretion, the ability for
+ * companies, individuals, or organizations to create proprietary or open source (even if not GPL)
+ * modules which may be dynamically linked at runtime with the portions of Memristor-Discovery which
+ * fall under our copyright/license umbrella, or are distributed under more flexible licenses than
+ * GPL.
  *
- * The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
+ * <p>The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
  *
- * If you have any questions regarding our licensing policy, please
- * contact us at `contact@knowm.org`.
+ * <p>If you have any questions regarding our licensing policy, please contact us at
+ * `contact@knowm.org`.
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.pulse.plot;
 
@@ -68,9 +64,7 @@ public class PlotPanel extends ExperimentPlotPanel {
   private final JPanel gvChartControlPanel;
   private final JCheckBox freezeYAxisCheckBoxGV;
 
-  /**
-   * Constructor
-   */
+  /** Constructor */
   public PlotPanel() {
 
     setLayout(new BorderLayout());
@@ -80,23 +74,39 @@ public class PlotPanel extends ExperimentPlotPanel {
     // Waveform Chart ///////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    waveformChart = new XYChartBuilder().width(400).height(400).title("Waveform").yAxisTitle("Voltage [V]").xAxisTitle("Time [µs]").build();
+    waveformChart =
+        new XYChartBuilder()
+            .width(400)
+            .height(400)
+            .title("Waveform")
+            .yAxisTitle("Voltage [V]")
+            .xAxisTitle("Time [µs]")
+            .build();
     waveformChart.getStyler().setLegendVisible(false);
-    XYSeries series = waveformChart.addSeries("waveform", new double[]{0}, new double[]{0});
-    series.setMarker(SeriesMarkers.NONE); // waveformChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
+    XYSeries series = waveformChart.addSeries("waveform", new double[] {0}, new double[] {0});
+    series.setMarker(
+        SeriesMarkers
+            .NONE); // waveformChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
     waveformChartPanel = new XChartPanel<>(waveformChart);
 
     // ///////////////////////////////////////////////////////////
     // Capture Chart ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    captureChart = new XYChartBuilder().width(600).title("Capture").height(400).yAxisTitle("Voltage [V]").xAxisTitle("Time [µs]").build();
+    captureChart =
+        new XYChartBuilder()
+            .width(600)
+            .title("Capture")
+            .height(400)
+            .yAxisTitle("Voltage [V]")
+            .xAxisTitle("Time [µs]")
+            .build();
     captureChart.getStyler().setLegendPosition(LegendPosition.InsideNE);
-    series = captureChart.addSeries("V1", new double[]{0}, new double[]{0});
+    series = captureChart.addSeries("V1", new double[] {0}, new double[] {0});
     series.setMarker(SeriesMarkers.NONE);
-    series = captureChart.addSeries("V2", new double[]{0}, new double[]{0});
+    series = captureChart.addSeries("V2", new double[] {0}, new double[] {0});
     series.setMarker(SeriesMarkers.NONE);
-    series = captureChart.addSeries("V1-V2", new double[]{0}, new double[]{0});
+    series = captureChart.addSeries("V1-V2", new double[] {0}, new double[] {0});
     series.setMarker(SeriesMarkers.NONE);
     captureChartPanel = new XChartPanel<>(captureChart);
 
@@ -104,33 +114,54 @@ public class PlotPanel extends ExperimentPlotPanel {
     // I-T Chart ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    ivChart = new XYChartBuilder().width(600).title("I-T").height(400).yAxisTitle("Current [" + PulsePreferences.CURRENT_UNIT.getLabel() + "]").xAxisTitle("Time [µs]").build();
+    ivChart =
+        new XYChartBuilder()
+            .width(600)
+            .title("I-T")
+            .height(400)
+            .yAxisTitle("Current [" + PulsePreferences.CURRENT_UNIT.getLabel() + "]")
+            .xAxisTitle("Time [µs]")
+            .build();
     ivChart.getStyler().setLegendVisible(false);
     ivChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);
-    ivChart.addSeries("iv", new double[]{0}, new double[]{0});
+    ivChart.addSeries("iv", new double[] {0}, new double[] {0});
     ivChartPanel = new XChartPanel<>(ivChart);
 
     // ///////////////////////////////////////////////////////////
     // G-T Chart ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    gvChart = new XYChartBuilder().width(100).title("G-T").height(100).yAxisTitle("Conductance [" + PulsePreferences.CONDUCTANCE_UNIT.getLabel() + "]").xAxisTitle("Time [µs]").build();
+    gvChart =
+        new XYChartBuilder()
+            .width(100)
+            .title("G-T")
+            .height(100)
+            .yAxisTitle("Conductance [" + PulsePreferences.CONDUCTANCE_UNIT.getLabel() + "]")
+            .xAxisTitle("Time [µs]")
+            .build();
     gvChart.getStyler().setLegendVisible(false);
     gvChart.getStyler().setYAxisMin(0.0);
     gvChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);
-    gvChart.addSeries("gv", new double[]{0}, new double[]{0});
+    gvChart.addSeries("gv", new double[] {0}, new double[] {0});
     gvChartPanel = new XChartPanel<>(gvChart);
 
     // ///////////////////////////////////////////////////////////
     // G Chart ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    gChart = new XYChartBuilder().width(100).title("G").height(250).xAxisTitle("Pulse Number").yAxisTitle("Conductance [" + PulsePreferences.CONDUCTANCE_UNIT.getLabel() + "]").build();
+    gChart =
+        new XYChartBuilder()
+            .width(100)
+            .title("G")
+            .height(250)
+            .xAxisTitle("Pulse Number")
+            .yAxisTitle("Conductance [" + PulsePreferences.CONDUCTANCE_UNIT.getLabel() + "]")
+            .build();
     gChart.getStyler().setLegendVisible(false);
     gChart.getStyler().setYAxisMin(0.0);
-    series = gChart.addSeries("g", new double[]{0}, new double[]{0});
+    series = gChart.addSeries("g", new double[] {0}, new double[] {0});
     series.setMarker(SeriesMarkers.NONE);
-    series = gChart.addSeries("glast", new double[]{0}, new double[]{0});
+    series = gChart.addSeries("glast", new double[] {0}, new double[] {0});
     series.setMarker(SeriesMarkers.NONE);
     gChartPanel = new XChartPanel<>(gChart);
 

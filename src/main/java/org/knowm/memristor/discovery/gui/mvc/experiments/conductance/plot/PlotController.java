@@ -1,29 +1,25 @@
 /**
- * Memristor-Discovery is distributed under the GNU General Public License version 3
- * and is also available under alternative licenses negotiated directly
- * with Knowm, Inc.
+ * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
+ * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
  *
- * This package also includes various components that are not part of
- * Memristor-Discovery itself:
+ * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
- * * `Multibit`: Copyright 2011 multibit.org, MIT License
- * * `SteelCheckBox`: Copyright 2012 Gerrit, BSD license
+ * <p>* `Multibit`: Copyright 2011 multibit.org, MIT License * `SteelCheckBox`: Copyright 2012
+ * Gerrit, BSD license
  *
- * Knowm, Inc. holds copyright
- * and/or sufficient licenses to all components of the Memristor-Discovery
- * package, and therefore can grant, at its sole discretion, the ability
- * for companies, individuals, or organizations to create proprietary or
- * open source (even if not GPL) modules which may be dynamically linked at
- * runtime with the portions of Memristor-Discovery which fall under our
- * copyright/license umbrella, or are distributed under more flexible
- * licenses than GPL.
+ * <p>Knowm, Inc. holds copyright and/or sufficient licenses to all components of the
+ * Memristor-Discovery package, and therefore can grant, at its sole discretion, the ability for
+ * companies, individuals, or organizations to create proprietary or open source (even if not GPL)
+ * modules which may be dynamically linked at runtime with the portions of Memristor-Discovery which
+ * fall under our copyright/license umbrella, or are distributed under more flexible licenses than
+ * GPL.
  *
- * The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
+ * <p>The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
  *
- * If you have any questions regarding our licensing policy, please
- * contact us at `contact@knowm.org`.
+ * <p>If you have any questions regarding our licensing policy, please contact us at
+ * `contact@knowm.org`.
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.conductance.plot;
 
@@ -65,67 +61,81 @@ public class PlotController implements PropertyChangeListener {
     initGUIComponentsFromModel();
   }
 
-  private void initGUIComponentsFromModel() {
-
-  }
+  private void initGUIComponentsFromModel() {}
 
   private void setUpViewEvents() {
 
-    plotPanel.getCaptureButton().addActionListener(new ActionListener() {
+    plotPanel
+        .getCaptureButton()
+        .addActionListener(
+            new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+              @Override
+              public void actionPerformed(ActionEvent e) {
 
-        plotPanel.switch2CaptureChart();
-      }
-    });
-    plotPanel.getIVButton().addActionListener(new ActionListener() {
+                plotPanel.switch2CaptureChart();
+              }
+            });
+    plotPanel
+        .getIVButton()
+        .addActionListener(
+            new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+              @Override
+              public void actionPerformed(ActionEvent e) {
 
-        plotPanel.switch2IVChart();
-      }
-    });
-    plotPanel.getGVButton().addActionListener(new ActionListener() {
+                plotPanel.switch2IVChart();
+              }
+            });
+    plotPanel
+        .getGVButton()
+        .addActionListener(
+            new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+              @Override
+              public void actionPerformed(ActionEvent e) {
 
-        plotPanel.switch2GVChart();
-      }
-    });
-    plotPanel.getFreezeYAxisCheckBoxIV().addActionListener(new ActionListener() {
+                plotPanel.switch2GVChart();
+              }
+            });
+    plotPanel
+        .getFreezeYAxisCheckBoxIV()
+        .addActionListener(
+            new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+              @Override
+              public void actionPerformed(ActionEvent e) {
 
-        if (plotPanel.getFreezeYAxisCheckBoxIV().isSelected()) {
-          plotModel.setyMaxIV(plotPanel.getIVChartMax());
-          plotModel.setyMinIV(plotPanel.getIVChartMin());
-        } else {
-          plotModel.setyMaxIV(null);
-          plotModel.setyMinIV(null);
-        }
-      }
-    });
-    plotPanel.getFreezeYAxisCheckBoxGV().addActionListener(new ActionListener() {
+                if (plotPanel.getFreezeYAxisCheckBoxIV().isSelected()) {
+                  plotModel.setyMaxIV(plotPanel.getIVChartMax());
+                  plotModel.setyMinIV(plotPanel.getIVChartMin());
+                } else {
+                  plotModel.setyMaxIV(null);
+                  plotModel.setyMinIV(null);
+                }
+              }
+            });
+    plotPanel
+        .getFreezeYAxisCheckBoxGV()
+        .addActionListener(
+            new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+              @Override
+              public void actionPerformed(ActionEvent e) {
 
-        if (plotPanel.getFreezeYAxisCheckBoxGV().isSelected()) {
-          plotModel.setyMaxGV(plotPanel.getGVChartMax());
-          plotModel.setyMinGV(plotPanel.getGVChartMin());
-        } else {
-          plotModel.setyMaxGV(null);
-          plotModel.setyMinGV(null);
-        }
-      }
-    });
+                if (plotPanel.getFreezeYAxisCheckBoxGV().isSelected()) {
+                  plotModel.setyMaxGV(plotPanel.getGVChartMax());
+                  plotModel.setyMinGV(plotPanel.getGVChartMin());
+                } else {
+                  plotModel.setyMaxGV(null);
+                  plotModel.setyMinGV(null);
+                }
+              }
+            });
   }
 
-  public void udpateWaveformChart(double[] timeData, double[] waveformAmplitudeData, double amplitude, int pulseWidth) {
+  public void udpateWaveformChart(
+      double[] timeData, double[] waveformAmplitudeData, double amplitude, int pulseWidth) {
 
     plotPanel.getWaveformChart().setTitle(getWaveformChartTitle(amplitude, pulseWidth));
     plotPanel.getWaveformChart().updateXYSeries("waveform", timeData, waveformAmplitudeData, null);
@@ -133,7 +143,8 @@ public class PlotController implements PropertyChangeListener {
     plotPanel.getWaveformChartPanel().repaint();
   }
 
-  public void udpateVtChart(double[] timeData, double[] v1, double[] v2, int pulseWidth, double amplitude) {
+  public void udpateVtChart(
+      double[] timeData, double[] v1, double[] v2, int pulseWidth, double amplitude) {
 
     plotPanel.getCaptureChart().setTitle(getVtChartTitle(amplitude, pulseWidth));
     plotPanel.getCaptureChart().updateXYSeries("V1", timeData, v1, null);
@@ -159,7 +170,8 @@ public class PlotController implements PropertyChangeListener {
     plotPanel.getGvChart().setXAxisTitle("Pulse Number");
   }
 
-  public void updateGVChartReset(double[] v1, double[] conductance, int pulseWidth, double amplitude) {
+  public void updateGVChartReset(
+      double[] v1, double[] conductance, int pulseWidth, double amplitude) {
 
     plotPanel.getGvChart().getStyler().setYAxisMax(plotModel.getyMaxGV());
     plotPanel.getGvChart().getStyler().setYAxisMin(0.0);
@@ -208,7 +220,11 @@ public class PlotController implements PropertyChangeListener {
 
   private String getWaveform(double amplitude, int period) {
 
-    return "Amplitude = " + getFormattedAmplitude(amplitude) + " V, Period = " + (double) period / 1000 + " µs";
+    return "Amplitude = "
+        + getFormattedAmplitude(amplitude)
+        + " V, Period = "
+        + (double) period / 1000
+        + " µs";
   }
 
   private double getFormattedAmplitude(double amplitude) {
@@ -217,16 +233,15 @@ public class PlotController implements PropertyChangeListener {
   }
 
   /**
-   * These property change events are triggered in the model in the case where the underlying model is updated. Here, the controller can respond to those events and make sure the corresponding GUI
-   * components get updated.
+   * These property change events are triggered in the model in the case where the underlying model
+   * is updated. Here, the controller can respond to those events and make sure the corresponding
+   * GUI components get updated.
    */
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
 
     switch (evt.getPropertyName()) {
-
       case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
-
         initGUIComponentsFromModel();
         break;
 

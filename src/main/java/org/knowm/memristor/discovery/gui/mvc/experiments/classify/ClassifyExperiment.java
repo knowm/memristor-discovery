@@ -1,29 +1,25 @@
 /**
- * Memristor-Discovery is distributed under the GNU General Public License version 3
- * and is also available under alternative licenses negotiated directly
- * with Knowm, Inc.
+ * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
+ * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
  *
- * This package also includes various components that are not part of
- * Memristor-Discovery itself:
+ * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
- * * `Multibit`: Copyright 2011 multibit.org, MIT License
- * * `SteelCheckBox`: Copyright 2012 Gerrit, BSD license
+ * <p>* `Multibit`: Copyright 2011 multibit.org, MIT License * `SteelCheckBox`: Copyright 2012
+ * Gerrit, BSD license
  *
- * Knowm, Inc. holds copyright
- * and/or sufficient licenses to all components of the Memristor-Discovery
- * package, and therefore can grant, at its sole discretion, the ability
- * for companies, individuals, or organizations to create proprietary or
- * open source (even if not GPL) modules which may be dynamically linked at
- * runtime with the portions of Memristor-Discovery which fall under our
- * copyright/license umbrella, or are distributed under more flexible
- * licenses than GPL.
+ * <p>Knowm, Inc. holds copyright and/or sufficient licenses to all components of the
+ * Memristor-Discovery package, and therefore can grant, at its sole discretion, the ability for
+ * companies, individuals, or organizations to create proprietary or open source (even if not GPL)
+ * modules which may be dynamically linked at runtime with the portions of Memristor-Discovery which
+ * fall under our copyright/license umbrella, or are distributed under more flexible licenses than
+ * GPL.
  *
- * The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
+ * <p>The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
  *
- * If you have any questions regarding our licensing policy, please
- * contact us at `contact@knowm.org`.
+ * <p>If you have any questions regarding our licensing policy, please contact us at
+ * `contact@knowm.org`.
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.classify;
 
@@ -64,7 +60,7 @@ public class ClassifyExperiment extends Experiment {
 
   private AHaHController_21 aHaHController;
 
-  //exponential running average for measuring train accuracy.
+  // exponential running average for measuring train accuracy.
   double trainAccuracy = 0;
   double k = .05f;
 
@@ -85,43 +81,41 @@ public class ClassifyExperiment extends Experiment {
 
     aHaHController = new AHaHController_21(controlModel);
     aHaHController.setdWFProxy(dwfProxy);
-
   }
 
   @Override
   public void doCreateAndShowGUI() {
 
-    controlPanel.clearPlotButton.addActionListener(new ActionListener() {
+    controlPanel.clearPlotButton.addActionListener(
+        new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        System.out.println("should reset chart now");
-        plotController.resetChart();
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            System.out.println("should reset chart now");
+            plotController.resetChart();
+          }
+        });
 
-      }
+    controlPanel.runTrialButton.addActionListener(
+        new ActionListener() {
 
-    });
+          @Override
+          public void actionPerformed(ActionEvent e) {
 
-    controlPanel.runTrialButton.addActionListener(new ActionListener() {
+            runTrialWorker = new TrialWorker();
+            runTrialWorker.execute();
+          }
+        });
+    controlPanel.resetAllButton.addActionListener(
+        new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+          @Override
+          public void actionPerformed(ActionEvent e) {
 
-        runTrialWorker = new TrialWorker();
-        runTrialWorker.execute();
-
-      }
-    });
-    controlPanel.resetAllButton.addActionListener(new ActionListener() {
-
-      @Override
-      public void actionPerformed(ActionEvent e) {
-
-        resetWorker = new ResetWorker();
-        resetWorker.execute();
-
-      }
-    });
+            resetWorker = new ResetWorker();
+            resetWorker.execute();
+          }
+        });
   }
 
   private class ResetWorker extends SwingWorker<Boolean, Double> {
@@ -146,15 +140,12 @@ public class ClassifyExperiment extends Experiment {
           readAllSynapses();
         }
 
-      } catch (
-
-      Exception e) {
+      } catch (Exception e) {
         e.printStackTrace();
       }
 
       return true;
     }
-
   }
 
   private class TrialWorker extends SwingWorker<Boolean, Double> {
@@ -181,9 +172,9 @@ public class ClassifyExperiment extends Experiment {
             System.out.println("  >pattern=" + pattern.spikePattern);
             System.out.println("  >  state=" + pattern.state);
 
-            if ((Vy < 0 && pattern.state) || (Vy > 0 && !pattern.state)) {//mistake
+            if ((Vy < 0 && pattern.state) || (Vy > 0 && !pattern.state)) { // mistake
               trainAccuracy = (1 - k) * trainAccuracy;
-            } else {//got it.
+            } else { // got it.
               trainAccuracy = (1 - k) * trainAccuracy + k * 1f;
             }
 
@@ -196,11 +187,9 @@ public class ClassifyExperiment extends Experiment {
             }
 
             plotController.addTrainAccuracyDataPoint(trainAccuracy);
-
           }
 
           readAllSynapses();
-
         }
 
       } catch (Exception e) {
@@ -209,7 +198,6 @@ public class ClassifyExperiment extends Experiment {
 
       return true;
     }
-
   }
 
   private void learnCombo(SupervisedPattern pattern, double Vy) {
@@ -219,7 +207,6 @@ public class ClassifyExperiment extends Experiment {
     } else if (Vy > 0) {
       aHaHController.executeInstruction(Instruction.FF_RL);
     }
-
   }
 
   private void learnAlways(SupervisedPattern pattern, double Vy) {
@@ -242,7 +229,7 @@ public class ClassifyExperiment extends Experiment {
 
     int pw = controlModel.getPulseWidth();
 
-    controlModel.setPulseWidth(500_000);//for RC effects due to high resistances.
+    controlModel.setPulseWidth(500_000); // for RC effects due to high resistances.
 
     List<Double> synapticWeights = new ArrayList<Double>();
     for (int i = 0; i < 8; i++) {
@@ -254,24 +241,21 @@ public class ClassifyExperiment extends Experiment {
     plotController.addSynapticWeightValuesPoint(synapticWeights);
 
     controlModel.setPulseWidth(pw);
-
   }
 
   private void loadSpikePattern(List<Integer> spikes) {
 
     dwfProxy.turnOffAllSwitches();
-    dwfProxy.update2DigitalIOStatesAtOnce(spikes, true);//set spike pattern
-
+    dwfProxy.update2DigitalIOStatesAtOnce(spikes, true); // set spike pattern
   }
 
   /**
-   * These property change events are triggered in the controlModel in the case where the underlying controlModel is updated. Here, the controller can
-   * respond to those events and make sure the corresponding GUI components get updated.
+   * These property change events are triggered in the controlModel in the case where the underlying
+   * controlModel is updated. Here, the controller can respond to those events and make sure the
+   * corresponding GUI components get updated.
    */
   @Override
-  public void propertyChange(PropertyChangeEvent evt) {
-
-  }
+  public void propertyChange(PropertyChangeEvent evt) {}
 
   @Override
   public ExperimentControlModel getControlModel() {
@@ -296,5 +280,4 @@ public class ClassifyExperiment extends Experiment {
 
     return null;
   }
-
 }

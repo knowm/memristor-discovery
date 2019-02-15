@@ -1,29 +1,25 @@
 /**
- * Memristor-Discovery is distributed under the GNU General Public License version 3
- * and is also available under alternative licenses negotiated directly
- * with Knowm, Inc.
+ * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
+ * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
  *
- * This package also includes various components that are not part of
- * Memristor-Discovery itself:
+ * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
- * * `Multibit`: Copyright 2011 multibit.org, MIT License
- * * `SteelCheckBox`: Copyright 2012 Gerrit, BSD license
+ * <p>* `Multibit`: Copyright 2011 multibit.org, MIT License * `SteelCheckBox`: Copyright 2012
+ * Gerrit, BSD license
  *
- * Knowm, Inc. holds copyright
- * and/or sufficient licenses to all components of the Memristor-Discovery
- * package, and therefore can grant, at its sole discretion, the ability
- * for companies, individuals, or organizations to create proprietary or
- * open source (even if not GPL) modules which may be dynamically linked at
- * runtime with the portions of Memristor-Discovery which fall under our
- * copyright/license umbrella, or are distributed under more flexible
- * licenses than GPL.
+ * <p>Knowm, Inc. holds copyright and/or sufficient licenses to all components of the
+ * Memristor-Discovery package, and therefore can grant, at its sole discretion, the ability for
+ * companies, individuals, or organizations to create proprietary or open source (even if not GPL)
+ * modules which may be dynamically linked at runtime with the portions of Memristor-Discovery which
+ * fall under our copyright/license umbrella, or are distributed under more flexible licenses than
+ * GPL.
  *
- * The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
+ * <p>The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
  *
- * If you have any questions regarding our licensing policy, please
- * contact us at `contact@knowm.org`.
+ * <p>If you have any questions regarding our licensing policy, please contact us at
+ * `contact@knowm.org`.
  */
 package org.knowm.memristor.discovery.utils;
 
@@ -45,9 +41,9 @@ public class Util {
   public static final String VERSION_PROPERTY_KEY_NAME = "mdversion";
 
   //   public final static long SLEEP_TIME = 40; // 40 ms ==> 25fps
-//      public final static long SLEEP_TIME = 50; // 50 ms ==> 20fps
-//   public final static long SLEEP_TIME = 60; // 60 ms ==> 16.67fps
-  public final static long SLEEP_TIME = 100; // 100 ms ==> 10fps
+  //      public final static long SLEEP_TIME = 50; // 50 ms ==> 20fps
+  //   public final static long SLEEP_TIME = 60; // 60 ms ==> 16.67fps
+  public static final long SLEEP_TIME = 100; // 100 ms ==> 10fps
 
   /**
    * Get the version number specified in the version.properties file.
@@ -76,9 +72,7 @@ public class Util {
     return version;
   }
 
-  /**
-   * Returns an ImageIcon, or null if the path was invalid.
-   */
+  /** Returns an ImageIcon, or null if the path was invalid. */
   public static ImageIcon createImageIcon(String path) {
 
     if (path == null) {
@@ -86,7 +80,7 @@ public class Util {
     }
 
     java.net.URL imgURL = Util.class.getClassLoader().getResource(path);
-//    System.out.println("imgURL = " + imgURL);
+    //    System.out.println("imgURL = " + imgURL);
     if (imgURL != null) {
       return new ImageIcon(imgURL);
     } else {
@@ -98,9 +92,9 @@ public class Util {
   public static String getResourceFullPath(String resource) {
 
     java.net.URL resourceURL = Util.class.getClassLoader().getResource(resource);
-//    System.out.println("resourceURL = " + resourceURL);
-//    return resourceURL.toString();
-    return resourceURL.toString().replaceFirst("/","///");
+    //    System.out.println("resourceURL = " + resourceURL);
+    //    return resourceURL.toString();
+    return resourceURL.toString().replaceFirst("/", "///");
   }
 
   public static double maxAbs(double[] x) {
@@ -113,15 +107,13 @@ public class Util {
         max = a;
         b = x[i];
       }
-
     }
     return b;
   }
 
   public static double round(double value, int places) {
 
-    if (places < 0)
-      throw new IllegalArgumentException();
+    if (places < 0) throw new IllegalArgumentException();
 
     BigDecimal bd = new BigDecimal(value);
     bd = bd.setScale(places, RoundingMode.HALF_UP);
