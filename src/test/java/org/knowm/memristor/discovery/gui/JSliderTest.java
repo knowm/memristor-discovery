@@ -1,22 +1,17 @@
 package org.knowm.memristor.discovery.gui;
 
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import static javax.swing.BorderFactory.createEmptyBorder;
+
+import java.awt.*;
 import java.util.Hashtable;
-import javax.swing.BorderFactory;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 
 public class JSliderTest {
 
   private static void createAndShowGUI() {
 
     // Create and set up the window.
-    JFrame frame = new JFrame("XChart Swing Demo");
+    JFrame frame = new JFrame("JSlider Demo");
     frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
     // Add content to the window.
@@ -27,6 +22,39 @@ public class JSliderTest {
     GridBagConstraints c = new GridBagConstraints();
     c.fill = GridBagConstraints.HORIZONTAL;
     mainPanel.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+
+    JScrollPane jScrollPane =
+        new JScrollPane(
+            mainPanel,
+            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    jScrollPane.setBorder(createEmptyBorder());
+    frame.add(jScrollPane, BorderLayout.WEST);
+
+    Box waveformRadioButtonBox;
+    ButtonGroup waveformRadioButtonGroup;
+    JRadioButton sineRadioButton;
+    JRadioButton triangleRadioButton;
+    JRadioButton squareRadioButton;
+    sineRadioButton = new JRadioButton("Sine");
+    triangleRadioButton = new JRadioButton("Triangle");
+    squareRadioButton = new JRadioButton("Square");
+    waveformRadioButtonGroup = new ButtonGroup();
+    waveformRadioButtonGroup.add(sineRadioButton);
+    waveformRadioButtonGroup.add(triangleRadioButton);
+    // waveformRadioButtonGroup.add(squareRadioButton);
+    mainPanel.add(sineRadioButton);
+    mainPanel.add(triangleRadioButton);
+    mainPanel.add(squareRadioButton);
+    waveformRadioButtonBox = Box.createVerticalBox();
+    waveformRadioButtonBox.setBorder(BorderFactory.createTitledBorder("Waveform"));
+    waveformRadioButtonBox.add(sineRadioButton);
+    waveformRadioButtonBox.add(triangleRadioButton);
+    // waveformRadioButtonBox.add(squareRadioButton);
+    c.gridx = 0;
+    c.gridy++;
+    c.insets = new Insets(0, 6, 4, 6);
+    mainPanel.add(waveformRadioButtonBox, c);
 
     JSlider offsetSlider;
     offsetSlider = new JSlider(JSlider.HORIZONTAL, -200, 100, 0);
@@ -82,7 +110,21 @@ public class JSliderTest {
 
           @Override
           public void run() {
-
+            try {
+              UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+              System.out.println(
+                  "UIManager.getSystemLookAndFeelClassName() = "
+                      + UIManager.getSystemLookAndFeelClassName());
+            } catch (ClassNotFoundException e) {
+              e.printStackTrace();
+            } catch (InstantiationException e) {
+              e.printStackTrace();
+            } catch (IllegalAccessException e) {
+              e.printStackTrace();
+            } catch (UnsupportedLookAndFeelException e) {
+              e.printStackTrace();
+            }
+            UIManager.put("Slider.paintValue", Boolean.FALSE);
             createAndShowGUI();
           }
         });

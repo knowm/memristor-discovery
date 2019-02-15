@@ -1,29 +1,25 @@
 /**
- * Memristor-Discovery is distributed under the GNU General Public License version 3
- * and is also available under alternative licenses negotiated directly
- * with Knowm, Inc.
+ * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
+ * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
  *
- * This package also includes various components that are not part of
- * Memristor-Discovery itself:
+ * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
- * * `Multibit`: Copyright 2011 multibit.org, MIT License
- * * `SteelCheckBox`: Copyright 2012 Gerrit, BSD license
+ * <p>* `Multibit`: Copyright 2011 multibit.org, MIT License * `SteelCheckBox`: Copyright 2012
+ * Gerrit, BSD license
  *
- * Knowm, Inc. holds copyright
- * and/or sufficient licenses to all components of the Memristor-Discovery
- * package, and therefore can grant, at its sole discretion, the ability
- * for companies, individuals, or organizations to create proprietary or
- * open source (even if not GPL) modules which may be dynamically linked at
- * runtime with the portions of Memristor-Discovery which fall under our
- * copyright/license umbrella, or are distributed under more flexible
- * licenses than GPL.
+ * <p>Knowm, Inc. holds copyright and/or sufficient licenses to all components of the
+ * Memristor-Discovery package, and therefore can grant, at its sole discretion, the ability for
+ * companies, individuals, or organizations to create proprietary or open source (even if not GPL)
+ * modules which may be dynamically linked at runtime with the portions of Memristor-Discovery which
+ * fall under our copyright/license umbrella, or are distributed under more flexible licenses than
+ * GPL.
  *
- * The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
+ * <p>The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
  *
- * If you have any questions regarding our licensing policy, please
- * contact us at `contact@knowm.org`.
+ * <p>If you have any questions regarding our licensing policy, please contact us at
+ * `contact@knowm.org`.
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.synapse.plot;
 
@@ -51,9 +47,7 @@ public class PlotPanel extends ExperimentPlotPanel {
   XChartPanel<XYChart> gChartPanel;
   private final JPanel gvChartControlPanel;
 
-  /**
-   * Constructor
-   */
+  /** Constructor */
   public PlotPanel() {
 
     setLayout(new BorderLayout());
@@ -63,7 +57,13 @@ public class PlotPanel extends ExperimentPlotPanel {
     // G Chart ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    gChart = new XYChartBuilder().width(100).title("Synapse State").height(250).xAxisTitle("Seconds from Start").build();
+    gChart =
+        new XYChartBuilder()
+            .width(100)
+            .title("Synapse State")
+            .height(250)
+            .xAxisTitle("Seconds from Start")
+            .build();
     gChart.getStyler().setLegendVisible(true);
     gChart.getStyler().setLegendPosition(LegendPosition.InsideSW);
     gChart.getStyler().setYAxisGroupPosition(1, Styler.YAxisPosition.Right);
@@ -114,7 +114,6 @@ public class PlotPanel extends ExperimentPlotPanel {
     gvChartControlPanel.add(freezeYAxisCheckBoxIV);
     gvChartControlPanel.add(resistanceConductanceCheckBox);
     add(gvChartControlPanel, BorderLayout.NORTH);
-
   }
 
   public void switch2GVChart() {
@@ -148,17 +147,13 @@ public class PlotPanel extends ExperimentPlotPanel {
     return gChart.getSeriesMap().get("y").getYMin();
   }
 
-  /**
-   * @return the gvChartControlPanel
-   */
+  /** @return the gvChartControlPanel */
   public JPanel getGvChartControlPanel() {
 
     return gvChartControlPanel;
   }
 
-  /**
-   * @return the resistanceConductanceCheckBox
-   */
+  /** @return the resistanceConductanceCheckBox */
   public JCheckBox getResistanceConductanceCheckBox() {
 
     return resistanceConductanceCheckBox;

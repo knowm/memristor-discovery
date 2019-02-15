@@ -1,29 +1,25 @@
 /**
- * Memristor-Discovery is distributed under the GNU General Public License version 3
- * and is also available under alternative licenses negotiated directly
- * with Knowm, Inc.
+ * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
+ * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
  *
- * This package also includes various components that are not part of
- * Memristor-Discovery itself:
+ * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
- * * `Multibit`: Copyright 2011 multibit.org, MIT License
- * * `SteelCheckBox`: Copyright 2012 Gerrit, BSD license
+ * <p>* `Multibit`: Copyright 2011 multibit.org, MIT License * `SteelCheckBox`: Copyright 2012
+ * Gerrit, BSD license
  *
- * Knowm, Inc. holds copyright
- * and/or sufficient licenses to all components of the Memristor-Discovery
- * package, and therefore can grant, at its sole discretion, the ability
- * for companies, individuals, or organizations to create proprietary or
- * open source (even if not GPL) modules which may be dynamically linked at
- * runtime with the portions of Memristor-Discovery which fall under our
- * copyright/license umbrella, or are distributed under more flexible
- * licenses than GPL.
+ * <p>Knowm, Inc. holds copyright and/or sufficient licenses to all components of the
+ * Memristor-Discovery package, and therefore can grant, at its sole discretion, the ability for
+ * companies, individuals, or organizations to create proprietary or open source (even if not GPL)
+ * modules which may be dynamically linked at runtime with the portions of Memristor-Discovery which
+ * fall under our copyright/license umbrella, or are distributed under more flexible licenses than
+ * GPL.
  *
- * The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
+ * <p>The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
  *
- * If you have any questions regarding our licensing policy, please
- * contact us at `contact@knowm.org`.
+ * <p>If you have any questions regarding our licensing policy, please contact us at
+ * `contact@knowm.org`.
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis;
 
@@ -73,9 +69,7 @@ public class HysteresisExperiment extends Experiment {
   }
 
   @Override
-  public void doCreateAndShowGUI() {
-
-  }
+  public void doCreateAndShowGUI() {}
 
   private class CaptureWorker extends SwingWorker<Boolean, double[][]> {
 
@@ -84,14 +78,27 @@ public class HysteresisExperiment extends Experiment {
 
       // AnalogOut
       DWF.Waveform dwfWaveform = WaveformUtils.getDWFWaveform(controlModel.getWaveform());
-      dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, controlModel.getFrequency(), controlModel.getAmplitude(),
-          controlModel.getOffset(), 50);
+      dwfProxy
+          .getDwf()
+          .startWave(
+              DWF.WAVEFORM_CHANNEL_1,
+              dwfWaveform,
+              controlModel.getFrequency(),
+              controlModel.getAmplitude(),
+              controlModel.getOffset(),
+              50);
 
       // Analog In
-      double sampleFrequency = (double) controlModel.getFrequency() * HysteresisPreferences.CAPTURE_BUFFER_SIZE
-          / HysteresisPreferences.CAPTURE_PERIOD_COUNT;
-      dwfProxy.getDwf().startAnalogCaptureBothChannelsImmediately(sampleFrequency, HysteresisPreferences.CAPTURE_BUFFER_SIZE,
-          AcquisitionMode.ScanShift);
+      double sampleFrequency =
+          (double) controlModel.getFrequency()
+              * HysteresisPreferences.CAPTURE_BUFFER_SIZE
+              / HysteresisPreferences.CAPTURE_PERIOD_COUNT;
+      dwfProxy
+          .getDwf()
+          .startAnalogCaptureBothChannelsImmediately(
+              sampleFrequency,
+              HysteresisPreferences.CAPTURE_BUFFER_SIZE,
+              AcquisitionMode.ScanShift);
 
       while (!isCancelled()) {
 
@@ -112,35 +119,43 @@ public class HysteresisExperiment extends Experiment {
 
         if (validSamples > 0) {
 
-          double[] rawdata1 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
-          double[] rawdata2 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
+          double[] rawdata1 =
+              dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
+          double[] rawdata2 =
+              dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
 
           if (plotPanel.getCaptureButton().isSelected()) { // Capture
 
             // Calculate time data
             double[] timeData = new double[rawdata1.length];
-            double timeStep = 1 / (double) controlModel.getFrequency() * HysteresisPreferences.CAPTURE_PERIOD_COUNT
-                / HysteresisPreferences.CAPTURE_BUFFER_SIZE;
+            double timeStep =
+                1
+                    / (double) controlModel.getFrequency()
+                    * HysteresisPreferences.CAPTURE_PERIOD_COUNT
+                    / HysteresisPreferences.CAPTURE_BUFFER_SIZE;
             for (int i = 0; i < timeData.length; i++) {
               timeData[i] = i * timeStep;
             }
-            publish(new double[][]{rawdata1, rawdata2, timeData});
+            publish(new double[][] {rawdata1, rawdata2, timeData});
           } else if (plotPanel.getIVButton().isSelected()) { // IV
 
             // create current data
             double[] current = new double[rawdata2.length];
             double[] voltage = new double[rawdata1.length];
             for (int i = 0; i < current.length; i++) {
-              current[i] = rawdata2[i] / controlModel.getSeriesResistance() * HysteresisPreferences.CURRENT_UNIT.getDivisor();
+              current[i] =
+                  rawdata2[i]
+                      / controlModel.getSeriesResistance()
+                      * HysteresisPreferences.CURRENT_UNIT.getDivisor();
             }
             if (!HysteresisPreferences.IS_VIN) {
               for (int i = 0; i < current.length; i++) {
                 voltage[i] = rawdata1[i] - rawdata2[i];
               }
             }
-            publish(new double[][]{rawdata1, voltage, current});
+            publish(new double[][] {rawdata1, voltage, current});
 
-          } else {// GV
+          } else { // GV
 
             double[] conductance = new double[rawdata2.length];
             double[] voltage = new double[rawdata1.length];
@@ -149,7 +164,10 @@ public class HysteresisExperiment extends Experiment {
 
               double I = rawdata2[i] / controlModel.getSeriesResistance();
 
-              double G = I / (rawdata1[i] - rawdata2[i]) * HysteresisPreferences.CONDUCTANCE_UNIT.getDivisor();
+              double G =
+                  I
+                      / (rawdata1[i] - rawdata2[i])
+                      * HysteresisPreferences.CONDUCTANCE_UNIT.getDivisor();
 
               G = G < 0 ? 0 : G;
 
@@ -160,12 +178,13 @@ public class HysteresisExperiment extends Experiment {
               voltage[i] = rawdata1[i] - rawdata2[i];
             }
 
-            publish(new double[][]{rawdata1, voltage, conductance});
+            publish(new double[][] {rawdata1, voltage, conductance});
           }
         }
-        //testing the consol
+        // testing the consol
         //        if (Math.random() < 0.01) {
-        //          getControlModel().swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_NEW_CONSOLE_LOG, "Hi", "Blah");
+        //
+        // getControlModel().swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_NEW_CONSOLE_LOG, "Hi", "Blah");
         //        }
       }
 
@@ -182,15 +201,30 @@ public class HysteresisExperiment extends Experiment {
         double[][] newestChunk = chunks.get(chunks.size() - 1);
 
         if (plotPanel.getCaptureButton().isSelected()) {
-          plotController.udpateVtChartData(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getFrequency(), controlModel.getAmplitude(),
+          plotController.udpateVtChartData(
+              newestChunk[0],
+              newestChunk[1],
+              newestChunk[2],
+              controlModel.getFrequency(),
+              controlModel.getAmplitude(),
               controlModel.getOffset());
           plotPanel.switch2CaptureChart();
         } else if (plotPanel.getIVButton().isSelected()) {
-          plotController.udpateIVChartData(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getFrequency(), controlModel.getAmplitude(),
+          plotController.udpateIVChartData(
+              newestChunk[0],
+              newestChunk[1],
+              newestChunk[2],
+              controlModel.getFrequency(),
+              controlModel.getAmplitude(),
               controlModel.getOffset());
           plotPanel.switch2IVChart();
         } else {
-          plotController.updateGVChartData(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getFrequency(), controlModel.getAmplitude(),
+          plotController.updateGVChartData(
+              newestChunk[0],
+              newestChunk[1],
+              newestChunk[2],
+              controlModel.getFrequency(),
+              controlModel.getAmplitude(),
               controlModel.getOffset());
           plotPanel.switch2GVChart();
         }
@@ -206,8 +240,9 @@ public class HysteresisExperiment extends Experiment {
   }
 
   /**
-   * These property change events are triggered in the model in the case where the underlying model is updated. Here, the controller can respond to
-   * those events and make sure the corresponding GUI components get updated.
+   * These property change events are triggered in the model in the case where the underlying model
+   * is updated. Here, the controller can respond to those events and make sure the corresponding
+   * GUI components get updated.
    */
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
@@ -215,31 +250,47 @@ public class HysteresisExperiment extends Experiment {
     //    System.out.println("evt.getPropertyName() = " + evt.getPropertyName());
 
     switch (evt.getPropertyName()) {
-
       case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
-
         if (controlModel.isStartToggled()) {
           // AnalogOut
           DWF.Waveform dwfWaveform = WaveformUtils.getDWFWaveform(controlModel.getWaveform());
-          dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, controlModel.getFrequency(), controlModel.getAmplitude(),
-              controlModel.getOffset(), 50);
+          dwfProxy
+              .getDwf()
+              .startWave(
+                  DWF.WAVEFORM_CHANNEL_1,
+                  dwfWaveform,
+                  controlModel.getFrequency(),
+                  controlModel.getAmplitude(),
+                  controlModel.getOffset(),
+                  50);
         } else {
           plotPanel.switch2WaveformChart();
-          plotController.udpateWaveformChart(controlModel.getWaveformTimeData(), controlModel.getWaveformAmplitudeData(), controlModel.getAmplitude(),
-              controlModel.getFrequency(), controlModel.getOffset());
+          plotController.udpateWaveformChart(
+              controlModel.getWaveformTimeData(),
+              controlModel.getWaveformAmplitudeData(),
+              controlModel.getAmplitude(),
+              controlModel.getFrequency(),
+              controlModel.getOffset());
         }
         break;
       case ExperimentControlModel.EVENT_FREQUENCY_UPDATE:
 
-        // a special case when the frequency is changed. Not only does the analog out need to change (above), the capture frequency rate must also be changed.
+        // a special case when the frequency is changed. Not only does the analog out need to change
+        // (above), the capture frequency rate must also be changed.
 
         if (controlModel.isStartToggled()) {
 
           // Analog In
-          double sampleFrequency = (double) controlModel.getFrequency() * HysteresisPreferences.CAPTURE_BUFFER_SIZE
-              / HysteresisPreferences.CAPTURE_PERIOD_COUNT;
-          dwfProxy.getDwf().startAnalogCaptureBothChannelsImmediately(sampleFrequency, HysteresisPreferences.CAPTURE_BUFFER_SIZE,
-              AcquisitionMode.ScanShift);
+          double sampleFrequency =
+              (double) controlModel.getFrequency()
+                  * HysteresisPreferences.CAPTURE_BUFFER_SIZE
+                  / HysteresisPreferences.CAPTURE_PERIOD_COUNT;
+          dwfProxy
+              .getDwf()
+              .startAnalogCaptureBothChannelsImmediately(
+                  sampleFrequency,
+                  HysteresisPreferences.CAPTURE_BUFFER_SIZE,
+                  AcquisitionMode.ScanShift);
         }
         break;
       default:

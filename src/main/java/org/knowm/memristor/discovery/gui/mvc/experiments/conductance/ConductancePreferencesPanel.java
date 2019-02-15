@@ -1,29 +1,25 @@
 /**
- * Memristor-Discovery is distributed under the GNU General Public License version 3
- * and is also available under alternative licenses negotiated directly
- * with Knowm, Inc.
+ * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
+ * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
  *
- * This package also includes various components that are not part of
- * Memristor-Discovery itself:
+ * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
- * * `Multibit`: Copyright 2011 multibit.org, MIT License
- * * `SteelCheckBox`: Copyright 2012 Gerrit, BSD license
+ * <p>* `Multibit`: Copyright 2011 multibit.org, MIT License * `SteelCheckBox`: Copyright 2012
+ * Gerrit, BSD license
  *
- * Knowm, Inc. holds copyright
- * and/or sufficient licenses to all components of the Memristor-Discovery
- * package, and therefore can grant, at its sole discretion, the ability
- * for companies, individuals, or organizations to create proprietary or
- * open source (even if not GPL) modules which may be dynamically linked at
- * runtime with the portions of Memristor-Discovery which fall under our
- * copyright/license umbrella, or are distributed under more flexible
- * licenses than GPL.
+ * <p>Knowm, Inc. holds copyright and/or sufficient licenses to all components of the
+ * Memristor-Discovery package, and therefore can grant, at its sole discretion, the ability for
+ * companies, individuals, or organizations to create proprietary or open source (even if not GPL)
+ * modules which may be dynamically linked at runtime with the portions of Memristor-Discovery which
+ * fall under our copyright/license umbrella, or are distributed under more flexible licenses than
+ * GPL.
  *
- * The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
+ * <p>The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
  *
- * If you have any questions regarding our licensing policy, please
- * contact us at `contact@knowm.org`.
+ * <p>If you have any questions regarding our licensing policy, please contact us at
+ * `contact@knowm.org`.
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.conductance;
 
@@ -92,9 +88,13 @@ public class ConductancePreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.resetPulseTypeComboBox = new JComboBox<>();
-    this.resetPulseTypeComboBox.setModel(new DefaultComboBoxModel<>(new Waveform[]{Waveform.Sawtooth, Waveform.Square}));
-    ConductancePreferences.Waveform waveform = ConductancePreferences.Waveform.valueOf(experimentPreferences.getString(ConductancePreferences.RESET_PULSE_TYPE_INIT_STRING_KEY,
-        ConductancePreferences.RESET_PULSE_TYPE_INIT_STRING_DEFAULT_VALUE));
+    this.resetPulseTypeComboBox.setModel(
+        new DefaultComboBoxModel<>(new Waveform[] {Waveform.Sawtooth, Waveform.Square}));
+    ConductancePreferences.Waveform waveform =
+        ConductancePreferences.Waveform.valueOf(
+            experimentPreferences.getString(
+                ConductancePreferences.RESET_PULSE_TYPE_INIT_STRING_KEY,
+                ConductancePreferences.RESET_PULSE_TYPE_INIT_STRING_DEFAULT_VALUE));
     this.resetPulseTypeComboBox.setSelectedItem(waveform);
     preferencesPanel.add(resetPulseTypeComboBox, gc);
 
@@ -105,7 +105,11 @@ public class ConductancePreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.resetAmplitudeTextField = new JTextField(12);
-    this.resetAmplitudeTextField.setText(String.valueOf(experimentPreferences.getFloat(ConductancePreferences.RESET_AMPLITUDE_INIT_FLOAT_KEY, ConductancePreferences.RESET_AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
+    this.resetAmplitudeTextField.setText(
+        String.valueOf(
+            experimentPreferences.getFloat(
+                ConductancePreferences.RESET_AMPLITUDE_INIT_FLOAT_KEY,
+                ConductancePreferences.RESET_AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
     preferencesPanel.add(resetAmplitudeTextField, gc);
 
     gc.gridy++;
@@ -115,7 +119,11 @@ public class ConductancePreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.resetPulseWidthTextField = new JTextField(12);
-    this.resetPulseWidthTextField.setText(String.valueOf(experimentPreferences.getInteger(ConductancePreferences.RESET_PULSE_WIDTH_INIT_KEY, ConductancePreferences.RESET_PERIOD_INIT_DEFAULT_VALUE)));
+    this.resetPulseWidthTextField.setText(
+        String.valueOf(
+            experimentPreferences.getInteger(
+                ConductancePreferences.RESET_PULSE_WIDTH_INIT_KEY,
+                ConductancePreferences.RESET_PERIOD_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(resetPulseWidthTextField, gc);
 
     // SET
@@ -127,7 +135,11 @@ public class ConductancePreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.setConductanceTextField = new JTextField(12);
-    this.setConductanceTextField.setText(String.valueOf(experimentPreferences.getFloat(ConductancePreferences.SET_CONDUCTANCE_INIT_KEY, ConductancePreferences.SET_CONDUCTANCE_INIT_DEFAULT_VALUE)));
+    this.setConductanceTextField.setText(
+        String.valueOf(
+            experimentPreferences.getFloat(
+                ConductancePreferences.SET_CONDUCTANCE_INIT_KEY,
+                ConductancePreferences.SET_CONDUCTANCE_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(setConductanceTextField, gc);
 
     gc.gridy++;
@@ -137,7 +149,11 @@ public class ConductancePreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.setAmplitudeTextField = new JTextField(12);
-    this.setAmplitudeTextField.setText(String.valueOf(experimentPreferences.getFloat(ConductancePreferences.SET_AMPLITUDE_INIT_FLOAT_KEY, ConductancePreferences.SET_AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
+    this.setAmplitudeTextField.setText(
+        String.valueOf(
+            experimentPreferences.getFloat(
+                ConductancePreferences.SET_AMPLITUDE_INIT_FLOAT_KEY,
+                ConductancePreferences.SET_AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
     preferencesPanel.add(setAmplitudeTextField, gc);
 
     gc.gridy++;
@@ -147,7 +163,11 @@ public class ConductancePreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.setPulseWidthTextField = new JTextField(12);
-    this.setPulseWidthTextField.setText(String.valueOf(experimentPreferences.getInteger(ConductancePreferences.SET_PULSE_WIDTH_INIT_KEY, ConductancePreferences.SET_PERIOD_INIT_DEFAULT_VALUE)));
+    this.setPulseWidthTextField.setText(
+        String.valueOf(
+            experimentPreferences.getInteger(
+                ConductancePreferences.SET_PULSE_WIDTH_INIT_KEY,
+                ConductancePreferences.SET_PERIOD_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(setPulseWidthTextField, gc);
 
     gc.gridy++;
@@ -157,21 +177,35 @@ public class ConductancePreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.seriesResistorTextField = new JTextField(12);
-    this.seriesResistorTextField.setText(String.valueOf(experimentPreferences.getInteger(ConductancePreferences.SERIES_R_INIT_KEY, ConductancePreferences.SERIES_R_INIT_DEFAULT_VALUE)));
+    this.seriesResistorTextField.setText(
+        String.valueOf(
+            experimentPreferences.getInteger(
+                ConductancePreferences.SERIES_R_INIT_KEY,
+                ConductancePreferences.SERIES_R_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(seriesResistorTextField, gc);
   }
 
   @Override
   public void doSavePreferences() {
 
-    experimentPreferences.setString(ConductancePreferences.RESET_PULSE_TYPE_INIT_STRING_KEY, resetPulseTypeComboBox.getSelectedItem().toString().trim());
-    experimentPreferences.setFloat(ConductancePreferences.RESET_AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(resetAmplitudeTextField.getText()));
-    experimentPreferences.setInteger(ConductancePreferences.RESET_PULSE_WIDTH_INIT_KEY, Integer.parseInt(resetPulseWidthTextField.getText()));
+    experimentPreferences.setString(
+        ConductancePreferences.RESET_PULSE_TYPE_INIT_STRING_KEY,
+        resetPulseTypeComboBox.getSelectedItem().toString().trim());
+    experimentPreferences.setFloat(
+        ConductancePreferences.RESET_AMPLITUDE_INIT_FLOAT_KEY,
+        Float.parseFloat(resetAmplitudeTextField.getText()));
+    experimentPreferences.setInteger(
+        ConductancePreferences.RESET_PULSE_WIDTH_INIT_KEY,
+        Integer.parseInt(resetPulseWidthTextField.getText()));
 
     // SET
 
-    experimentPreferences.setFloat(ConductancePreferences.SET_CONDUCTANCE_INIT_KEY, Float.parseFloat(setConductanceTextField.getText()));
-    experimentPreferences.setInteger(ConductancePreferences.SERIES_R_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
+    experimentPreferences.setFloat(
+        ConductancePreferences.SET_CONDUCTANCE_INIT_KEY,
+        Float.parseFloat(setConductanceTextField.getText()));
+    experimentPreferences.setInteger(
+        ConductancePreferences.SERIES_R_INIT_KEY,
+        Integer.parseInt(seriesResistorTextField.getText()));
   }
 
   @Override

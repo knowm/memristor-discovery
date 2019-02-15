@@ -1,29 +1,25 @@
 /**
- * Memristor-Discovery is distributed under the GNU General Public License version 3
- * and is also available under alternative licenses negotiated directly
- * with Knowm, Inc.
+ * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
+ * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
  *
- * This package also includes various components that are not part of
- * Memristor-Discovery itself:
+ * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
- * * `Multibit`: Copyright 2011 multibit.org, MIT License
- * * `SteelCheckBox`: Copyright 2012 Gerrit, BSD license
+ * <p>* `Multibit`: Copyright 2011 multibit.org, MIT License * `SteelCheckBox`: Copyright 2012
+ * Gerrit, BSD license
  *
- * Knowm, Inc. holds copyright
- * and/or sufficient licenses to all components of the Memristor-Discovery
- * package, and therefore can grant, at its sole discretion, the ability
- * for companies, individuals, or organizations to create proprietary or
- * open source (even if not GPL) modules which may be dynamically linked at
- * runtime with the portions of Memristor-Discovery which fall under our
- * copyright/license umbrella, or are distributed under more flexible
- * licenses than GPL.
+ * <p>Knowm, Inc. holds copyright and/or sufficient licenses to all components of the
+ * Memristor-Discovery package, and therefore can grant, at its sole discretion, the ability for
+ * companies, individuals, or organizations to create proprietary or open source (even if not GPL)
+ * modules which may be dynamically linked at runtime with the portions of Memristor-Discovery which
+ * fall under our copyright/license umbrella, or are distributed under more flexible licenses than
+ * GPL.
  *
- * The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
+ * <p>The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
  *
- * If you have any questions regarding our licensing policy, please
- * contact us at `contact@knowm.org`.
+ * <p>If you have any questions regarding our licensing policy, please contact us at
+ * `contact@knowm.org`.
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.conductance.control;
 
@@ -48,11 +44,10 @@ public class ControlModel extends ExperimentControlModel {
   private int setPulseWidth; // model store resetPulseWidth in nanoseconds
 
   private final double[] waveformTimeData = new double[ConductancePreferences.CAPTURE_BUFFER_SIZE];
-  private final double[] waveformAmplitudeData = new double[ConductancePreferences.CAPTURE_BUFFER_SIZE];
+  private final double[] waveformAmplitudeData =
+      new double[ConductancePreferences.CAPTURE_BUFFER_SIZE];
 
-  /**
-   * Constructor
-   */
+  /** Constructor */
   public ControlModel() {
 
     updateWaveformChartData();
@@ -62,22 +57,43 @@ public class ControlModel extends ExperimentControlModel {
   public void loadModelFromPrefs() {
 
     // RESET
-    resetPulseType = ConductancePreferences.Waveform.valueOf(experimentPreferences.getString(ConductancePreferences.RESET_PULSE_TYPE_INIT_STRING_KEY, ConductancePreferences.RESET_PULSE_TYPE_INIT_STRING_DEFAULT_VALUE));
-    resetAmplitude = experimentPreferences.getFloat(ConductancePreferences.RESET_AMPLITUDE_INIT_FLOAT_KEY, ConductancePreferences.RESET_AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
-    resetPulseWidth = experimentPreferences.getInteger(ConductancePreferences.RESET_PULSE_WIDTH_INIT_KEY, ConductancePreferences.RESET_PERIOD_INIT_DEFAULT_VALUE);
+    resetPulseType =
+        ConductancePreferences.Waveform.valueOf(
+            experimentPreferences.getString(
+                ConductancePreferences.RESET_PULSE_TYPE_INIT_STRING_KEY,
+                ConductancePreferences.RESET_PULSE_TYPE_INIT_STRING_DEFAULT_VALUE));
+    resetAmplitude =
+        experimentPreferences.getFloat(
+            ConductancePreferences.RESET_AMPLITUDE_INIT_FLOAT_KEY,
+            ConductancePreferences.RESET_AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
+    resetPulseWidth =
+        experimentPreferences.getInteger(
+            ConductancePreferences.RESET_PULSE_WIDTH_INIT_KEY,
+            ConductancePreferences.RESET_PERIOD_INIT_DEFAULT_VALUE);
 
     // SET
-    setConductance = experimentPreferences.getFloat(ConductancePreferences.SET_CONDUCTANCE_INIT_KEY, ConductancePreferences.SET_CONDUCTANCE_INIT_DEFAULT_VALUE);
-    setAmplitude = experimentPreferences.getFloat(ConductancePreferences.SET_AMPLITUDE_INIT_FLOAT_KEY, ConductancePreferences.SET_AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
-    setPulseWidth = experimentPreferences.getInteger(ConductancePreferences.SET_PULSE_WIDTH_INIT_KEY, ConductancePreferences.SET_PERIOD_INIT_DEFAULT_VALUE);
+    setConductance =
+        experimentPreferences.getFloat(
+            ConductancePreferences.SET_CONDUCTANCE_INIT_KEY,
+            ConductancePreferences.SET_CONDUCTANCE_INIT_DEFAULT_VALUE);
+    setAmplitude =
+        experimentPreferences.getFloat(
+            ConductancePreferences.SET_AMPLITUDE_INIT_FLOAT_KEY,
+            ConductancePreferences.SET_AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
+    setPulseWidth =
+        experimentPreferences.getInteger(
+            ConductancePreferences.SET_PULSE_WIDTH_INIT_KEY,
+            ConductancePreferences.SET_PERIOD_INIT_DEFAULT_VALUE);
 
-    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_PREFERENCES_UPDATE, true, false);
-    seriesResistance = experimentPreferences.getInteger(ConductancePreferences.SERIES_R_INIT_KEY, ConductancePreferences.SERIES_R_INIT_DEFAULT_VALUE);
+    swingPropertyChangeSupport.firePropertyChange(
+        ExperimentControlModel.EVENT_PREFERENCES_UPDATE, true, false);
+    seriesResistance =
+        experimentPreferences.getInteger(
+            ConductancePreferences.SERIES_R_INIT_KEY,
+            ConductancePreferences.SERIES_R_INIT_DEFAULT_VALUE);
   }
 
-  /**
-   * Given the state of the model, update the resetPulseType x and y axis data arrays.
-   */
+  /** Given the state of the model, update the resetPulseType x and y axis data arrays. */
   void updateWaveformChartData() {
 
     Driver driver;
@@ -102,10 +118,11 @@ public class ControlModel extends ExperimentControlModel {
       waveformAmplitudeData[counter] = driver.getSignal(time);
     } while (++counter < ConductancePreferences.CAPTURE_BUFFER_SIZE);
 
-    // System.out.println("Arrays.toString(waveformTimeData) = " + Arrays.toString(waveformTimeData));
-    // System.out.println("Arrays.toString(waveformAmplitudeData) = " + Arrays.toString(waveformAmplitudeData));
+    // System.out.println("Arrays.toString(waveformTimeData) = " +
+    // Arrays.toString(waveformTimeData));
+    // System.out.println("Arrays.toString(waveformAmplitudeData) = " +
+    // Arrays.toString(waveformAmplitudeData));
   }
-
 
   /////////////////////////////////////////////////////////////
   // GETTERS AND SETTERS //////////////////////////////////////
@@ -119,13 +136,15 @@ public class ControlModel extends ExperimentControlModel {
   public void setResetPulseType(ConductancePreferences.Waveform resetPulseType) {
 
     this.resetPulseType = resetPulseType;
-    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(
+        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public void setWaveform(String text) {
 
     resetPulseType = Enum.valueOf(ConductancePreferences.Waveform.class, text);
-    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(
+        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public float getResetAmplitude() {
@@ -136,7 +155,8 @@ public class ControlModel extends ExperimentControlModel {
   public void setResetAmplitude(float resetAmplitude) {
 
     this.resetAmplitude = resetAmplitude;
-    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(
+        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public int getResetPulseWidth() {
@@ -147,7 +167,8 @@ public class ControlModel extends ExperimentControlModel {
   public void setResetPulseWidth(int resetPulseWidth) {
 
     this.resetPulseWidth = resetPulseWidth;
-    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(
+        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   // SET
@@ -160,7 +181,8 @@ public class ControlModel extends ExperimentControlModel {
   public void setSetConductance(float setConductance) {
 
     this.setConductance = setConductance;
-    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(
+        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public float getSetAmplitude() {
@@ -171,7 +193,8 @@ public class ControlModel extends ExperimentControlModel {
   public void setSetAmplitude(float setAmplitude) {
 
     this.setAmplitude = setAmplitude;
-    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(
+        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public int getSetPulseWidth() {
@@ -182,7 +205,8 @@ public class ControlModel extends ExperimentControlModel {
   public void setSetPulseWidth(int setPulseWidth) {
 
     this.setPulseWidth = setPulseWidth;
-    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(
+        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public double[] getWaveformTimeData() {

@@ -1,29 +1,25 @@
 /**
- * Memristor-Discovery is distributed under the GNU General Public License version 3
- * and is also available under alternative licenses negotiated directly
- * with Knowm, Inc.
+ * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
+ * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
  *
- * This package also includes various components that are not part of
- * Memristor-Discovery itself:
+ * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
- * * `Multibit`: Copyright 2011 multibit.org, MIT License
- * * `SteelCheckBox`: Copyright 2012 Gerrit, BSD license
+ * <p>* `Multibit`: Copyright 2011 multibit.org, MIT License * `SteelCheckBox`: Copyright 2012
+ * Gerrit, BSD license
  *
- * Knowm, Inc. holds copyright
- * and/or sufficient licenses to all components of the Memristor-Discovery
- * package, and therefore can grant, at its sole discretion, the ability
- * for companies, individuals, or organizations to create proprietary or
- * open source (even if not GPL) modules which may be dynamically linked at
- * runtime with the portions of Memristor-Discovery which fall under our
- * copyright/license umbrella, or are distributed under more flexible
- * licenses than GPL.
+ * <p>Knowm, Inc. holds copyright and/or sufficient licenses to all components of the
+ * Memristor-Discovery package, and therefore can grant, at its sole discretion, the ability for
+ * companies, individuals, or organizations to create proprietary or open source (even if not GPL)
+ * modules which may be dynamically linked at runtime with the portions of Memristor-Discovery which
+ * fall under our copyright/license umbrella, or are distributed under more flexible licenses than
+ * GPL.
  *
- * The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
+ * <p>The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
  *
- * If you have any questions regarding our licensing policy, please
- * contact us at `contact@knowm.org`.
+ * <p>If you have any questions regarding our licensing policy, please contact us at
+ * `contact@knowm.org`.
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.dc;
 
@@ -72,9 +68,7 @@ public class DCExperiment extends Experiment {
   }
 
   @Override
-  public void doCreateAndShowGUI() {
-
-  }
+  public void doCreateAndShowGUI() {}
 
   private class CaptureWorker extends SwingWorker<Boolean, double[][]> {
 
@@ -85,9 +79,18 @@ public class DCExperiment extends Experiment {
       // Analog In /////////////////
       // ////////////////////////////////
 
-      int samplesPerPulse = 200; // adjust this down if you want to capture more pulses as the buffer size is limited.
-      double sampleFrequency = controlModel.getCalculatedFrequency() * samplesPerPulse; // adjust this down if you want to capture more pulses as the buffer size is limited.
-      dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02 * (controlModel.getAmplitude() > 0 ? 1 : -1), samplesPerPulse * controlModel.getPulseNumber());
+      int samplesPerPulse =
+          200; // adjust this down if you want to capture more pulses as the buffer size is limited.
+      double sampleFrequency =
+          controlModel.getCalculatedFrequency()
+              * samplesPerPulse; // adjust this down if you want to capture more pulses as the
+                                 // buffer size is limited.
+      dwfProxy
+          .getDwf()
+          .startAnalogCaptureBothChannelsLevelTrigger(
+              sampleFrequency,
+              0.02 * (controlModel.getAmplitude() > 0 ? 1 : -1),
+              samplesPerPulse * controlModel.getPulseNumber());
 
       dwfProxy.waitUntilArmed();
 
@@ -95,14 +98,27 @@ public class DCExperiment extends Experiment {
       // Pulse Out /////////////////
       // ////////////////////////////////
 
-      double[] customWaveform = WaveformUtils.generateCustomWaveform(controlModel.getWaveform(), controlModel.getAmplitude(), controlModel.getCalculatedFrequency());
-      dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, controlModel.getPulseNumber(), customWaveform);
+      double[] customWaveform =
+          WaveformUtils.generateCustomWaveform(
+              controlModel.getWaveform(),
+              controlModel.getAmplitude(),
+              controlModel.getCalculatedFrequency());
+      dwfProxy
+          .getDwf()
+          .startCustomPulseTrain(
+              DWF.WAVEFORM_CHANNEL_1,
+              controlModel.getCalculatedFrequency(),
+              0,
+              controlModel.getPulseNumber(),
+              customWaveform);
 
       // ////////////////////////////////
       // ////////////////////////////////
 
       // Read In Data
-      boolean success = dwfProxy.capturePulseData(controlModel.getCalculatedFrequency(), controlModel.getPulseNumber());
+      boolean success =
+          dwfProxy.capturePulseData(
+              controlModel.getCalculatedFrequency(), controlModel.getPulseNumber());
       if (!success) {
         // Stop Analog In and Out
         dwfProxy.getDwf().stopWave(DWF.WAVEFORM_CHANNEL_1);
@@ -113,8 +129,10 @@ public class DCExperiment extends Experiment {
 
       // Get Raw Data from Oscilloscope
       int validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
-      double[] v1 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
-      double[] v2 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
+      double[] v1 =
+          dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
+      double[] v2 =
+          dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
 
       // /////////////////////////
       // Create Chart Data //////
@@ -134,7 +152,8 @@ public class DCExperiment extends Experiment {
       // create current data
       double[] current = new double[bufferLength];
       for (int i = 0; i < bufferLength; i++) {
-        current[i] = v2[i] / controlModel.getSeriesResistance() * DCPreferences.CURRENT_UNIT.getDivisor();
+        current[i] =
+            v2[i] / controlModel.getSeriesResistance() * DCPreferences.CURRENT_UNIT.getDivisor();
       }
 
       // create conductance data
@@ -147,7 +166,7 @@ public class DCExperiment extends Experiment {
         conductance[i] = G;
       }
 
-      publish(new double[][]{timeData, v1, v2, V2MinusV1, current, conductance});
+      publish(new double[][] {timeData, v1, v2, V2MinusV1, current, conductance});
 
       return true;
     }
@@ -157,9 +176,17 @@ public class DCExperiment extends Experiment {
 
       double[][] newestChunk = chunks.get(chunks.size() - 1);
 
-      plotController.updateCaptureChartData(newestChunk[0], newestChunk[1], newestChunk[2], newestChunk[3], controlModel.getPeriod(), controlModel.getAmplitude());
-      plotController.updateIVChartData(newestChunk[1], newestChunk[4], controlModel.getPeriod(), controlModel.getAmplitude());
-      plotController.updateGVChartData(newestChunk[1], newestChunk[5], controlModel.getPeriod(), controlModel.getAmplitude());
+      plotController.updateCaptureChartData(
+          newestChunk[0],
+          newestChunk[1],
+          newestChunk[2],
+          newestChunk[3],
+          controlModel.getPeriod(),
+          controlModel.getAmplitude());
+      plotController.updateIVChartData(
+          newestChunk[1], newestChunk[4], controlModel.getPeriod(), controlModel.getAmplitude());
+      plotController.updateGVChartData(
+          newestChunk[1], newestChunk[5], controlModel.getPeriod(), controlModel.getAmplitude());
 
       if (plotPanel.getCaptureButton().isSelected()) {
         plotController.repaintCaptureChart();
@@ -176,21 +203,23 @@ public class DCExperiment extends Experiment {
   }
 
   /**
-   * These property change events are triggered in the controlModel in the case where the underlying controlModel is updated. Here, the controller can respond to those events and make sure the
-   * corresponding GUI
-   * components get updated.
+   * These property change events are triggered in the controlModel in the case where the underlying
+   * controlModel is updated. Here, the controller can respond to those events and make sure the
+   * corresponding GUI components get updated.
    */
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
 
     switch (evt.getPropertyName()) {
-
       case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
-
         if (!controlModel.isStartToggled()) {
 
           plotPanel.switch2WaveformChart();
-          plotController.updateWaveformChart(controlModel.getWaveformTimeData(), controlModel.getWaveformAmplitudeData(), controlModel.getAmplitude(), controlModel.getPeriod());
+          plotController.updateWaveformChart(
+              controlModel.getWaveformTimeData(),
+              controlModel.getWaveformAmplitudeData(),
+              controlModel.getAmplitude(),
+              controlModel.getPeriod());
         }
         break;
 

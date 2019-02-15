@@ -1,29 +1,25 @@
 /**
- * Memristor-Discovery is distributed under the GNU General Public License version 3
- * and is also available under alternative licenses negotiated directly
- * with Knowm, Inc.
+ * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
+ * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
  *
- * This package also includes various components that are not part of
- * Memristor-Discovery itself:
+ * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
- * * `Multibit`: Copyright 2011 multibit.org, MIT License
- * * `SteelCheckBox`: Copyright 2012 Gerrit, BSD license
+ * <p>* `Multibit`: Copyright 2011 multibit.org, MIT License * `SteelCheckBox`: Copyright 2012
+ * Gerrit, BSD license
  *
- * Knowm, Inc. holds copyright
- * and/or sufficient licenses to all components of the Memristor-Discovery
- * package, and therefore can grant, at its sole discretion, the ability
- * for companies, individuals, or organizations to create proprietary or
- * open source (even if not GPL) modules which may be dynamically linked at
- * runtime with the portions of Memristor-Discovery which fall under our
- * copyright/license umbrella, or are distributed under more flexible
- * licenses than GPL.
+ * <p>Knowm, Inc. holds copyright and/or sufficient licenses to all components of the
+ * Memristor-Discovery package, and therefore can grant, at its sole discretion, the ability for
+ * companies, individuals, or organizations to create proprietary or open source (even if not GPL)
+ * modules which may be dynamically linked at runtime with the portions of Memristor-Discovery which
+ * fall under our copyright/license umbrella, or are distributed under more flexible licenses than
+ * GPL.
  *
- * The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
+ * <p>The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
  *
- * If you have any questions regarding our licensing policy, please
- * contact us at `contact@knowm.org`.
+ * <p>If you have any questions regarding our licensing policy, please contact us at
+ * `contact@knowm.org`.
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis;
 
@@ -83,9 +79,13 @@ public class HysteresisPreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.waveformComboBox = new JComboBox<>();
-    this.waveformComboBox.setModel(new DefaultComboBoxModel<>(new Waveform[]{Waveform.Sine, Waveform.Triangle}));
-    HysteresisPreferences.Waveform waveform = HysteresisPreferences.Waveform.valueOf(experimentPreferences.getString(HysteresisPreferences.WAVEFORM_INIT_STRING_KEY,
-        HysteresisPreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
+    this.waveformComboBox.setModel(
+        new DefaultComboBoxModel<>(new Waveform[] {Waveform.Sine, Waveform.Triangle}));
+    HysteresisPreferences.Waveform waveform =
+        HysteresisPreferences.Waveform.valueOf(
+            experimentPreferences.getString(
+                HysteresisPreferences.WAVEFORM_INIT_STRING_KEY,
+                HysteresisPreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
     this.waveformComboBox.setSelectedItem(waveform);
     preferencesPanel.add(waveformComboBox, gc);
 
@@ -98,7 +98,11 @@ public class HysteresisPreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.offsetTextField = new JTextField(12);
-    this.offsetTextField.setText(String.valueOf(experimentPreferences.getFloat(HysteresisPreferences.OFFSET_INIT_FLOAT_KEY, HysteresisPreferences.OFFSET_INIT_FLOAT_DEFAULT_VALUE)));
+    this.offsetTextField.setText(
+        String.valueOf(
+            experimentPreferences.getFloat(
+                HysteresisPreferences.OFFSET_INIT_FLOAT_KEY,
+                HysteresisPreferences.OFFSET_INIT_FLOAT_DEFAULT_VALUE)));
     preferencesPanel.add(offsetTextField, gc);
 
     /////////////////////////////////////////////////////////
@@ -110,7 +114,11 @@ public class HysteresisPreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.amplitudeTextField = new JTextField(12);
-    this.amplitudeTextField.setText(String.valueOf(experimentPreferences.getFloat(HysteresisPreferences.AMPLITUDE_INIT_FLOAT_KEY, HysteresisPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
+    this.amplitudeTextField.setText(
+        String.valueOf(
+            experimentPreferences.getFloat(
+                HysteresisPreferences.AMPLITUDE_INIT_FLOAT_KEY,
+                HysteresisPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
     preferencesPanel.add(amplitudeTextField, gc);
 
     /////////////////////////////////////////////////////////
@@ -122,7 +130,11 @@ public class HysteresisPreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.frequencyTextField = new JTextField(12);
-    this.frequencyTextField.setText(String.valueOf(experimentPreferences.getInteger(HysteresisPreferences.FREQUENCY_INIT_KEY, HysteresisPreferences.FREQUENCY_INIT_DEFAULT_VALUE)));
+    this.frequencyTextField.setText(
+        String.valueOf(
+            experimentPreferences.getInteger(
+                HysteresisPreferences.FREQUENCY_INIT_KEY,
+                HysteresisPreferences.FREQUENCY_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(frequencyTextField, gc);
 
     /////////////////////////////////////////////////////////
@@ -134,7 +146,11 @@ public class HysteresisPreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.seriesResistorTextField = new JTextField(12);
-    this.seriesResistorTextField.setText(String.valueOf(experimentPreferences.getInteger(HysteresisPreferences.SERIES_R_INIT_KEY, HysteresisPreferences.SERIES_R_INIT_DEFAULT_VALUE)));
+    this.seriesResistorTextField.setText(
+        String.valueOf(
+            experimentPreferences.getInteger(
+                HysteresisPreferences.SERIES_R_INIT_KEY,
+                HysteresisPreferences.SERIES_R_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(seriesResistorTextField, gc);
 
     /////////////////////////////////////////////////////////
@@ -146,19 +162,32 @@ public class HysteresisPreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.kTextField = new JTextField(12);
-    this.kTextField.setText(String.valueOf(experimentPreferences.getDouble(HysteresisPreferences.K_INIT_DOUBLE_KEY, HysteresisPreferences.K_INIT_DOUBLE_DEFAULT_VALUE)));
+    this.kTextField.setText(
+        String.valueOf(
+            experimentPreferences.getDouble(
+                HysteresisPreferences.K_INIT_DOUBLE_KEY,
+                HysteresisPreferences.K_INIT_DOUBLE_DEFAULT_VALUE)));
     preferencesPanel.add(kTextField, gc);
   }
 
   @Override
   public void doSavePreferences() {
 
-    experimentPreferences.setString(HysteresisPreferences.WAVEFORM_INIT_STRING_KEY, waveformComboBox.getSelectedItem().toString().trim());
-    experimentPreferences.setFloat(HysteresisPreferences.OFFSET_INIT_FLOAT_KEY, Float.parseFloat(offsetTextField.getText()));
-    experimentPreferences.setFloat(HysteresisPreferences.AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(amplitudeTextField.getText()));
-    experimentPreferences.setInteger(HysteresisPreferences.FREQUENCY_INIT_KEY, Integer.parseInt(frequencyTextField.getText()));
-    experimentPreferences.setInteger(HysteresisPreferences.SERIES_R_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
-    experimentPreferences.setDouble(HysteresisPreferences.K_INIT_DOUBLE_KEY, Double.parseDouble(kTextField.getText()));
+    experimentPreferences.setString(
+        HysteresisPreferences.WAVEFORM_INIT_STRING_KEY,
+        waveformComboBox.getSelectedItem().toString().trim());
+    experimentPreferences.setFloat(
+        HysteresisPreferences.OFFSET_INIT_FLOAT_KEY, Float.parseFloat(offsetTextField.getText()));
+    experimentPreferences.setFloat(
+        HysteresisPreferences.AMPLITUDE_INIT_FLOAT_KEY,
+        Float.parseFloat(amplitudeTextField.getText()));
+    experimentPreferences.setInteger(
+        HysteresisPreferences.FREQUENCY_INIT_KEY, Integer.parseInt(frequencyTextField.getText()));
+    experimentPreferences.setInteger(
+        HysteresisPreferences.SERIES_R_INIT_KEY,
+        Integer.parseInt(seriesResistorTextField.getText()));
+    experimentPreferences.setDouble(
+        HysteresisPreferences.K_INIT_DOUBLE_KEY, Double.parseDouble(kTextField.getText()));
   }
 
   @Override

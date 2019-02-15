@@ -1,29 +1,25 @@
 /**
- * Memristor-Discovery is distributed under the GNU General Public License version 3
- * and is also available under alternative licenses negotiated directly
- * with Knowm, Inc.
+ * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
+ * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
  *
- * This package also includes various components that are not part of
- * Memristor-Discovery itself:
+ * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
- * * `Multibit`: Copyright 2011 multibit.org, MIT License
- * * `SteelCheckBox`: Copyright 2012 Gerrit, BSD license
+ * <p>* `Multibit`: Copyright 2011 multibit.org, MIT License * `SteelCheckBox`: Copyright 2012
+ * Gerrit, BSD license
  *
- * Knowm, Inc. holds copyright
- * and/or sufficient licenses to all components of the Memristor-Discovery
- * package, and therefore can grant, at its sole discretion, the ability
- * for companies, individuals, or organizations to create proprietary or
- * open source (even if not GPL) modules which may be dynamically linked at
- * runtime with the portions of Memristor-Discovery which fall under our
- * copyright/license umbrella, or are distributed under more flexible
- * licenses than GPL.
+ * <p>Knowm, Inc. holds copyright and/or sufficient licenses to all components of the
+ * Memristor-Discovery package, and therefore can grant, at its sole discretion, the ability for
+ * companies, individuals, or organizations to create proprietary or open source (even if not GPL)
+ * modules which may be dynamically linked at runtime with the portions of Memristor-Discovery which
+ * fall under our copyright/license umbrella, or are distributed under more flexible licenses than
+ * GPL.
  *
- * The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
+ * <p>The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
  *
- * If you have any questions regarding our licensing policy, please
- * contact us at `contact@knowm.org`.
+ * <p>If you have any questions regarding our licensing policy, please contact us at
+ * `contact@knowm.org`.
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.logic;
 
@@ -74,8 +70,10 @@ public class LogicPreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.seriesResistorTextField = new JTextField(12);
-    this.seriesResistorTextField.setText(String.valueOf(experimentPreferences.getInteger(LogicPreferences.SERIES_R_INIT_KEY,
-        LogicPreferences.SERIES_R_INIT_DEFAULT_VALUE)));
+    this.seriesResistorTextField.setText(
+        String.valueOf(
+            experimentPreferences.getInteger(
+                LogicPreferences.SERIES_R_INIT_KEY, LogicPreferences.SERIES_R_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(seriesResistorTextField, gc);
 
     gc.gridy++;
@@ -86,8 +84,11 @@ public class LogicPreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.amplitudeTextField = new JTextField(12);
-    this.amplitudeTextField.setText(String.valueOf(experimentPreferences.getFloat(LogicPreferences.AMPLITUDE_INIT_FLOAT_KEY,
-        LogicPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
+    this.amplitudeTextField.setText(
+        String.valueOf(
+            experimentPreferences.getFloat(
+                LogicPreferences.AMPLITUDE_INIT_FLOAT_KEY,
+                LogicPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
     preferencesPanel.add(amplitudeTextField, gc);
 
     gc.gridy++;
@@ -98,8 +99,11 @@ public class LogicPreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.pulseWidthTextField = new JTextField(12);
-    this.pulseWidthTextField.setText(String.valueOf(experimentPreferences.getInteger(LogicPreferences.PULSE_WIDTH_INIT_KEY,
-        LogicPreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE)));
+    this.pulseWidthTextField.setText(
+        String.valueOf(
+            experimentPreferences.getInteger(
+                LogicPreferences.PULSE_WIDTH_INIT_KEY,
+                LogicPreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(pulseWidthTextField, gc);
 
     gc.gridy++;
@@ -110,21 +114,29 @@ public class LogicPreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.numExecutionsTextField = new JTextField(12);
-    this.numExecutionsTextField.setText(String.valueOf(experimentPreferences.getInteger(LogicPreferences.NUM_EXECUTIONS_INIT_KEY,
-        LogicPreferences.NUM_EXECUTIONS_INIT_DEFAULT_VALUE)));
+    this.numExecutionsTextField.setText(
+        String.valueOf(
+            experimentPreferences.getInteger(
+                LogicPreferences.NUM_EXECUTIONS_INIT_KEY,
+                LogicPreferences.NUM_EXECUTIONS_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(numExecutionsTextField, gc);
-
   }
 
   @Override
   public void doSavePreferences() {
 
     // TODO add num pulses prefs.
-    // experimentPreferences.setInteger(LogicPreferences.NUM_PULSES_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
-    experimentPreferences.setInteger(LogicPreferences.SERIES_R_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
-    experimentPreferences.setFloat(LogicPreferences.AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(amplitudeTextField.getText()));
-    experimentPreferences.setInteger(LogicPreferences.PULSE_WIDTH_INIT_KEY, Integer.parseInt(pulseWidthTextField.getText()));
-    experimentPreferences.setInteger(LogicPreferences.NUM_EXECUTIONS_INIT_KEY, Integer.parseInt(numExecutionsTextField.getText()));
+    // experimentPreferences.setInteger(LogicPreferences.NUM_PULSES_INIT_KEY,
+    // Integer.parseInt(seriesResistorTextField.getText()));
+    experimentPreferences.setInteger(
+        LogicPreferences.SERIES_R_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
+    experimentPreferences.setFloat(
+        LogicPreferences.AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(amplitudeTextField.getText()));
+    experimentPreferences.setInteger(
+        LogicPreferences.PULSE_WIDTH_INIT_KEY, Integer.parseInt(pulseWidthTextField.getText()));
+    experimentPreferences.setInteger(
+        LogicPreferences.NUM_EXECUTIONS_INIT_KEY,
+        Integer.parseInt(numExecutionsTextField.getText()));
   }
 
   @Override

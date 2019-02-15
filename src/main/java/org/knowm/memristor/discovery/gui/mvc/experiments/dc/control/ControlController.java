@@ -1,29 +1,25 @@
 /**
- * Memristor-Discovery is distributed under the GNU General Public License version 3
- * and is also available under alternative licenses negotiated directly
- * with Knowm, Inc.
+ * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
+ * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
  *
- * This package also includes various components that are not part of
- * Memristor-Discovery itself:
+ * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
- * * `Multibit`: Copyright 2011 multibit.org, MIT License
- * * `SteelCheckBox`: Copyright 2012 Gerrit, BSD license
+ * <p>* `Multibit`: Copyright 2011 multibit.org, MIT License * `SteelCheckBox`: Copyright 2012
+ * Gerrit, BSD license
  *
- * Knowm, Inc. holds copyright
- * and/or sufficient licenses to all components of the Memristor-Discovery
- * package, and therefore can grant, at its sole discretion, the ability
- * for companies, individuals, or organizations to create proprietary or
- * open source (even if not GPL) modules which may be dynamically linked at
- * runtime with the portions of Memristor-Discovery which fall under our
- * copyright/license umbrella, or are distributed under more flexible
- * licenses than GPL.
+ * <p>Knowm, Inc. holds copyright and/or sufficient licenses to all components of the
+ * Memristor-Discovery package, and therefore can grant, at its sole discretion, the ability for
+ * companies, individuals, or organizations to create proprietary or open source (even if not GPL)
+ * modules which may be dynamically linked at runtime with the portions of Memristor-Discovery which
+ * fall under our copyright/license umbrella, or are distributed under more flexible licenses than
+ * GPL.
  *
- * The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
+ * <p>The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
  *
- * If you have any questions regarding our licensing policy, please
- * contact us at `contact@knowm.org`.
+ * <p>If you have any questions regarding our licensing policy, please contact us at
+ * `contact@knowm.org`.
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.dc.control;
 
@@ -60,7 +56,8 @@ public class ControlController extends ExperimentControlController {
    * @param controlModel
    * @param dwf
    */
-  public ControlController(ControlPanel controlPanel, PlotPanel plotPanel, ControlModel controlModel, DWFProxy dwf) {
+  public ControlController(
+      ControlPanel controlPanel, PlotPanel plotPanel, ControlModel controlModel, DWFProxy dwf) {
 
     super(controlPanel, controlModel);
 
@@ -106,145 +103,225 @@ public class ControlController extends ExperimentControlController {
 
     controlPanel.getSeriesTextField().setText("" + controlModel.getSeriesResistance());
     controlPanel.getAmplitudeSlider().setValue((int) (controlModel.getAmplitude() * 100));
-    controlPanel.getAmplitudeSlider().setBorder(BorderFactory.createTitledBorder("Amplitude [V] = " + controlModel.getAmplitude()));
+    controlPanel
+        .getAmplitudeSlider()
+        .setBorder(
+            BorderFactory.createTitledBorder("Amplitude [V] = " + controlModel.getAmplitude()));
     if (controlModel.getPeriod() >= 100) {
       controlPanel.getPeriodSlider().setValue((int) (controlModel.getPeriod()));
       controlPanel.getPeriodSliderNs().setValue(100);
-      controlPanel.getPeriodSlider().setBorder(BorderFactory.createTitledBorder("Period [" + DCPreferences.TIME_UNIT.getLabel() + "] = " + controlModel.getPeriod()));
-      controlPanel.getPeriodSliderNs().setBorder(BorderFactory.createTitledBorder("Period [" + DCPreferences.TIME_UNIT.getLabel() + "]"));
+      controlPanel
+          .getPeriodSlider()
+          .setBorder(
+              BorderFactory.createTitledBorder(
+                  "Period ["
+                      + DCPreferences.TIME_UNIT.getLabel()
+                      + "] = "
+                      + controlModel.getPeriod()));
+      controlPanel
+          .getPeriodSliderNs()
+          .setBorder(
+              BorderFactory.createTitledBorder(
+                  "Period [" + DCPreferences.TIME_UNIT.getLabel() + "]"));
     } else {
       controlPanel.getPeriodSlider().setValue(100);
       controlPanel.getPeriodSliderNs().setValue(controlModel.getPeriod());
-      controlPanel.getPeriodSlider().setBorder(BorderFactory.createTitledBorder("Period [" + DCPreferences.TIME_UNIT.getLabel() + "]"));
-      controlPanel.getPeriodSliderNs().setBorder(BorderFactory.createTitledBorder("Period [" + DCPreferences.TIME_UNIT.getLabel() + "] = " + controlModel.getPeriod()));
+      controlPanel
+          .getPeriodSlider()
+          .setBorder(
+              BorderFactory.createTitledBorder(
+                  "Period [" + DCPreferences.TIME_UNIT.getLabel() + "]"));
+      controlPanel
+          .getPeriodSliderNs()
+          .setBorder(
+              BorderFactory.createTitledBorder(
+                  "Period ["
+                      + DCPreferences.TIME_UNIT.getLabel()
+                      + "] = "
+                      + controlModel.getPeriod()));
     }
-    controlPanel.getPulseNumberSlider().setBorder(BorderFactory.createTitledBorder("Pulse Number = " + controlModel.getPulseNumber()));
+    controlPanel
+        .getPulseNumberSlider()
+        .setBorder(
+            BorderFactory.createTitledBorder("Pulse Number = " + controlModel.getPulseNumber()));
     controlPanel.getPulseNumberSlider().setValue((int) controlModel.getPulseNumber());
   }
 
   public void doSetUpViewEvents() {
 
     controlPanel.getSawToothRadioButton().addActionListener(waveformRadioButtonActionListener);
-    controlPanel.getSawtoothUpDownRadioButton().addActionListener(waveformRadioButtonActionListener);
+    controlPanel
+        .getSawtoothUpDownRadioButton()
+        .addActionListener(waveformRadioButtonActionListener);
     controlPanel.getTriangleRadioButton().addActionListener(waveformRadioButtonActionListener);
-    controlPanel.getTriangleUpDownRadioButton().addActionListener(waveformRadioButtonActionListener);
+    controlPanel
+        .getTriangleUpDownRadioButton()
+        .addActionListener(waveformRadioButtonActionListener);
 
-    controlPanel.getAmplitudeSlider().addChangeListener(new ChangeListener() {
+    controlPanel
+        .getAmplitudeSlider()
+        .addChangeListener(
+            new ChangeListener() {
 
-      @Override
-      public void stateChanged(ChangeEvent e) {
+              @Override
+              public void stateChanged(ChangeEvent e) {
 
-        JSlider source = (JSlider) e.getSource();
-        if (!(source.getValueIsAdjusting())) {
-          controlModel.setAmplitude(source.getValue() / (float) 100);
-          controlPanel.getAmplitudeSlider().setBorder(BorderFactory.createTitledBorder("Amplitude [V] = " + controlModel.getAmplitude()));
-        }
-      }
-    });
+                JSlider source = (JSlider) e.getSource();
+                if (!(source.getValueIsAdjusting())) {
+                  controlModel.setAmplitude(source.getValue() / (float) 100);
+                  controlPanel
+                      .getAmplitudeSlider()
+                      .setBorder(
+                          BorderFactory.createTitledBorder(
+                              "Amplitude [V] = " + controlModel.getAmplitude()));
+                }
+              }
+            });
 
-    controlPanel.getPeriodSlider().addChangeListener(new ChangeListener() {
+    controlPanel
+        .getPeriodSlider()
+        .addChangeListener(
+            new ChangeListener() {
 
-      @Override
-      public void stateChanged(ChangeEvent e) {
+              @Override
+              public void stateChanged(ChangeEvent e) {
 
-        JSlider source = (JSlider) e.getSource();
-        if (!(source.getValueIsAdjusting())) {
-          controlModel.setPeriod(source.getValue());
-          controlPanel.getPeriodSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [" + DCPreferences.TIME_UNIT.getLabel() + "] = " + (double) controlModel.getPeriod()));
-          controlPanel.getPeriodSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [" + DCPreferences.TIME_UNIT.getLabel() + "]"));
-        }
-      }
-    });
+                JSlider source = (JSlider) e.getSource();
+                if (!(source.getValueIsAdjusting())) {
+                  controlModel.setPeriod(source.getValue());
+                  controlPanel
+                      .getPeriodSlider()
+                      .setBorder(
+                          BorderFactory.createTitledBorder(
+                              "Pulse Width ["
+                                  + DCPreferences.TIME_UNIT.getLabel()
+                                  + "] = "
+                                  + (double) controlModel.getPeriod()));
+                  controlPanel
+                      .getPeriodSliderNs()
+                      .setBorder(
+                          BorderFactory.createTitledBorder(
+                              "Pulse Width [" + DCPreferences.TIME_UNIT.getLabel() + "]"));
+                }
+              }
+            });
 
-    controlPanel.getPeriodSliderNs().addChangeListener(new ChangeListener() {
+    controlPanel
+        .getPeriodSliderNs()
+        .addChangeListener(
+            new ChangeListener() {
 
-      @Override
-      public void stateChanged(ChangeEvent e) {
+              @Override
+              public void stateChanged(ChangeEvent e) {
 
-        JSlider source = (JSlider) e.getSource();
-        if (!(source.getValueIsAdjusting())) {
-          controlModel.setPeriod(source.getValue());
-          controlPanel.getPeriodSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [" + DCPreferences.TIME_UNIT.getLabel() + "]"));
-          controlPanel.getPeriodSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [" + DCPreferences.TIME_UNIT.getLabel() + "] = " + (double) controlModel.getPeriod()));
-        }
-      }
-    });
+                JSlider source = (JSlider) e.getSource();
+                if (!(source.getValueIsAdjusting())) {
+                  controlModel.setPeriod(source.getValue());
+                  controlPanel
+                      .getPeriodSlider()
+                      .setBorder(
+                          BorderFactory.createTitledBorder(
+                              "Pulse Width [" + DCPreferences.TIME_UNIT.getLabel() + "]"));
+                  controlPanel
+                      .getPeriodSliderNs()
+                      .setBorder(
+                          BorderFactory.createTitledBorder(
+                              "Pulse Width ["
+                                  + DCPreferences.TIME_UNIT.getLabel()
+                                  + "] = "
+                                  + (double) controlModel.getPeriod()));
+                }
+              }
+            });
 
-    controlPanel.getPulseNumberSlider().addChangeListener(new ChangeListener() {
+    controlPanel
+        .getPulseNumberSlider()
+        .addChangeListener(
+            new ChangeListener() {
 
-      @Override
-      public void stateChanged(ChangeEvent e) {
+              @Override
+              public void stateChanged(ChangeEvent e) {
 
-        JSlider source = (JSlider) e.getSource();
-        if (!(source.getValueIsAdjusting())) {
-          controlModel.setPulseNumber(source.getValue());
-          controlPanel.getPulseNumberSlider().setBorder(BorderFactory.createTitledBorder("Pulse Number = " + controlModel.getPulseNumber()));
-        }
-      }
-    });
+                JSlider source = (JSlider) e.getSource();
+                if (!(source.getValueIsAdjusting())) {
+                  controlModel.setPulseNumber(source.getValue());
+                  controlPanel
+                      .getPulseNumberSlider()
+                      .setBorder(
+                          BorderFactory.createTitledBorder(
+                              "Pulse Number = " + controlModel.getPulseNumber()));
+                }
+              }
+            });
 
-    controlPanel.getSeriesTextField().addKeyListener(new KeyAdapter() {
+    controlPanel
+        .getSeriesTextField()
+        .addKeyListener(
+            new KeyAdapter() {
 
-      @Override
-      public void keyReleased(KeyEvent e) {
+              @Override
+              public void keyReleased(KeyEvent e) {
 
-        JTextField textField = (JTextField) e.getSource();
-        String text = textField.getText();
+                JTextField textField = (JTextField) e.getSource();
+                String text = textField.getText();
 
-        try {
-          int newSeriesValue = Integer.parseInt(text);
-          controlModel.setSeriesResistance(newSeriesValue);
-        } catch (Exception ex) {
-          // parsing error, default back to previous value
-          textField.setText(Integer.toString(controlModel.getSeriesResistance()));
-        }
-      }
-    });
-    plotPanel.getCaptureButton().addActionListener(new ActionListener() {
+                try {
+                  int newSeriesValue = Integer.parseInt(text);
+                  controlModel.setSeriesResistance(newSeriesValue);
+                } catch (Exception ex) {
+                  // parsing error, default back to previous value
+                  textField.setText(Integer.toString(controlModel.getSeriesResistance()));
+                }
+              }
+            });
+    plotPanel
+        .getCaptureButton()
+        .addActionListener(
+            new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+              @Override
+              public void actionPerformed(ActionEvent e) {
 
-        plotPanel.switch2CaptureChart();
-      }
-    });
+                plotPanel.switch2CaptureChart();
+              }
+            });
   }
 
-  ActionListener waveformRadioButtonActionListener = new ActionListener() {
+  ActionListener waveformRadioButtonActionListener =
+      new ActionListener() {
 
-    @Override
-    public void actionPerformed(ActionEvent actionEvent) {
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
 
-      for (Enumeration<AbstractButton> buttons = controlPanel.getWaveformRadioButtonGroup().getElements(); buttons.hasMoreElements(); ) {
-        AbstractButton button = buttons.nextElement();
-        if (button.isSelected()) {
-          controlModel.setWaveform(button.getText());
+          for (Enumeration<AbstractButton> buttons =
+                  controlPanel.getWaveformRadioButtonGroup().getElements();
+              buttons.hasMoreElements(); ) {
+            AbstractButton button = buttons.nextElement();
+            if (button.isSelected()) {
+              controlModel.setWaveform(button.getText());
+            }
+          }
         }
-      }
-    }
-  };
+      };
 
   /**
-   * These property change events are triggered in the controlModel in the case where the underlying controlModel is updated. Here, the controller can respond to those events and make sure the corresponding GUI
-   * components get updated.
+   * These property change events are triggered in the controlModel in the case where the underlying
+   * controlModel is updated. Here, the controller can respond to those events and make sure the
+   * corresponding GUI components get updated.
    */
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
 
     switch (evt.getPropertyName()) {
-
       case DWFProxy.AD2_STARTUP_CHANGE:
-
         controlPanel.enableAllChildComponents((Boolean) evt.getNewValue());
         break;
 
       case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
-
         initGUIComponentsFromModel();
         break;
 
       case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
-
         controlModel.updateWaveformChartData();
         break;
 

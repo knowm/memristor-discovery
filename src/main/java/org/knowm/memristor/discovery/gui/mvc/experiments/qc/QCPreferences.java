@@ -1,29 +1,25 @@
 /**
- * Memristor-Discovery is distributed under the GNU General Public License version 3
- * and is also available under alternative licenses negotiated directly
- * with Knowm, Inc.
+ * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
+ * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
  *
- * This package also includes various components that are not part of
- * Memristor-Discovery itself:
+ * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
- * * `Multibit`: Copyright 2011 multibit.org, MIT License
- * * `SteelCheckBox`: Copyright 2012 Gerrit, BSD license
+ * <p>* `Multibit`: Copyright 2011 multibit.org, MIT License * `SteelCheckBox`: Copyright 2012
+ * Gerrit, BSD license
  *
- * Knowm, Inc. holds copyright
- * and/or sufficient licenses to all components of the Memristor-Discovery
- * package, and therefore can grant, at its sole discretion, the ability
- * for companies, individuals, or organizations to create proprietary or
- * open source (even if not GPL) modules which may be dynamically linked at
- * runtime with the portions of Memristor-Discovery which fall under our
- * copyright/license umbrella, or are distributed under more flexible
- * licenses than GPL.
+ * <p>Knowm, Inc. holds copyright and/or sufficient licenses to all components of the
+ * Memristor-Discovery package, and therefore can grant, at its sole discretion, the ability for
+ * companies, individuals, or organizations to create proprietary or open source (even if not GPL)
+ * modules which may be dynamically linked at runtime with the portions of Memristor-Discovery which
+ * fall under our copyright/license umbrella, or are distributed under more flexible licenses than
+ * GPL.
  *
- * The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
+ * <p>The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
  *
- * If you have any questions regarding our licensing policy, please
- * contact us at `contact@knowm.org`.
+ * <p>If you have any questions regarding our licensing policy, please contact us at
+ * `contact@knowm.org`.
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.qc;
 
@@ -51,7 +47,8 @@ public class QCPreferences extends ExperimentPreferences {
   public static final int FREQUENCY_INIT_DEFAULT_VALUE = 10;
 
   public static final String REPORT_DIRECTORY_PATH_KEY = "REPORT_DIRECTORY_PATH_KEY";
-  public static final String REPORT_DIRECTORY_PATH_DEFAULT_VALUE = "~/Documents/Knowm/MemristorDiscovery/QC";
+  public static final String REPORT_DIRECTORY_PATH_DEFAULT_VALUE =
+      "~/Documents/Knowm/MemristorDiscovery/QC";
 
   // /////////////////////////////////////////////////////////////////////////////////////
 
@@ -64,20 +61,20 @@ public class QCPreferences extends ExperimentPreferences {
   public static final int CAPTURE_PERIOD_COUNT = 2;
 
   public static final int MAX_CAPTURE_COUNT = 50;
-  public static final int START_QC_CAPTURE_COUNT = 50;// this many to condition before tests
+  public static final int START_QC_CAPTURE_COUNT = 50; // this many to condition before tests
 
-  public static final float P_BELOW_MAX_MIN_V = .5f;// will only measure resistance if voltage is this percentage below the max or min v.
+  public static final float P_BELOW_MAX_MIN_V =
+      .5f; // will only measure resistance if voltage is this percentage below the max or min v.
 
   // public static final float MIN_Q = 3;
-  public static final float MIN_Q = 5;// ratio of HRS/LRS should exceed this
-  public static final float R_TARGET = 150000;// LRS should be under this, HRS should be above this. This is assuming a 50k series resistor!
+  public static final float MIN_Q = 5; // ratio of HRS/LRS should exceed this
+  public static final float R_TARGET =
+      150000; // LRS should be under this, HRS should be above this. This is assuming a 50k series
+              // resistor!
 
-  /**
-   * Constructor
-   */
+  /** Constructor */
   public QCPreferences() {
 
     super(QCPreferences.class);
   }
-
 }

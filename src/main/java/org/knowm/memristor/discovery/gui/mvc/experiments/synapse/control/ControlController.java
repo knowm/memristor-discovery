@@ -1,29 +1,25 @@
 /**
- * Memristor-Discovery is distributed under the GNU General Public License version 3
- * and is also available under alternative licenses negotiated directly
- * with Knowm, Inc.
+ * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
+ * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
  *
- * This package also includes various components that are not part of
- * Memristor-Discovery itself:
+ * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
- * * `Multibit`: Copyright 2011 multibit.org, MIT License
- * * `SteelCheckBox`: Copyright 2012 Gerrit, BSD license
+ * <p>* `Multibit`: Copyright 2011 multibit.org, MIT License * `SteelCheckBox`: Copyright 2012
+ * Gerrit, BSD license
  *
- * Knowm, Inc. holds copyright
- * and/or sufficient licenses to all components of the Memristor-Discovery
- * package, and therefore can grant, at its sole discretion, the ability
- * for companies, individuals, or organizations to create proprietary or
- * open source (even if not GPL) modules which may be dynamically linked at
- * runtime with the portions of Memristor-Discovery which fall under our
- * copyright/license umbrella, or are distributed under more flexible
- * licenses than GPL.
+ * <p>Knowm, Inc. holds copyright and/or sufficient licenses to all components of the
+ * Memristor-Discovery package, and therefore can grant, at its sole discretion, the ability for
+ * companies, individuals, or organizations to create proprietary or open source (even if not GPL)
+ * modules which may be dynamically linked at runtime with the portions of Memristor-Discovery which
+ * fall under our copyright/license umbrella, or are distributed under more flexible licenses than
+ * GPL.
  *
- * The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
+ * <p>The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
  *
- * If you have any questions regarding our licensing policy, please
- * contact us at `contact@knowm.org`.
+ * <p>If you have any questions regarding our licensing policy, please contact us at
+ * `contact@knowm.org`.
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control;
 
@@ -79,77 +75,117 @@ public class ControlController extends ExperimentControlController {
 
   private void initGUIComponentsFromModel() {
 
-    // Util.setButtonGroup(controlModel.getInstruction().name(), controlPanel.getInstructionRadioButtonGroup().getElements());
+    // Util.setButtonGroup(controlModel.getInstruction().name(),
+    // controlPanel.getInstructionRadioButtonGroup().getElements());
 
     controlPanel.getWaveformComboBox().setSelectedItem(controlModel.getWaveform());
-    controlPanel.getWaveformComboBox().setModel(new DefaultComboBoxModel<>(new Waveform[] { Waveform.SquareSmooth, Waveform.Square, Waveform.QuarterSine, Waveform.HalfSine, Waveform.Triangle }));
+    controlPanel
+        .getWaveformComboBox()
+        .setModel(
+            new DefaultComboBoxModel<>(
+                new Waveform[] {
+                  Waveform.SquareSmooth,
+                  Waveform.Square,
+                  Waveform.QuarterSine,
+                  Waveform.HalfSine,
+                  Waveform.Triangle
+                }));
 
     controlPanel.getAmplitudeSlider().setValue((int) (controlModel.getAmplitude() * 100));
-    controlPanel.getAmplitudeSlider().setBorder(BorderFactory.createTitledBorder("Amplitude [V] = " + controlModel.getAmplitude()));
+    controlPanel
+        .getAmplitudeSlider()
+        .setBorder(
+            BorderFactory.createTitledBorder("Amplitude [V] = " + controlModel.getAmplitude()));
     // if (controlModel.getPulseWidth() >= 5000) {
     controlPanel.getPulseWidthSlider().setValue((controlModel.getPulseWidth()));
     // controlPanel.getPulseWidthSliderNs().setValue(0);
 
     // System.out.println("init pulse width value=" + (controlModel.getPulseWidth()));
 
-    controlPanel.getPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + controlModel.getPulseWidth() / 1000f));
-    // controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
+    controlPanel
+        .getPulseWidthSlider()
+        .setBorder(
+            BorderFactory.createTitledBorder(
+                "Pulse Width [µs] = " + controlModel.getPulseWidth() / 1000f));
+    // controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width
+    // [µs]"));
     // }
     // else {
     // controlPanel.getPulseWidthSlider().setValue(0);
     // // controlPanel.getPulseWidthSliderNs().setValue(controlModel.getPulseWidth());
-    // controlPanel.getPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
-    // // controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + controlModel.getPulseWidth() / 1000));
+    // controlPanel.getPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width
+    // [µs]"));
+    // // controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse
+    // Width [µs] = " + controlModel.getPulseWidth() / 1000));
     // }
     controlPanel.getSampleRateTextField().setText("" + controlModel.getSampleRate());
   }
 
-  /**
-   * Here, all the action listeners are attached to the GUI components
-   */
+  /** Here, all the action listeners are attached to the GUI components */
   @Override
   public void doSetUpViewEvents() {
 
-    for (Enumeration<AbstractButton> buttons = controlPanel.getInstructionRadioButtonGroup().getElements(); buttons.hasMoreElements();) {
+    for (Enumeration<AbstractButton> buttons =
+            controlPanel.getInstructionRadioButtonGroup().getElements();
+        buttons.hasMoreElements(); ) {
       AbstractButton button = buttons.nextElement();
       button.addActionListener(instructionRadioButtonActionListener);
     }
 
-    controlPanel.getWaveformComboBox().addActionListener(new ActionListener() {
+    controlPanel
+        .getWaveformComboBox()
+        .addActionListener(
+            new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+              @Override
+              public void actionPerformed(ActionEvent e) {
 
-        controlModel.setWaveform(controlPanel.getWaveformComboBox().getSelectedItem().toString());
-      }
-    });
+                controlModel.setWaveform(
+                    controlPanel.getWaveformComboBox().getSelectedItem().toString());
+              }
+            });
 
-    controlPanel.getAmplitudeSlider().addChangeListener(new ChangeListener() {
+    controlPanel
+        .getAmplitudeSlider()
+        .addChangeListener(
+            new ChangeListener() {
 
-      @Override
-      public void stateChanged(ChangeEvent e) {
+              @Override
+              public void stateChanged(ChangeEvent e) {
 
-        JSlider source = (JSlider) e.getSource();
-        if (!(source.getValueIsAdjusting())) {
-          controlModel.setAmplitude(source.getValue() / (float) 100);
-          controlPanel.getAmplitudeSlider().setBorder(BorderFactory.createTitledBorder("Amplitude [V] = " + controlModel.getAmplitude()));
-        }
-      }
-    });
+                JSlider source = (JSlider) e.getSource();
+                if (!(source.getValueIsAdjusting())) {
+                  controlModel.setAmplitude(source.getValue() / (float) 100);
+                  controlPanel
+                      .getAmplitudeSlider()
+                      .setBorder(
+                          BorderFactory.createTitledBorder(
+                              "Amplitude [V] = " + controlModel.getAmplitude()));
+                }
+              }
+            });
 
-    controlPanel.getPulseWidthSlider().addChangeListener(new ChangeListener() {
+    controlPanel
+        .getPulseWidthSlider()
+        .addChangeListener(
+            new ChangeListener() {
 
-      @Override
-      public void stateChanged(ChangeEvent e) {
+              @Override
+              public void stateChanged(ChangeEvent e) {
 
-        JSlider source = (JSlider) e.getSource();
-        if (!(source.getValueIsAdjusting())) {
-          controlModel.setPulseWidth(source.getValue());
-          controlPanel.getPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + (double) controlModel.getPulseWidth() / 1000));
-          // controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
-        }
-      }
-    });
+                JSlider source = (JSlider) e.getSource();
+                if (!(source.getValueIsAdjusting())) {
+                  controlModel.setPulseWidth(source.getValue());
+                  controlPanel
+                      .getPulseWidthSlider()
+                      .setBorder(
+                          BorderFactory.createTitledBorder(
+                              "Pulse Width [µs] = "
+                                  + (double) controlModel.getPulseWidth() / 1000));
+                  // controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
+                }
+              }
+            });
 
     // controlPanel.getPulseWidthSliderNs().addChangeListener(new ChangeListener() {
     //
@@ -159,28 +195,33 @@ public class ControlController extends ExperimentControlController {
     // JSlider source = (JSlider) e.getSource();
     // if (!(source.getValueIsAdjusting())) {
     // controlModel.setPulseWidth(source.getValue());
-    // controlPanel.getPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
-    // controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + (double) controlModel.getPulseWidth() / 1000));
+    // controlPanel.getPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width
+    // [µs]"));
+    // controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width
+    // [µs] = " + (double) controlModel.getPulseWidth() / 1000));
     // }
     // }
     // });
-    controlPanel.getSampleRateTextField().addKeyListener(new KeyAdapter() {
+    controlPanel
+        .getSampleRateTextField()
+        .addKeyListener(
+            new KeyAdapter() {
 
-      @Override
-      public void keyReleased(KeyEvent e) {
+              @Override
+              public void keyReleased(KeyEvent e) {
 
-        JTextField textField = (JTextField) e.getSource();
-        String text = textField.getText();
+                JTextField textField = (JTextField) e.getSource();
+                String text = textField.getText();
 
-        try {
-          int newValue = Integer.parseInt(text);
-          controlModel.setSampleRate(newValue);
-        } catch (Exception ex) {
-          // parsing error, default back to previous value
-          textField.setText(Integer.toString(controlModel.getSampleRate()));
-        }
-      }
-    });
+                try {
+                  int newValue = Integer.parseInt(text);
+                  controlModel.setSampleRate(newValue);
+                } catch (Exception ex) {
+                  // parsing error, default back to previous value
+                  textField.setText(Integer.toString(controlModel.getSampleRate()));
+                }
+              }
+            });
 
     // controlPanel.getPulseNumberSlider().addChangeListener(new ChangeListener() {
     //
@@ -190,54 +231,54 @@ public class ControlController extends ExperimentControlController {
     // JSlider source = (JSlider) e.getSource();
     // if (!(source.getValueIsAdjusting())) {
     // controlModel.setPulseNumber(source.getValue());
-    // controlPanel.getPulseNumberSlider().setBorder(BorderFactory.createTitledBorder("Pulse Number = " + controlModel.getPulseNumber()));
+    // controlPanel.getPulseNumberSlider().setBorder(BorderFactory.createTitledBorder("Pulse Number
+    // = " + controlModel.getPulseNumber()));
     // }
     // }
     // });
   }
 
-  ActionListener instructionRadioButtonActionListener = new ActionListener() {
+  ActionListener instructionRadioButtonActionListener =
+      new ActionListener() {
 
-    @Override
-    public void actionPerformed(ActionEvent actionEvent) {
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
 
-      for (Enumeration<AbstractButton> buttons = controlPanel.getInstructionRadioButtonGroup().getElements(); buttons.hasMoreElements();) {
-        AbstractButton button = buttons.nextElement();
-        if (button.isSelected()) {
-          controlModel.setInstruction(button.getText());
+          for (Enumeration<AbstractButton> buttons =
+                  controlPanel.getInstructionRadioButtonGroup().getElements();
+              buttons.hasMoreElements(); ) {
+            AbstractButton button = buttons.nextElement();
+            if (button.isSelected()) {
+              controlModel.setInstruction(button.getText());
+            }
+          }
         }
-      }
-    }
-  };
+      };
 
   /**
-   * These property change events are triggered in the controlModel in the case where the underlying controlModel is updated. Here, the controller can respond to those events and make sure the
-   * corresponding GUI
-   * components get updated.
+   * These property change events are triggered in the controlModel in the case where the underlying
+   * controlModel is updated. Here, the controller can respond to those events and make sure the
+   * corresponding GUI components get updated.
    */
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
 
     switch (evt.getPropertyName()) {
+      case DWFProxy.AD2_STARTUP_CHANGE:
+        controlPanel.enableAllChildComponents((Boolean) evt.getNewValue());
 
-    case DWFProxy.AD2_STARTUP_CHANGE:
+        break;
 
-      controlPanel.enableAllChildComponents((Boolean) evt.getNewValue());
+      case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
+        initGUIComponentsFromModel();
+        break;
 
-      break;
+      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
+        controlModel.updateWaveformChartData();
+        break;
 
-    case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
-
-      initGUIComponentsFromModel();
-      break;
-
-    case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
-
-      controlModel.updateWaveformChartData();
-      break;
-
-    default:
-      break;
+      default:
+        break;
     }
   }
 }

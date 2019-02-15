@@ -1,29 +1,25 @@
 /**
- * Memristor-Discovery is distributed under the GNU General Public License version 3
- * and is also available under alternative licenses negotiated directly
- * with Knowm, Inc.
+ * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
+ * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
  *
- * This package also includes various components that are not part of
- * Memristor-Discovery itself:
+ * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
- * * `Multibit`: Copyright 2011 multibit.org, MIT License
- * * `SteelCheckBox`: Copyright 2012 Gerrit, BSD license
+ * <p>* `Multibit`: Copyright 2011 multibit.org, MIT License * `SteelCheckBox`: Copyright 2012
+ * Gerrit, BSD license
  *
- * Knowm, Inc. holds copyright
- * and/or sufficient licenses to all components of the Memristor-Discovery
- * package, and therefore can grant, at its sole discretion, the ability
- * for companies, individuals, or organizations to create proprietary or
- * open source (even if not GPL) modules which may be dynamically linked at
- * runtime with the portions of Memristor-Discovery which fall under our
- * copyright/license umbrella, or are distributed under more flexible
- * licenses than GPL.
+ * <p>Knowm, Inc. holds copyright and/or sufficient licenses to all components of the
+ * Memristor-Discovery package, and therefore can grant, at its sole discretion, the ability for
+ * companies, individuals, or organizations to create proprietary or open source (even if not GPL)
+ * modules which may be dynamically linked at runtime with the portions of Memristor-Discovery which
+ * fall under our copyright/license umbrella, or are distributed under more flexible licenses than
+ * GPL.
  *
- * The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
+ * <p>The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
  *
- * If you have any questions regarding our licensing policy, please
- * contact us at `contact@knowm.org`.
+ * <p>If you have any questions regarding our licensing policy, please contact us at
+ * `contact@knowm.org`.
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.logic.control;
 
@@ -82,27 +78,47 @@ public class ControlController extends ExperimentControlController {
   private void initGUIComponentsFromModel() {
 
     controlPanel.getWaveformComboBox().setSelectedItem(controlModel.getWaveform());
-    controlPanel.getWaveformComboBox().setModel(new DefaultComboBoxModel<>(new Waveform[] { Waveform.SquareSmooth, Waveform.Square, Waveform.QuarterSine, Waveform.HalfSine, Waveform.Triangle }));
+    controlPanel
+        .getWaveformComboBox()
+        .setModel(
+            new DefaultComboBoxModel<>(
+                new Waveform[] {
+                  Waveform.SquareSmooth,
+                  Waveform.Square,
+                  Waveform.QuarterSine,
+                  Waveform.HalfSine,
+                  Waveform.Triangle
+                }));
 
     controlPanel.getDataStructureComboBox().setSelectedItem(controlModel.getDataStructure());
-    controlPanel.getDataStructureComboBox().setModel(new DefaultComboBoxModel<>(new DataStructure[] { DataStructure.TwoPattern, DataStructure.ThreePattern }));
+    controlPanel
+        .getDataStructureComboBox()
+        .setModel(
+            new DefaultComboBoxModel<>(
+                new DataStructure[] {DataStructure.TwoPattern, DataStructure.ThreePattern}));
 
     controlPanel.getAmplitudeSlider().setValue((int) (controlModel.getAmplitude() * 100));
-    controlPanel.getAmplitudeSlider().setBorder(BorderFactory.createTitledBorder("Amplitude [V] = " + controlModel.getAmplitude()));
+    controlPanel
+        .getAmplitudeSlider()
+        .setBorder(
+            BorderFactory.createTitledBorder("Amplitude [V] = " + controlModel.getAmplitude()));
 
     controlPanel.getPulseWidthSlider().setValue((controlModel.getPulseWidth()));
 
-    controlPanel.getPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + controlModel.getPulseWidth() / 1000f));
+    controlPanel
+        .getPulseWidthSlider()
+        .setBorder(
+            BorderFactory.createTitledBorder(
+                "Pulse Width [µs] = " + controlModel.getPulseWidth() / 1000f));
     controlPanel.getNumExecutionsTextField().setText("" + controlModel.getNumExecutions());
   }
 
-  /**
-   * Here, all the action listeners are attached to the GUI components
-   */
+  /** Here, all the action listeners are attached to the GUI components */
   @Override
   public void doSetUpViewEvents() {
 
-    // for (Enumeration<AbstractButton> buttons = controlPanel.getInstructionRadioButtonGroup().getElements(); buttons.hasMoreElements();) {
+    // for (Enumeration<AbstractButton> buttons =
+    // controlPanel.getInstructionRadioButtonGroup().getElements(); buttons.hasMoreElements();) {
     // AbstractButton button = buttons.nextElement();
     // button.addActionListener(instructionRadioButtonActionListener);
     // }
@@ -118,152 +134,173 @@ public class ControlController extends ExperimentControlController {
       jrb.addActionListener(inputBiasMaskActionListener);
     }
 
-    controlPanel.getWaveformComboBox().addActionListener(new ActionListener() {
+    controlPanel
+        .getWaveformComboBox()
+        .addActionListener(
+            new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+              @Override
+              public void actionPerformed(ActionEvent e) {
 
-        controlModel.setWaveform(controlPanel.getWaveformComboBox().getSelectedItem().toString());
-      }
-    });
+                controlModel.setWaveform(
+                    controlPanel.getWaveformComboBox().getSelectedItem().toString());
+              }
+            });
 
-    controlPanel.getDataStructureComboBox().addActionListener(new ActionListener() {
+    controlPanel
+        .getDataStructureComboBox()
+        .addActionListener(
+            new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+              @Override
+              public void actionPerformed(ActionEvent e) {
 
-        controlModel.setDataStructure(controlPanel.getDataStructureComboBox().getSelectedItem().toString());
-      }
-    });
+                controlModel.setDataStructure(
+                    controlPanel.getDataStructureComboBox().getSelectedItem().toString());
+              }
+            });
 
-    controlPanel.getAmplitudeSlider().addChangeListener(new ChangeListener() {
+    controlPanel
+        .getAmplitudeSlider()
+        .addChangeListener(
+            new ChangeListener() {
 
-      @Override
-      public void stateChanged(ChangeEvent e) {
+              @Override
+              public void stateChanged(ChangeEvent e) {
 
-        JSlider source = (JSlider) e.getSource();
-        if (!(source.getValueIsAdjusting())) {
-          controlModel.setAmplitude(source.getValue() / (float) 100);
-          controlPanel.getAmplitudeSlider().setBorder(BorderFactory.createTitledBorder("Amplitude [V] = " + controlModel.getAmplitude()));
-        }
-      }
-    });
+                JSlider source = (JSlider) e.getSource();
+                if (!(source.getValueIsAdjusting())) {
+                  controlModel.setAmplitude(source.getValue() / (float) 100);
+                  controlPanel
+                      .getAmplitudeSlider()
+                      .setBorder(
+                          BorderFactory.createTitledBorder(
+                              "Amplitude [V] = " + controlModel.getAmplitude()));
+                }
+              }
+            });
 
-    controlPanel.getPulseWidthSlider().addChangeListener(new ChangeListener() {
+    controlPanel
+        .getPulseWidthSlider()
+        .addChangeListener(
+            new ChangeListener() {
 
-      @Override
-      public void stateChanged(ChangeEvent e) {
+              @Override
+              public void stateChanged(ChangeEvent e) {
 
-        JSlider source = (JSlider) e.getSource();
-        if (!(source.getValueIsAdjusting())) {
-          controlModel.setPulseWidth(source.getValue());
-          controlPanel.getPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + (double) controlModel.getPulseWidth() / 1000));
-          // controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
-        }
-      }
-    });
+                JSlider source = (JSlider) e.getSource();
+                if (!(source.getValueIsAdjusting())) {
+                  controlModel.setPulseWidth(source.getValue());
+                  controlPanel
+                      .getPulseWidthSlider()
+                      .setBorder(
+                          BorderFactory.createTitledBorder(
+                              "Pulse Width [µs] = "
+                                  + (double) controlModel.getPulseWidth() / 1000));
+                  // controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
+                }
+              }
+            });
 
-    controlPanel.getNumExecutionsTextField().addKeyListener(new KeyAdapter() {
+    controlPanel
+        .getNumExecutionsTextField()
+        .addKeyListener(
+            new KeyAdapter() {
 
-      @Override
-      public void keyReleased(KeyEvent e) {
+              @Override
+              public void keyReleased(KeyEvent e) {
 
-        JTextField textField = (JTextField) e.getSource();
-        String text = textField.getText();
+                JTextField textField = (JTextField) e.getSource();
+                String text = textField.getText();
 
-        try {
-          int newValue = Integer.parseInt(text);
-          controlModel.setNumExecutions(newValue);
-        } catch (Exception ex) {
-          // parsing error, default back to previous value
-          textField.setText(Integer.toString(controlModel.getNumExecutions()));
-        }
-      }
-    });
-
+                try {
+                  int newValue = Integer.parseInt(text);
+                  controlModel.setNumExecutions(newValue);
+                } catch (Exception ex) {
+                  // parsing error, default back to previous value
+                  textField.setText(Integer.toString(controlModel.getNumExecutions()));
+                }
+              }
+            });
   }
 
-  ActionListener inputMaskAActionListener = new ActionListener() {
+  ActionListener inputMaskAActionListener =
+      new ActionListener() {
 
-    @Override
-    public void actionPerformed(ActionEvent actionEvent) {
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
 
-      List<Integer> maskA = new ArrayList<Integer>();
+          List<Integer> maskA = new ArrayList<Integer>();
 
-      for (int i = 0; i < controlPanel.getInputAMaskRadioButtons().size(); i++) {
-        if (controlPanel.getInputAMaskRadioButtons().get(i).isSelected()) {
-          maskA.add(i);
+          for (int i = 0; i < controlPanel.getInputAMaskRadioButtons().size(); i++) {
+            if (controlPanel.getInputAMaskRadioButtons().get(i).isSelected()) {
+              maskA.add(i);
+            }
+          }
+
+          controlModel.setInputMaskA(maskA);
         }
-      }
+      };
+  ActionListener inputMaskBActionListener =
+      new ActionListener() {
 
-      controlModel.setInputMaskA(maskA);
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
 
-    }
-  };
-  ActionListener inputMaskBActionListener = new ActionListener() {
+          List<Integer> maskB = new ArrayList<Integer>();
 
-    @Override
-    public void actionPerformed(ActionEvent actionEvent) {
+          for (int i = 0; i < controlPanel.getInputBMaskRadioButtons().size(); i++) {
+            if (controlPanel.getInputBMaskRadioButtons().get(i).isSelected()) {
+              maskB.add(i);
+            }
+          }
 
-      List<Integer> maskB = new ArrayList<Integer>();
-
-      for (int i = 0; i < controlPanel.getInputBMaskRadioButtons().size(); i++) {
-        if (controlPanel.getInputBMaskRadioButtons().get(i).isSelected()) {
-          maskB.add(i);
+          controlModel.setInputMaskB(maskB);
         }
-      }
+      };
 
-      controlModel.setInputMaskB(maskB);
+  ActionListener inputBiasMaskActionListener =
+      new ActionListener() {
 
-    }
-  };
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
 
-  ActionListener inputBiasMaskActionListener = new ActionListener() {
+          List<Integer> biasMask = new ArrayList<Integer>();
 
-    @Override
-    public void actionPerformed(ActionEvent actionEvent) {
+          for (int i = 0; i < controlPanel.getBiasMaskRadioButtons().size(); i++) {
+            if (controlPanel.getBiasMaskRadioButtons().get(i).isSelected()) {
+              biasMask.add(i);
+            }
+          }
 
-      List<Integer> biasMask = new ArrayList<Integer>();
-
-      for (int i = 0; i < controlPanel.getBiasMaskRadioButtons().size(); i++) {
-        if (controlPanel.getBiasMaskRadioButtons().get(i).isSelected()) {
-          biasMask.add(i);
+          controlModel.setInputBiasMask(biasMask);
         }
-      }
-
-      controlModel.setInputBiasMask(biasMask);
-
-    }
-  };
+      };
 
   /**
-   * These property change events are triggered in the controlModel in the case where the underlying controlModel is updated. Here, the controller can respond to those events and make sure the
-   * corresponding GUI
-   * components get updated.
+   * These property change events are triggered in the controlModel in the case where the underlying
+   * controlModel is updated. Here, the controller can respond to those events and make sure the
+   * corresponding GUI components get updated.
    */
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
 
     switch (evt.getPropertyName()) {
+      case DWFProxy.AD2_STARTUP_CHANGE:
+        controlPanel.enableAllChildComponents((Boolean) evt.getNewValue());
 
-    case DWFProxy.AD2_STARTUP_CHANGE:
+        break;
 
-      controlPanel.enableAllChildComponents((Boolean) evt.getNewValue());
+      case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
+        initGUIComponentsFromModel();
+        break;
 
-      break;
+      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
+        controlModel.updateWaveformChartData();
+        break;
 
-    case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
-
-      initGUIComponentsFromModel();
-      break;
-
-    case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
-
-      controlModel.updateWaveformChartData();
-      break;
-
-    default:
-      break;
+      default:
+        break;
     }
   }
 }

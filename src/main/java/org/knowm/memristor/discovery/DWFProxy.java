@@ -1,29 +1,25 @@
 /**
- * Memristor-Discovery is distributed under the GNU General Public License version 3
- * and is also available under alternative licenses negotiated directly
- * with Knowm, Inc.
+ * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
+ * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
  *
- * This package also includes various components that are not part of
- * Memristor-Discovery itself:
+ * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
- * * `Multibit`: Copyright 2011 multibit.org, MIT License
- * * `SteelCheckBox`: Copyright 2012 Gerrit, BSD license
+ * <p>* `Multibit`: Copyright 2011 multibit.org, MIT License * `SteelCheckBox`: Copyright 2012
+ * Gerrit, BSD license
  *
- * Knowm, Inc. holds copyright
- * and/or sufficient licenses to all components of the Memristor-Discovery
- * package, and therefore can grant, at its sole discretion, the ability
- * for companies, individuals, or organizations to create proprietary or
- * open source (even if not GPL) modules which may be dynamically linked at
- * runtime with the portions of Memristor-Discovery which fall under our
- * copyright/license umbrella, or are distributed under more flexible
- * licenses than GPL.
+ * <p>Knowm, Inc. holds copyright and/or sufficient licenses to all components of the
+ * Memristor-Discovery package, and therefore can grant, at its sole discretion, the ability for
+ * companies, individuals, or organizations to create proprietary or open source (even if not GPL)
+ * modules which may be dynamically linked at runtime with the portions of Memristor-Discovery which
+ * fall under our copyright/license umbrella, or are distributed under more flexible licenses than
+ * GPL.
  *
- * The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
+ * <p>The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
  *
- * If you have any questions regarding our licensing policy, please
- * contact us at `contact@knowm.org`.
+ * <p>If you have any questions regarding our licensing policy, please contact us at
+ * `contact@knowm.org`.
  */
 package org.knowm.memristor.discovery;
 
@@ -37,9 +33,10 @@ import org.slf4j.LoggerFactory;
 
 public class DWFProxy {
 
-  public final static int SWITCHES_MASK = 0b1111_1111_1111_1111;
-  public final static int ALL_DIO_OFF = 0b0000_0000_0000_0000;
-  public final static int DEFAULT_SELECTOR_DIO = 0b0001_1101_0000_0000; // the top 8 bits control the 4 MUXes
+  public static final int SWITCHES_MASK = 0b1111_1111_1111_1111;
+  public static final int ALL_DIO_OFF = 0b0000_0000_0000_0000;
+  public static final int DEFAULT_SELECTOR_DIO =
+      0b0001_1101_0000_0000; // the top 8 bits control the 4 MUXes
   // public final static int DEFAULT_SELECTOR_DIO = 0b0000_0000_0000_0000;
 
   private final Logger logger = LoggerFactory.getLogger(DWFProxy.class);
@@ -57,9 +54,7 @@ public class DWFProxy {
   final DWF dwf;
   private SwingPropertyChangeSupport swingPropertyChangeSupport;
 
-  /**
-   * Constructor
-   */
+  /** Constructor */
   public DWFProxy(boolean isV1Board) {
 
     this.isV1Board = isV1Board;
@@ -78,8 +73,8 @@ public class DWFProxy {
   }
 
   /**
-   * This is called by the main app once on start up or during a switch-triggered shut off event. Here, the AD2 is started up and the GUI will reflect
-   * its startup state.
+   * This is called by the main app once on start up or during a switch-triggered shut off event.
+   * Here, the AD2 is started up and the GUI will reflect its startup state.
    */
   public void startupAD2() {
 
@@ -128,7 +123,8 @@ public class DWFProxy {
 
   private class AD2StartupWorker extends SwingWorker<Boolean, Void> {
 
-    @Override protected Boolean doInBackground() {
+    @Override
+    protected Boolean doInBackground() {
 
       // ///////////////////////////////////////////////////////////
       // Device ///////////////////////////////////////////////////
@@ -138,9 +134,12 @@ public class DWFProxy {
       if (isAD2Running) {
 
         // Some device read out stuff
-        // System.out.println("Analog Out Custom Waveform Buffer Size Channel 1: "+Arrays.toString(dwf.FDwfAnalogOutNodeDataInfo(DWF.WAVEFORM_CHANNEL_1)));
-        // System.out.println("Analog Out Custom Waveform Buffer Size Channel 2: "+Arrays.toString(dwf.FDwfAnalogOutNodeDataInfo(DWF.WAVEFORM_CHANNEL_2)));
-        // System.out.println("Analog In Trigger Position Info: "+ Arrays.toString(dwf.FDwfAnalogInTriggerPositionInfo()));
+        // System.out.println("Analog Out Custom Waveform Buffer Size Channel 1:
+        // "+Arrays.toString(dwf.FDwfAnalogOutNodeDataInfo(DWF.WAVEFORM_CHANNEL_1)));
+        // System.out.println("Analog Out Custom Waveform Buffer Size Channel 2:
+        // "+Arrays.toString(dwf.FDwfAnalogOutNodeDataInfo(DWF.WAVEFORM_CHANNEL_2)));
+        // System.out.println("Analog In Trigger Position Info: "+
+        // Arrays.toString(dwf.FDwfAnalogInTriggerPositionInfo()));
 
         // ///////////////////////////////////////////////////////////
         // Digital I/O //////////////////////////////////////////////
@@ -179,25 +178,27 @@ public class DWFProxy {
         dwf.FDwfAnalogInChannelEnableSet(DWF.OSCILLOSCOPE_CHANNEL_2, true);
         dwf.FDwfAnalogInChannelRangeSet(DWF.OSCILLOSCOPE_CHANNEL_2, 2.5);
 
-        // Set this to false (default=true). Need to call FDwfAnalogOutConfigure(true), FDwfAnalogInConfigure(true) in order for *Set* methods to take effect.
+        // Set this to false (default=true). Need to call FDwfAnalogOutConfigure(true),
+        // FDwfAnalogInConfigure(true) in order for *Set* methods to take effect.
         dwf.FDwfDeviceAutoConfigureSet(false);
       } else {
 
         System.out.println(dwf.FDwfGetLastErrorMsg());
       }
-      // swingPropertyChangeSupport.firePropertyChange(DWFProxy.AD2_STARTUP_CHANGE, !isAD2Running, isAD2Running);
+      // swingPropertyChangeSupport.firePropertyChange(DWFProxy.AD2_STARTUP_CHANGE, !isAD2Running,
+      // isAD2Running);
       return isAD2Running;
     }
 
-    @Override protected void done() {
+    @Override
+    protected void done() {
 
-      swingPropertyChangeSupport.firePropertyChange(DWFProxy.AD2_STARTUP_CHANGE, !isAD2Running, isAD2Running);
+      swingPropertyChangeSupport.firePropertyChange(
+          DWFProxy.AD2_STARTUP_CHANGE, !isAD2Running, isAD2Running);
     }
   }
 
-  /**
-   * This is called when the main board on/off toggle switch is switched to the off position.
-   */
+  /** This is called when the main board on/off toggle switch is switched to the off position. */
   public void shutdownAD2() {
 
     // ///////////////////////////////////////////////////////////
@@ -229,7 +230,8 @@ public class DWFProxy {
     boolean oldValDevice = isAD2Running;
     isAD2Running = false;
     dwf.FDwfDeviceCloseAll();
-    swingPropertyChangeSupport.firePropertyChange(DWFProxy.AD2_STARTUP_CHANGE, oldValDevice, isAD2Running);
+    swingPropertyChangeSupport.firePropertyChange(
+        DWFProxy.AD2_STARTUP_CHANGE, oldValDevice, isAD2Running);
 
     // try {
     // Thread.sleep(500);
@@ -246,7 +248,8 @@ public class DWFProxy {
     boolean successful = dwf.FDwfDigitalIOOutputSet(digitalIOStates);
     dwf.FDwfDigitalIOConfigure();
     digitalIOStates = dwf.getDigitalIOStatus();
-    swingPropertyChangeSupport.firePropertyChange(DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
+    swingPropertyChangeSupport.firePropertyChange(
+        DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
   }
 
   public void update2DigitalIOStatesAtOnce(List<Integer> mask, boolean isOn) {
@@ -268,14 +271,16 @@ public class DWFProxy {
     dwf.FDwfDigitalIOConfigure();
 
     digitalIOStates = dwf.getDigitalIOStatus();
-    swingPropertyChangeSupport.firePropertyChange(DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
+    swingPropertyChangeSupport.firePropertyChange(
+        DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
 
     // System.out.println("digitalIO states= " + Integer.toBinaryString(digitalIOStates));
 
   }
 
   /**
-   * A GUI element was clicked, so we need to update the model. Don't need to fire a property change for the GUI since the change came from the GUI.
+   * A GUI element was clicked, so we need to update the model. Don't need to fire a property change
+   * for the GUI since the change came from the GUI.
    *
    * @param toggleClickedID
    * @param isOn
@@ -299,7 +304,8 @@ public class DWFProxy {
     dwf.FDwfDigitalIOConfigure();
 
     digitalIOStates = dwf.getDigitalIOStatus();
-    swingPropertyChangeSupport.firePropertyChange(DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
+    swingPropertyChangeSupport.firePropertyChange(
+        DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
   }
 
   public void update2DigitalIOStatesAtOnce(int io1, int io2, boolean value1, boolean value2) {
@@ -326,7 +332,8 @@ public class DWFProxy {
     dwf.FDwfDigitalIOConfigure();
 
     digitalIOStates = dwf.getDigitalIOStatus();
-    swingPropertyChangeSupport.firePropertyChange(DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
+    swingPropertyChangeSupport.firePropertyChange(
+        DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
   }
 
   public void setUpper8IOStates(int upper8SetMask) {
@@ -350,7 +357,8 @@ public class DWFProxy {
     dwf.FDwfDigitalIOConfigure();
 
     digitalIOStates = dwf.getDigitalIOStatus();
-    swingPropertyChangeSupport.firePropertyChange(DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
+    swingPropertyChangeSupport.firePropertyChange(
+        DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
   }
 
   public void setAllIOStates(int outputSetMask) {
@@ -368,7 +376,8 @@ public class DWFProxy {
     dwf.FDwfDigitalIOConfigure();
 
     digitalIOStates = dwf.getDigitalIOStatus();
-    swingPropertyChangeSupport.firePropertyChange(DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
+    swingPropertyChangeSupport.firePropertyChange(
+        DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
   }
 
   // //////////////////////////////////////////////////////////

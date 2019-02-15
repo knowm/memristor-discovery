@@ -1,29 +1,25 @@
 /**
- * Memristor-Discovery is distributed under the GNU General Public License version 3
- * and is also available under alternative licenses negotiated directly
- * with Knowm, Inc.
+ * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
+ * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
  *
- * This package also includes various components that are not part of
- * Memristor-Discovery itself:
+ * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
- * * `Multibit`: Copyright 2011 multibit.org, MIT License
- * * `SteelCheckBox`: Copyright 2012 Gerrit, BSD license
+ * <p>* `Multibit`: Copyright 2011 multibit.org, MIT License * `SteelCheckBox`: Copyright 2012
+ * Gerrit, BSD license
  *
- * Knowm, Inc. holds copyright
- * and/or sufficient licenses to all components of the Memristor-Discovery
- * package, and therefore can grant, at its sole discretion, the ability
- * for companies, individuals, or organizations to create proprietary or
- * open source (even if not GPL) modules which may be dynamically linked at
- * runtime with the portions of Memristor-Discovery which fall under our
- * copyright/license umbrella, or are distributed under more flexible
- * licenses than GPL.
+ * <p>Knowm, Inc. holds copyright and/or sufficient licenses to all components of the
+ * Memristor-Discovery package, and therefore can grant, at its sole discretion, the ability for
+ * companies, individuals, or organizations to create proprietary or open source (even if not GPL)
+ * modules which may be dynamically linked at runtime with the portions of Memristor-Discovery which
+ * fall under our copyright/license umbrella, or are distributed under more flexible licenses than
+ * GPL.
  *
- * The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
+ * <p>The 'Knowm' name and logos are trademarks owned by Knowm, Inc.
  *
- * If you have any questions regarding our licensing policy, please
- * contact us at `contact@knowm.org`.
+ * <p>If you have any questions regarding our licensing policy, please contact us at
+ * `contact@knowm.org`.
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments;
 
@@ -79,48 +75,57 @@ public abstract class Experiment implements PropertyChangeListener {
     // Control Panel ///////
     // //////////////////////
 
-    JScrollPane jScrollPane = new JScrollPane(getControlPanel(), JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    JScrollPane jScrollPane =
+        new JScrollPane(
+            getControlPanel(),
+            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     jScrollPane.setBorder(createEmptyBorder());
     mainFrameContainer.add(jScrollPane, BorderLayout.WEST);
 
     // trigger plot of waveform
-    PropertyChangeEvent evt = new PropertyChangeEvent(this, ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    PropertyChangeEvent evt =
+        new PropertyChangeEvent(this, ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
     propertyChange(evt);
 
     getControlModel().addListener(this);
 
     try {
-      getControlPanel().getStartStopButton().addActionListener(new ActionListener() {
+      getControlPanel()
+          .getStartStopButton()
+          .addActionListener(
+              new ActionListener() {
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
+                @Override
+                public void actionPerformed(ActionEvent e) {
 
-          if (!getControlModel().isStartToggled()) {
+                  if (!getControlModel().isStartToggled()) {
 
-            getControlModel().setStartToggled(true);
-            getControlPanel().getStartStopButton().setText("Stop");
+                    getControlModel().setStartToggled(true);
+                    getControlPanel().getStartStopButton().setText("Stop");
 
-            // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
-            experimentCaptureWorker = getCaptureWorker();
-            experimentCaptureWorker.execute();
-          }
-          else {
+                    // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
+                    experimentCaptureWorker = getCaptureWorker();
+                    experimentCaptureWorker.execute();
+                  } else {
 
-            getControlModel().setStartToggled(false);
-            getControlPanel().getStartStopButton().setText("Start");
+                    getControlModel().setStartToggled(false);
+                    getControlPanel().getStartStopButton().setText("Start");
 
-            // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
-            experimentCaptureWorker.cancel(true);
-          }
-        }
-      });
+                    // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
+                    experimentCaptureWorker.cancel(true);
+                  }
+                }
+              });
     } catch (java.lang.NullPointerException e) {
 
-      // this will occur if the start-stop button has been over-written in an experiment (like BoardCheck)
+      // this will occur if the start-stop button has been over-written in an experiment (like
+      // BoardCheck)
 
     }
 
-    doCreateAndShowGUI();// after adding the default start/stop action so actions can be overridden.
+    doCreateAndShowGUI(); // after adding the default start/stop action so actions can be
+                          // overridden.
 
     // //////////////////////
     // Plot Panel //////////
@@ -143,5 +148,4 @@ public abstract class Experiment implements PropertyChangeListener {
 
     getControlModel().loadModelFromPrefs();
   }
-
 }
