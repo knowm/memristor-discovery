@@ -125,7 +125,7 @@ public abstract class Experiment implements PropertyChangeListener {
     }
 
     doCreateAndShowGUI(); // after adding the default start/stop action so actions can be
-                          // overridden.
+    // overridden.
 
     // //////////////////////
     // Plot Panel //////////

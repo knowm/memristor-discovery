@@ -84,7 +84,7 @@ public class DCExperiment extends Experiment {
       double sampleFrequency =
           controlModel.getCalculatedFrequency()
               * samplesPerPulse; // adjust this down if you want to capture more pulses as the
-                                 // buffer size is limited.
+      // buffer size is limited.
       dwfProxy
           .getDwf()
           .startAnalogCaptureBothChannelsLevelTrigger(

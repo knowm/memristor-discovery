@@ -14,9 +14,7 @@
 package org.multibit.platform.listener;
 
 /**
- *
- *
- * <p>Signature interface for generic events:
+ * Signature interface for generic events:
  *
  * @since 0.3.0
  */

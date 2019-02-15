@@ -70,7 +70,7 @@ public class QCPreferences extends ExperimentPreferences {
   public static final float MIN_Q = 5; // ratio of HRS/LRS should exceed this
   public static final float R_TARGET =
       150000; // LRS should be under this, HRS should be above this. This is assuming a 50k series
-              // resistor!
+  // resistor!
 
   /** Constructor */
   public QCPreferences() {

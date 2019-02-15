@@ -89,7 +89,7 @@ public class ConductanceExperiment extends Experiment {
       double sampleFrequency =
           controlModel.getCalculatedFrequency()
               * sampleFrequencyMultiplier; // adjust this down if you want to capture more pulses as
-                                           // the buffer size is limited.
+      // the buffer size is limited.
       dwfProxy
           .getDwf()
           .startAnalogCaptureBothChannelsLevelTrigger(
@@ -232,11 +232,11 @@ public class ConductanceExperiment extends Experiment {
 
         int sampleFrequencyMultiplier =
             200; // adjust this down if you want to capture more pulses as the buffer size is
-                 // limited.
+        // limited.
         double sampleFrequency =
             controlModel.getCalculatedFrequency()
                 * sampleFrequencyMultiplier; // adjust this down if you want to capture more pulses
-                                             // as the buffer size is limited.
+        // as the buffer size is limited.
         dwfProxy
             .getDwf()
             .startAnalogCaptureBothChannelsLevelTrigger(

@@ -14,9 +14,7 @@
 package org.multibit.platform.handler;
 
 /**
- *
- *
- * <p>Signature interface for handlers:
+ * Signature interface for handlers:
  *
  * @since 0.3.0
  */
