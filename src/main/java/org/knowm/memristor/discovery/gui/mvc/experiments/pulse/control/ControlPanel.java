@@ -131,13 +131,6 @@ public class ControlPanel extends ExperimentControlPanel {
       labelTable.put(i, new JLabel(i / 100 + ""));
     }
 
-    //    labelTable.put(-250, new JLabel("-2.5"));
-    //    labelTable.put(-200, new JLabel("-2"));
-    //    labelTable.put(-100, new JLabel("-1"));
-    //    labelTable.put(0, new JLabel("0"));
-    //    labelTable.put(100, new JLabel("1"));
-    //    labelTable.put(200, new JLabel("2"));
-
     amplitudeSlider.setLabelTable(labelTable);
 
     c.gridy++;
@@ -176,16 +169,24 @@ public class ControlPanel extends ExperimentControlPanel {
     c.gridy++;
     add(pulseWidthSliderNs, c);
 
-    pulseNumberSlider = new JSlider(JSlider.HORIZONTAL, 1, 10, 1);
+    int maxPulseNumber = controlModel.getMaxSliderPulseNumber();
+
+    pulseNumberSlider = new JSlider(JSlider.HORIZONTAL, 1, maxPulseNumber, 1);
     pulseNumberSlider.setBorder(BorderFactory.createTitledBorder("Pulse Number"));
     pulseNumberSlider.setMinorTickSpacing(1);
     pulseNumberSlider.setPaintTicks(true);
     pulseNumberSlider.setPaintLabels(true);
     pulseNumberSlider.setSnapToTicks(true);
     labelTable = new Hashtable<>();
-    labelTable.put(1, new JLabel("1"));
-    labelTable.put(5, new JLabel("5"));
-    labelTable.put(10, new JLabel("10"));
+
+    for (int i = 1; i <= maxPulseNumber; i++) {
+
+      if (i % 5 == 0 || i == 1 || i == maxPulseNumber) {
+        labelTable.put(i, new JLabel("" + i));
+      }
+
+    }
+
     pulseNumberSlider.setLabelTable(labelTable);
     c.gridy++;
     add(pulseNumberSlider, c);

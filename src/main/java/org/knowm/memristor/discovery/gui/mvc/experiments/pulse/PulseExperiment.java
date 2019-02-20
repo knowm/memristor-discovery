@@ -92,8 +92,10 @@ public class PulseExperiment extends Experiment {
       // (controlModel.getAmplitude() > 0 ? 1 : -1), samplesPerPulse *
       // controlModel.getPulseNumber());
 
+      boolean isScale2V = controlModel.getAppliedAmplitude() <= 2.5;
+
       dwfProxy.getDwf().startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(DWF.WAVEFORM_CHANNEL_1, sampleFrequency,
-          samplesPerPulse * controlModel.getPulseNumber());
+          samplesPerPulse * controlModel.getPulseNumber(), isScale2V);
 
       dwfProxy.waitUntilArmed();
 
@@ -194,7 +196,7 @@ public class PulseExperiment extends Experiment {
         // dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02,
         // samplesPerPulse * 1);
 
-        dwfProxy.getDwf().startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(DWF.WAVEFORM_CHANNEL_1, sampleFrequency, samplesPerPulse);
+        dwfProxy.getDwf().startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(DWF.WAVEFORM_CHANNEL_1, sampleFrequency, samplesPerPulse, true);
 
         dwfProxy.waitUntilArmed();
 

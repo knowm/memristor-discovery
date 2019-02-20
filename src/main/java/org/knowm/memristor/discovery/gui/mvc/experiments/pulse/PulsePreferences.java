@@ -55,6 +55,9 @@ public class PulsePreferences extends ExperimentPreferences {
   public static final String MAX_SLIDER_VOLTAGE_INIT_KEY = PREFIX + "MAX_SLIDER_VOLTAGE_INIT_KEY";
   public static final float MAX_SLIDER_VOLTAGE_INIT_DEFAULT_VALUE = 3f;
 
+  public static final String MAX_SLIDER_PULSE_NUM_INIT_KEY = PREFIX + "MAX_SLIDER_PULSE_NUM_INIT_KEY";
+  public static final int MAX_SLIDER_PULSE_NUM_INIT_DEFAULT_VALUE = 10;
+
   ///////////////////////////////////////////////////////////////////////////////////////
 
   public static final CurrentUnits CURRENT_UNIT = CurrentUnits.MicroAmps;

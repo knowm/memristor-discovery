@@ -51,6 +51,7 @@ public class ControlModel extends ExperimentControlModel {
   private double appliedMemristorEnergy;
 
   private double maxSliderVoltageAmplitude;
+  private int maxSliderPulseNumber;
 
   private double lastG;
   public DecimalFormat ohmFormatter = new DecimalFormat("#,### Ω");
@@ -77,6 +78,9 @@ public class ControlModel extends ExperimentControlModel {
 
     maxSliderVoltageAmplitude = experimentPreferences.getFloat(PulsePreferences.MAX_SLIDER_VOLTAGE_INIT_KEY,
         PulsePreferences.MAX_SLIDER_VOLTAGE_INIT_DEFAULT_VALUE);
+
+    maxSliderPulseNumber = experimentPreferences.getInteger(PulsePreferences.MAX_SLIDER_PULSE_NUM_INIT_KEY,
+        PulsePreferences.MAX_SLIDER_PULSE_NUM_INIT_DEFAULT_VALUE);
 
     pulseWidth = experimentPreferences.getInteger(PulsePreferences.PULSE_WIDTH_INIT_KEY, PulsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
     pulseNumber = experimentPreferences.getInteger(PulsePreferences.NUM_PULSES_INIT_KEY, PulsePreferences.NUM_PULSES_INIT_DEFAULT_VALUE);
@@ -283,5 +287,9 @@ public class ControlModel extends ExperimentControlModel {
 
   public double getMaxSliderVoltageAmplitude() {
     return maxSliderVoltageAmplitude;
+  }
+
+  public int getMaxSliderPulseNumber() {
+    return maxSliderPulseNumber;
   }
 }
