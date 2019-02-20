@@ -50,6 +50,8 @@ public class ControlModel extends ExperimentControlModel {
   private double appliedEnergy;
   private double appliedMemristorEnergy;
 
+  private double maxSliderVoltageAmplitude;
+
   private double lastG;
   public DecimalFormat ohmFormatter = new DecimalFormat("#,### Ω");
 
@@ -67,30 +69,19 @@ public class ControlModel extends ExperimentControlModel {
   @Override
   public void loadModelFromPrefs() {
 
-    waveform =
-        PulsePreferences.Waveform.valueOf(
-            experimentPreferences.getString(
-                PulsePreferences.WAVEFORM_INIT_STRING_KEY,
-                PulsePreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
-    seriesResistance =
-        experimentPreferences.getInteger(
-            PulsePreferences.SERIES_R_INIT_KEY, PulsePreferences.SERIES_R_INIT_DEFAULT_VALUE);
-    amplitude =
-        experimentPreferences.getFloat(
-            PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY,
-            PulsePreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
+    waveform = PulsePreferences.Waveform
+        .valueOf(experimentPreferences.getString(PulsePreferences.WAVEFORM_INIT_STRING_KEY, PulsePreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
+    seriesResistance = experimentPreferences.getInteger(PulsePreferences.SERIES_R_INIT_KEY, PulsePreferences.SERIES_R_INIT_DEFAULT_VALUE);
+    amplitude = experimentPreferences.getFloat(PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY, PulsePreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
     appliedAmplitude = amplitude;
-    pulseWidth =
-        experimentPreferences.getInteger(
-            PulsePreferences.PULSE_WIDTH_INIT_KEY, PulsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
-    pulseNumber =
-        experimentPreferences.getInteger(
-            PulsePreferences.NUM_PULSES_INIT_KEY, PulsePreferences.NUM_PULSES_INIT_DEFAULT_VALUE);
-    sampleRate =
-        experimentPreferences.getInteger(
-            PulsePreferences.SAMPLE_RATE_INIT_KEY, PulsePreferences.SAMPLE_RATE_INIT_DEFAULT_VALUE);
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_PREFERENCES_UPDATE, true, false);
+
+    maxSliderVoltageAmplitude = experimentPreferences.getFloat(PulsePreferences.MAX_SLIDER_VOLTAGE_INIT_KEY,
+        PulsePreferences.MAX_SLIDER_VOLTAGE_INIT_DEFAULT_VALUE);
+
+    pulseWidth = experimentPreferences.getInteger(PulsePreferences.PULSE_WIDTH_INIT_KEY, PulsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
+    pulseNumber = experimentPreferences.getInteger(PulsePreferences.NUM_PULSES_INIT_KEY, PulsePreferences.NUM_PULSES_INIT_DEFAULT_VALUE);
+    sampleRate = experimentPreferences.getInteger(PulsePreferences.SAMPLE_RATE_INIT_KEY, PulsePreferences.SAMPLE_RATE_INIT_DEFAULT_VALUE);
+    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
   /** Given the state of the model, update the waveform x and y axis data arrays. */
@@ -99,8 +90,7 @@ public class ControlModel extends ExperimentControlModel {
     Driver driver;
     switch (waveform) {
       case Sawtooth:
-        driver =
-            new Sawtooth("Sawtooth", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
+        driver = new Sawtooth("Sawtooth", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
         break;
       case QuarterSine:
         driver = new QuarterSine("QuarterSine", 0, 0, amplitude, getCalculatedFrequency());
@@ -120,8 +110,7 @@ public class ControlModel extends ExperimentControlModel {
     }
 
     double stopTime = 1 / getCalculatedFrequency() * pulseNumber;
-    double timeStep =
-        1 / getCalculatedFrequency() / PulsePreferences.CAPTURE_BUFFER_SIZE * pulseNumber;
+    double timeStep = 1 / getCalculatedFrequency() / PulsePreferences.CAPTURE_BUFFER_SIZE * pulseNumber;
 
     int counter = 0;
     for (double i = 0.0; i < stopTime; i = i + timeStep) {
@@ -145,8 +134,7 @@ public class ControlModel extends ExperimentControlModel {
   public void setAmplitude(float amplitude) {
 
     this.amplitude = amplitude;
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public int getPulseWidth() {
@@ -163,8 +151,7 @@ public class ControlModel extends ExperimentControlModel {
   public void setPulseWidth(int pulseWidth) {
 
     this.pulseWidth = pulseWidth;
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public double[] getWaveformTimeData() {
@@ -185,8 +172,7 @@ public class ControlModel extends ExperimentControlModel {
   public void setPulseNumber(int pulseNumber) {
 
     this.pulseNumber = pulseNumber;
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public boolean isMemristorVoltageDropSelected() {
@@ -197,8 +183,7 @@ public class ControlModel extends ExperimentControlModel {
   public void setMemristorVoltageDropSelected(boolean memristorVoltageDropSelected) {
 
     isMemristorVoltageDropSelected = memristorVoltageDropSelected;
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public double getAppliedAmplitude() {
@@ -214,15 +199,13 @@ public class ControlModel extends ExperimentControlModel {
   public void setWaveform(PulsePreferences.Waveform waveform) {
 
     this.waveform = waveform;
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public void setWaveform(String text) {
 
     waveform = Enum.valueOf(PulsePreferences.Waveform.class, text);
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public int getSampleRate() {
@@ -279,39 +262,26 @@ public class ControlModel extends ExperimentControlModel {
     // calculate applied voltage
     if (lastG > 0.0) {
       if (isMemristorVoltageDropSelected) {
-        this.appliedAmplitude =
-            amplitude
-                / (1
-                    - seriesResistance
-                        / (seriesResistance + getLastR() + Util.getSwitchesSeriesResistance()));
+        this.appliedAmplitude = amplitude / (1 - seriesResistance / (seriesResistance + getLastR() + Util.getSwitchesSeriesResistance()));
       } else {
         this.appliedAmplitude = amplitude;
       }
-      this.appliedCurrent =
-          appliedAmplitude
-              / (getLastR() + seriesResistance + Util.getSwitchesSeriesResistance())
-              * PulsePreferences.CURRENT_UNIT.getDivisor();
-      this.appliedEnergy =
-          appliedAmplitude
-              * appliedAmplitude
-              / (getLastR() + seriesResistance + Util.getSwitchesSeriesResistance())
-              * pulseNumber
-              * pulseWidth;
+      this.appliedCurrent = appliedAmplitude / (getLastR() + seriesResistance + Util.getSwitchesSeriesResistance())
+          * PulsePreferences.CURRENT_UNIT.getDivisor();
+      this.appliedEnergy = appliedAmplitude * appliedAmplitude / (getLastR() + seriesResistance + Util.getSwitchesSeriesResistance()) * pulseNumber
+          * pulseWidth;
 
       // V=IR =
-      double voltageDropOnMemristor =
-          appliedCurrent / PulsePreferences.CURRENT_UNIT.getDivisor() * getLastR();
+      double voltageDropOnMemristor = appliedCurrent / PulsePreferences.CURRENT_UNIT.getDivisor() * getLastR();
       // System.out.println("voltageDropOnMemristor = " + voltageDropOnMemristor);
-      this.appliedMemristorEnergy =
-          voltageDropOnMemristor
-              * voltageDropOnMemristor
-              / getLastR()
-              * pulseNumber
-              * pulseWidth
-              / 1000;
+      this.appliedMemristorEnergy = voltageDropOnMemristor * voltageDropOnMemristor / getLastR() * pulseNumber * pulseWidth / 1000;
       // System.out.println("appliedMemristorEnergy = " + appliedMemristorEnergy);
     } else {
       this.appliedAmplitude = amplitude;
     }
+  }
+
+  public double getMaxSliderVoltageAmplitude() {
+    return maxSliderVoltageAmplitude;
   }
 }

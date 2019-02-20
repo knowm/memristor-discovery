@@ -70,7 +70,7 @@ public class ControlPanel extends ExperimentControlPanel {
   private final JTextField sampleRateTextField;
 
   /** Constructor */
-  public ControlPanel() {
+  public ControlPanel(ControlModel controlModel) {
 
     setLayout(new GridBagLayout());
     GridBagConstraints c = new GridBagConstraints();
@@ -114,7 +114,11 @@ public class ControlPanel extends ExperimentControlPanel {
     memristorVoltageCheckBox = new JCheckBox("Memristor Voltage Drop");
     add(memristorVoltageCheckBox, c);
 
-    amplitudeSlider = new JSlider(JSlider.HORIZONTAL, -250, 200, 0);
+    //  int amplitude= experimentPreferences.getInteger(PulsePreferences.MAX_SLIDER_VOLTAGE_INIT_KEY, PulsePreferences.MAX_SLIDER_VOLTAGE_INIT_DEFAULT_VALUE)
+
+    int amplitude = (int) (100 * controlModel.getMaxSliderVoltageAmplitude());
+
+    amplitudeSlider = new JSlider(JSlider.HORIZONTAL, -amplitude, amplitude, 0);
     amplitudeSlider.setBorder(BorderFactory.createTitledBorder("Amplitude [V]"));
     amplitudeSlider.setMajorTickSpacing(50);
     amplitudeSlider.setMinorTickSpacing(10);
@@ -122,13 +126,20 @@ public class ControlPanel extends ExperimentControlPanel {
     amplitudeSlider.setPaintLabels(true);
     amplitudeSlider.setSnapToTicks(true);
     Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
-    labelTable.put(-250, new JLabel("-2.5"));
-    labelTable.put(-200, new JLabel("-2"));
-    labelTable.put(-100, new JLabel("-1"));
-    labelTable.put(0, new JLabel("0"));
-    labelTable.put(100, new JLabel("1"));
-    labelTable.put(200, new JLabel("2"));
+
+    for (int i = -amplitude; i <= amplitude; i += 100) {
+      labelTable.put(i, new JLabel(i / 100 + ""));
+    }
+
+    //    labelTable.put(-250, new JLabel("-2.5"));
+    //    labelTable.put(-200, new JLabel("-2"));
+    //    labelTable.put(-100, new JLabel("-1"));
+    //    labelTable.put(0, new JLabel("0"));
+    //    labelTable.put(100, new JLabel("1"));
+    //    labelTable.put(200, new JLabel("2"));
+
     amplitudeSlider.setLabelTable(labelTable);
+
     c.gridy++;
     c.insets = new Insets(0, 6, 4, 6);
     amplitudeSlider.setPreferredSize(new Dimension(300, 80));
@@ -227,18 +238,10 @@ public class ControlPanel extends ExperimentControlPanel {
     startStopButton.setEnabled(enabled);
   }
 
-  public void updateEnergyGUI(
-      double appliedAmplitude,
-      double appliedCurrent,
-      double appliedEnergy,
-      double appliedMemristorEnergy) {
+  public void updateEnergyGUI(double appliedAmplitude, double appliedCurrent, double appliedEnergy, double appliedMemristorEnergy) {
 
     appliedAmplitudeLabel.setText("Applied Amplitude [V]: " + Util.round(appliedAmplitude, 2));
-    currentLabel.setText(
-        "Current ["
-            + PulsePreferences.CURRENT_UNIT.getLabel()
-            + "]: "
-            + Util.round(appliedCurrent, 3));
+    currentLabel.setText("Current [" + PulsePreferences.CURRENT_UNIT.getLabel() + "]: " + Util.round(appliedCurrent, 3));
     energyLabel.setText("Energy M+R [nJ]: " + Util.round(appliedEnergy, 3));
     energyMemRistorOnlyLabel.setText("Energy M [fJ]: " + Util.round(appliedMemristorEnergy, 3));
   }
@@ -281,4 +284,5 @@ public class ControlPanel extends ExperimentControlPanel {
 
     return memristorVoltageCheckBox;
   }
+
 }

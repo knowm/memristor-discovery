@@ -28,7 +28,10 @@ import java.awt.Insets;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferencesPanel;
 
@@ -48,6 +51,9 @@ public class PulsePreferencesPanel extends ExperimentPreferencesPanel {
 
   private JLabel numPulsesLabel;
   private JTextField numPulsesTextField;
+
+  private JLabel maxSliderVoltageLabel;
+  private JTextField maxSliderVoltageTextField;
 
   /**
    * Constructor
@@ -73,10 +79,8 @@ public class PulsePreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.seriesResistorTextField = new JTextField(12);
-    this.seriesResistorTextField.setText(
-        String.valueOf(
-            experimentPreferences.getInteger(
-                PulsePreferences.SERIES_R_INIT_KEY, PulsePreferences.SERIES_R_INIT_DEFAULT_VALUE)));
+    this.seriesResistorTextField
+        .setText(String.valueOf(experimentPreferences.getInteger(PulsePreferences.SERIES_R_INIT_KEY, PulsePreferences.SERIES_R_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(seriesResistorTextField, gc);
 
     gc.gridy++;
@@ -87,11 +91,8 @@ public class PulsePreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.amplitudeTextField = new JTextField(12);
-    this.amplitudeTextField.setText(
-        String.valueOf(
-            experimentPreferences.getFloat(
-                PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY,
-                PulsePreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
+    this.amplitudeTextField.setText(String
+        .valueOf(experimentPreferences.getFloat(PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY, PulsePreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
     preferencesPanel.add(amplitudeTextField, gc);
 
     gc.gridy++;
@@ -103,10 +104,7 @@ public class PulsePreferencesPanel extends ExperimentPreferencesPanel {
     gc.gridx = 1;
     this.pulseWidthTextField = new JTextField(12);
     this.pulseWidthTextField.setText(
-        String.valueOf(
-            experimentPreferences.getInteger(
-                PulsePreferences.PULSE_WIDTH_INIT_KEY,
-                PulsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE)));
+        String.valueOf(experimentPreferences.getInteger(PulsePreferences.PULSE_WIDTH_INIT_KEY, PulsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(pulseWidthTextField, gc);
 
     gc.gridy++;
@@ -117,10 +115,7 @@ public class PulsePreferencesPanel extends ExperimentPreferencesPanel {
     gc.gridx = 1;
     this.sampleRateTextField = new JTextField(12);
     this.sampleRateTextField.setText(
-        String.valueOf(
-            experimentPreferences.getInteger(
-                PulsePreferences.SAMPLE_RATE_INIT_KEY,
-                PulsePreferences.SAMPLE_RATE_INIT_DEFAULT_VALUE)));
+        String.valueOf(experimentPreferences.getInteger(PulsePreferences.SAMPLE_RATE_INIT_KEY, PulsePreferences.SAMPLE_RATE_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(sampleRateTextField, gc);
 
     gc.gridy++;
@@ -131,26 +126,40 @@ public class PulsePreferencesPanel extends ExperimentPreferencesPanel {
     gc.gridx = 1;
     this.numPulsesTextField = new JTextField(12);
     this.numPulsesTextField.setText(
-        String.valueOf(
-            experimentPreferences.getInteger(
-                PulsePreferences.NUM_PULSES_INIT_KEY,
-                PulsePreferences.NUM_PULSES_INIT_DEFAULT_VALUE)));
+        String.valueOf(experimentPreferences.getInteger(PulsePreferences.NUM_PULSES_INIT_KEY, PulsePreferences.NUM_PULSES_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(numPulsesTextField, gc);
+
+    // Slider control--->
+
+    gc.gridx = 0;
+    gc.gridy++;
+    preferencesPanel.add(new JLabel("Max Slider Controls"), gc);
+
+    gc.gridx = 1;
+    preferencesPanel.add(new JLabel("Requires Experiment Restart"), gc);
+
+    gc.gridy++;
+    gc.gridx = 0;
+    this.maxSliderVoltageLabel = new JLabel("Amplitude Voltage (Carefull!)");
+    preferencesPanel.add(maxSliderVoltageLabel, gc);
+
+    gc.gridx = 1;
+    this.maxSliderVoltageTextField = new JTextField(12);
+    this.maxSliderVoltageTextField.setText(String.valueOf(
+        experimentPreferences.getFloat(PulsePreferences.MAX_SLIDER_VOLTAGE_INIT_KEY, PulsePreferences.MAX_SLIDER_VOLTAGE_INIT_DEFAULT_VALUE)));
+    preferencesPanel.add(maxSliderVoltageTextField, gc);
+
   }
 
   @Override
   public void doSavePreferences() {
 
-    experimentPreferences.setInteger(
-        PulsePreferences.NUM_PULSES_INIT_KEY, Integer.parseInt(numPulsesTextField.getText()));
-    experimentPreferences.setInteger(
-        PulsePreferences.SERIES_R_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
-    experimentPreferences.setFloat(
-        PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(amplitudeTextField.getText()));
-    experimentPreferences.setInteger(
-        PulsePreferences.PULSE_WIDTH_INIT_KEY, Integer.parseInt(pulseWidthTextField.getText()));
-    experimentPreferences.setInteger(
-        PulsePreferences.SAMPLE_RATE_INIT_KEY, Integer.parseInt(sampleRateTextField.getText()));
+    experimentPreferences.setInteger(PulsePreferences.NUM_PULSES_INIT_KEY, Integer.parseInt(numPulsesTextField.getText()));
+    experimentPreferences.setInteger(PulsePreferences.SERIES_R_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
+    experimentPreferences.setFloat(PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(amplitudeTextField.getText()));
+    experimentPreferences.setInteger(PulsePreferences.PULSE_WIDTH_INIT_KEY, Integer.parseInt(pulseWidthTextField.getText()));
+    experimentPreferences.setInteger(PulsePreferences.SAMPLE_RATE_INIT_KEY, Integer.parseInt(sampleRateTextField.getText()));
+    experimentPreferences.setFloat(PulsePreferences.MAX_SLIDER_VOLTAGE_INIT_KEY, Float.parseFloat(maxSliderVoltageTextField.getText()));
   }
 
   @Override
