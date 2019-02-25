@@ -29,6 +29,7 @@ public abstract class ExperimentPreferences {
 
   public static final float R_SWITCH =
       73F; // Resistance of one of the DG445 switches. Old AD Switches are ~50.
+
   protected Preferences preferences;
 
   /**

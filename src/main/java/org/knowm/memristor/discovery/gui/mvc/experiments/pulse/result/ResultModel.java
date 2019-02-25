@@ -23,12 +23,10 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.pulse.result;
 
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
-import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferences;
 
 public class ResultModel extends ExperimentControlModel {
 
@@ -41,16 +39,6 @@ public class ResultModel extends ExperimentControlModel {
   Double yMinGV = null;
 
   List<Double> gData = new ArrayList<>();
-
-  /**
-   * Here is where the Controller registers itself as a listener to model changes.
-   *
-   * @param listener
-   */
-  public void addListener(PropertyChangeListener listener) {
-
-    swingPropertyChangeSupport.addPropertyChangeListener(listener);
-  }
 
   public Double getyMaxIV() {
 
@@ -92,17 +80,18 @@ public class ResultModel extends ExperimentControlModel {
     this.yMinGV = yMinGV;
   }
 
-  @Override
-  public ExperimentPreferences initAppPreferences() {
-
-    return new PulsePreferences();
-  }
-
-  @Override
-  public void loadModelFromPrefs() {}
-
   public List<Double> getGData() {
 
     return gData;
+  }
+
+  @Override
+  public ExperimentPreferences initAppPreferences() {
+    return null;
+  }
+
+  @Override
+  public void loadModelFromPrefs() {
+
   }
 }

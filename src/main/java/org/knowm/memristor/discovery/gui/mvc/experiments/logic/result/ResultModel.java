@@ -23,17 +23,15 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.logic.result;
 
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
-import org.knowm.memristor.discovery.gui.mvc.experiments.logic.LogicPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.logic.TraceDatum;
 
 public class ResultModel extends ExperimentControlModel {
 
-  List<List<TraceDatum>> traces = new ArrayList<List<TraceDatum>>();
+  List<List<TraceDatum>> traces = new ArrayList<>();
 
   public void addTrace(List<TraceDatum> trace) {
 
@@ -49,23 +47,13 @@ public class ResultModel extends ExperimentControlModel {
     return traces.size();
   }
 
-  /**
-   * Here is where the Controller registers itself as a listener to model changes.
-   *
-   * @param listener
-   */
-  @Override
-  public void addListener(PropertyChangeListener listener) {
-
-    swingPropertyChangeSupport.addPropertyChangeListener(listener);
-  }
-
   @Override
   public ExperimentPreferences initAppPreferences() {
-
-    return new LogicPreferences();
+    return null;
   }
 
   @Override
-  public void loadModelFromPrefs() {}
+  public void loadModelFromPrefs() {
+
+  }
 }

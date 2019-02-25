@@ -25,8 +25,10 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.classify.result;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 
-public class ResultModel {
+public class ResultModel extends ExperimentControlModel {
 
   private List<Double> trainAccuracy = new ArrayList<>();
   private List<List<Double>> synapticWeights = new ArrayList<>();
@@ -36,6 +38,16 @@ public class ResultModel {
     for (int i = 0; i < 8; i++) {
       synapticWeights.add(new ArrayList<Double>());
     }
+  }
+
+  @Override
+  public ExperimentPreferences initAppPreferences() {
+    return null;
+  }
+
+  @Override
+  public void loadModelFromPrefs() {
+
   }
 
   public List<Double> getTrainAccuracy() {

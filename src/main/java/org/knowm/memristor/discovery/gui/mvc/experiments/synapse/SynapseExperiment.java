@@ -41,23 +41,26 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.AHaHController_
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.result.ResultModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.result.ResultController;
+import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.result.ResultModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.result.ResultPanel;
 import org.knowm.memristor.discovery.utils.gpio.MuxController;
 
 public class SynapseExperiment extends Experiment {
 
   private static final float INIT_CONDUCTANCE = .0002f;
-  private final ControlModel controlModel = new ControlModel();
-  private final ResultModel plotModel = new ResultModel();
-  private final ResultController resultController;
+
   private final MuxController muxController;
   DecimalFormat df = new DecimalFormat("0.000E0");
   private InitSynapseWorker initSynapseWorker;
-  private ControlPanel controlPanel;
-  private ResultPanel plotPanel;
   private AHaHController_21 aHaHController;
+
+  private final ControlModel controlModel;
+  private ControlPanel controlPanel;
+
+  private final ResultModel resultModel;
+  private ResultPanel resultPanel;
+  private final ResultController resultController;
 
   /**
    * Constructor
@@ -69,18 +72,18 @@ public class SynapseExperiment extends Experiment {
 
     super(dwfProxy, mainFrameContainer, isV1Board);
 
+    controlModel = new ControlModel();
     controlPanel = new ControlPanel();
-    plotPanel = new ResultPanel();
-    resultController = new ResultController(plotPanel, plotModel);
     new ControlController(controlPanel, controlModel, dwfProxy);
-    System.out.println(controlModel.getInstruction());
+
+    resultModel = new ResultModel();
+    resultPanel = new ResultPanel();
+    resultController = new ResultController(resultPanel, resultModel);
+
     dwfProxy.setUpper8IOStates(controlModel.getInstruction().getBits());
 
     aHaHController = new AHaHController_21(controlModel);
     aHaHController.setdWFProxy(dwfProxy);
-    // aHaHController.setAmplitude(controlModel.getAmplitude());
-    // aHaHController.setCalculatedFrequency(controlModel.getCalculatedFrequency());
-    // aHaHController.setWaveform(controlModel.getWaveform());
 
     muxController = new MuxController();
   }
@@ -146,9 +149,14 @@ public class SynapseExperiment extends Experiment {
   }
 
   @Override
+  public ExperimentControlModel getResultModel() {
+    return resultModel;
+  }
+
+  @Override
   public ExperimentResultsPanel getResultPanel() {
 
-    return plotPanel;
+    return resultPanel;
   }
 
   @Override

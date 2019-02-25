@@ -28,7 +28,7 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCPreferences;
 
-public class ResultModel extends ExperimentControlModel {
+public class ResultModel extends ExperimentControlModel  {
 
   /** Min Max params */
   Double yMaxIV = null;
@@ -38,15 +38,7 @@ public class ResultModel extends ExperimentControlModel {
   Double yMaxGV = null;
   Double yMinGV = null;
 
-  /**
-   * Here is where the Controller registers itself as a listener to model changes.
-   *
-   * @param listener
-   */
-  public void addListener(PropertyChangeListener listener) {
 
-    swingPropertyChangeSupport.addPropertyChangeListener(listener);
-  }
 
   public Double getyMaxIV() {
 
@@ -90,10 +82,11 @@ public class ResultModel extends ExperimentControlModel {
 
   @Override
   public ExperimentPreferences initAppPreferences() {
-
-    return new DCPreferences();
+    return null;
   }
 
   @Override
-  public void loadModelFromPrefs() {}
+  public void loadModelFromPrefs() {
+
+  }
 }

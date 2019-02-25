@@ -408,6 +408,10 @@ public class BoardCheckExperiment extends Experiment {
   }
 
   @Override
+  public ExperimentControlModel getResultModel() {
+    return resultModel;
+  }
+  @Override
   public ExperimentResultsPanel getResultPanel() {
 
     return resultPanel;

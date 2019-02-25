@@ -46,6 +46,7 @@ public class DCExperiment extends Experiment {
 
   private final ControlModel controlModel;
   private ControlPanel controlPanel;
+
   private final ResultModel resultModel;
   private final ResultController resultController;
   private ResultPanel resultPanel;
@@ -63,6 +64,7 @@ public class DCExperiment extends Experiment {
     controlModel = new ControlModel();
     controlPanel = new ControlPanel();
     resultPanel = new ResultPanel();
+
     resultModel = new ResultModel();
     resultController = new ResultController(resultPanel, resultModel);
     new ControlController(controlPanel, resultPanel, controlModel, dwfProxy);
@@ -107,6 +109,10 @@ public class DCExperiment extends Experiment {
   public ExperimentControlPanel getControlPanel() {
 
     return controlPanel;
+  }
+  @Override
+  public ExperimentControlModel getResultModel() {
+    return resultModel;
   }
 
   @Override

@@ -38,14 +38,12 @@ import javax.swing.event.ChangeListener;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.result.ResultPanel;
 
 public class ControlController extends ExperimentControlController {
 
   private final ControlPanel controlPanel;
   private final ControlModel controlModel;
 
-  private final ResultPanel plotPanel;
   ActionListener waveformRadioButtonActionListener =
       new ActionListener() {
 
@@ -67,17 +65,14 @@ public class ControlController extends ExperimentControlController {
    * Constructor
    *
    * @param controlPanel
-   * @param plotPanel
    * @param controlModel
    * @param dwf
    */
-  public ControlController(
-      ControlPanel controlPanel, ResultPanel plotPanel, ControlModel controlModel, DWFProxy dwf) {
+  public ControlController(ControlPanel controlPanel, ControlModel controlModel, DWFProxy dwf) {
 
     super(controlPanel, controlModel);
 
     this.controlPanel = controlPanel;
-    this.plotPanel = plotPanel;
     this.controlModel = controlModel;
     dwf.addListener(this);
 
@@ -86,9 +81,6 @@ public class ControlController extends ExperimentControlController {
 
     // register the controller as the listener of the controlModel
     controlModel.addListener(this);
-
-    // init resetWaveform chart
-    plotPanel.switch2WaveformChart();
   }
 
   private void initGUIComponents() {
@@ -269,18 +261,6 @@ public class ControlController extends ExperimentControlController {
                   // parsing error, default back to previous value
                   textField.setText(Integer.toString(controlModel.getSeriesResistance()));
                 }
-              }
-            });
-
-    plotPanel
-        .getCaptureButton()
-        .addActionListener(
-            new ActionListener() {
-
-              @Override
-              public void actionPerformed(ActionEvent e) {
-
-                plotPanel.switch2CaptureChart();
               }
             });
   }

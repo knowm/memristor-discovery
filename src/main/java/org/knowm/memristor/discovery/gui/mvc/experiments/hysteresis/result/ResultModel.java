@@ -32,11 +32,13 @@ public class ResultModel extends ExperimentControlModel {
 
   /** Min Max params */
   Double yMaxIV = null;
+
   Double yMinIV = null;
   Double yMaxGV = null;
   Double yMinGV = null;
   /** Averaging params */
   private double ave = 0;
+
   private double k;
 
   /**
@@ -126,9 +128,9 @@ public class ResultModel extends ExperimentControlModel {
   public void loadModelFromPrefs() {
 
     k =
-        experimentPreferences.getDouble(
-            HysteresisPreferences.K_INIT_DOUBLE_KEY,
-            HysteresisPreferences.K_INIT_DOUBLE_DEFAULT_VALUE);
+        experimentPreferences.getFloat(
+            HysteresisPreferences.K_INIT_FLOAT_KEY,
+            HysteresisPreferences.K_INIT_FLOAT_DEFAULT_VALUE);
     swingPropertyChangeSupport.firePropertyChange(
         ExperimentControlModel.EVENT_PREFERENCES_UPDATE, true, false);
   }

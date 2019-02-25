@@ -31,14 +31,14 @@ import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.ConductancePreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.control.ControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.result.ResultModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.result.ResultController;
+import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.result.ResultModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.result.ResultPanel;
 import org.knowm.memristor.discovery.utils.PostProcessDataUtils;
 import org.knowm.memristor.discovery.utils.WaveformUtils;
@@ -46,12 +46,14 @@ import org.knowm.waveforms4j.DWF;
 
 public class PulseExperiment extends Experiment {
 
-  private final ControlModel controlModel = new ControlModel();
-  private final ResultModel plotModel = new ResultModel();
-  private final ResultController resultController;
-  boolean initialPulseTrainCaptured = false;
+  private final ControlModel controlModel;
   private ControlPanel controlPanel;
-  private ResultPanel plotPanel;
+
+  private final ResultModel resultModel;
+  private ResultPanel resultPanel;
+  private final ResultController resultController;
+
+  private boolean initialPulseTrainCaptured = false;
 
   /**
    * Constructor
@@ -63,11 +65,14 @@ public class PulseExperiment extends Experiment {
 
     super(dwfProxy, mainFrameContainer, isV1Board);
 
+    controlModel = new ControlModel();
+    // TODO remove passing in controlModel here
     controlPanel = new ControlPanel(controlModel);
-
-    plotPanel = new ResultPanel();
-    resultController = new ResultController(plotPanel, plotModel);
     new ControlController(controlPanel, controlModel, dwfProxy);
+
+    resultModel = new ResultModel();
+    resultPanel = new ResultPanel();
+    resultController = new ResultController(resultPanel, resultModel);
   }
 
   @Override
@@ -85,7 +90,7 @@ public class PulseExperiment extends Experiment {
 
     switch (propName) {
       case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
-        plotPanel.switch2WaveformChart();
+        resultPanel.switch2WaveformChart();
         resultController.updateWaveformChart(
             controlModel.getWaveformTimeData(),
             controlModel.getWaveformAmplitudeData(),
@@ -112,9 +117,14 @@ public class PulseExperiment extends Experiment {
   }
 
   @Override
+  public ExperimentControlModel getResultModel() {
+    return resultModel;
+  }
+
+  @Override
   public ExperimentResultsPanel getResultPanel() {
 
-    return plotPanel;
+    return resultPanel;
   }
 
   @Override
@@ -357,14 +367,14 @@ public class PulseExperiment extends Experiment {
             controlModel.getPulseWidth(),
             controlModel.getAmplitude());
 
-        if (plotPanel.getCaptureButton().isSelected()) {
-          plotPanel.switch2CaptureChart();
+        if (resultPanel.getCaptureButton().isSelected()) {
+          resultPanel.switch2CaptureChart();
           resultController.repaintVtChart();
-        } else if (plotPanel.getIVButton().isSelected()) {
-          plotPanel.switch2IVChart();
+        } else if (resultPanel.getIVButton().isSelected()) {
+          resultPanel.switch2IVChart();
           resultController.repaintItChart();
         } else {
-          plotPanel.switch2GVChart();
+          resultPanel.switch2GVChart();
           resultController.repaintGVChart();
         }
       } else {

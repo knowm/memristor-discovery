@@ -23,12 +23,10 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.synapse.result;
 
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
-import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.SynapsePreferences;
 
 public class ResultModel extends ExperimentControlModel {
 
@@ -47,17 +45,6 @@ public class ResultModel extends ExperimentControlModel {
   List<Double> gr1Data = new ArrayList<>();
   List<Double> gr2Data = new ArrayList<>();
   List<Double> vyData = new ArrayList<>();
-
-  /**
-   * Here is where the Controller registers itself as a listener to model changes.
-   *
-   * @param listener
-   */
-  @Override
-  public void addListener(PropertyChangeListener listener) {
-
-    swingPropertyChangeSupport.addPropertyChangeListener(listener);
-  }
 
   public void clearData() {
 
@@ -109,40 +96,26 @@ public class ResultModel extends ExperimentControlModel {
     this.yMinGV = yMinGV;
   }
 
-  @Override
-  public ExperimentPreferences initAppPreferences() {
-
-    return new SynapsePreferences();
-  }
-
-  @Override
-  public void loadModelFromPrefs() {}
-
-  /** @return the vyData */
   public List<Double> getVyData() {
 
     return vyData;
   }
 
-  /** @param vyData the vyData to set */
   public void setVyData(List<Double> vyData) {
 
     this.vyData = vyData;
   }
 
-  /** @return the gr1Data */
   public List<Double> getGr1Data() {
 
     return gr1Data;
   }
 
-  /** @param gr1Data the gr1Data to set */
   public void setGr1Data(List<Double> gr1Data) {
 
     this.gr1Data = gr1Data;
   }
 
-  /** @return the gr2Data */
   public List<Double> getGr2Data() {
 
     return gr2Data;
@@ -154,7 +127,6 @@ public class ResultModel extends ExperimentControlModel {
     this.gr2Data = gr2Data;
   }
 
-  /** @return the time1Data */
   public List<Double> getTime1Data() {
 
     return time1Data;
@@ -184,25 +156,18 @@ public class ResultModel extends ExperimentControlModel {
     return timeVyData;
   }
 
-  /** @param time3Data the time3Data to set */
   public void setTimeVyData(List<Double> timeVyData) {
 
     this.timeVyData = timeVyData;
   }
 
-  // /**
-  // * @return the gr3Data
-  // */
-  // public List<Double> getGr3Data() {
-  //
-  // return gr3Data;
-  // }
-  //
-  // /**
-  // * @param gr3Data the gr3Data to set
-  // */
-  // public void setGr3Data(List<Double> gr3Data) {
-  //
-  // this.gr3Data = gr3Data;
-  // }
+  @Override
+  public ExperimentPreferences initAppPreferences() {
+    return null;
+  }
+
+  @Override
+  public void loadModelFromPrefs() {
+
+  }
 }

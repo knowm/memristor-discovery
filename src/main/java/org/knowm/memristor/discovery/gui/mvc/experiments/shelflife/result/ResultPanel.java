@@ -37,7 +37,6 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 public class ResultPanel extends ExperimentResultsPanel {
 
   JTextArea consoleTextArea;
-  private ArrayList<String> lines = new ArrayList<>();
 
   /** Constructor */
   public ResultPanel() {
@@ -48,41 +47,26 @@ public class ResultPanel extends ExperimentResultsPanel {
     consoleTextArea = new JTextArea();
     consoleTextArea.setLineWrap(true);
     consoleTextArea.setWrapStyleWord(true);
-    // result.setAutoscrolls(true);
-
-    // Font font = new Font("Courier", Font.PLAIN, 12);
-
     consoleTextArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
-
     consoleTextArea.setForeground(Color.green);
     consoleTextArea.setBackground(Color.black);
 
     DefaultCaret caret = (DefaultCaret) consoleTextArea.getCaret();
     caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
-    Date now = new Date();
-    lines.add("" + now.toString());
-    lines.add("");
-
-    loadLinesToColsol();
-
     consoleTextArea.setLineWrap(true);
     consoleTextArea.setWrapStyleWord(true);
 
     JScrollPane scroll =
         new JScrollPane(
-            consoleTextArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+            consoleTextArea,
+            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+            JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
     add(scroll);
   }
 
-  public void clear() {
-
-    lines.clear();
-    loadLinesToColsol();
-  }
-
-  public void loadLinesToColsol() {
+  void loadLinesToConsole(ArrayList<String> lines) {
 
     StringBuilder sb = new StringBuilder();
     for (int i = 0; i < lines.size(); i++) {
@@ -90,21 +74,5 @@ public class ResultPanel extends ExperimentResultsPanel {
     }
 
     consoleTextArea.setText(sb.toString());
-  }
-
-  public void println(String newLine) {
-
-    lines.add(newLine);
-    loadLinesToColsol();
-  }
-
-  public ArrayList<String> getLines() {
-
-    return lines;
-  }
-
-  public void setLines(ArrayList<String> lines) {
-
-    this.lines = lines;
   }
 }

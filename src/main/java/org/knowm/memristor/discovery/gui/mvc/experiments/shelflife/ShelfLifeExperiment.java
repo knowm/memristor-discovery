@@ -31,31 +31,34 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.result.ResultModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.result.ResultController;
-import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.result.ResultPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.control.ControlPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.result.ResultController;
+import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.result.ResultModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.result.ResultPanel;
 
 public class ShelfLifeExperiment extends Experiment {
 
-  private final ControlModel controlModel = new ControlModel();
+  private final ControlModel controlModel;
   private final ControlPanel controlPanel;
 
-  private final ResultPanel plotPanel;
-  private final ResultModel plotModel = new ResultModel();
-  private final ResultController plotController;
+  private final ResultPanel resultPanel;
+  private final ResultModel resultModel;
+  private final ResultController resultController;
 
   /** Constructor */
   public ShelfLifeExperiment(DWFProxy dwfProxy, Container mainFrameContainer, boolean isV1Board) {
 
     super(dwfProxy, mainFrameContainer, isV1Board);
 
+    controlModel = new ControlModel();
     controlPanel = new ControlPanel();
-    plotPanel = new ResultPanel();
-    plotController = new ResultController(plotPanel, plotModel);
     new ControlController(controlPanel, controlModel, dwfProxy);
+
+    resultPanel = new ResultPanel();
+    resultModel = new ResultModel();
+    resultController = new ResultController(resultPanel, resultModel);
   }
 
   /*
@@ -64,7 +67,8 @@ public class ShelfLifeExperiment extends Experiment {
   @Override
   public void addWorkersToButtonEvents() {
 
-    // don't need anything here as we're leveraging the default Start/Stop button and the default CaptureWorker
+    // don't need anything here as we're leveraging the default Start/Stop button and the default
+    // CaptureWorker
 
   }
 
@@ -105,9 +109,14 @@ public class ShelfLifeExperiment extends Experiment {
   }
 
   @Override
+  public ExperimentControlModel getResultModel() {
+    return resultModel;
+  }
+
+  @Override
   public ExperimentResultsPanel getResultPanel() {
 
-    return plotPanel;
+    return resultPanel;
   }
 
   @Override

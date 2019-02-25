@@ -35,8 +35,8 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control.ControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.result.ResultModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.result.ResultController;
+import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.result.ResultModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.result.ResultPanel;
 import org.knowm.memristor.discovery.utils.Util;
 import org.knowm.memristor.discovery.utils.WaveformUtils;
@@ -45,11 +45,11 @@ import org.knowm.waveforms4j.DWF.AcquisitionMode;
 
 public class HysteresisExperiment extends Experiment {
 
-  private final ControlModel controlModel = new ControlModel();
+  private final ControlModel controlModel;
   private final ControlPanel controlPanel;
 
-  private final ResultPanel plotPanel;
-  private final ResultModel plotModel = new ResultModel();
+  private final ResultPanel resultPanel;
+  private final ResultModel resultModel;
   private final ResultController resultController;
 
   /**
@@ -62,10 +62,13 @@ public class HysteresisExperiment extends Experiment {
 
     super(dwfProxy, mainFrameContainer, isV1Board);
 
+    controlModel = new ControlModel();
     controlPanel = new ControlPanel();
-    plotPanel = new ResultPanel();
-    resultController = new ResultController(plotPanel, plotModel);
     new ControlController(controlPanel, controlModel, dwfProxy);
+
+    resultModel = new ResultModel();
+    resultPanel = new ResultPanel();
+    resultController = new ResultController(resultPanel, resultModel);
   }
 
   @Override
@@ -96,7 +99,7 @@ public class HysteresisExperiment extends Experiment {
                   controlModel.getOffset(),
                   50);
         } else {
-          plotPanel.switch2WaveformChart();
+          resultPanel.switch2WaveformChart();
           resultController.udpateWaveformChart(
               controlModel.getWaveformTimeData(),
               controlModel.getWaveformAmplitudeData(),
@@ -143,9 +146,14 @@ public class HysteresisExperiment extends Experiment {
   }
 
   @Override
+  public ExperimentControlModel getResultModel() {
+    return resultModel;
+  }
+
+  @Override
   public ExperimentResultsPanel getResultPanel() {
 
-    return plotPanel;
+    return resultPanel;
   }
 
   @Override
@@ -207,7 +215,7 @@ public class HysteresisExperiment extends Experiment {
           double[] rawdata2 =
               dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
 
-          if (plotPanel.getCaptureButton().isSelected()) { // Capture
+          if (resultPanel.getCaptureButton().isSelected()) { // Capture
 
             // Calculate time data
             double[] timeData = new double[rawdata1.length];
@@ -220,7 +228,7 @@ public class HysteresisExperiment extends Experiment {
               timeData[i] = i * timeStep;
             }
             publish(new double[][] {rawdata1, rawdata2, timeData});
-          } else if (plotPanel.getIVButton().isSelected()) { // IV
+          } else if (resultPanel.getIVButton().isSelected()) { // IV
 
             // create current data
             double[] current = new double[rawdata2.length];
@@ -254,8 +262,9 @@ public class HysteresisExperiment extends Experiment {
 
               G = G < 0 ? 0 : G;
 
-              double ave = (1 - plotModel.getK()) * (plotModel.getAve()) + plotModel.getK() * (G);
-              plotModel.setAve(ave);
+              double ave =
+                  (1 - resultModel.getK()) * (resultModel.getAve()) + resultModel.getK() * (G);
+              resultModel.setAve(ave);
 
               conductance[i] = ave;
               voltage[i] = rawdata1[i] - rawdata2[i];
@@ -283,7 +292,7 @@ public class HysteresisExperiment extends Experiment {
 
         double[][] newestChunk = chunks.get(chunks.size() - 1);
 
-        if (plotPanel.getCaptureButton().isSelected()) {
+        if (resultPanel.getCaptureButton().isSelected()) {
           resultController.udpateVtChartData(
               newestChunk[0],
               newestChunk[1],
@@ -291,8 +300,8 @@ public class HysteresisExperiment extends Experiment {
               controlModel.getFrequency(),
               controlModel.getAmplitude(),
               controlModel.getOffset());
-          plotPanel.switch2CaptureChart();
-        } else if (plotPanel.getIVButton().isSelected()) {
+          resultPanel.switch2CaptureChart();
+        } else if (resultPanel.getIVButton().isSelected()) {
           resultController.udpateIVChartData(
               newestChunk[0],
               newestChunk[1],
@@ -300,7 +309,7 @@ public class HysteresisExperiment extends Experiment {
               controlModel.getFrequency(),
               controlModel.getAmplitude(),
               controlModel.getOffset());
-          plotPanel.switch2IVChart();
+          resultPanel.switch2IVChart();
         } else {
           resultController.updateGVChartData(
               newestChunk[0],
@@ -309,7 +318,7 @@ public class HysteresisExperiment extends Experiment {
               controlModel.getFrequency(),
               controlModel.getAmplitude(),
               controlModel.getOffset());
-          plotPanel.switch2GVChart();
+          resultPanel.switch2GVChart();
         }
       }
 

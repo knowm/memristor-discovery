@@ -55,6 +55,9 @@ public class ResultController implements PropertyChangeListener {
 
     // init waveform chart
     resultPanel.switch2WaveformChart();
+
+    // register the controller as the listener of the model
+    resultModel.addListener(this);
   }
 
   public void initGUIComponents() {
@@ -67,7 +70,7 @@ public class ResultController implements PropertyChangeListener {
 
   private void initGUIComponentsFromModel() {
 
-    resultPanel.getkTextFieldGV().setText("" + resultModel.getK());
+    resultPanel.getkTextFieldGV().setText("" + Util.round(resultModel.getK(), 2));
   }
 
   private void setUpViewEvents() {

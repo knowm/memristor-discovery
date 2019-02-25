@@ -33,8 +33,10 @@ public abstract class ExperimentControlModel {
   public static final String EVENT_FREQUENCY_UPDATE = "EVENT_FREQUENCY_UPDATE";
   public static final String EVENT_PREFERENCES_UPDATE = "EVENT_PREFERENCES_UPDATE";
   public static final String EVENT_NEW_CONSOLE_LOG = "EVENT_NEW_CONSOLE_LOG";
+
   /** runtime variables */
   public int seriesResistance;
+
   public SwingPropertyChangeSupport swingPropertyChangeSupport;
   protected ExperimentPreferences experimentPreferences;
   private boolean isStartToggled = false;
@@ -66,7 +68,7 @@ public abstract class ExperimentControlModel {
     return isStartToggled;
   }
 
-  public void setStartToggled(boolean isStartToggled) {
+  void setStartToggled(boolean isStartToggled) {
 
     this.isStartToggled = isStartToggled;
   }

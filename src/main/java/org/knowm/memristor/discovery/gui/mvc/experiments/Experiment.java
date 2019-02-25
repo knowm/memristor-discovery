@@ -63,6 +63,8 @@ public abstract class Experiment implements PropertyChangeListener {
 
   public abstract ExperimentControlPanel getControlPanel();
 
+  public abstract ExperimentControlModel getResultModel();
+
   public abstract ExperimentResultsPanel getResultPanel();
 
   public abstract SwingWorker getCaptureWorker();
@@ -90,7 +92,7 @@ public abstract class Experiment implements PropertyChangeListener {
 
     getControlModel().addListener(this);
 
-    // Most experiments have a Start/Stop button, so we attach the default CaptureWorker to it's
+    // Most experiments have a Start/Stop button, so we attach the default CaptureWorker to its
     // click events here. This doesn't mean that the experiment HAS to use the default CaptureWorker
     getControlPanel()
         .getStartStopButton()
@@ -143,5 +145,6 @@ public abstract class Experiment implements PropertyChangeListener {
   public void refreshModelFromPreferences() {
 
     getControlModel().loadModelFromPrefs();
+    getResultModel().loadModelFromPrefs();
   }
 }

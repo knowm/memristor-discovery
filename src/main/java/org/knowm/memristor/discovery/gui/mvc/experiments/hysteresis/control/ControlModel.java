@@ -35,7 +35,6 @@ import org.slf4j.LoggerFactory;
 
 public class ControlModel extends ExperimentControlModel {
 
-  private final Logger logger = LoggerFactory.getLogger(ControlModel.class);
   private final double[] waveformTimeData = new double[HysteresisPreferences.CAPTURE_BUFFER_SIZE];
   private final double[] waveformAmplitudeData =
       new double[HysteresisPreferences.CAPTURE_BUFFER_SIZE];

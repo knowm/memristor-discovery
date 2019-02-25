@@ -42,22 +42,24 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.classify.ClassifyPrefer
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.control.ControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.classify.result.ResultModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.result.ResultController;
+import org.knowm.memristor.discovery.gui.mvc.experiments.classify.result.ResultModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.result.ResultPanel;
 
 public class ClassifyExperiment extends Experiment {
 
-  private final ControlModel controlModel = new ControlModel();
-  private final ResultModel resultModel = new ResultModel();
+  private final ControlModel controlModel;
+  private ControlPanel controlPanel;
+
+  private final ResultModel resultModel;
   private final ResultController resultController;
+  private ResultPanel resultPanel;
+
   // exponential running average for measuring train accuracy.
   double trainAccuracy = 0;
   double k = .05f;
   private SwingWorker runTrialWorker;
   private SwingWorker resetWorker;
-  private ControlPanel controlPanel;
-  private ResultPanel plotPanel;
   private AHaHController_21 aHaHController;
 
   /**
@@ -70,9 +72,12 @@ public class ClassifyExperiment extends Experiment {
 
     super(dwfProxy, mainFrameContainer, isV1Board);
 
+    controlModel = new ControlModel();
     controlPanel = new ControlPanel();
-    plotPanel = new ResultPanel();
-    resultController = new ResultController(plotPanel, resultModel);
+    resultPanel = new ResultPanel();
+
+    resultModel = new ResultModel();
+    resultController = new ResultController(resultPanel, resultModel);
     new ControlController(controlPanel, controlModel, dwfProxy);
 
     aHaHController = new AHaHController_21(controlModel);
@@ -184,9 +189,14 @@ public class ClassifyExperiment extends Experiment {
   }
 
   @Override
+  public ExperimentControlModel getResultModel() {
+    return resultModel;
+  }
+
+  @Override
   public ExperimentResultsPanel getResultPanel() {
 
-    return plotPanel;
+    return resultPanel;
   }
 
   @Override

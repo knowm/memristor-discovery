@@ -24,31 +24,26 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.result;
 
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.ShelfLifePreferences;
 
 public class ResultModel extends ExperimentControlModel {
 
-  private String consoleContents = "";
+  private final ArrayList<String> lines = new ArrayList<>();
 
-  /**
-   * Here is where the Controller registers itself as a listener to model changes.
-   *
-   * @param listener
-   */
-  @Override
-  public void addListener(PropertyChangeListener listener) {
-
-    swingPropertyChangeSupport.addPropertyChangeListener(listener);
+  ArrayList<String> getLines() {
+    return lines;
   }
 
   @Override
   public ExperimentPreferences initAppPreferences() {
-
-    return new ShelfLifePreferences();
+    return null;
   }
 
   @Override
-  public void loadModelFromPrefs() {}
+  public void loadModelFromPrefs() {
+
+  }
 }

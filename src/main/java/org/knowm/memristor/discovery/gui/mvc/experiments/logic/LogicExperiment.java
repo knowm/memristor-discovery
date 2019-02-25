@@ -42,20 +42,23 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.logic.LogicPreferences.
 import org.knowm.memristor.discovery.gui.mvc.experiments.logic.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.logic.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.logic.control.ControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.logic.result.ResultModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.logic.result.ResultController;
+import org.knowm.memristor.discovery.gui.mvc.experiments.logic.result.ResultModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.logic.result.ResultPanel;
 
 public class LogicExperiment extends Experiment {
 
-  private final ControlModel controlModel = new ControlModel();
-  private final ResultModel plotModel = new ResultModel();
-  private final ResultController resultController;
   private SwingWorker routineWorker;
   private SwingWorker runTrialsWorker;
   private SwingWorker resetWorker;
+
+  private final ControlModel controlModel;
   private ControlPanel controlPanel;
-  private ResultPanel plotPanel;
+
+  private final ResultModel resultModel;
+  private ResultPanel resultPanel;
+  private final ResultController resultController;
+
   private AHaHController_21 aHaHController;
 
   // private static final double MAX_G = .001;// init of synapses will terminate if one or the other
@@ -71,10 +74,13 @@ public class LogicExperiment extends Experiment {
 
     super(dwfProxy, mainFrameContainer, isV1Board);
 
+    controlModel = new ControlModel();
     controlPanel = new ControlPanel();
-    plotPanel = new ResultPanel();
-    resultController = new ResultController(plotPanel, plotModel);
     new ControlController(controlPanel, controlModel, dwfProxy);
+
+    resultModel = new ResultModel();
+    resultPanel = new ResultPanel();
+    resultController = new ResultController(resultPanel, resultModel);
 
     aHaHController = new AHaHController_21(controlModel);
     aHaHController.setdWFProxy(dwfProxy);
@@ -89,7 +95,7 @@ public class LogicExperiment extends Experiment {
           @Override
           public void actionPerformed(ActionEvent e) {
 
-            plotModel.clearAllTraces();
+            resultModel.clearAllTraces();
             resultController.resetChart();
           }
         });
@@ -259,9 +265,14 @@ public class LogicExperiment extends Experiment {
   }
 
   @Override
+  public ExperimentControlModel getResultModel() {
+    return resultModel;
+  }
+
+  @Override
   public ExperimentResultsPanel getResultPanel() {
 
-    return plotPanel;
+    return resultPanel;
   }
 
   @Override
