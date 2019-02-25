@@ -45,11 +45,10 @@ import org.knowm.waveforms4j.DWF;
 public class DCExperiment extends Experiment {
 
   private final ControlModel controlModel = new ControlModel();
-  private ControlPanel controlPanel;
-
-  private PlotPanel plotPanel;
   private final PlotControlModel plotModel = new PlotControlModel();
   private final PlotController plotController;
+  private ControlPanel controlPanel;
+  private PlotPanel plotPanel;
 
   /**
    * Constructor
@@ -69,6 +68,56 @@ public class DCExperiment extends Experiment {
 
   @Override
   public void doCreateAndShowGUI() {}
+
+  /**
+   * These property change events are triggered in the controlModel in the case where the underlying
+   * controlModel is updated. Here, the controller can respond to those events and make sure the
+   * corresponding GUI components get updated.
+   */
+  @Override
+  public void propertyChange(PropertyChangeEvent evt) {
+
+    switch (evt.getPropertyName()) {
+      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
+        if (!controlModel.isStartToggled()) {
+
+          plotPanel.switch2WaveformChart();
+          plotController.updateWaveformChart(
+              controlModel.getWaveformTimeData(),
+              controlModel.getWaveformAmplitudeData(),
+              controlModel.getAmplitude(),
+              controlModel.getPeriod());
+        }
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  @Override
+  public ExperimentControlModel getControlModel() {
+
+    return controlModel;
+  }
+
+  @Override
+  public ExperimentControlPanel getControlPanel() {
+
+    return controlPanel;
+  }
+
+  @Override
+  public ExperimentPlotPanel getPlotPanel() {
+
+    return plotPanel;
+  }
+
+  @Override
+  public SwingWorker getCaptureWorker() {
+
+    return new CaptureWorker();
+  }
 
   private class CaptureWorker extends SwingWorker<Boolean, double[][]> {
 
@@ -200,55 +249,5 @@ public class DCExperiment extends Experiment {
       }
       controlPanel.getStartStopButton().doClick();
     }
-  }
-
-  /**
-   * These property change events are triggered in the controlModel in the case where the underlying
-   * controlModel is updated. Here, the controller can respond to those events and make sure the
-   * corresponding GUI components get updated.
-   */
-  @Override
-  public void propertyChange(PropertyChangeEvent evt) {
-
-    switch (evt.getPropertyName()) {
-      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
-        if (!controlModel.isStartToggled()) {
-
-          plotPanel.switch2WaveformChart();
-          plotController.updateWaveformChart(
-              controlModel.getWaveformTimeData(),
-              controlModel.getWaveformAmplitudeData(),
-              controlModel.getAmplitude(),
-              controlModel.getPeriod());
-        }
-        break;
-
-      default:
-        break;
-    }
-  }
-
-  @Override
-  public ExperimentControlModel getControlModel() {
-
-    return controlModel;
-  }
-
-  @Override
-  public ExperimentControlPanel getControlPanel() {
-
-    return controlPanel;
-  }
-
-  @Override
-  public ExperimentPlotPanel getPlotPanel() {
-
-    return plotPanel;
-  }
-
-  @Override
-  public SwingWorker getCaptureWorker() {
-
-    return new CaptureWorker();
   }
 }

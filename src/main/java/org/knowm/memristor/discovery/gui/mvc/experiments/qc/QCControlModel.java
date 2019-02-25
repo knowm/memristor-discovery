@@ -36,31 +36,18 @@ import org.slf4j.LoggerFactory;
 
 public class QCControlModel extends ExperimentControlModel {
 
-  private final Logger logger = LoggerFactory.getLogger(QCControlModel.class);
-
-  /** Save Path */
-  private String savePath;
-
-  private String serialNumber = "";
-
-  private ChipType chipType = ChipType.BSAF_W;
-
-  public enum ChipType {
-    BSAF_W,
-    BSAF_Sn,
-    BSAF_Cr,
-    BSAF_C
-  };
-
   /** Waveform */
   public final DWF.Waveform waveform = DWF.Waveform.Sine;
-
+  private final Logger logger = LoggerFactory.getLogger(QCControlModel.class);
+  private final double[] waveformTimeData = new double[QCPreferences.CAPTURE_BUFFER_SIZE];
+  private final double[] waveformAmplitudeData = new double[QCPreferences.CAPTURE_BUFFER_SIZE];
+  /** Save Path */
+  private String savePath;;
+  private String serialNumber = "";
+  private ChipType chipType = ChipType.BSAF_W;
   private float amplitude;
   private int frequency;
   private float offset;
-  private final double[] waveformTimeData = new double[QCPreferences.CAPTURE_BUFFER_SIZE];
-  private final double[] waveformAmplitudeData = new double[QCPreferences.CAPTURE_BUFFER_SIZE];
-
   /** Series R */
   private int seriesR;
 
@@ -127,14 +114,14 @@ public class QCControlModel extends ExperimentControlModel {
     }
   }
 
-  // ///////////////////////////////////////////////////////////
-  // GETTERS AND SETTERS //////////////////////////////////////
-  // ///////////////////////////////////////////////////////////
-
   public Waveform getWaveform() {
 
     return waveform;
   }
+
+  // ///////////////////////////////////////////////////////////
+  // GETTERS AND SETTERS //////////////////////////////////////
+  // ///////////////////////////////////////////////////////////
 
   public float getAmplitude() {
 
@@ -238,13 +225,20 @@ public class QCControlModel extends ExperimentControlModel {
     return new QCPreferences();
   }
 
+  public ChipType getChipType() {
+
+    return chipType;
+  }
+
   public void setChipType(ChipType chipType) {
 
     this.chipType = chipType;
   }
 
-  public ChipType getChipType() {
-
-    return chipType;
+public enum ChipType {
+    BSAF_W,
+    BSAF_Sn,
+    BSAF_Cr,
+    BSAF_C
   }
 }

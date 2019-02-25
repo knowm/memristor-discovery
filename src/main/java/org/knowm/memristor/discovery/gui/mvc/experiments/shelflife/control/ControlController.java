@@ -21,50 +21,69 @@
  * <p>If you have any questions regarding our licensing policy, please contact us at
  * `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.consol;
+package org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.control;
 
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import org.knowm.memristor.discovery.DWFProxy;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 
-public class ConsolController implements PropertyChangeListener {
+public class ControlController extends ExperimentControlController {
 
-  private final ConsolPanel consolPanel;
-  private final ConsolControlModel consolModel;
+  private final ControlPanel controlPanel;
+
+  private final ControlModel controlModel;
 
   /**
    * Constructor
    *
-   * @param consolPanel
-   * @param consolModel
+   * @param controlPanel
+   * @param controlModel
+   * @param dwf
    */
-  public ConsolController(ConsolPanel consolPanel, ConsolControlModel consolModel) {
+  public ControlController(ControlPanel controlPanel, ControlModel controlModel, DWFProxy dwf) {
 
-    this.consolPanel = consolPanel;
-    this.consolModel = consolModel;
+    super(controlPanel, controlModel);
+    this.controlPanel = controlPanel;
+    this.controlModel = controlModel;
+    dwf.addListener(this);
 
     initGUIComponents();
     setUpViewEvents();
+
+    // register the controller as the listener of the controlModel
+    controlModel.addListener(this);
   }
 
-  public void initGUIComponents() {
+  private void initGUIComponents() {
 
     initGUIComponentsFromModel();
   }
 
   private void initGUIComponentsFromModel() {}
 
-  private void setUpViewEvents() {}
+  /** Here, all the action listeners are attached to the GUI components */
+  @Override
+  public void doSetUpViewEvents() {
+
+    // Is this really true? They appear to be set up in the experiment.
+
+  }
 
   /**
-   * These property change events are triggered in the model in the case where the underlying model
-   * is updated. Here, the controller can respond to those events and make sure the corresponding
-   * GUI components get updated.
+   * These property change events are triggered in the controlModel in the case where the underlying
+   * controlModel is updated. Here, the controller can respond to those events and make sure the
+   * corresponding GUI components get updated.
    */
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
 
     switch (evt.getPropertyName()) {
+      case DWFProxy.AD2_STARTUP_CHANGE:
+        controlPanel.enableAllChildComponents((Boolean) evt.getNewValue());
+
+        break;
+
       case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
         initGUIComponentsFromModel();
         break;

@@ -47,16 +47,6 @@ public abstract class Experiment implements PropertyChangeListener {
 
   private SwingWorker experimentCaptureWorker;
 
-  public abstract ExperimentControlModel getControlModel();
-
-  public abstract ExperimentControlPanel getControlPanel();
-
-  public abstract ExperimentPlotPanel getPlotPanel();
-
-  public abstract SwingWorker getCaptureWorker();
-
-  public abstract void doCreateAndShowGUI();
-
   /**
    * Constructor
    *
@@ -68,6 +58,16 @@ public abstract class Experiment implements PropertyChangeListener {
     this.mainFrameContainer = mainFrameContainer;
     this.isV1Board = isV1Board;
   }
+
+  public abstract ExperimentControlModel getControlModel();
+
+  public abstract ExperimentControlPanel getControlPanel();
+
+  public abstract ExperimentPlotPanel getPlotPanel();
+
+  public abstract SwingWorker getCaptureWorker();
+
+  public abstract void doCreateAndShowGUI();
 
   public void createAndShowGUI() {
 

@@ -21,8 +21,9 @@
  * <p>If you have any questions regarding our licensing policy, please contact us at
  * `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.experiments.dc;
+package org.knowm.memristor.discovery.gui.mvc.experiments.shelflife;
 
+import java.util.concurrent.TimeUnit;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 
 /**
@@ -30,29 +31,20 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
  *
  * @author timmolter
  */
-public class DCPreferences extends ExperimentPreferences {
+public class ShelfLifePreferences extends ExperimentPreferences {
 
-  public static final String WAVEFORM_INIT_STRING_DEFAULT_VALUE = "SawtoothUpDown";
-  public static final int NUM_PULSES_INIT_DEFAULT_VALUE = 2;
-  public static final int SERIES_R_INIT_DEFAULT_VALUE = 5_000;
-  public static final float AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE = 0.1f;
-  public static final int PERIOD_INIT_DEFAULT_VALUE = 5;
-  public static final CurrentUnits CURRENT_UNIT = CurrentUnits.MicroAmps;
-  public static final ResistanceUnits RESISTANCE_UNIT = ResistanceUnits.KiloOhms;
-  public static final ConductanceUnits CONDUCTANCE_UNIT = ConductanceUnits.MilliSiemens;
-  public static final TimeUnits TIME_UNIT = TimeUnits.MilliSeconds;
-  private static final String PREFIX = "DC_";
-  public static final String WAVEFORM_INIT_STRING_KEY = PREFIX + "WAVEFORM_INIT_STRING_KEY";
-
-  ///////////////////////////////////////////////////////////////////////////////////////
-  public static final String NUM_PULSES_INIT_KEY = PREFIX + "NUM_PULSES_INIT_KEY";
+  public static final int SERIES_R_INIT_DEFAULT_VALUE = 1_000;
+  public static final String TIME_UNIT_DEFAULT_VALUE = TimeUnit.SECONDS.name();
+  public static final Integer REPEAT_INTERVAL_DEFAULT_VALUE = 1;
+  public static final int CAPTURE_BUFFER_SIZE = 8000;
+  private static final String PREFIX = "SHELFLIFE_";
   public static final String SERIES_R_INIT_KEY = PREFIX + "SERIES_R_INIT_KEY";
-  public static final String AMPLITUDE_INIT_FLOAT_KEY = PREFIX + "AMPLITUDE_INIT_FLOAT_KEY";
-  public static final String PERIOD_INIT_KEY = PREFIX + "PERIOD_INIT_KEY";
+  public static final String TIME_UNIT_INIT_KEY = PREFIX + "TIME_UNIT_INIT_KEY";
+  public static final String REPEAT_INTERVAL_INIT_KEY = PREFIX + "REPEAT_INTERVAL";
 
   /** Constructor */
-  public DCPreferences() {
+  public ShelfLifePreferences() {
 
-    super(DCPreferences.class);
+    super(ShelfLifePreferences.class);
   }
 }

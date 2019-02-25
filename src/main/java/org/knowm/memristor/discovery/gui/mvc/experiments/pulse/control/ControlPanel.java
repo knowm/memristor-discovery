@@ -52,22 +52,16 @@ public class ControlPanel extends ExperimentControlPanel {
   private final JLabel currentLabel;
   private final JLabel energyLabel;
   private final JLabel energyMemRistorOnlyLabel;
-
-  private JComboBox<Waveform> waveformComboBox;
-
   private final JCheckBox memristorVoltageCheckBox;
-
   private final JSlider amplitudeSlider;
   private final JSlider pulseWidthSlider;
   private final JSlider pulseWidthSliderNs;
-
   private final JSlider pulseNumberSlider;
-
   private final JLabel seriesLabel;
   private final JTextField seriesTextField;
-
   private final JLabel sampleRateLabel;
   private final JTextField sampleRateTextField;
+  private JComboBox<Waveform> waveformComboBox;
 
   /** Constructor */
   public ControlPanel(ControlModel controlModel) {
@@ -114,7 +108,9 @@ public class ControlPanel extends ExperimentControlPanel {
     memristorVoltageCheckBox = new JCheckBox("Memristor Voltage Drop");
     add(memristorVoltageCheckBox, c);
 
-    //  int amplitude= experimentPreferences.getInteger(PulsePreferences.MAX_SLIDER_VOLTAGE_INIT_KEY, PulsePreferences.MAX_SLIDER_VOLTAGE_INIT_DEFAULT_VALUE)
+    //  int amplitude=
+    // experimentPreferences.getInteger(PulsePreferences.MAX_SLIDER_VOLTAGE_INIT_KEY,
+    // PulsePreferences.MAX_SLIDER_VOLTAGE_INIT_DEFAULT_VALUE)
 
     int amplitude = (int) (100 * controlModel.getMaxSliderVoltageAmplitude());
 
@@ -184,7 +180,6 @@ public class ControlPanel extends ExperimentControlPanel {
       if (i % 5 == 0 || i == 1 || i == maxPulseNumber) {
         labelTable.put(i, new JLabel("" + i));
       }
-
     }
 
     pulseNumberSlider.setLabelTable(labelTable);
@@ -239,10 +234,18 @@ public class ControlPanel extends ExperimentControlPanel {
     startStopButton.setEnabled(enabled);
   }
 
-  public void updateEnergyGUI(double appliedAmplitude, double appliedCurrent, double appliedEnergy, double appliedMemristorEnergy) {
+  public void updateEnergyGUI(
+      double appliedAmplitude,
+      double appliedCurrent,
+      double appliedEnergy,
+      double appliedMemristorEnergy) {
 
     appliedAmplitudeLabel.setText("Applied Amplitude [V]: " + Util.round(appliedAmplitude, 2));
-    currentLabel.setText("Current [" + PulsePreferences.CURRENT_UNIT.getLabel() + "]: " + Util.round(appliedCurrent, 3));
+    currentLabel.setText(
+        "Current ["
+            + PulsePreferences.CURRENT_UNIT.getLabel()
+            + "]: "
+            + Util.round(appliedCurrent, 3));
     energyLabel.setText("Energy M+R [nJ]: " + Util.round(appliedEnergy, 3));
     energyMemRistorOnlyLabel.setText("Energy M [fJ]: " + Util.round(appliedMemristorEnergy, 3));
   }
@@ -285,5 +288,4 @@ public class ControlPanel extends ExperimentControlPanel {
 
     return memristorVoltageCheckBox;
   }
-
 }

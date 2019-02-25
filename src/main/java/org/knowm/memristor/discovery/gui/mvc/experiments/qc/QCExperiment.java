@@ -178,6 +178,71 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
     model.addListener(this);
   }
 
+  /**
+   * These property change events are triggered in the model in the case where the underlying model
+   * is updated. Here, the controller can respond to those events and make sure the corresponding
+   * GUI components get updated.
+   */
+  @Override
+  public void propertyChange(PropertyChangeEvent evt) {
+
+    String propName = evt.getPropertyName();
+
+    // System.out.println("propName: " + propName);
+
+    switch (propName) {
+      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
+        if (true) { // TODO fix this when converting to new experiment abstraction
+
+          // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
+          captureWorker.cancel(true);
+
+          try {
+            Thread.sleep(10);
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+
+          // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
+          captureWorker = new QCCaptureWorker();
+          captureWorker.execute();
+
+          mainPanel.switch2IVChart();
+        }
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  @Override
+  public ExperimentControlModel getControlModel() {
+
+    return model;
+  }
+
+  @Override
+  public ExperimentControlPanel getControlPanel() {
+
+    return controlPanel;
+  }
+
+  @Override
+  public SwingWorker getCaptureWorker() {
+
+    return new QCCaptureWorker();
+  }
+
+  @Override
+  public void doCreateAndShowGUI() {}
+
+  @Override
+  public ExperimentPlotPanel getPlotPanel() {
+
+    return null;
+  }
+
   private class QCCaptureWorker extends SwingWorker<Boolean, double[][]> {
 
     @Override
@@ -473,70 +538,5 @@ public class QCExperiment extends Experiment implements PropertyChangeListener {
       } catch (InterruptedException e) {
       }
     }
-  }
-
-  /**
-   * These property change events are triggered in the model in the case where the underlying model
-   * is updated. Here, the controller can respond to those events and make sure the corresponding
-   * GUI components get updated.
-   */
-  @Override
-  public void propertyChange(PropertyChangeEvent evt) {
-
-    String propName = evt.getPropertyName();
-
-    // System.out.println("propName: " + propName);
-
-    switch (propName) {
-      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
-        if (true) { // TODO fix this when converting to new experiment abstraction
-
-          // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
-          captureWorker.cancel(true);
-
-          try {
-            Thread.sleep(10);
-          } catch (InterruptedException e) {
-            e.printStackTrace();
-          }
-
-          // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
-          captureWorker = new QCCaptureWorker();
-          captureWorker.execute();
-
-          mainPanel.switch2IVChart();
-        }
-        break;
-
-      default:
-        break;
-    }
-  }
-
-  @Override
-  public ExperimentControlModel getControlModel() {
-
-    return model;
-  }
-
-  @Override
-  public ExperimentControlPanel getControlPanel() {
-
-    return controlPanel;
-  }
-
-  @Override
-  public SwingWorker getCaptureWorker() {
-
-    return new QCCaptureWorker();
-  }
-
-  @Override
-  public void doCreateAndShowGUI() {}
-
-  @Override
-  public ExperimentPlotPanel getPlotPanel() {
-
-    return null;
   }
 }

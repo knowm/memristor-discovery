@@ -46,12 +46,10 @@ import org.knowm.waveforms4j.DWF;
 public class ConductanceExperiment extends Experiment {
 
   private final ControlModel controlModel = new ControlModel();
-  private ControlPanel controlPanel;
-
-  private PlotPanel plotPanel;
   private final PlotControlModel plotModel = new PlotControlModel();
   private final PlotController plotController;
-
+  private ControlPanel controlPanel;
+  private PlotPanel plotPanel;
   private ResetCaptureWorker resetCaptureWorker;
 
   /**
@@ -72,6 +70,71 @@ public class ConductanceExperiment extends Experiment {
 
   @Override
   public void doCreateAndShowGUI() {}
+
+  /**
+   * These property change events are triggered in the controlModel in the case where the underlying
+   * controlModel is updated. Here, the controller can respond to those events and make sure the
+   * corresponding GUI components get updated.
+   */
+  @Override
+  public void propertyChange(PropertyChangeEvent evt) {
+
+    switch (evt.getPropertyName()) {
+      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
+        if (controlModel.isStartToggled()) {
+
+          double[] customWaveform =
+              WaveformUtils.generateCustomWaveform(
+                  Waveform.Square,
+                  controlModel.getSetAmplitude(),
+                  controlModel.getCalculatedFrequency());
+          dwfProxy
+              .getDwf()
+              .startCustomPulseTrain(
+                  DWF.WAVEFORM_CHANNEL_1,
+                  controlModel.getCalculatedFrequency(),
+                  0,
+                  1,
+                  customWaveform);
+        } else {
+
+          plotPanel.switch2WaveformChart();
+          plotController.udpateWaveformChart(
+              controlModel.getWaveformTimeData(),
+              controlModel.getWaveformAmplitudeData(),
+              controlModel.getResetAmplitude(),
+              controlModel.getResetPulseWidth());
+        }
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  @Override
+  public ExperimentControlModel getControlModel() {
+
+    return controlModel;
+  }
+
+  @Override
+  public ExperimentControlPanel getControlPanel() {
+
+    return controlPanel;
+  }
+
+  @Override
+  public ExperimentPlotPanel getPlotPanel() {
+
+    return plotPanel;
+  }
+
+  @Override
+  public SwingWorker getCaptureWorker() {
+
+    return new SetCaptureWorker();
+  }
 
   private class ResetCaptureWorker extends SwingWorker<Boolean, double[][]> {
 
@@ -349,70 +412,5 @@ public class ConductanceExperiment extends Experiment {
         plotController.repaintGVChart();
       }
     }
-  }
-
-  /**
-   * These property change events are triggered in the controlModel in the case where the underlying
-   * controlModel is updated. Here, the controller can respond to those events and make sure the
-   * corresponding GUI components get updated.
-   */
-  @Override
-  public void propertyChange(PropertyChangeEvent evt) {
-
-    switch (evt.getPropertyName()) {
-      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
-        if (controlModel.isStartToggled()) {
-
-          double[] customWaveform =
-              WaveformUtils.generateCustomWaveform(
-                  Waveform.Square,
-                  controlModel.getSetAmplitude(),
-                  controlModel.getCalculatedFrequency());
-          dwfProxy
-              .getDwf()
-              .startCustomPulseTrain(
-                  DWF.WAVEFORM_CHANNEL_1,
-                  controlModel.getCalculatedFrequency(),
-                  0,
-                  1,
-                  customWaveform);
-        } else {
-
-          plotPanel.switch2WaveformChart();
-          plotController.udpateWaveformChart(
-              controlModel.getWaveformTimeData(),
-              controlModel.getWaveformAmplitudeData(),
-              controlModel.getResetAmplitude(),
-              controlModel.getResetPulseWidth());
-        }
-        break;
-
-      default:
-        break;
-    }
-  }
-
-  @Override
-  public ExperimentControlModel getControlModel() {
-
-    return controlModel;
-  }
-
-  @Override
-  public ExperimentControlPanel getControlPanel() {
-
-    return controlPanel;
-  }
-
-  @Override
-  public ExperimentPlotPanel getPlotPanel() {
-
-    return plotPanel;
-  }
-
-  @Override
-  public SwingWorker getCaptureWorker() {
-
-    return new SetCaptureWorker();
   }
 }

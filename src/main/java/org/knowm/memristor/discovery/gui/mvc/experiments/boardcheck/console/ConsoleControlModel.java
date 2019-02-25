@@ -21,14 +21,14 @@
  * <p>If you have any questions regarding our licensing policy, please contact us at
  * `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.consol;
+package org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.console;
 
 import java.beans.PropertyChangeListener;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.BoardCheckPreferences;
 
-public class ConsolControlModel extends ExperimentControlModel {
+public class ConsoleControlModel extends ExperimentControlModel {
 
   /**
    * Here is where the Controller registers itself as a listener to model changes.

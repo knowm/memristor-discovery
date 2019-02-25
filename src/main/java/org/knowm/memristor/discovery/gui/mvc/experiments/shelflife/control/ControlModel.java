@@ -21,19 +21,31 @@
  * <p>If you have any questions regarding our licensing policy, please contact us at
  * `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.experiments;
+package org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.control;
 
-import javax.swing.JButton;
-import javax.swing.JPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.ShelfLifePreferences;
 
-public abstract class ExperimentControlPanel extends JPanel {
+public class ControlModel extends ExperimentControlModel {
 
-  public abstract void enableAllChildComponents(boolean enabled);
+  /** Constructor */
+  public ControlModel() {}
 
-  public JButton startStopButton;
+  @Override
+  public void loadModelFromPrefs() {
 
-  public JButton getStartStopButton() {
+    seriesResistance =
+        experimentPreferences.getInteger(
+            ShelfLifePreferences.SERIES_R_INIT_KEY,
+            ShelfLifePreferences.SERIES_R_INIT_DEFAULT_VALUE);
+    swingPropertyChangeSupport.firePropertyChange(
+        ExperimentControlModel.EVENT_PREFERENCES_UPDATE, true, false);
+  }
 
-    return startStopButton;
+  @Override
+  public ExperimentPreferences initAppPreferences() {
+
+    return new ShelfLifePreferences();
   }
 }

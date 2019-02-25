@@ -26,13 +26,6 @@ package org.knowm.memristor.discovery.utils.gpio;
 /** @author alexnugent */
 public class MuxController {
 
-  public enum Destination {
-    A,
-    B,
-    Y,
-    OUT
-  }
-
   // default configuration set up to measure voltage drop across selected memristors and the series
   // resistor.
   private Destination w1 = Destination.A;
@@ -113,5 +106,12 @@ public class MuxController {
   public void setScope2(Destination scope2) {
 
     this.scope2 = scope2;
+  }
+
+  public enum Destination {
+    A,
+    B,
+    Y,
+    OUT
   }
 }

@@ -6,10 +6,11 @@ public class SteelCheckBoxUI extends javax.swing.plaf.basic.BasicCheckBoxUI
         java.awt.event.ComponentListener,
         java.awt.event.MouseListener {
 
+  private static final java.awt.Dimension SIZE = new java.awt.Dimension(26, 13);
   private final SteelCheckBox CHECKBOX;
+  private final float[] FOREGROUND_FRACTIONS = {0.0f, 0.03f, 0.94f, 1.0f};
   private boolean mouseOver = false;
   private boolean mousePressed = false;
-  private static final java.awt.Dimension SIZE = new java.awt.Dimension(26, 13);
   private java.awt.image.BufferedImage backgroundImage = create_BACKGROUND_Image(SIZE.width);
   private java.awt.image.BufferedImage knobStandardImage = create_KNOB_Image(SIZE.height, false);
   private java.awt.image.BufferedImage knobPressedImage = create_KNOB_Image(SIZE.height, true);
@@ -17,7 +18,6 @@ public class SteelCheckBoxUI extends javax.swing.plaf.basic.BasicCheckBoxUI
   private java.awt.geom.RoundRectangle2D foreground;
   private java.awt.geom.Point2D foregroundStart;
   private java.awt.geom.Point2D foregroundStop;
-  private final float[] FOREGROUND_FRACTIONS = {0.0f, 0.03f, 0.94f, 1.0f};
   private java.awt.Color[] foregroundColors = {
     new java.awt.Color(241, 242, 242, 255),
     new java.awt.Color(224, 225, 226, 255),

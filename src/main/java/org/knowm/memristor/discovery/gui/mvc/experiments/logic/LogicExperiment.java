@@ -48,17 +48,14 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.logic.plot.PlotPanel;
 
 public class LogicExperiment extends Experiment {
 
+  private final ControlModel controlModel = new ControlModel();
+  private final PlotControlModel plotModel = new PlotControlModel();
+  private final PlotController plotController;
   private SwingWorker routineWorker;
   private SwingWorker runTrialsWorker;
   private SwingWorker resetWorker;
-
-  private final ControlModel controlModel = new ControlModel();
   private ControlPanel controlPanel;
-
   private PlotPanel plotPanel;
-  private final PlotControlModel plotModel = new PlotControlModel();
-  private final PlotController plotController;
-
   private AHaHController_21 aHaHController;
 
   // private static final double MAX_G = .001;// init of synapses will terminate if one or the other
@@ -176,6 +173,101 @@ public class LogicExperiment extends Experiment {
     dwfProxy.update2DigitalIOStatesAtOnce(patternThree, false);
 
     return out;
+  }
+
+  private List<Integer> getNextPatternWithBias() {
+
+    List<Integer> patternOut = new ArrayList<Integer>();
+
+    if (controlModel.getDataStructure() == DataStructure.TwoPattern) {
+      if (Math.random() < .5) {
+        patternOut.addAll(controlModel.getInputMaskA());
+      } else {
+        patternOut.addAll(controlModel.getInputMaskB());
+      }
+    } else if (controlModel.getDataStructure() == DataStructure.ThreePattern) {
+
+      double r = Math.random();
+
+      if (r < .3333) {
+        patternOut.addAll(controlModel.getInputMaskA());
+      } else if (r < .6666) {
+        patternOut.addAll(controlModel.getInputMaskB());
+      } else {
+
+        patternOut = getCombinedPattern();
+      }
+    }
+
+    if (controlModel.getInputBiasMask() != null) {
+      // System.out.println("getNextPatternWithBias()");
+      // System.out.println("PatternOut=" + patternOut);
+      // System.out.println("  MaskA=" + controlModel.getInputMaskA());
+      // System.out.println("  MaskB=" + controlModel.getInputMaskB());
+      // System.out.println("  BiasMask()=" + controlModel.getInputBiasMask());
+
+      patternOut.addAll(controlModel.getInputBiasMask());
+      // System.out.println("PatternOut=" + patternOut);
+
+    }
+
+    return patternOut;
+  }
+
+  private List<Integer> getCombinedPattern() {
+
+    List<Integer> combined = new ArrayList<Integer>();
+    combined.addAll(controlModel.getInputMaskA());
+    combined.addAll(controlModel.getInputMaskB());
+
+    return combined;
+  }
+
+  /**
+   * These property change events are triggered in the controlModel in the case where the underlying
+   * controlModel is updated. Here, the controller can respond to those events and make sure the
+   * corresponding GUI components get updated.
+   */
+  @Override
+  public void propertyChange(PropertyChangeEvent evt) {
+
+    String propName = evt.getPropertyName();
+
+    switch (propName) {
+      case EVENT_INSTRUCTION_UPDATE:
+
+        // System.out.println(controlModel.getInstruction());
+        // dwfProxy.setUpper8IOStates(controlModel.getInstruction().getBits());
+
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  @Override
+  public ExperimentControlModel getControlModel() {
+
+    return controlModel;
+  }
+
+  @Override
+  public ExperimentControlPanel getControlPanel() {
+
+    return controlPanel;
+  }
+
+  @Override
+  public ExperimentPlotPanel getPlotPanel() {
+
+    return plotPanel;
+  }
+
+  @Override
+  public SwingWorker getCaptureWorker() {
+
+    return null;
   }
 
   private class ResetWorker extends SwingWorker<Boolean, Double> {
@@ -378,100 +470,5 @@ public class LogicExperiment extends Experiment {
 
       return true;
     }
-  }
-
-  private List<Integer> getNextPatternWithBias() {
-
-    List<Integer> patternOut = new ArrayList<Integer>();
-
-    if (controlModel.getDataStructure() == DataStructure.TwoPattern) {
-      if (Math.random() < .5) {
-        patternOut.addAll(controlModel.getInputMaskA());
-      } else {
-        patternOut.addAll(controlModel.getInputMaskB());
-      }
-    } else if (controlModel.getDataStructure() == DataStructure.ThreePattern) {
-
-      double r = Math.random();
-
-      if (r < .3333) {
-        patternOut.addAll(controlModel.getInputMaskA());
-      } else if (r < .6666) {
-        patternOut.addAll(controlModel.getInputMaskB());
-      } else {
-
-        patternOut = getCombinedPattern();
-      }
-    }
-
-    if (controlModel.getInputBiasMask() != null) {
-      // System.out.println("getNextPatternWithBias()");
-      // System.out.println("PatternOut=" + patternOut);
-      // System.out.println("  MaskA=" + controlModel.getInputMaskA());
-      // System.out.println("  MaskB=" + controlModel.getInputMaskB());
-      // System.out.println("  BiasMask()=" + controlModel.getInputBiasMask());
-
-      patternOut.addAll(controlModel.getInputBiasMask());
-      // System.out.println("PatternOut=" + patternOut);
-
-    }
-
-    return patternOut;
-  }
-
-  private List<Integer> getCombinedPattern() {
-
-    List<Integer> combined = new ArrayList<Integer>();
-    combined.addAll(controlModel.getInputMaskA());
-    combined.addAll(controlModel.getInputMaskB());
-
-    return combined;
-  }
-
-  /**
-   * These property change events are triggered in the controlModel in the case where the underlying
-   * controlModel is updated. Here, the controller can respond to those events and make sure the
-   * corresponding GUI components get updated.
-   */
-  @Override
-  public void propertyChange(PropertyChangeEvent evt) {
-
-    String propName = evt.getPropertyName();
-
-    switch (propName) {
-      case EVENT_INSTRUCTION_UPDATE:
-
-        // System.out.println(controlModel.getInstruction());
-        // dwfProxy.setUpper8IOStates(controlModel.getInstruction().getBits());
-
-        break;
-
-      default:
-        break;
-    }
-  }
-
-  @Override
-  public ExperimentControlModel getControlModel() {
-
-    return controlModel;
-  }
-
-  @Override
-  public ExperimentControlPanel getControlPanel() {
-
-    return controlPanel;
-  }
-
-  @Override
-  public ExperimentPlotPanel getPlotPanel() {
-
-    return plotPanel;
-  }
-
-  @Override
-  public SwingWorker getCaptureWorker() {
-
-    return null;
   }
 }

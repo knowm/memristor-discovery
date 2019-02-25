@@ -33,14 +33,14 @@ import org.knowm.xchart.XYChartBuilder;
 public class PulseTriggerCapture {
   DWF dwf;
 
+  public PulseTriggerCapture() {
+    dwf = new DWF();
+  }
+
   public static void main(String[] args) {
 
     PulseTriggerCapture pulseTriggerCapture = new PulseTriggerCapture();
     pulseTriggerCapture.go();
-  }
-
-  public PulseTriggerCapture() {
-    dwf = new DWF();
   }
 
   public void go() {

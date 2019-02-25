@@ -48,23 +48,18 @@ import org.knowm.memristor.discovery.utils.Util;
  */
 public class ControlPanel extends ExperimentControlPanel {
 
-  private JComboBox<Waveform> waveformComboBox;
-
   private final JSlider amplitudeSlider;
   private final JSlider pulseWidthSlider;
-
   private final JLabel ahahRoutineLabel;
-  private JComboBox<AHaHRoutine> ahahRoutineComboBox;
-
   private final JLabel datasetLabel;
-  private JComboBox<Datasets> datasetComboBox;
-
   private final JLabel numTrainEpochsLabel;
   private final JTextField numTrainEpochsTextField;
-
   public JButton resetAllButton;
   public JButton runTrialButton;
   public JButton clearPlotButton;
+  private JComboBox<Waveform> waveformComboBox;
+  private JComboBox<AHaHRoutine> ahahRoutineComboBox;
+  private JComboBox<Datasets> datasetComboBox;
 
   /** Constructor */
   public ControlPanel() {

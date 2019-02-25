@@ -47,6 +47,57 @@ public class ControlController extends ExperimentControlController {
 
   private final ControlPanel controlPanel;
   private final ControlModel controlModel;
+  ActionListener inputMaskAActionListener =
+      new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+
+          List<Integer> maskA = new ArrayList<Integer>();
+
+          for (int i = 0; i < controlPanel.getInputAMaskRadioButtons().size(); i++) {
+            if (controlPanel.getInputAMaskRadioButtons().get(i).isSelected()) {
+              maskA.add(i);
+            }
+          }
+
+          controlModel.setInputMaskA(maskA);
+        }
+      };
+  ActionListener inputMaskBActionListener =
+      new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+
+          List<Integer> maskB = new ArrayList<Integer>();
+
+          for (int i = 0; i < controlPanel.getInputBMaskRadioButtons().size(); i++) {
+            if (controlPanel.getInputBMaskRadioButtons().get(i).isSelected()) {
+              maskB.add(i);
+            }
+          }
+
+          controlModel.setInputMaskB(maskB);
+        }
+      };
+  ActionListener inputBiasMaskActionListener =
+      new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+
+          List<Integer> biasMask = new ArrayList<Integer>();
+
+          for (int i = 0; i < controlPanel.getBiasMaskRadioButtons().size(); i++) {
+            if (controlPanel.getBiasMaskRadioButtons().get(i).isSelected()) {
+              biasMask.add(i);
+            }
+          }
+
+          controlModel.setInputBiasMask(biasMask);
+        }
+      };
 
   /**
    * Constructor
@@ -223,59 +274,6 @@ public class ControlController extends ExperimentControlController {
               }
             });
   }
-
-  ActionListener inputMaskAActionListener =
-      new ActionListener() {
-
-        @Override
-        public void actionPerformed(ActionEvent actionEvent) {
-
-          List<Integer> maskA = new ArrayList<Integer>();
-
-          for (int i = 0; i < controlPanel.getInputAMaskRadioButtons().size(); i++) {
-            if (controlPanel.getInputAMaskRadioButtons().get(i).isSelected()) {
-              maskA.add(i);
-            }
-          }
-
-          controlModel.setInputMaskA(maskA);
-        }
-      };
-  ActionListener inputMaskBActionListener =
-      new ActionListener() {
-
-        @Override
-        public void actionPerformed(ActionEvent actionEvent) {
-
-          List<Integer> maskB = new ArrayList<Integer>();
-
-          for (int i = 0; i < controlPanel.getInputBMaskRadioButtons().size(); i++) {
-            if (controlPanel.getInputBMaskRadioButtons().get(i).isSelected()) {
-              maskB.add(i);
-            }
-          }
-
-          controlModel.setInputMaskB(maskB);
-        }
-      };
-
-  ActionListener inputBiasMaskActionListener =
-      new ActionListener() {
-
-        @Override
-        public void actionPerformed(ActionEvent actionEvent) {
-
-          List<Integer> biasMask = new ArrayList<Integer>();
-
-          for (int i = 0; i < controlPanel.getBiasMaskRadioButtons().size(); i++) {
-            if (controlPanel.getBiasMaskRadioButtons().get(i).isSelected()) {
-              biasMask.add(i);
-            }
-          }
-
-          controlModel.setInputBiasMask(biasMask);
-        }
-      };
 
   /**
    * These property change events are triggered in the controlModel in the case where the underlying

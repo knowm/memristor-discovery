@@ -21,63 +21,32 @@
  * <p>If you have any questions regarding our licensing policy, please contact us at
  * `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.experiments;
+package org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.console;
 
 import java.beans.PropertyChangeListener;
-import javax.swing.event.SwingPropertyChangeSupport;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.ShelfLifePreferences;
 
-public abstract class ExperimentControlModel {
-
-  /** Events */
-  public static final String EVENT_WAVEFORM_UPDATE = "EVENT_WAVEFORM_UPDATE";
-  public static final String EVENT_FREQUENCY_UPDATE = "EVENT_FREQUENCY_UPDATE";
-  public static final String EVENT_PREFERENCES_UPDATE = "EVENT_PREFERENCES_UPDATE";
-  public static final String EVENT_NEW_CONSOLE_LOG = "EVENT_NEW_CONSOLE_LOG";
-  /** runtime variables */
-  public int seriesResistance;
-  public SwingPropertyChangeSupport swingPropertyChangeSupport;
-  protected ExperimentPreferences experimentPreferences;
-  private boolean isStartToggled = false;
-
-  /** Constructor */
-  public ExperimentControlModel() {
-
-    swingPropertyChangeSupport = new SwingPropertyChangeSupport(this);
-    this.experimentPreferences = initAppPreferences();
-    loadModelFromPrefs();
-  }
-
-  public abstract ExperimentPreferences initAppPreferences();
-
-  public abstract void loadModelFromPrefs();
-
-  public int getSeriesResistance() {
-
-    return seriesResistance;
-  }
-
-  public void setSeriesResistance(int seriesResistance) {
-
-    this.seriesResistance = seriesResistance;
-  }
-
-  public boolean isStartToggled() {
-
-    return isStartToggled;
-  }
-
-  public void setStartToggled(boolean isStartToggled) {
-
-    this.isStartToggled = isStartToggled;
-  }
+public class ConsoleControlModel extends ExperimentControlModel {
 
   /**
    * Here is where the Controller registers itself as a listener to model changes.
    *
    * @param listener
    */
+  @Override
   public void addListener(PropertyChangeListener listener) {
 
     swingPropertyChangeSupport.addPropertyChangeListener(listener);
   }
+
+  @Override
+  public ExperimentPreferences initAppPreferences() {
+
+    return new ShelfLifePreferences();
+  }
+
+  @Override
+  public void loadModelFromPrefs() {}
 }

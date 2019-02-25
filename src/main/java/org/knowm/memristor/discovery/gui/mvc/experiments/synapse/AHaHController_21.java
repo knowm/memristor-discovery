@@ -34,10 +34,9 @@ import org.knowm.waveforms4j.DWF;
 /** Created by timmolter on 5/25/17. */
 public class AHaHController_21 {
 
+  private final double MIN_V_RESOLUTION = .0025;
   private DWFProxy dWFProxy;
   private ControlModel controlModel;
-  private final double MIN_V_RESOLUTION = .0025;
-
   private double vy; // last read value
   private double ga;
   private double gb;
@@ -92,8 +91,12 @@ public class AHaHController_21 {
 
   private void execute(Instruction instruction) {
 
-    getControlModel().swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_NEW_CONSOLE_LOG, null,
-        "Executing Instruction: " + instruction);
+    getControlModel()
+        .swingPropertyChangeSupport
+        .firePropertyChange(
+            ExperimentControlModel.EVENT_NEW_CONSOLE_LOG,
+            null,
+            "Executing Instruction: " + instruction);
 
     // 1. the IO-bits are set
     dWFProxy.setUpper8IOStates(instruction.getBits());
@@ -108,30 +111,49 @@ public class AHaHController_21 {
       W1Amplitude = -.1f;
     }
 
-    double[] W1 = WaveformUtils.generateCustomWaveform(controlModel.getWaveform(), W1Amplitude, controlModel.getCalculatedFrequency());
+    double[] W1 =
+        WaveformUtils.generateCustomWaveform(
+            controlModel.getWaveform(), W1Amplitude, controlModel.getCalculatedFrequency());
 
     if (instruction == Instruction.FFLV) {
 
-      dWFProxy.getDwf().startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency() * 300,
-          300 * 1, true);
+      dWFProxy
+          .getDwf()
+          .startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(
+              DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency() * 300, 300 * 1, true);
       dWFProxy.waitUntilArmed();
-      dWFProxy.getDwf().setCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, 1, W1);
+      dWFProxy
+          .getDwf()
+          .setCustomPulseTrain(
+              DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, 1, W1);
       dWFProxy.getDwf().startPulseTrain(DWF.WAVEFORM_CHANNEL_1);
 
       boolean success = dWFProxy.capturePulseData(controlModel.getCalculatedFrequency(), 1);
       if (success) {
         setVy(W1Amplitude);
       } else {
-        getControlModel().swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_NEW_CONSOLE_LOG, null,
-            "Capture has failed! This is usually due to noise/interference. Try a shorter cable or use a magnetic choke.");
+        getControlModel()
+            .swingPropertyChangeSupport
+            .firePropertyChange(
+                ExperimentControlModel.EVENT_NEW_CONSOLE_LOG,
+                null,
+                "Capture has failed! This is usually due to noise/interference. Try a shorter cable or use a magnetic choke.");
         // System.out.println("capture failed!");
       }
 
     } else {
-      dWFProxy.getDwf().setCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, 1, W1);
+      dWFProxy
+          .getDwf()
+          .setCustomPulseTrain(
+              DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, 1, W1);
       // note w2 amplitude is zero (gnd).
-      double[] W2 = WaveformUtils.generateCustomWaveform(controlModel.getWaveform(), 0.0, controlModel.getCalculatedFrequency());
-      dWFProxy.getDwf().setCustomPulseTrain(DWF.WAVEFORM_CHANNEL_2, controlModel.getCalculatedFrequency(), 0, 1, W2);
+      double[] W2 =
+          WaveformUtils.generateCustomWaveform(
+              controlModel.getWaveform(), 0.0, controlModel.getCalculatedFrequency());
+      dWFProxy
+          .getDwf()
+          .setCustomPulseTrain(
+              DWF.WAVEFORM_CHANNEL_2, controlModel.getCalculatedFrequency(), 0, 1, W2);
       dWFProxy.getDwf().startPulseTrain(DWF.WAVEFORM_CHANNEL_BOTH);
     }
 
@@ -145,11 +167,27 @@ public class AHaHController_21 {
     }
   }
 
+  public double getVy() {
+
+    // this is a quick way to deal with measurement noise.
+    if (vy > .5) {
+      return .5;
+    } else if (vy < -.5) {
+      return -.5;
+    }
+
+    return vy;
+  }
+
   private void setVy(double W1Amplitude) {
 
     int validSamples = dWFProxy.getDwf().FDwfAnalogInStatusSamplesValid();
-    double peakV1 = Util.maxAbs(dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples));
-    double peakV2 = Util.maxAbs(dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples));
+    double peakV1 =
+        Util.maxAbs(
+            dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples));
+    double peakV2 =
+        Util.maxAbs(
+            dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples));
 
     // note: if V1 is less than resolution of scope, the measurments will be useless
     double vb = peakV2;
@@ -172,8 +210,12 @@ public class AHaHController_21 {
         this.ga = I / (va - vb);
 
       } else {
-        getControlModel().swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_NEW_CONSOLE_LOG, null,
-            "Voltage drop across Ma too small too measure.");
+        getControlModel()
+            .swingPropertyChangeSupport
+            .firePropertyChange(
+                ExperimentControlModel.EVENT_NEW_CONSOLE_LOG,
+                null,
+                "Voltage drop across Ma too small too measure.");
         // System.out.println("voltage drop across Ma too small too measure.");
         this.ga = Double.NaN;
       }
@@ -182,74 +224,27 @@ public class AHaHController_21 {
         this.gb = 1 / ((vb - vc) / I);
 
       } else {
-        getControlModel().swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_NEW_CONSOLE_LOG, null,
-            "Voltage drop across Mb too small too measure.");
+        getControlModel()
+            .swingPropertyChangeSupport
+            .firePropertyChange(
+                ExperimentControlModel.EVENT_NEW_CONSOLE_LOG,
+                null,
+                "Voltage drop across Mb too small too measure.");
         // System.out.println("voltage drop across Mb too small too measure.");
         this.gb = Double.NaN;
       }
 
     } else {
-      getControlModel().swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_NEW_CONSOLE_LOG, null,
-          "Current too low to measure. peakV1=" + String.format("%.4f", (double) peakV1));
+      getControlModel()
+          .swingPropertyChangeSupport
+          .firePropertyChange(
+              ExperimentControlModel.EVENT_NEW_CONSOLE_LOG,
+              null,
+              "Current too low to measure. peakV1=" + String.format("%.4f", (double) peakV1));
       // System.out.println("Current too low to measure. peakV1=" + peakV1);
       this.ga = Double.NaN;
       this.gb = Double.NaN;
     }
-  }
-
-  public enum Instruction {
-
-    /*
-     * NOTE: Charge injection from the MUX can affect voltage across memristors when routing the scopes. The scope configuration [1011] is chosen
-     * because this is the configuration used to measure the state of the synapse, resulting in minor charge injection. It is unclear if charge
-     * injection for waveform generators is an issue, but currently (7/29/2017) appears to not be.
-     */
-
-    // Order ==> W2, W1, 2+, 1+
-    // 00 None
-    // 10 Y
-    // 01 A
-    // 11 B
-
-    // @formatter:off
-    FFLV(0b0001_1011_0000_0000, .1f), FF_RL(0b1001_1011_0000_0000, -1), FF_RH(0b1011_1011_0000_0000, 1f), FF_RU(0b1011_1011_0000_0000,
-        1f), FF_RA(0b1011_1011_0000_0000, 1f), FF(0b1101_1011_0000_0000, 1.0f), RHbdn(0b1011_1011_0000_0000, 1f), // w2-->Y, w1-->B
-    RLadn(0b1001_1011_0000_0000, -1f), // w2-->Y, w1-->A
-    RFLV(0b0001_1011_0000_0000, -.1f), RF(0b1101_1011_0000_0000, -1.0f), RHaup(0b1001_1011_0000_0000, 1), RLbup(0b1011_1011_0000_0000, -1);
-
-    // @formatter:on
-    // RZ;
-
-    private final int bits;
-    private final float pulseAmplitudeMultiplier;
-
-    Instruction(int bits, float pulseAmplitudeMultiplier) {
-
-      this.bits = bits;
-      this.pulseAmplitudeMultiplier = pulseAmplitudeMultiplier;
-    }
-
-    public int getBits() {
-
-      return bits;
-    }
-
-    public float getW1PulseAmplitudeMultiplier() {
-
-      return pulseAmplitudeMultiplier;
-    }
-  }
-
-  public double getVy() {
-
-    // this is a quick way to deal with measurement noise.
-    if (vy > .5) {
-      return .5;
-    } else if (vy < -.5) {
-      return -.5;
-    }
-
-    return vy;
   }
 
   public DWFProxy getdWFProxy() {
@@ -290,6 +285,57 @@ public class AHaHController_21 {
   public void setGb(double gb) {
 
     this.gb = gb;
+  }
+
+  public enum Instruction {
+
+    /*
+     * NOTE: Charge injection from the MUX can affect voltage across memristors when routing the scopes. The scope configuration [1011] is chosen
+     * because this is the configuration used to measure the state of the synapse, resulting in minor charge injection. It is unclear if charge
+     * injection for waveform generators is an issue, but currently (7/29/2017) appears to not be.
+     */
+
+    // Order ==> W2, W1, 2+, 1+
+    // 00 None
+    // 10 Y
+    // 01 A
+    // 11 B
+
+    // @formatter:off
+    FFLV(0b0001_1011_0000_0000, .1f),
+    FF_RL(0b1001_1011_0000_0000, -1),
+    FF_RH(0b1011_1011_0000_0000, 1f),
+    FF_RU(0b1011_1011_0000_0000, 1f),
+    FF_RA(0b1011_1011_0000_0000, 1f),
+    FF(0b1101_1011_0000_0000, 1.0f),
+    RHbdn(0b1011_1011_0000_0000, 1f), // w2-->Y, w1-->B
+    RLadn(0b1001_1011_0000_0000, -1f), // w2-->Y, w1-->A
+    RFLV(0b0001_1011_0000_0000, -.1f),
+    RF(0b1101_1011_0000_0000, -1.0f),
+    RHaup(0b1001_1011_0000_0000, 1),
+    RLbup(0b1011_1011_0000_0000, -1);
+
+    // @formatter:on
+    // RZ;
+
+    private final int bits;
+    private final float pulseAmplitudeMultiplier;
+
+    Instruction(int bits, float pulseAmplitudeMultiplier) {
+
+      this.bits = bits;
+      this.pulseAmplitudeMultiplier = pulseAmplitudeMultiplier;
+    }
+
+    public int getBits() {
+
+      return bits;
+    }
+
+    public float getW1PulseAmplitudeMultiplier() {
+
+      return pulseAmplitudeMultiplier;
+    }
   }
 
   // public double getAmplitude() {

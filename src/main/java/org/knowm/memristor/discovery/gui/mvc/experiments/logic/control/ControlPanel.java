@@ -51,32 +51,26 @@ import org.knowm.memristor.discovery.utils.Util;
  */
 public class ControlPanel extends ExperimentControlPanel {
 
-  private JComboBox<Waveform> waveformComboBox;
-
   private final JSlider amplitudeSlider;
   private final JSlider pulseWidthSlider;
+  private final Box inputAButtonBox;
 
   // private final ButtonGroup routineRadioButtonGroup;
   // private final Box routineRadioButtonBox;
-
-  private JComboBox<DataStructure> dataStructureComboBox;
-
-  private final Box inputAButtonBox;
   private final Box inputBButtonBox;
   private final Box biasButtonBox;
-
-  private List<JRadioButton> inputAMaskRadioButtons;
-  private List<JRadioButton> inputBMaskRadioButtons;
-  private List<JRadioButton> biasMaskRadioButtons;
-
   private final JLabel numExecutionsLabel;
   private final JTextField numExecutionsTextField;
-
   public JButton FFRUButton;
   public JButton FFRAButton;
   public JButton resetAllButton;
   public JButton runTrialsButton;
   public JButton clearPlotButton;
+  private JComboBox<Waveform> waveformComboBox;
+  private JComboBox<DataStructure> dataStructureComboBox;
+  private List<JRadioButton> inputAMaskRadioButtons;
+  private List<JRadioButton> inputBMaskRadioButtons;
+  private List<JRadioButton> biasMaskRadioButtons;
 
   /** Constructor */
   public ControlPanel() {

@@ -46,14 +46,9 @@ public class QCPreferencesPanel extends ExperimentPreferencesPanel {
   private JLabel savePathLabel;
   private JTextField savePathTextField;
 
-  /**
-   * Constructor
-   *
-   * @param owner
-   */
-  public QCPreferencesPanel(JFrame owner) {
+  public QCPreferencesPanel(JFrame owner, String experimentName) {
 
-    super(owner);
+    super(owner, experimentName);
   }
 
   @Override
@@ -138,11 +133,5 @@ public class QCPreferencesPanel extends ExperimentPreferencesPanel {
   public ExperimentPreferences initAppPreferences() {
 
     return new QCPreferences();
-  }
-
-  @Override
-  public String getAppName() {
-
-    return "QC";
   }
 }

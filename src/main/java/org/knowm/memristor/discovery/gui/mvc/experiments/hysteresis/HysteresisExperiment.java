@@ -71,6 +71,89 @@ public class HysteresisExperiment extends Experiment {
   @Override
   public void doCreateAndShowGUI() {}
 
+  /**
+   * These property change events are triggered in the model in the case where the underlying model
+   * is updated. Here, the controller can respond to those events and make sure the corresponding
+   * GUI components get updated.
+   */
+  @Override
+  public void propertyChange(PropertyChangeEvent evt) {
+
+    //    System.out.println("evt.getPropertyName() = " + evt.getPropertyName());
+
+    switch (evt.getPropertyName()) {
+      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
+        if (controlModel.isStartToggled()) {
+          // AnalogOut
+          DWF.Waveform dwfWaveform = WaveformUtils.getDWFWaveform(controlModel.getWaveform());
+          dwfProxy
+              .getDwf()
+              .startWave(
+                  DWF.WAVEFORM_CHANNEL_1,
+                  dwfWaveform,
+                  controlModel.getFrequency(),
+                  controlModel.getAmplitude(),
+                  controlModel.getOffset(),
+                  50);
+        } else {
+          plotPanel.switch2WaveformChart();
+          plotController.udpateWaveformChart(
+              controlModel.getWaveformTimeData(),
+              controlModel.getWaveformAmplitudeData(),
+              controlModel.getAmplitude(),
+              controlModel.getFrequency(),
+              controlModel.getOffset());
+        }
+        break;
+      case ExperimentControlModel.EVENT_FREQUENCY_UPDATE:
+
+        // a special case when the frequency is changed. Not only does the analog out need to change
+        // (above), the capture frequency rate must also be changed.
+
+        if (controlModel.isStartToggled()) {
+
+          // Analog In
+          double sampleFrequency =
+              (double) controlModel.getFrequency()
+                  * HysteresisPreferences.CAPTURE_BUFFER_SIZE
+                  / HysteresisPreferences.CAPTURE_PERIOD_COUNT;
+          dwfProxy
+              .getDwf()
+              .startAnalogCaptureBothChannelsImmediately(
+                  sampleFrequency,
+                  HysteresisPreferences.CAPTURE_BUFFER_SIZE,
+                  AcquisitionMode.ScanShift);
+        }
+        break;
+      default:
+        break;
+    }
+  }
+
+  @Override
+  public ExperimentControlModel getControlModel() {
+
+    return controlModel;
+  }
+
+  @Override
+  public ExperimentControlPanel getControlPanel() {
+
+    return controlPanel;
+  }
+
+  @Override
+  public ExperimentPlotPanel getPlotPanel() {
+
+    return plotPanel;
+  }
+
+  @Override
+  public SwingWorker getCaptureWorker() {
+
+    return new CaptureWorker();
+  }
+
   private class CaptureWorker extends SwingWorker<Boolean, double[][]> {
 
     @Override
@@ -181,7 +264,7 @@ public class HysteresisExperiment extends Experiment {
             publish(new double[][] {rawdata1, voltage, conductance});
           }
         }
-        // testing the consol
+        // testing the console
         //        if (Math.random() < 0.01) {
         //
         // getControlModel().swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_NEW_CONSOLE_LOG, "Hi", "Blah");
@@ -237,88 +320,5 @@ public class HysteresisExperiment extends Experiment {
       } catch (InterruptedException e) {
       }
     }
-  }
-
-  /**
-   * These property change events are triggered in the model in the case where the underlying model
-   * is updated. Here, the controller can respond to those events and make sure the corresponding
-   * GUI components get updated.
-   */
-  @Override
-  public void propertyChange(PropertyChangeEvent evt) {
-
-    //    System.out.println("evt.getPropertyName() = " + evt.getPropertyName());
-
-    switch (evt.getPropertyName()) {
-      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
-        if (controlModel.isStartToggled()) {
-          // AnalogOut
-          DWF.Waveform dwfWaveform = WaveformUtils.getDWFWaveform(controlModel.getWaveform());
-          dwfProxy
-              .getDwf()
-              .startWave(
-                  DWF.WAVEFORM_CHANNEL_1,
-                  dwfWaveform,
-                  controlModel.getFrequency(),
-                  controlModel.getAmplitude(),
-                  controlModel.getOffset(),
-                  50);
-        } else {
-          plotPanel.switch2WaveformChart();
-          plotController.udpateWaveformChart(
-              controlModel.getWaveformTimeData(),
-              controlModel.getWaveformAmplitudeData(),
-              controlModel.getAmplitude(),
-              controlModel.getFrequency(),
-              controlModel.getOffset());
-        }
-        break;
-      case ExperimentControlModel.EVENT_FREQUENCY_UPDATE:
-
-        // a special case when the frequency is changed. Not only does the analog out need to change
-        // (above), the capture frequency rate must also be changed.
-
-        if (controlModel.isStartToggled()) {
-
-          // Analog In
-          double sampleFrequency =
-              (double) controlModel.getFrequency()
-                  * HysteresisPreferences.CAPTURE_BUFFER_SIZE
-                  / HysteresisPreferences.CAPTURE_PERIOD_COUNT;
-          dwfProxy
-              .getDwf()
-              .startAnalogCaptureBothChannelsImmediately(
-                  sampleFrequency,
-                  HysteresisPreferences.CAPTURE_BUFFER_SIZE,
-                  AcquisitionMode.ScanShift);
-        }
-        break;
-      default:
-        break;
-    }
-  }
-
-  @Override
-  public ExperimentControlModel getControlModel() {
-
-    return controlModel;
-  }
-
-  @Override
-  public ExperimentControlPanel getControlPanel() {
-
-    return controlPanel;
-  }
-
-  @Override
-  public ExperimentPlotPanel getPlotPanel() {
-
-    return plotPanel;
-  }
-
-  @Override
-  public SwingWorker getCaptureWorker() {
-
-    return new CaptureWorker();
   }
 }

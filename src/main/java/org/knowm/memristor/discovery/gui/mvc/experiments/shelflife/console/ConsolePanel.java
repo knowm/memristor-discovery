@@ -21,7 +21,7 @@
  * <p>If you have any questions regarding our licensing policy, please contact us at
  * `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.consol;
+package org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.console;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -34,13 +34,13 @@ import javax.swing.JTextArea;
 import javax.swing.text.DefaultCaret;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
 
-public class ConsolPanel extends ExperimentPlotPanel {
+public class ConsolePanel extends ExperimentPlotPanel {
 
   JTextArea consol;
   private ArrayList<String> lines = new ArrayList<>();
 
   /** Constructor */
-  public ConsolPanel() {
+  public ConsolePanel() {
 
     setLayout(new BorderLayout());
     setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
@@ -48,7 +48,7 @@ public class ConsolPanel extends ExperimentPlotPanel {
     consol = new JTextArea();
     consol.setLineWrap(true);
     consol.setWrapStyleWord(true);
-    // consol.setAutoscrolls(true);
+    // console.setAutoscrolls(true);
 
     // Font font = new Font("Courier", Font.PLAIN, 12);
 

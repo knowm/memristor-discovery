@@ -52,22 +52,18 @@ import org.knowm.memristor.discovery.utils.Util;
  */
 public class ControlPanel extends ExperimentControlPanel {
 
-  private JComboBox<Waveform> waveformComboBox;
-
   private final JSlider amplitudeSlider;
   private final JSlider pulseWidthSlider;
+  private final ButtonGroup instructionRadioButtonGroup;
   // private final JSlider pulseWidthSliderNs;
 
   // private final JSlider pulseNumberSlider;
-
-  private final ButtonGroup instructionRadioButtonGroup;
-  private final Box instructionRadioButtonBox;;
-
-  private final JLabel sampleRateLabel;
+private final Box instructionRadioButtonBox;
+    private final JLabel sampleRateLabel;;
   private final JTextField sampleRateTextField;
   public JButton clearPlotButton;
-
   public JButton initSynapseButton;
+  private JComboBox<Waveform> waveformComboBox;
 
   /** Constructor */
   public ControlPanel() {

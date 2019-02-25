@@ -48,6 +48,9 @@ public class PlotPanel extends ExperimentPlotPanel {
   private final JRadioButton gvButton;
 
   private final JPanel chartsPanel;
+  private final JCheckBox freezeYAxisCheckBoxIV;
+  private final JPanel gvChartControlPanel;
+  private final JCheckBox freezeYAxisCheckBoxGV;
   XYChart waveformChart;
   XChartPanel<XYChart> waveformChartPanel;
   XYChart captureChart;
@@ -58,11 +61,6 @@ public class PlotPanel extends ExperimentPlotPanel {
   XChartPanel<XYChart> gvChartPanel;
   XYChart gChart;
   XChartPanel<XYChart> gChartPanel;
-
-  private final JCheckBox freezeYAxisCheckBoxIV;
-
-  private final JPanel gvChartControlPanel;
-  private final JCheckBox freezeYAxisCheckBoxGV;
 
   /** Constructor */
   public PlotPanel() {

@@ -21,19 +21,43 @@
  * <p>If you have any questions regarding our licensing policy, please contact us at
  * `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.experiments;
+package org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.control;
 
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JPanel;
+import javax.swing.JLabel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
+import org.knowm.memristor.discovery.utils.Util;
 
-public abstract class ExperimentControlPanel extends JPanel {
+/**
+ * Provides controls for running the control
+ *
+ * @author timmolter
+ */
+public class ControlPanel extends ExperimentControlPanel {
 
-  public abstract void enableAllChildComponents(boolean enabled);
+  /** Constructor */
+  public ControlPanel() {
 
-  public JButton startStopButton;
+    setLayout(new GridBagLayout());
+    GridBagConstraints c = new GridBagConstraints();
+    c.fill = GridBagConstraints.HORIZONTAL;
+    setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
 
-  public JButton getStartStopButton() {
+    startStopButton = new JButton("Start");
+    startStopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.gridy++;
+    c.insets = new Insets(0, 0, 0, 0);
+    add(startStopButton, c);
 
-    return startStopButton;
+    c.gridy++;
+    JLabel logoLabel = new JLabel(Util.createImageIcon("img/logo_200.png"));
+    add(logoLabel, c);
   }
+
+  public void enableAllChildComponents(boolean enabled) {}
 }

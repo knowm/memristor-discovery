@@ -45,6 +45,22 @@ public class ControlController extends ExperimentControlController {
 
   private final ControlPanel controlPanel;
   private final ControlModel controlModel;
+  ActionListener instructionRadioButtonActionListener =
+      new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+
+          for (Enumeration<AbstractButton> buttons =
+                  controlPanel.getInstructionRadioButtonGroup().getElements();
+              buttons.hasMoreElements(); ) {
+            AbstractButton button = buttons.nextElement();
+            if (button.isSelected()) {
+              controlModel.setInstruction(button.getText());
+            }
+          }
+        }
+      };
 
   /**
    * Constructor
@@ -237,23 +253,6 @@ public class ControlController extends ExperimentControlController {
     // }
     // });
   }
-
-  ActionListener instructionRadioButtonActionListener =
-      new ActionListener() {
-
-        @Override
-        public void actionPerformed(ActionEvent actionEvent) {
-
-          for (Enumeration<AbstractButton> buttons =
-                  controlPanel.getInstructionRadioButtonGroup().getElements();
-              buttons.hasMoreElements(); ) {
-            AbstractButton button = buttons.nextElement();
-            if (button.isSelected()) {
-              controlModel.setInstruction(button.getText());
-            }
-          }
-        }
-      };
 
   /**
    * These property change events are triggered in the controlModel in the case where the underlying

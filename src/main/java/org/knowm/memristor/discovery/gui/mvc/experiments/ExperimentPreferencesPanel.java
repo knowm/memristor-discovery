@@ -44,36 +44,34 @@ import javax.swing.border.EmptyBorder;
  */
 public abstract class ExperimentPreferencesPanel extends JDialog {
 
+  public static final int ID_OK = 1;
+  public static final int ID_CANCEL = 0;
+  public final String experimentName;
+  protected ExperimentPreferences experimentPreferences;
+  private int exitCode = ID_CANCEL;
+  /**
+   * Constructor
+   *
+   * @param owner
+   */
+  public ExperimentPreferencesPanel(JFrame owner, String experimentName) {
+
+    super(owner);
+    this.experimentName = experimentName;
+    this.experimentPreferences = initAppPreferences();
+    createAndShowGUI();
+  }
+
   public abstract void doCreateAndShowGUI(JPanel preferencesPanel);
 
   public abstract void doSavePreferences();
 
   public abstract ExperimentPreferences initAppPreferences();
 
-  public abstract String getAppName();
-
-  public static final int ID_OK = 1;
-  public static final int ID_CANCEL = 0;
-  private int exitCode = ID_CANCEL;
-
-  protected ExperimentPreferences experimentPreferences;
-
-  /**
-   * Constructor
-   *
-   * @param owner
-   */
-  public ExperimentPreferencesPanel(JFrame owner) {
-
-    super(owner);
-    this.experimentPreferences = initAppPreferences();
-    createAndShowGUI();
-  }
-
   private void createAndShowGUI() {
 
     setPreferredSize(new Dimension(600, 400));
-    setTitle("Preferences - " + getAppName());
+    setTitle("Preferences - " + experimentName);
 
     getContentPane().setLayout(new BorderLayout());
 

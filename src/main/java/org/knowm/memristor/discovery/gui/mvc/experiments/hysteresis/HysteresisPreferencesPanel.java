@@ -55,14 +55,9 @@ public class HysteresisPreferencesPanel extends ExperimentPreferencesPanel {
   private JLabel kLabel;
   private JTextField kTextField;
 
-  /**
-   * Constructor
-   *
-   * @param owner
-   */
-  public HysteresisPreferencesPanel(JFrame owner) {
+  public HysteresisPreferencesPanel(JFrame owner, String experimentName) {
 
-    super(owner);
+    super(owner, experimentName);
   }
 
   @Override
@@ -194,11 +189,5 @@ public class HysteresisPreferencesPanel extends ExperimentPreferencesPanel {
   public ExperimentPreferences initAppPreferences() {
 
     return new HysteresisPreferences();
-  }
-
-  @Override
-  public String getAppName() {
-
-    return "Hysteresis";
   }
 }

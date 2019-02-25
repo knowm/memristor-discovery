@@ -32,11 +32,9 @@ public class MemristorDiscoveryPreferences {
 
   public static final String EXPERIMENT_INIT_STRING_KEY = "EXPERIMENT_INIT_STRING_KEY";
   public static final String EXPERIMENT_INIT_STRING_DEFAULT_VALUE = "HYSTERESIS";
-
+  protected Preferences preferences;
   private String boardVersion;
   private String experiment;
-
-  protected Preferences preferences;
 
   /** Constructor */
   public MemristorDiscoveryPreferences() {

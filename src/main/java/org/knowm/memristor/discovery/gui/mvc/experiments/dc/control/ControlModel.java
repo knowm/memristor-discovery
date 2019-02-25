@@ -34,13 +34,12 @@ import org.knowm.memristor.discovery.utils.driver.TriangleUpDown;
 
 public class ControlModel extends ExperimentControlModel {
 
+  private final double[] waveformTimeData = new double[1000];
+  private final double[] waveformAmplitudeData = new double[1000];
   public DCPreferences.Waveform waveform;
   private float amplitude;
   private int period; // model store period
   private int pulseNumber;
-
-  private final double[] waveformTimeData = new double[1000];
-  private final double[] waveformAmplitudeData = new double[1000];
 
   /** Constructor */
   public ControlModel() {
@@ -144,17 +143,17 @@ public class ControlModel extends ExperimentControlModel {
     return period;
   }
 
-  public double getCalculatedFrequency() {
-
-    // System.out.println("period = " + period);
-    return 1.0 / ((double) period) * DCPreferences.TIME_UNIT.getDivisor(); // 50% duty cycle
-  }
-
   public void setPeriod(int period) {
 
     this.period = period;
     swingPropertyChangeSupport.firePropertyChange(
         ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+  }
+
+  public double getCalculatedFrequency() {
+
+    // System.out.println("period = " + period);
+    return 1.0 / ((double) period) * DCPreferences.TIME_UNIT.getDivisor(); // 50% duty cycle
   }
 
   public double[] getWaveformTimeData() {

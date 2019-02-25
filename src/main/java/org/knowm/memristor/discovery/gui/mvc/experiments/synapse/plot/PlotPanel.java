@@ -42,10 +42,9 @@ public class PlotPanel extends ExperimentPlotPanel {
 
   private final JCheckBox freezeYAxisCheckBoxIV;
   private final JCheckBox resistanceConductanceCheckBox;
-
+  private final JPanel gvChartControlPanel;
   XYChart gChart;
   XChartPanel<XYChart> gChartPanel;
-  private final JPanel gvChartControlPanel;
 
   /** Constructor */
   public PlotPanel() {

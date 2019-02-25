@@ -49,20 +49,15 @@ import org.knowm.memristor.discovery.utils.gpio.MuxController;
 public class SynapseExperiment extends Experiment {
 
   private static final float INIT_CONDUCTANCE = .0002f;
-
-  private InitSynapseWorker initSynapseWorker;
-
   private final ControlModel controlModel = new ControlModel();
-  private ControlPanel controlPanel;
-
-  private PlotPanel plotPanel;
   private final PlotControlModel plotModel = new PlotControlModel();
   private final PlotController plotController;
-
-  private AHaHController_21 aHaHController;
   private final MuxController muxController;
-
   DecimalFormat df = new DecimalFormat("0.000E0");
+  private InitSynapseWorker initSynapseWorker;
+  private ControlPanel controlPanel;
+  private PlotPanel plotPanel;
+  private AHaHController_21 aHaHController;
 
   /**
    * Constructor
@@ -114,41 +109,6 @@ public class SynapseExperiment extends Experiment {
         });
   }
 
-  private class CaptureWorker extends SwingWorker<Boolean, Double> {
-
-    @Override
-    protected Boolean doInBackground() throws Exception {
-
-      aHaHController.executeInstruction(controlModel.getInstruction());
-      while (!isCancelled()) {
-
-        try {
-          Thread.sleep(controlModel.getSampleRate() * 1000);
-        } catch (InterruptedException e) {
-          // eat it. caught when interrupt is called
-
-        }
-
-        // set to constant pulse width for reads to help mitigate RC issues
-        int pW = controlModel.getPulseWidth();
-        controlModel.setPulseWidth(100_000);
-        aHaHController.executeInstruction(Instruction.FFLV);
-        controlModel.setPulseWidth(pW); // set it back to whatever it was
-
-        // System.out.println("Vy=" + aHaHController.getVy());
-        publish(aHaHController.getGa(), aHaHController.getGb(), aHaHController.getVy());
-      }
-      return true;
-    }
-
-    @Override
-    protected void process(List<Double> chunks) {
-
-      plotController.updateYChartData(chunks.get(0), chunks.get(1), chunks.get(2));
-      plotController.repaintYChart();
-    }
-  }
-
   /**
    * These property change events are triggered in the controlModel in the case where the underlying
    * controlModel is updated. Here, the controller can respond to those events and make sure the
@@ -194,6 +154,41 @@ public class SynapseExperiment extends Experiment {
   public SwingWorker getCaptureWorker() {
 
     return new CaptureWorker();
+  }
+
+  private class CaptureWorker extends SwingWorker<Boolean, Double> {
+
+    @Override
+    protected Boolean doInBackground() throws Exception {
+
+      aHaHController.executeInstruction(controlModel.getInstruction());
+      while (!isCancelled()) {
+
+        try {
+          Thread.sleep(controlModel.getSampleRate() * 1000);
+        } catch (InterruptedException e) {
+          // eat it. caught when interrupt is called
+
+        }
+
+        // set to constant pulse width for reads to help mitigate RC issues
+        int pW = controlModel.getPulseWidth();
+        controlModel.setPulseWidth(100_000);
+        aHaHController.executeInstruction(Instruction.FFLV);
+        controlModel.setPulseWidth(pW); // set it back to whatever it was
+
+        // System.out.println("Vy=" + aHaHController.getVy());
+        publish(aHaHController.getGa(), aHaHController.getGb(), aHaHController.getVy());
+      }
+      return true;
+    }
+
+    @Override
+    protected void process(List<Double> chunks) {
+
+      plotController.updateYChartData(chunks.get(0), chunks.get(1), chunks.get(2));
+      plotController.repaintYChart();
+    }
   }
 
   private class InitSynapseWorker extends SwingWorker<Boolean, Double> {
