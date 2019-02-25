@@ -38,14 +38,14 @@ import javax.swing.event.ChangeListener;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.plot.PlotPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.plot.ResultsPanel;
 
 public class ControlController extends ExperimentControlController {
 
   private final ControlPanel controlPanel;
   private final ControlModel controlModel;
 
-  private final PlotPanel plotPanel;
+  private final ResultsPanel plotPanel;
   ActionListener waveformRadioButtonActionListener =
       new ActionListener() {
 
@@ -72,7 +72,7 @@ public class ControlController extends ExperimentControlController {
    * @param dwf
    */
   public ControlController(
-      ControlPanel controlPanel, PlotPanel plotPanel, ControlModel controlModel, DWFProxy dwf) {
+      ControlPanel controlPanel, ResultsPanel plotPanel, ControlModel controlModel, DWFProxy dwf) {
 
     super(controlPanel, controlModel);
 

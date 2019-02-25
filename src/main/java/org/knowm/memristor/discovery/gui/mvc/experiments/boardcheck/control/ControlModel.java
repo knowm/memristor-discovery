@@ -29,7 +29,6 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.BoardCheckPr
 
 public class ControlModel extends ExperimentControlModel {
 
-  /** Constructor */
   public ControlModel() {}
 
   @Override

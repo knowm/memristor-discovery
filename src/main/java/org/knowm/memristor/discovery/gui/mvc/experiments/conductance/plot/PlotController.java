@@ -25,14 +25,11 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.conductance.plot;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.utils.Util;
 
-public class PlotController implements PropertyChangeListener {
+public class PlotController {
 
-  private final PlotPanel plotPanel;
+  private final ResultsPanel plotPanel;
   private final PlotControlModel plotModel;
 
   /**
@@ -41,7 +38,7 @@ public class PlotController implements PropertyChangeListener {
    * @param plotPanel
    * @param plotModel
    */
-  public PlotController(PlotPanel plotPanel, PlotControlModel plotModel) {
+  public PlotController(ResultsPanel plotPanel, PlotControlModel plotModel) {
 
     this.plotPanel = plotPanel;
     this.plotModel = plotModel;
@@ -58,10 +55,7 @@ public class PlotController implements PropertyChangeListener {
     plotPanel.getCaptureButton().setSelected(true);
     plotPanel.getFreezeYAxisCheckBoxIV().setSelected(false);
     plotPanel.getFreezeYAxisCheckBoxGV().setSelected(false);
-    initGUIComponentsFromModel();
   }
-
-  private void initGUIComponentsFromModel() {}
 
   private void setUpViewEvents() {
 
@@ -230,23 +224,5 @@ public class PlotController implements PropertyChangeListener {
   private double getFormattedAmplitude(double amplitude) {
 
     return Util.round(amplitude, 2);
-  }
-
-  /**
-   * These property change events are triggered in the model in the case where the underlying model
-   * is updated. Here, the controller can respond to those events and make sure the corresponding
-   * GUI components get updated.
-   */
-  @Override
-  public void propertyChange(PropertyChangeEvent evt) {
-
-    switch (evt.getPropertyName()) {
-      case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
-        initGUIComponentsFromModel();
-        break;
-
-      default:
-        break;
-    }
   }
 }

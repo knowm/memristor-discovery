@@ -31,13 +31,13 @@ import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.control.ControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.plot.PlotControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.plot.PlotController;
-import org.knowm.memristor.discovery.gui.mvc.experiments.dc.plot.PlotPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.dc.plot.ResultsPanel;
 import org.knowm.memristor.discovery.utils.PostProcessDataUtils;
 import org.knowm.memristor.discovery.utils.WaveformUtils;
 import org.knowm.waveforms4j.DWF;
@@ -48,7 +48,7 @@ public class DCExperiment extends Experiment {
   private final PlotControlModel plotModel = new PlotControlModel();
   private final PlotController plotController;
   private ControlPanel controlPanel;
-  private PlotPanel plotPanel;
+  private ResultsPanel plotPanel;
 
   /**
    * Constructor
@@ -61,13 +61,13 @@ public class DCExperiment extends Experiment {
     super(dwfProxy, mainFrameContainer, isV1Board);
 
     controlPanel = new ControlPanel();
-    plotPanel = new PlotPanel();
+    plotPanel = new ResultsPanel();
     plotController = new PlotController(plotPanel, plotModel);
     new ControlController(controlPanel, plotPanel, controlModel, dwfProxy);
   }
 
   @Override
-  public void doCreateAndShowGUI() {}
+  public void addWorkersToButtonEvents() {}
 
   /**
    * These property change events are triggered in the controlModel in the case where the underlying
@@ -108,7 +108,7 @@ public class DCExperiment extends Experiment {
   }
 
   @Override
-  public ExperimentPlotPanel getPlotPanel() {
+  public ExperimentResultsPanel getPlotPanel() {
 
     return plotPanel;
   }

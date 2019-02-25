@@ -21,7 +21,7 @@
  * <p>If you have any questions regarding our licensing policy, please contact us at
  * `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.experiments.conductance.plot;
+package org.knowm.memristor.discovery.gui.mvc.experiments.pulse.plot;
 
 import java.awt.BorderLayout;
 import javax.swing.BorderFactory;
@@ -29,8 +29,8 @@ import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.ConductancePreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferences;
 import org.knowm.xchart.XChartPanel;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
@@ -39,13 +39,15 @@ import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
 import org.knowm.xchart.style.Styler.LegendPosition;
 import org.knowm.xchart.style.markers.SeriesMarkers;
 
-public class PlotPanel extends ExperimentPlotPanel {
+public class ResultsPanel extends ExperimentResultsPanel {
 
   private final JPanel radioPanel;
   private final ButtonGroup radioButtonGroup;
   private final JRadioButton captureButton;
   private final JRadioButton ivButton;
   private final JRadioButton gvButton;
+
+  private final JPanel chartsPanel;
   private final JCheckBox freezeYAxisCheckBoxIV;
   private final JPanel gvChartControlPanel;
   private final JCheckBox freezeYAxisCheckBoxGV;
@@ -57,9 +59,11 @@ public class PlotPanel extends ExperimentPlotPanel {
   XChartPanel<XYChart> ivChartPanel;
   XYChart gvChart;
   XChartPanel<XYChart> gvChartPanel;
+  XYChart gChart;
+  XChartPanel<XYChart> gChartPanel;
 
   /** Constructor */
-  public PlotPanel() {
+  public ResultsPanel() {
 
     setLayout(new BorderLayout());
     setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
@@ -82,7 +86,6 @@ public class PlotPanel extends ExperimentPlotPanel {
         SeriesMarkers
             .NONE); // waveformChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
     waveformChartPanel = new XChartPanel<>(waveformChart);
-    add(waveformChartPanel, BorderLayout.CENTER);
 
     // ///////////////////////////////////////////////////////////
     // Capture Chart ////////////////////////////////////////////
@@ -97,13 +100,12 @@ public class PlotPanel extends ExperimentPlotPanel {
             .xAxisTitle("Time [µs]")
             .build();
     captureChart.getStyler().setLegendPosition(LegendPosition.InsideNE);
-
     series = captureChart.addSeries("V1", new double[] {0}, new double[] {0});
     series.setMarker(SeriesMarkers.NONE);
-
     series = captureChart.addSeries("V2", new double[] {0}, new double[] {0});
     series.setMarker(SeriesMarkers.NONE);
-
+    series = captureChart.addSeries("V1-V2", new double[] {0}, new double[] {0});
+    series.setMarker(SeriesMarkers.NONE);
     captureChartPanel = new XChartPanel<>(captureChart);
 
     // ///////////////////////////////////////////////////////////
@@ -115,14 +117,12 @@ public class PlotPanel extends ExperimentPlotPanel {
             .width(600)
             .title("I-T")
             .height(400)
-            .yAxisTitle("Current [" + ConductancePreferences.CURRENT_UNIT.getLabel() + "]")
-            .xAxisTitle("Voltage [V]")
+            .yAxisTitle("Current [" + PulsePreferences.CURRENT_UNIT.getLabel() + "]")
+            .xAxisTitle("Time [µs]")
             .build();
     ivChart.getStyler().setLegendVisible(false);
     ivChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);
-
-    series = ivChart.addSeries("iv", new double[] {0}, new double[] {0});
-
+    ivChart.addSeries("iv", new double[] {0}, new double[] {0});
     ivChartPanel = new XChartPanel<>(ivChart);
 
     // ///////////////////////////////////////////////////////////
@@ -134,19 +134,42 @@ public class PlotPanel extends ExperimentPlotPanel {
             .width(100)
             .title("G-T")
             .height(100)
-            .yAxisTitle("Conductance [" + ConductancePreferences.CONDUCTANCE_UNIT.getLabel() + "]")
-            .xAxisTitle("Voltage [V]")
+            .yAxisTitle("Conductance [" + PulsePreferences.CONDUCTANCE_UNIT.getLabel() + "]")
+            .xAxisTitle("Time [µs]")
             .build();
     gvChart.getStyler().setLegendVisible(false);
     gvChart.getStyler().setYAxisMin(0.0);
-
-    // rvChart.getStyler().setYAxisMax(200.0);
-
     gvChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);
-
-    series = gvChart.addSeries("gv", new double[] {0}, new double[] {0});
-
+    gvChart.addSeries("gv", new double[] {0}, new double[] {0});
     gvChartPanel = new XChartPanel<>(gvChart);
+
+    // ///////////////////////////////////////////////////////////
+    // G Chart ////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////////
+
+    gChart =
+        new XYChartBuilder()
+            .width(100)
+            .title("G")
+            .height(250)
+            .xAxisTitle("Pulse Number")
+            .yAxisTitle("Conductance [" + PulsePreferences.CONDUCTANCE_UNIT.getLabel() + "]")
+            .build();
+    gChart.getStyler().setLegendVisible(false);
+    gChart.getStyler().setYAxisMin(0.0);
+    series = gChart.addSeries("g", new double[] {0}, new double[] {0});
+    series.setMarker(SeriesMarkers.NONE);
+    series = gChart.addSeries("glast", new double[] {0}, new double[] {0});
+    series.setMarker(SeriesMarkers.NONE);
+    gChartPanel = new XChartPanel<>(gChart);
+
+    // ///////////////////////////////////////////////////////////
+    // Charts Panel ////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////////
+
+    chartsPanel = new JPanel();
+    chartsPanel.setLayout(new BorderLayout());
+    add(chartsPanel, BorderLayout.CENTER);
 
     // ///////////////////////////////////////////////////////////
     // Radio Buttons ////////////////////////////////////////////
@@ -154,8 +177,8 @@ public class PlotPanel extends ExperimentPlotPanel {
 
     radioPanel = new JPanel();
     captureButton = new JRadioButton("Capture");
-    ivButton = new JRadioButton("I-V");
-    gvButton = new JRadioButton("G-V");
+    ivButton = new JRadioButton("I-T");
+    gvButton = new JRadioButton("G-T");
     radioButtonGroup = new ButtonGroup();
     addRadioButtons();
 
@@ -189,7 +212,6 @@ public class PlotPanel extends ExperimentPlotPanel {
 
   private void addChartControlGV() {
 
-    // add(freezeYAxisCheckBoxGV, BorderLayout.NORTH);
     add(gvChartControlPanel, BorderLayout.NORTH);
   }
 
@@ -198,7 +220,10 @@ public class PlotPanel extends ExperimentPlotPanel {
     if (!waveformChartPanel.isShowing()) {
       // System.out.println("switch2WaveformChart");
       removeAll();
-      add(waveformChartPanel, BorderLayout.CENTER);
+      chartsPanel.removeAll();
+      chartsPanel.add(waveformChartPanel, BorderLayout.CENTER);
+      chartsPanel.add(gChartPanel, BorderLayout.SOUTH);
+      add(chartsPanel, BorderLayout.CENTER);
       addRadioButtons();
       revalidate();
       repaint();
@@ -210,7 +235,11 @@ public class PlotPanel extends ExperimentPlotPanel {
     if (!captureChartPanel.isShowing()) {
       // System.out.println("switch2CaptureChart");
       removeAll();
-      add(captureChartPanel, BorderLayout.CENTER);
+      chartsPanel.removeAll();
+
+      chartsPanel.add(captureChartPanel, BorderLayout.CENTER);
+      chartsPanel.add(gChartPanel, BorderLayout.SOUTH);
+      add(chartsPanel, BorderLayout.CENTER);
       addRadioButtons();
       revalidate();
       repaint();
@@ -222,7 +251,11 @@ public class PlotPanel extends ExperimentPlotPanel {
     if (!ivChartPanel.isShowing()) {
       // System.out.println("switch2IVChart");
       removeAll();
-      add(ivChartPanel, BorderLayout.CENTER);
+      chartsPanel.removeAll();
+
+      chartsPanel.add(ivChartPanel, BorderLayout.CENTER);
+      chartsPanel.add(gChartPanel, BorderLayout.SOUTH);
+      add(chartsPanel, BorderLayout.CENTER);
       addRadioButtons();
       addYAxisFreezeCheckBoxIV();
       revalidate();
@@ -235,12 +268,12 @@ public class PlotPanel extends ExperimentPlotPanel {
     if (!gvChartPanel.isShowing()) {
       // System.out.println("switch2GVChart");
       removeAll();
-      add(gvChartPanel, BorderLayout.CENTER);
+      chartsPanel.removeAll();
+      chartsPanel.add(gvChartPanel, BorderLayout.CENTER);
+      chartsPanel.add(gChartPanel, BorderLayout.SOUTH);
+      add(chartsPanel, BorderLayout.CENTER);
       addRadioButtons();
       addChartControlGV();
-      captureButton.setSelected(false);
-      ivButton.setSelected(false);
-      gvButton.setSelected(true);
       revalidate();
       repaint();
     }
@@ -334,5 +367,15 @@ public class PlotPanel extends ExperimentPlotPanel {
   public XChartPanel<XYChart> getGvChartPanel() {
 
     return gvChartPanel;
+  }
+
+  public XYChart getGChart() {
+
+    return gChart;
+  }
+
+  public XChartPanel<XYChart> getGChartPanel() {
+
+    return gChartPanel;
   }
 }

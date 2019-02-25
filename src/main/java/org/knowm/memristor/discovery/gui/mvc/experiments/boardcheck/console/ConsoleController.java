@@ -23,11 +23,7 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.console;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
-
-public class ConsoleController implements PropertyChangeListener {
+public class ConsoleController {
 
   private final ConsolePanel consolePanel;
   private final ConsoleControlModel consolModel;
@@ -42,35 +38,5 @@ public class ConsoleController implements PropertyChangeListener {
 
     this.consolePanel = consolePanel;
     this.consolModel = consolModel;
-
-    initGUIComponents();
-    setUpViewEvents();
-  }
-
-  public void initGUIComponents() {
-
-    initGUIComponentsFromModel();
-  }
-
-  private void initGUIComponentsFromModel() {}
-
-  private void setUpViewEvents() {}
-
-  /**
-   * These property change events are triggered in the model in the case where the underlying model
-   * is updated. Here, the controller can respond to those events and make sure the corresponding
-   * GUI components get updated.
-   */
-  @Override
-  public void propertyChange(PropertyChangeEvent evt) {
-
-    switch (evt.getPropertyName()) {
-      case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
-        initGUIComponentsFromModel();
-        break;
-
-      default:
-        break;
-    }
   }
 }

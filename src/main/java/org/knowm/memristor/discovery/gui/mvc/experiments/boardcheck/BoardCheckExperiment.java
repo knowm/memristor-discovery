@@ -34,7 +34,7 @@ import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
 import org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.console.ConsolePanel;
@@ -57,13 +57,12 @@ public class BoardCheckExperiment extends Experiment {
   private static final float V_RESET = -2f;
   private static final float V_MEMINLINE_HARD_RESET = -2.5f;
   private static final float R_CALIBRATE = 0; // Line trace resistance, AD2 Calibration.
-  private final ControlModel controlModel = new ControlModel();
   private final MuxController muxController;
   private SwingWorker aHAH12X7TestWorker;
   private SwingWorker meminlineTestWorker;
   private SwingWorker muxTestWorker;
   private SwingWorker switchTestWorker;
-  private SwingWorker clearConsolWorker;
+  private SwingWorker clearConsoleWorker;
   private SwingWorker synapse12TestWorker;
   private SwingWorker synapse12iTestWorker;
   private float MIN_Q = 2; // minimum ratio between erase/write resistance
@@ -80,6 +79,8 @@ public class BoardCheckExperiment extends Experiment {
   private DecimalFormat qFormat = new DecimalFormat("0.00 X");
   private DecimalFormat percentFormat = new DecimalFormat("0.00 %");
   private DecimalFormat ohmFormat = new DecimalFormat("0.00 kΩ");
+
+  private final ControlModel controlModel = new ControlModel();
   private ControlPanel controlPanel;
   private ConsolePanel consolePanel;
 
@@ -102,7 +103,7 @@ public class BoardCheckExperiment extends Experiment {
    * Here action listeners are attached to the widgets in the control panel and mapped to a worker, also defined here in the experiment.
    */
   @Override
-  public void doCreateAndShowGUI() {
+  public void addWorkersToButtonEvents() {
 
     controlPanel.synapse12iTestButton.addActionListener(
         new ActionListener() {
@@ -193,13 +194,13 @@ public class BoardCheckExperiment extends Experiment {
 
             // System.out.println("Meminline button was clicked. e=" + e.toString());
 
-            clearConsolWorker = new ClearConsolWorker();
-            clearConsolWorker.execute();
+            clearConsoleWorker = new ClearConsolWorker();
+            clearConsoleWorker.execute();
           }
         });
   }
 
-  public float[] measureAllSwitchResistances(float readVoltage, int sleep, boolean configureMux) {
+  float[] measureAllSwitchResistances(float readVoltage, int sleep, boolean configureMux) {
 
     if (configureMux) {
       muxController.setW1(Destination.A);
@@ -259,7 +260,7 @@ public class BoardCheckExperiment extends Experiment {
     return rSwitch / 1000; // to kilohms
   }
 
-  public float[] measureMuxDeviation(int dWFWaveformChannel, Destination destination) {
+  float[] measureMuxDeviation(int dWFWaveformChannel, Destination destination) {
 
     muxController.setScope1(destination);
     muxController.setScope2(destination);
@@ -398,7 +399,7 @@ public class BoardCheckExperiment extends Experiment {
   }
 
   @Override
-  public ExperimentPlotPanel getPlotPanel() {
+  public ExperimentResultsPanel getPlotPanel() {
 
     return consolePanel;
   }
@@ -406,7 +407,8 @@ public class BoardCheckExperiment extends Experiment {
   @Override
   public SwingWorker getCaptureWorker() {
 
-    return new ClearConsolWorker();
+    // we don't use the default CaptureWorker in this experiment
+    return null;
   }
 
   private class SwitchDiagnosticWorker extends SwingWorker<Boolean, Double> {
@@ -1160,7 +1162,7 @@ public class BoardCheckExperiment extends Experiment {
       return true;
     }
 
-    public void applyPulse(float pulseVoltage) {
+    private void applyPulse(float pulseVoltage) {
 
       muxController.setW1(Destination.Y);
       muxController.setW2(Destination.OUT);
@@ -1177,7 +1179,7 @@ public class BoardCheckExperiment extends Experiment {
       }
     }
 
-    public float[][] measureSynapsePairResistances(float readVoltage) {
+    private float[][] measureSynapsePairResistances(float readVoltage) {
 
       /*
        * due to loading on W1, determine the actual read pulse aplitude at node Y during a read pulse for each switch..

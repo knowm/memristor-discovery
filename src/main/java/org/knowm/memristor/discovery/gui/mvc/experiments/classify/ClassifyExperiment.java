@@ -36,7 +36,7 @@ import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.AHaHController_21.Instruction;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.ClassifyPreferences.AHaHRoutine;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.control.ControlController;
@@ -44,7 +44,7 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.classify.control.Contro
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.control.ControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.plot.PlotControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.plot.PlotController;
-import org.knowm.memristor.discovery.gui.mvc.experiments.classify.plot.PlotPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.classify.plot.ResultsPanel;
 
 public class ClassifyExperiment extends Experiment {
 
@@ -57,7 +57,7 @@ public class ClassifyExperiment extends Experiment {
   private SwingWorker runTrialWorker;
   private SwingWorker resetWorker;
   private ControlPanel controlPanel;
-  private PlotPanel plotPanel;
+  private ResultsPanel plotPanel;
   private AHaHController_21 aHaHController;
 
   /**
@@ -71,7 +71,7 @@ public class ClassifyExperiment extends Experiment {
     super(dwfProxy, mainFrameContainer, isV1Board);
 
     controlPanel = new ControlPanel();
-    plotPanel = new PlotPanel();
+    plotPanel = new ResultsPanel();
     plotController = new PlotController(plotPanel, plotModel);
     new ControlController(controlPanel, controlModel, dwfProxy);
 
@@ -80,7 +80,7 @@ public class ClassifyExperiment extends Experiment {
   }
 
   @Override
-  public void doCreateAndShowGUI() {
+  public void addWorkersToButtonEvents() {
 
     controlPanel.clearPlotButton.addActionListener(
         new ActionListener() {
@@ -184,7 +184,7 @@ public class ClassifyExperiment extends Experiment {
   }
 
   @Override
-  public ExperimentPlotPanel getPlotPanel() {
+  public ExperimentResultsPanel getPlotPanel() {
 
     return plotPanel;
   }

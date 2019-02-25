@@ -23,17 +23,31 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.control;
 
+import java.util.concurrent.TimeUnit;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.ShelfLifePreferences;
 
 public class ControlModel extends ExperimentControlModel {
 
+  public TimeUnit timeUnit;
+  private int repeatInterval;
   /** Constructor */
   public ControlModel() {}
 
   @Override
   public void loadModelFromPrefs() {
+
+    // load model from prefs
+    timeUnit =
+        TimeUnit.valueOf(
+            experimentPreferences.getString(
+                ShelfLifePreferences.TIME_UNIT_INIT_KEY,
+                ShelfLifePreferences.TIME_UNIT_DEFAULT_VALUE));
+    repeatInterval =
+        experimentPreferences.getInteger(
+            ShelfLifePreferences.REPEAT_INTERVAL_INIT_KEY,
+            ShelfLifePreferences.REPEAT_INTERVAL_DEFAULT_VALUE);
 
     seriesResistance =
         experimentPreferences.getInteger(
@@ -41,6 +55,37 @@ public class ControlModel extends ExperimentControlModel {
             ShelfLifePreferences.SERIES_R_INIT_DEFAULT_VALUE);
     swingPropertyChangeSupport.firePropertyChange(
         ExperimentControlModel.EVENT_PREFERENCES_UPDATE, true, false);
+  }
+
+  /////////////////////////////////////////////////////////////
+  // GETTERS AND SETTERS //////////////////////////////////////
+  /////////////////////////////////////////////////////////////
+
+  public TimeUnit getTimeUnit() {
+    return timeUnit;
+  }
+
+  public void setTimeUnit(TimeUnit timeUnit) {
+    this.timeUnit = timeUnit;
+    swingPropertyChangeSupport.firePropertyChange(
+        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false); }
+
+  public void setTimeUnit(String text) {
+
+    timeUnit = Enum.valueOf(TimeUnit.class, text);
+    swingPropertyChangeSupport.firePropertyChange(
+        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+  }
+
+  public int getRepeatInterval() {
+    return repeatInterval;
+
+  }
+
+  public void setRepeatInterval(int repeatInterval) {
+    this.repeatInterval = repeatInterval;
+    swingPropertyChangeSupport.firePropertyChange(
+        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   @Override

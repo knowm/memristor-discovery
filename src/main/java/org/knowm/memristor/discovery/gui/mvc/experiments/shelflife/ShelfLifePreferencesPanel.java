@@ -34,6 +34,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferencesPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.BoardCheckPreferences;
 
 public class ShelfLifePreferencesPanel extends ExperimentPreferencesPanel {
 
@@ -42,6 +43,9 @@ public class ShelfLifePreferencesPanel extends ExperimentPreferencesPanel {
 
   private JLabel repeatIntervalLabel;
   private JTextField repeatIntervalTextField;
+
+  private JLabel seriesResistorLabel;
+  private JTextField seriesResistorTextField;
 
   /**
    * Constructor
@@ -91,6 +95,22 @@ public class ShelfLifePreferencesPanel extends ExperimentPreferencesPanel {
                 ShelfLifePreferences.REPEAT_INTERVAL_INIT_KEY,
                 ShelfLifePreferences.REPEAT_INTERVAL_DEFAULT_VALUE)));
     preferencesPanel.add(repeatIntervalTextField, gc);
+
+    /////////////////////////////////////////////////////////
+
+    gc.gridy++;
+    gc.gridx = 0;
+    this.seriesResistorLabel = new JLabel("Series Resistor:");
+    preferencesPanel.add(seriesResistorLabel, gc);
+
+    gc.gridx = 1;
+    this.seriesResistorTextField = new JTextField(12);
+    this.seriesResistorTextField.setText(
+        String.valueOf(
+            experimentPreferences.getInteger(
+                ShelfLifePreferences.SERIES_R_INIT_KEY,
+                ShelfLifePreferences.SERIES_R_INIT_DEFAULT_VALUE)));
+    preferencesPanel.add(seriesResistorTextField, gc);
   }
 
   @Override
@@ -102,6 +122,9 @@ public class ShelfLifePreferencesPanel extends ExperimentPreferencesPanel {
     experimentPreferences.setInteger(
         ShelfLifePreferences.REPEAT_INTERVAL_INIT_KEY,
         Integer.parseInt(repeatIntervalTextField.getText()));
+    experimentPreferences.setInteger(
+        ShelfLifePreferences.SERIES_R_INIT_KEY,
+        Integer.parseInt(seriesResistorTextField.getText()));
   }
 
   @Override

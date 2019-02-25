@@ -31,13 +31,13 @@ import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control.ControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.plot.PlotControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.plot.PlotController;
-import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.plot.PlotPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.plot.ResultsPanel;
 import org.knowm.memristor.discovery.utils.Util;
 import org.knowm.memristor.discovery.utils.WaveformUtils;
 import org.knowm.waveforms4j.DWF;
@@ -48,7 +48,7 @@ public class HysteresisExperiment extends Experiment {
   private final ControlModel controlModel = new ControlModel();
   private final ControlPanel controlPanel;
 
-  private final PlotPanel plotPanel;
+  private final ResultsPanel plotPanel;
   private final PlotControlModel plotModel = new PlotControlModel();
   private final PlotController plotController;
 
@@ -63,13 +63,13 @@ public class HysteresisExperiment extends Experiment {
     super(dwfProxy, mainFrameContainer, isV1Board);
 
     controlPanel = new ControlPanel();
-    plotPanel = new PlotPanel();
+    plotPanel = new ResultsPanel();
     plotController = new PlotController(plotPanel, plotModel);
     new ControlController(controlPanel, controlModel, dwfProxy);
   }
 
   @Override
-  public void doCreateAndShowGUI() {}
+  public void addWorkersToButtonEvents() {}
 
   /**
    * These property change events are triggered in the model in the case where the underlying model
@@ -143,7 +143,7 @@ public class HysteresisExperiment extends Experiment {
   }
 
   @Override
-  public ExperimentPlotPanel getPlotPanel() {
+  public ExperimentResultsPanel getPlotPanel() {
 
     return plotPanel;
   }

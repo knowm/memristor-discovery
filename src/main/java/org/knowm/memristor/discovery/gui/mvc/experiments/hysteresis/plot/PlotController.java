@@ -36,7 +36,7 @@ import org.knowm.memristor.discovery.utils.Util;
 
 public class PlotController implements PropertyChangeListener {
 
-  private final PlotPanel plotPanel;
+  private final ResultsPanel plotPanel;
   private final PlotControlModel plotModel;
 
   /**
@@ -45,7 +45,7 @@ public class PlotController implements PropertyChangeListener {
    * @param plotPanel
    * @param plotModel
    */
-  public PlotController(PlotPanel plotPanel, PlotControlModel plotModel) {
+  public PlotController(ResultsPanel plotPanel, PlotControlModel plotModel) {
 
     this.plotPanel = plotPanel;
     this.plotModel = plotModel;

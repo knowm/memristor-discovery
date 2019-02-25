@@ -21,9 +21,43 @@
  * <p>If you have any questions regarding our licensing policy, please contact us at
  * `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.experiments;
+package org.knowm.memristor.discovery.gui.mvc.experiments.logic.plot;
 
-import javax.swing.JPanel;
+import java.awt.BorderLayout;
+import javax.swing.BorderFactory;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
+import org.knowm.xchart.XChartPanel;
+import org.knowm.xchart.XYChart;
+import org.knowm.xchart.XYChartBuilder;
 
-/** Created by timmolter on 3/7/17. */
-public abstract class ExperimentPlotPanel extends JPanel {}
+public class ResultsPanel extends ExperimentResultsPanel {
+
+  XYChart chart;
+  XChartPanel<XYChart> chartPanel;
+
+  /** Constructor */
+  public ResultsPanel() {
+
+    setLayout(new BorderLayout());
+    setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
+
+    chart =
+        new XYChartBuilder()
+            .width(200)
+            .title("Synaptic Logic State Traces [A/~A:Red, B/~B:Orange, C/~C:Magenta")
+            .height(200)
+            .xAxisTitle("Sa")
+            .yAxisTitle("Sb")
+            .build();
+    chart.getStyler().setLegendVisible(false);
+    chartPanel = new XChartPanel<>(chart);
+
+    chartPanel.setLayout(new BorderLayout());
+    add(chartPanel, BorderLayout.CENTER);
+  }
+
+  public XChartPanel<XYChart> getChartPanel() {
+
+    return chartPanel;
+  }
+}

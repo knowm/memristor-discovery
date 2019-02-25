@@ -30,26 +30,22 @@ import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.console.ConsoleControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.console.ConsoleController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.console.ConsolePanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.control.ControlPanel;
 
 public class ShelfLifeExperiment extends Experiment {
 
   private final ControlModel controlModel = new ControlModel();
-  private SwingWorker aHAH12X7TestWorker;
-  private SwingWorker meminlineTestWorker;
-  private SwingWorker muxTestWorker;
-  private SwingWorker switchTestWorker;
-  private SwingWorker clearConsolWorker;
-  private SwingWorker synapse12TestWorker;
-  private SwingWorker synapse12iTestWorker;
-  private float MIN_Q = 2; // minimum ratio between erase/write resistance
-  private float MEMINLINE_MIN_R = 10; // if all state are below this (kiloohms), its stuck low
+  private final ControlPanel controlPanel;
 
-  private ControlPanel controlPanel;
-  private ConsolePanel consolePanel;
+  private final ConsolePanel plotPanel;
+  private final ConsoleControlModel plotModel = new ConsoleControlModel();
+  private final ConsoleController plotController;
 
   /** Constructor */
   public ShelfLifeExperiment(DWFProxy dwfProxy, Container mainFrameContainer, boolean isV1Board) {
@@ -57,14 +53,20 @@ public class ShelfLifeExperiment extends Experiment {
     super(dwfProxy, mainFrameContainer, isV1Board);
 
     controlPanel = new ControlPanel();
-    consolePanel = new ConsolePanel();
+    plotPanel = new ConsolePanel();
+    plotController = new ConsoleController(plotPanel, plotModel);
+    new ControlController(controlPanel, controlModel, dwfProxy);
   }
 
   /*
    * Here action listeners are attached to the widgets in the control panel and mapped to a worker, also defined here in the experiment.
    */
   @Override
-  public void doCreateAndShowGUI() {}
+  public void addWorkersToButtonEvents() {
+
+    // don't need anything here as we're leveraging the default Start/Stop button and the default CaptureWorker
+
+  }
 
   /**
    * These property change events are triggered in the controlModel in the case where the underlying
@@ -103,9 +105,9 @@ public class ShelfLifeExperiment extends Experiment {
   }
 
   @Override
-  public ExperimentPlotPanel getPlotPanel() {
+  public ExperimentResultsPanel getPlotPanel() {
 
-    return consolePanel;
+    return plotPanel;
   }
 
   @Override

@@ -36,7 +36,7 @@ import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.logic.AHaHController_21.Instruction;
 import org.knowm.memristor.discovery.gui.mvc.experiments.logic.LogicPreferences.DataStructure;
 import org.knowm.memristor.discovery.gui.mvc.experiments.logic.control.ControlController;
@@ -44,7 +44,7 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.logic.control.ControlMo
 import org.knowm.memristor.discovery.gui.mvc.experiments.logic.control.ControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.logic.plot.PlotControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.logic.plot.PlotController;
-import org.knowm.memristor.discovery.gui.mvc.experiments.logic.plot.PlotPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.logic.plot.ResultsPanel;
 
 public class LogicExperiment extends Experiment {
 
@@ -55,7 +55,7 @@ public class LogicExperiment extends Experiment {
   private SwingWorker runTrialsWorker;
   private SwingWorker resetWorker;
   private ControlPanel controlPanel;
-  private PlotPanel plotPanel;
+  private ResultsPanel plotPanel;
   private AHaHController_21 aHaHController;
 
   // private static final double MAX_G = .001;// init of synapses will terminate if one or the other
@@ -72,7 +72,7 @@ public class LogicExperiment extends Experiment {
     super(dwfProxy, mainFrameContainer, isV1Board);
 
     controlPanel = new ControlPanel();
-    plotPanel = new PlotPanel();
+    plotPanel = new ResultsPanel();
     plotController = new PlotController(plotPanel, plotModel);
     new ControlController(controlPanel, controlModel, dwfProxy);
 
@@ -81,7 +81,7 @@ public class LogicExperiment extends Experiment {
   }
 
   @Override
-  public void doCreateAndShowGUI() {
+  public void addWorkersToButtonEvents() {
 
     controlPanel.clearPlotButton.addActionListener(
         new ActionListener() {
@@ -259,7 +259,7 @@ public class LogicExperiment extends Experiment {
   }
 
   @Override
-  public ExperimentPlotPanel getPlotPanel() {
+  public ExperimentResultsPanel getPlotPanel() {
 
     return plotPanel;
   }

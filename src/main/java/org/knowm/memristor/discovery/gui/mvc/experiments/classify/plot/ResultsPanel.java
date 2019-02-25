@@ -27,14 +27,14 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.util.Arrays;
 import javax.swing.BorderFactory;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.xchart.XChartPanel;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
 import org.knowm.xchart.XYSeries;
 import org.knowm.xchart.style.markers.SeriesMarkers;
 
-public class PlotPanel extends ExperimentPlotPanel {
+public class ResultsPanel extends ExperimentResultsPanel {
 
   XYChart trainChart;
   XChartPanel<XYChart> trainChartPanel;
@@ -43,7 +43,7 @@ public class PlotPanel extends ExperimentPlotPanel {
   XChartPanel<XYChart> synapticWeightChartPanel;
 
   /** Constructor */
-  public PlotPanel() {
+  public ResultsPanel() {
 
     // setLayout(new BorderLayout());
     setLayout(new GridLayout(2, 1));

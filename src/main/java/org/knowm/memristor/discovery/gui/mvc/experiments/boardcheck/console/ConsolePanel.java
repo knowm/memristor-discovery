@@ -32,9 +32,9 @@ import javax.swing.BorderFactory;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.text.DefaultCaret;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 
-public class ConsolePanel extends ExperimentPlotPanel {
+public class ConsolePanel extends ExperimentResultsPanel {
 
   JTextArea console;
   private ArrayList<String> lines = new ArrayList<>();

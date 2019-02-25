@@ -30,6 +30,8 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.ShelfLifePref
 
 public class ConsoleControlModel extends ExperimentControlModel {
 
+  private String consoleContents = "";
+
   /**
    * Here is where the Controller registers itself as a listener to model changes.
    *

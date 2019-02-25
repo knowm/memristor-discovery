@@ -31,14 +31,14 @@ import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.control.ControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.plot.PlotControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.plot.PlotController;
-import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.plot.PlotPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.plot.ResultsPanel;
 import org.knowm.memristor.discovery.utils.PostProcessDataUtils;
 import org.knowm.memristor.discovery.utils.WaveformUtils;
 import org.knowm.waveforms4j.DWF;
@@ -49,7 +49,7 @@ public class ConductanceExperiment extends Experiment {
   private final PlotControlModel plotModel = new PlotControlModel();
   private final PlotController plotController;
   private ControlPanel controlPanel;
-  private PlotPanel plotPanel;
+  private ResultsPanel plotPanel;
   private ResetCaptureWorker resetCaptureWorker;
 
   /**
@@ -63,13 +63,13 @@ public class ConductanceExperiment extends Experiment {
     super(dwfProxy, mainFrameContainer, isV1Board);
 
     controlPanel = new ControlPanel();
-    plotPanel = new PlotPanel();
+    plotPanel = new ResultsPanel();
     plotController = new PlotController(plotPanel, plotModel);
     new ControlController(controlPanel, plotPanel, controlModel, dwfProxy);
   }
 
   @Override
-  public void doCreateAndShowGUI() {}
+  public void addWorkersToButtonEvents() {}
 
   /**
    * These property change events are triggered in the controlModel in the case where the underlying
@@ -125,7 +125,7 @@ public class ConductanceExperiment extends Experiment {
   }
 
   @Override
-  public ExperimentPlotPanel getPlotPanel() {
+  public ExperimentResultsPanel getPlotPanel() {
 
     return plotPanel;
   }

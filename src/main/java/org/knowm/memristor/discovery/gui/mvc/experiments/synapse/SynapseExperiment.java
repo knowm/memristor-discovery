@@ -36,14 +36,14 @@ import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.AHaHController_21.Instruction;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.plot.PlotControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.plot.PlotController;
-import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.plot.PlotPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.plot.ResultsPanel;
 import org.knowm.memristor.discovery.utils.gpio.MuxController;
 
 public class SynapseExperiment extends Experiment {
@@ -56,7 +56,7 @@ public class SynapseExperiment extends Experiment {
   DecimalFormat df = new DecimalFormat("0.000E0");
   private InitSynapseWorker initSynapseWorker;
   private ControlPanel controlPanel;
-  private PlotPanel plotPanel;
+  private ResultsPanel plotPanel;
   private AHaHController_21 aHaHController;
 
   /**
@@ -70,7 +70,7 @@ public class SynapseExperiment extends Experiment {
     super(dwfProxy, mainFrameContainer, isV1Board);
 
     controlPanel = new ControlPanel();
-    plotPanel = new PlotPanel();
+    plotPanel = new ResultsPanel();
     plotController = new PlotController(plotPanel, plotModel);
     new ControlController(controlPanel, controlModel, dwfProxy);
     System.out.println(controlModel.getInstruction());
@@ -86,7 +86,8 @@ public class SynapseExperiment extends Experiment {
   }
 
   @Override
-  public void doCreateAndShowGUI() {
+  public void addWorkersToButtonEvents() {
+
     controlPanel.clearPlotButton.addActionListener(
         new ActionListener() {
 
@@ -145,7 +146,7 @@ public class SynapseExperiment extends Experiment {
   }
 
   @Override
-  public ExperimentPlotPanel getPlotPanel() {
+  public ExperimentResultsPanel getPlotPanel() {
 
     return plotPanel;
   }

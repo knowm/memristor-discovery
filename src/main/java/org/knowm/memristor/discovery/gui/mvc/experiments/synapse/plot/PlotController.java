@@ -25,15 +25,12 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.synapse.plot;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 
-public class PlotController implements PropertyChangeListener {
+public class PlotController {
 
-  private final PlotPanel plotPanel;
+  private final ResultsPanel plotPanel;
   private final PlotControlModel plotModel;
 
   private Long startTime = null;
@@ -44,7 +41,7 @@ public class PlotController implements PropertyChangeListener {
    * @param plotPanel
    * @param plotModel
    */
-  public PlotController(PlotPanel plotPanel, PlotControlModel plotModel) {
+  public PlotController(ResultsPanel plotPanel, PlotControlModel plotModel) {
 
     this.plotPanel = plotPanel;
     this.plotModel = plotModel;
@@ -62,10 +59,7 @@ public class PlotController implements PropertyChangeListener {
   public void initGUIComponents() {
 
     plotPanel.getFreezeYAxisCheckBoxIV().setSelected(false);
-    initGUIComponentsFromModel();
   }
-
-  private void initGUIComponentsFromModel() {}
 
   private void setUpViewEvents() {
 
@@ -192,23 +186,5 @@ public class PlotController implements PropertyChangeListener {
 
     plotPanel.getGChartPanel().revalidate();
     plotPanel.getGChartPanel().repaint();
-  }
-
-  /**
-   * These property change events are triggered in the model in the case where the underlying model
-   * is updated. Here, the controller can respond to those events and make sure the corresponding
-   * GUI components get updated.
-   */
-  @Override
-  public void propertyChange(PropertyChangeEvent evt) {
-
-    switch (evt.getPropertyName()) {
-      case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
-        initGUIComponentsFromModel();
-        break;
-
-      default:
-        break;
-    }
   }
 }
