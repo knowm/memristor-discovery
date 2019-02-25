@@ -23,14 +23,25 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments;
 
+import java.awt.Component;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import org.knowm.memristor.discovery.utils.Util;
 
 public abstract class ExperimentControlPanel extends JPanel {
 
   public abstract void enableAllChildComponents(boolean enabled);
 
-  public JButton startStopButton;
+  public final JButton startStopButton;
+  public final JLabel logoLabel;
+
+  public ExperimentControlPanel() {
+
+    startStopButton = new JButton("Start");
+    startStopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    logoLabel = new JLabel(Util.createImageIcon("img/logo_200.png"));
+  }
 
   public JButton getStartStopButton() {
 

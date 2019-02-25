@@ -90,6 +90,7 @@ public class ControlPanel extends ExperimentControlPanel {
     labelTable.put(100, new JLabel("1"));
     labelTable.put(150, new JLabel("1.5"));
     amplitudeSlider.setLabelTable(labelTable);
+
     c.gridy++;
     c.insets = new Insets(0, 6, 4, 6);
     amplitudeSlider.setPreferredSize(new Dimension(300, 80));
@@ -108,7 +109,6 @@ public class ControlPanel extends ExperimentControlPanel {
     pulseWidthSlider.setLabelTable(labelTable);
     c.gridy++;
     add(pulseWidthSlider, c);
-    c.gridy++;
 
     // learn method
     ahahRoutineLabel = new JLabel("AHaH Routine");
@@ -169,7 +169,6 @@ public class ControlPanel extends ExperimentControlPanel {
     add(runTrialButton, c);
 
     c.gridy++;
-    JLabel logoLabel = new JLabel(Util.createImageIcon("img/logo_200.png"));
     add(logoLabel, c);
   }
 

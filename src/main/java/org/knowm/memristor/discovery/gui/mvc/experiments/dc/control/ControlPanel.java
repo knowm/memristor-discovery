@@ -174,14 +174,11 @@ public class ControlPanel extends ExperimentControlPanel {
     c.insets = new Insets(0, 5, 14, 5);
     add(seriesTextField, c);
 
-    startStopButton = new JButton("Start");
-    startStopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.gridy++;
     c.insets = new Insets(0, 0, 0, 0);
     add(startStopButton, c);
 
     c.gridy++;
-    JLabel logoLabel = new JLabel(Util.createImageIcon("img/logo_200.png"));
     add(logoLabel, c);
   }
 

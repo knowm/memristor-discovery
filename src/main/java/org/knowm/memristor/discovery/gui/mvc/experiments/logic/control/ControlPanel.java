@@ -216,7 +216,6 @@ public class ControlPanel extends ExperimentControlPanel {
     add(clearPlotButton, c);
 
     c.gridy++;
-    JLabel logoLabel = new JLabel(Util.createImageIcon("img/logo_200.png"));
     add(logoLabel, c);
   }
 

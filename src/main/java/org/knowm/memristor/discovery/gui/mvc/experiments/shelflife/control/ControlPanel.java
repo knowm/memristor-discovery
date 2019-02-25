@@ -48,14 +48,12 @@ public class ControlPanel extends ExperimentControlPanel {
     c.fill = GridBagConstraints.HORIZONTAL;
     setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
 
-    startStopButton = new JButton("Start");
-    startStopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
     c.gridy++;
     c.insets = new Insets(0, 0, 0, 0);
     add(startStopButton, c);
 
     c.gridy++;
-    JLabel logoLabel = new JLabel(Util.createImageIcon("img/logo_200.png"));
     add(logoLabel, c);
   }
 
