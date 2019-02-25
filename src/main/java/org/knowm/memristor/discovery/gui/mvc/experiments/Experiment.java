@@ -63,7 +63,7 @@ public abstract class Experiment implements PropertyChangeListener {
 
   public abstract ExperimentControlPanel getControlPanel();
 
-  public abstract ExperimentResultsPanel getPlotPanel();
+  public abstract ExperimentResultsPanel getResultPanel();
 
   public abstract SwingWorker getCaptureWorker();
 
@@ -127,7 +127,7 @@ public abstract class Experiment implements PropertyChangeListener {
     // Plot Panel //////////
     // //////////////////////
 
-    mainFrameContainer.add(getPlotPanel(), BorderLayout.CENTER);
+    mainFrameContainer.add(getResultPanel(), BorderLayout.CENTER);
 
     // //////////////////////
     // Plot Panel //////////

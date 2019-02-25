@@ -35,8 +35,8 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.control.ControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.dc.result.ResultModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.result.ResultController;
+import org.knowm.memristor.discovery.gui.mvc.experiments.dc.result.ResultModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.result.ResultPanel;
 import org.knowm.memristor.discovery.utils.PostProcessDataUtils;
 import org.knowm.memristor.discovery.utils.WaveformUtils;
@@ -44,11 +44,11 @@ import org.knowm.waveforms4j.DWF;
 
 public class DCExperiment extends Experiment {
 
-  private final ControlModel controlModel = new ControlModel();
-  private final ResultModel plotModel = new ResultModel();
-  private final ResultController resultController;
+  private final ControlModel controlModel;
   private ControlPanel controlPanel;
-  private ResultPanel plotPanel;
+  private final ResultModel resultModel;
+  private final ResultController resultController;
+  private ResultPanel resultPanel;
 
   /**
    * Constructor
@@ -60,10 +60,12 @@ public class DCExperiment extends Experiment {
 
     super(dwfProxy, mainFrameContainer, isV1Board);
 
+    controlModel = new ControlModel();
     controlPanel = new ControlPanel();
-    plotPanel = new ResultPanel();
-    resultController = new ResultController(plotPanel, plotModel);
-    new ControlController(controlPanel, plotPanel, controlModel, dwfProxy);
+    resultPanel = new ResultPanel();
+    resultModel = new ResultModel();
+    resultController = new ResultController(resultPanel, resultModel);
+    new ControlController(controlPanel, resultPanel, controlModel, dwfProxy);
   }
 
   @Override
@@ -81,7 +83,7 @@ public class DCExperiment extends Experiment {
       case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
         if (!controlModel.isStartToggled()) {
 
-          plotPanel.switch2WaveformChart();
+          resultPanel.switch2WaveformChart();
           resultController.updateWaveformChart(
               controlModel.getWaveformTimeData(),
               controlModel.getWaveformAmplitudeData(),
@@ -108,9 +110,9 @@ public class DCExperiment extends Experiment {
   }
 
   @Override
-  public ExperimentResultsPanel getPlotPanel() {
+  public ExperimentResultsPanel getResultPanel() {
 
-    return plotPanel;
+    return resultPanel;
   }
 
   @Override
@@ -237,15 +239,15 @@ public class DCExperiment extends Experiment {
       resultController.updateGVChartData(
           newestChunk[1], newestChunk[5], controlModel.getPeriod(), controlModel.getAmplitude());
 
-      if (plotPanel.getCaptureButton().isSelected()) {
+      if (resultPanel.getCaptureButton().isSelected()) {
         resultController.repaintCaptureChart();
-        plotPanel.switch2CaptureChart();
-      } else if (plotPanel.getIVButton().isSelected()) {
+        resultPanel.switch2CaptureChart();
+      } else if (resultPanel.getIVButton().isSelected()) {
         resultController.repaintItChart();
-        plotPanel.switch2IVChart();
+        resultPanel.switch2IVChart();
       } else {
         resultController.repaintRtChart();
-        plotPanel.switch2GVChart();
+        resultPanel.switch2GVChart();
       }
       controlPanel.getStartStopButton().doClick();
     }

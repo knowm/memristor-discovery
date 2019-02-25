@@ -38,5 +38,18 @@ public class ResultController {
 
     this.resultPanel = resultPanel;
     this.resultModel = resultModel;
+    resultPanel.loadLinesToConsole(resultModel.getLines());
+  }
+
+  public void addNewLine(String newLine) {
+
+    resultModel.getLines().add(newLine);
+    resultPanel.loadLinesToConsole(resultModel.getLines());
+  }
+
+  public void clear() {
+
+    resultModel.getLines().clear();
+    resultPanel.loadLinesToConsole(resultModel.getLines());
   }
 }

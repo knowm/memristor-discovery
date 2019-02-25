@@ -146,7 +146,7 @@ public class SynapseExperiment extends Experiment {
   }
 
   @Override
-  public ExperimentResultsPanel getPlotPanel() {
+  public ExperimentResultsPanel getResultPanel() {
 
     return plotPanel;
   }

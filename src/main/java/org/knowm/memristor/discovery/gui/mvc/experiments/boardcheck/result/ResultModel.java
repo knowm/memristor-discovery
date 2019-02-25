@@ -24,11 +24,26 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.result;
 
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Date;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.BoardCheckPreferences;
 
 public class ResultModel extends ExperimentControlModel {
+
+  private final ArrayList<String> lines = new ArrayList<>();
+
+  public ResultModel(){
+
+    Date now = new Date();
+    lines.add("" + now.toString());
+    lines.add("");
+  }
+
+  public ArrayList<String> getLines() {
+    return lines;
+  }
 
   /**
    * Here is where the Controller registers itself as a listener to model changes.

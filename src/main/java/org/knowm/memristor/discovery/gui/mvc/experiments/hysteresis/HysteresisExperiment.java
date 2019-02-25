@@ -143,7 +143,7 @@ public class HysteresisExperiment extends Experiment {
   }
 
   @Override
-  public ExperimentResultsPanel getPlotPanel() {
+  public ExperimentResultsPanel getResultPanel() {
 
     return plotPanel;
   }

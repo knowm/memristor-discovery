@@ -27,7 +27,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
-import java.util.Date;
 import javax.swing.BorderFactory;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -36,8 +35,7 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 
 public class ResultPanel extends ExperimentResultsPanel {
 
-  JTextArea console;
-  private ArrayList<String> lines = new ArrayList<>();
+  JTextArea consoleTextArea;
 
   /** Constructor */
   public ResultPanel() {
@@ -45,58 +43,35 @@ public class ResultPanel extends ExperimentResultsPanel {
     setLayout(new BorderLayout());
     setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
 
-    console = new JTextArea();
-    console.setLineWrap(true);
-    console.setWrapStyleWord(true);
-    // result.setAutoscrolls(true);
+    consoleTextArea = new JTextArea();
+    consoleTextArea.setLineWrap(true);
+    consoleTextArea.setWrapStyleWord(true);
+    consoleTextArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+    consoleTextArea.setForeground(Color.green);
+    consoleTextArea.setBackground(Color.black);
 
-    // Font font = new Font("Courier", Font.PLAIN, 12);
-
-    console.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
-
-    console.setForeground(Color.green);
-    console.setBackground(Color.black);
-
-    DefaultCaret caret = (DefaultCaret) console.getCaret();
+    DefaultCaret caret = (DefaultCaret) consoleTextArea.getCaret();
     caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 
-    Date now = new Date();
-    lines.add("" + now.toString());
-    lines.add("");
-
-    loadLinesToColsole();
-
-    console.setLineWrap(true);
-    console.setWrapStyleWord(true);
+    consoleTextArea.setLineWrap(true);
+    consoleTextArea.setWrapStyleWord(true);
 
     JScrollPane scroll =
         new JScrollPane(
-            console,
+            consoleTextArea,
             JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
             JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 
     add(scroll);
   }
 
-  public void clear() {
-
-    lines.clear();
-    loadLinesToColsole();
-  }
-
-  public void loadLinesToColsole() {
+   void loadLinesToConsole(ArrayList<String> lines) {
 
     StringBuilder sb = new StringBuilder();
     for (int i = 0; i < lines.size(); i++) {
       sb.append(lines.get(i) + "\n");
     }
 
-    console.setText(sb.toString());
-  }
-
-  public void println(String newLine) {
-
-    lines.add(newLine);
-    loadLinesToColsole();
+    consoleTextArea.setText(sb.toString());
   }
 }
