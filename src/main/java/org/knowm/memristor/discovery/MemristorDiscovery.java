@@ -61,7 +61,6 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.logic.LogicExperiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.logic.LogicPreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulseExperiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferencesPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.qc.QCExperiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.ShelfLifeExperiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.ShelfLifePreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.SynapseExperiment;
@@ -279,9 +278,6 @@ public class MemristorDiscovery
                       break;
                     case "DC":
                       experiment = new DCExperiment(dwf, mainFrame.getContentPane(), isV1Board);
-                      break;
-                    case "QC":
-                      experiment = new QCExperiment(dwf, mainFrame.getContentPane(), isV1Board);
                       break;
                     case "BoardCheck":
                       experiment =
