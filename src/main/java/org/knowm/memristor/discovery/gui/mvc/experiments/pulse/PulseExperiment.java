@@ -37,9 +37,9 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.Conductance
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.control.ControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.plot.PlotControlModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.plot.PlotController;
-import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.plot.ResultsPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.result.ResultModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.result.ResultController;
+import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.result.ResultPanel;
 import org.knowm.memristor.discovery.utils.PostProcessDataUtils;
 import org.knowm.memristor.discovery.utils.WaveformUtils;
 import org.knowm.waveforms4j.DWF;
@@ -47,11 +47,11 @@ import org.knowm.waveforms4j.DWF;
 public class PulseExperiment extends Experiment {
 
   private final ControlModel controlModel = new ControlModel();
-  private final PlotControlModel plotModel = new PlotControlModel();
-  private final PlotController plotController;
+  private final ResultModel plotModel = new ResultModel();
+  private final ResultController resultController;
   boolean initialPulseTrainCaptured = false;
   private ControlPanel controlPanel;
-  private ResultsPanel plotPanel;
+  private ResultPanel plotPanel;
 
   /**
    * Constructor
@@ -65,8 +65,8 @@ public class PulseExperiment extends Experiment {
 
     controlPanel = new ControlPanel(controlModel);
 
-    plotPanel = new ResultsPanel();
-    plotController = new PlotController(plotPanel, plotModel);
+    plotPanel = new ResultPanel();
+    resultController = new ResultController(plotPanel, plotModel);
     new ControlController(controlPanel, controlModel, dwfProxy);
   }
 
@@ -86,7 +86,7 @@ public class PulseExperiment extends Experiment {
     switch (propName) {
       case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
         plotPanel.switch2WaveformChart();
-        plotController.updateWaveformChart(
+        resultController.updateWaveformChart(
             controlModel.getWaveformTimeData(),
             controlModel.getWaveformAmplitudeData(),
             controlModel.getAmplitude(),
@@ -339,19 +339,19 @@ public class PulseExperiment extends Experiment {
       if (newestChunk[6] == null) {
         initialPulseTrainCaptured = true;
 
-        plotController.updateCaptureChartData(
+        resultController.updateCaptureChartData(
             newestChunk[0],
             newestChunk[1],
             newestChunk[2],
             newestChunk[3],
             controlModel.getPulseWidth(),
             controlModel.getAmplitude());
-        plotController.updateIVChartData(
+        resultController.updateIVChartData(
             newestChunk[0],
             newestChunk[4],
             controlModel.getPulseWidth(),
             controlModel.getAmplitude());
-        plotController.updateGVChartData(
+        resultController.updateGVChartData(
             newestChunk[0],
             newestChunk[5],
             controlModel.getPulseWidth(),
@@ -359,20 +359,20 @@ public class PulseExperiment extends Experiment {
 
         if (plotPanel.getCaptureButton().isSelected()) {
           plotPanel.switch2CaptureChart();
-          plotController.repaintVtChart();
+          resultController.repaintVtChart();
         } else if (plotPanel.getIVButton().isSelected()) {
           plotPanel.switch2IVChart();
-          plotController.repaintItChart();
+          resultController.repaintItChart();
         } else {
           plotPanel.switch2GVChart();
-          plotController.repaintGVChart();
+          resultController.repaintGVChart();
         }
       } else {
 
         // update G chart
         controlModel.setLastG(newestChunk[6][0]);
-        plotController.updateGChartData(controlModel.getLastG(), controlModel.getLastRAsString());
-        plotController.repaintGChart();
+        resultController.updateGChartData(controlModel.getLastG(), controlModel.getLastRAsString());
+        resultController.repaintGChart();
 
         controlModel.updateEnergyData();
         controlPanel.updateEnergyGUI(

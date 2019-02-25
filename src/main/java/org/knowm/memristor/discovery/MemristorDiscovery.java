@@ -293,7 +293,7 @@ public class MemristorDiscovery
                   }
 
                   experiment.createAndShowGUI();
-                  // for console message from experiments
+                  // for result message from experiments
                   experiment.getControlModel().addListener(MemristorDiscovery.this);
 
                   dwf.startupAD2();
@@ -357,7 +357,7 @@ public class MemristorDiscovery
                         break;
                     }
                     experiment.createAndShowGUI();
-                    // for console message from experiments
+                    // for result message from experiments
                     experiment.getControlModel().addListener(MemristorDiscovery.this);
 
                     dwf.startupAD2();
@@ -471,7 +471,7 @@ public class MemristorDiscovery
     }
     experiment.createAndShowGUI();
 
-    // for console message from experiments
+    // for result message from experiments
     experiment.getControlModel().addListener(this);
 
     mainFrame.setTitle(FRAME_TITLE_BASE + experimentName);

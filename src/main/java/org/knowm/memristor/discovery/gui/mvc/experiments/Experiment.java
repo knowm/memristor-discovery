@@ -83,7 +83,7 @@ public abstract class Experiment implements PropertyChangeListener {
     jScrollPane.setBorder(createEmptyBorder());
     mainFrameContainer.add(jScrollPane, BorderLayout.WEST);
 
-    // trigger plot of waveform
+    // trigger result of waveform
     PropertyChangeEvent evt =
         new PropertyChangeEvent(this, ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
     propertyChange(evt);

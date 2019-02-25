@@ -39,14 +39,14 @@ import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCPreferences;
-import org.knowm.memristor.discovery.gui.mvc.experiments.dc.plot.ResultsPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.dc.result.ResultPanel;
 
 public class ControlController extends ExperimentControlController {
 
   private final ControlPanel controlPanel;
   private final ControlModel controlModel;
 
-  private final ResultsPanel plotPanel;
+  private final ResultPanel plotPanel;
   ActionListener waveformRadioButtonActionListener =
       new ActionListener() {
 
@@ -73,7 +73,7 @@ public class ControlController extends ExperimentControlController {
    * @param dwf
    */
   public ControlController(
-      ControlPanel controlPanel, ResultsPanel plotPanel, ControlModel controlModel, DWFProxy dwf) {
+      ControlPanel controlPanel, ResultPanel plotPanel, ControlModel controlModel, DWFProxy dwf) {
 
     super(controlPanel, controlModel);
 

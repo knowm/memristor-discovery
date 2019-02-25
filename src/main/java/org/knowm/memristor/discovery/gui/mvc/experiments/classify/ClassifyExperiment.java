@@ -42,22 +42,22 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.classify.ClassifyPrefer
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.control.ControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.classify.plot.PlotControlModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.classify.plot.PlotController;
-import org.knowm.memristor.discovery.gui.mvc.experiments.classify.plot.ResultsPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.classify.result.ResultModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.classify.result.ResultController;
+import org.knowm.memristor.discovery.gui.mvc.experiments.classify.result.ResultPanel;
 
 public class ClassifyExperiment extends Experiment {
 
   private final ControlModel controlModel = new ControlModel();
-  private final PlotControlModel plotModel = new PlotControlModel();
-  private final PlotController plotController;
+  private final ResultModel resultModel = new ResultModel();
+  private final ResultController resultController;
   // exponential running average for measuring train accuracy.
   double trainAccuracy = 0;
   double k = .05f;
   private SwingWorker runTrialWorker;
   private SwingWorker resetWorker;
   private ControlPanel controlPanel;
-  private ResultsPanel plotPanel;
+  private ResultPanel plotPanel;
   private AHaHController_21 aHaHController;
 
   /**
@@ -71,8 +71,8 @@ public class ClassifyExperiment extends Experiment {
     super(dwfProxy, mainFrameContainer, isV1Board);
 
     controlPanel = new ControlPanel();
-    plotPanel = new ResultsPanel();
-    plotController = new PlotController(plotPanel, plotModel);
+    plotPanel = new ResultPanel();
+    resultController = new ResultController(plotPanel, resultModel);
     new ControlController(controlPanel, controlModel, dwfProxy);
 
     aHaHController = new AHaHController_21(controlModel);
@@ -88,7 +88,7 @@ public class ClassifyExperiment extends Experiment {
           @Override
           public void actionPerformed(ActionEvent e) {
             System.out.println("should reset chart now");
-            plotController.resetChart();
+            resultController.resetChart();
           }
         });
 
@@ -152,7 +152,7 @@ public class ClassifyExperiment extends Experiment {
       aHaHController.executeInstruction(Instruction.FFLV);
       synapticWeights.add(aHaHController.getVy());
     }
-    plotController.addSynapticWeightValuesPoint(synapticWeights);
+    resultController.addSynapticWeightValuesPoint(synapticWeights);
 
     controlModel.setPulseWidth(pw);
   }
@@ -263,7 +263,7 @@ public class ClassifyExperiment extends Experiment {
               learnCombo(pattern, Vy);
             }
 
-            plotController.addTrainAccuracyDataPoint(trainAccuracy);
+            resultController.addTrainAccuracyDataPoint(trainAccuracy);
           }
 
           readAllSynapses();

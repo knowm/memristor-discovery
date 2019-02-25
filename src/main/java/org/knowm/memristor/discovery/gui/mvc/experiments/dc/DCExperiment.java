@@ -35,9 +35,9 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.control.ControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.dc.plot.PlotControlModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.dc.plot.PlotController;
-import org.knowm.memristor.discovery.gui.mvc.experiments.dc.plot.ResultsPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.dc.result.ResultModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.dc.result.ResultController;
+import org.knowm.memristor.discovery.gui.mvc.experiments.dc.result.ResultPanel;
 import org.knowm.memristor.discovery.utils.PostProcessDataUtils;
 import org.knowm.memristor.discovery.utils.WaveformUtils;
 import org.knowm.waveforms4j.DWF;
@@ -45,10 +45,10 @@ import org.knowm.waveforms4j.DWF;
 public class DCExperiment extends Experiment {
 
   private final ControlModel controlModel = new ControlModel();
-  private final PlotControlModel plotModel = new PlotControlModel();
-  private final PlotController plotController;
+  private final ResultModel plotModel = new ResultModel();
+  private final ResultController resultController;
   private ControlPanel controlPanel;
-  private ResultsPanel plotPanel;
+  private ResultPanel plotPanel;
 
   /**
    * Constructor
@@ -61,8 +61,8 @@ public class DCExperiment extends Experiment {
     super(dwfProxy, mainFrameContainer, isV1Board);
 
     controlPanel = new ControlPanel();
-    plotPanel = new ResultsPanel();
-    plotController = new PlotController(plotPanel, plotModel);
+    plotPanel = new ResultPanel();
+    resultController = new ResultController(plotPanel, plotModel);
     new ControlController(controlPanel, plotPanel, controlModel, dwfProxy);
   }
 
@@ -82,7 +82,7 @@ public class DCExperiment extends Experiment {
         if (!controlModel.isStartToggled()) {
 
           plotPanel.switch2WaveformChart();
-          plotController.updateWaveformChart(
+          resultController.updateWaveformChart(
               controlModel.getWaveformTimeData(),
               controlModel.getWaveformAmplitudeData(),
               controlModel.getAmplitude(),
@@ -225,26 +225,26 @@ public class DCExperiment extends Experiment {
 
       double[][] newestChunk = chunks.get(chunks.size() - 1);
 
-      plotController.updateCaptureChartData(
+      resultController.updateCaptureChartData(
           newestChunk[0],
           newestChunk[1],
           newestChunk[2],
           newestChunk[3],
           controlModel.getPeriod(),
           controlModel.getAmplitude());
-      plotController.updateIVChartData(
+      resultController.updateIVChartData(
           newestChunk[1], newestChunk[4], controlModel.getPeriod(), controlModel.getAmplitude());
-      plotController.updateGVChartData(
+      resultController.updateGVChartData(
           newestChunk[1], newestChunk[5], controlModel.getPeriod(), controlModel.getAmplitude());
 
       if (plotPanel.getCaptureButton().isSelected()) {
-        plotController.repaintCaptureChart();
+        resultController.repaintCaptureChart();
         plotPanel.switch2CaptureChart();
       } else if (plotPanel.getIVButton().isSelected()) {
-        plotController.repaintItChart();
+        resultController.repaintItChart();
         plotPanel.switch2IVChart();
       } else {
-        plotController.repaintRtChart();
+        resultController.repaintRtChart();
         plotPanel.switch2GVChart();
       }
       controlPanel.getStartStopButton().doClick();

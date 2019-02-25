@@ -41,22 +41,22 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.AHaHController_
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.plot.PlotControlModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.plot.PlotController;
-import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.plot.ResultsPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.result.ResultModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.result.ResultController;
+import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.result.ResultPanel;
 import org.knowm.memristor.discovery.utils.gpio.MuxController;
 
 public class SynapseExperiment extends Experiment {
 
   private static final float INIT_CONDUCTANCE = .0002f;
   private final ControlModel controlModel = new ControlModel();
-  private final PlotControlModel plotModel = new PlotControlModel();
-  private final PlotController plotController;
+  private final ResultModel plotModel = new ResultModel();
+  private final ResultController resultController;
   private final MuxController muxController;
   DecimalFormat df = new DecimalFormat("0.000E0");
   private InitSynapseWorker initSynapseWorker;
   private ControlPanel controlPanel;
-  private ResultsPanel plotPanel;
+  private ResultPanel plotPanel;
   private AHaHController_21 aHaHController;
 
   /**
@@ -70,8 +70,8 @@ public class SynapseExperiment extends Experiment {
     super(dwfProxy, mainFrameContainer, isV1Board);
 
     controlPanel = new ControlPanel();
-    plotPanel = new ResultsPanel();
-    plotController = new PlotController(plotPanel, plotModel);
+    plotPanel = new ResultPanel();
+    resultController = new ResultController(plotPanel, plotModel);
     new ControlController(controlPanel, controlModel, dwfProxy);
     System.out.println(controlModel.getInstruction());
     dwfProxy.setUpper8IOStates(controlModel.getInstruction().getBits());
@@ -94,7 +94,7 @@ public class SynapseExperiment extends Experiment {
           @Override
           public void actionPerformed(ActionEvent e) {
 
-            plotController.resetChart();
+            resultController.resetChart();
           }
         });
 
@@ -187,8 +187,8 @@ public class SynapseExperiment extends Experiment {
     @Override
     protected void process(List<Double> chunks) {
 
-      plotController.updateYChartData(chunks.get(0), chunks.get(1), chunks.get(2));
-      plotController.repaintYChart();
+      resultController.updateYChartData(chunks.get(0), chunks.get(1), chunks.get(2));
+      resultController.repaintYChart();
     }
   }
 

@@ -31,9 +31,9 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.console.ConsoleControlModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.console.ConsoleController;
-import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.console.ConsolePanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.result.ResultModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.result.ResultController;
+import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.result.ResultPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.control.ControlPanel;
@@ -43,9 +43,9 @@ public class ShelfLifeExperiment extends Experiment {
   private final ControlModel controlModel = new ControlModel();
   private final ControlPanel controlPanel;
 
-  private final ConsolePanel plotPanel;
-  private final ConsoleControlModel plotModel = new ConsoleControlModel();
-  private final ConsoleController plotController;
+  private final ResultPanel plotPanel;
+  private final ResultModel plotModel = new ResultModel();
+  private final ResultController plotController;
 
   /** Constructor */
   public ShelfLifeExperiment(DWFProxy dwfProxy, Container mainFrameContainer, boolean isV1Board) {
@@ -53,8 +53,8 @@ public class ShelfLifeExperiment extends Experiment {
     super(dwfProxy, mainFrameContainer, isV1Board);
 
     controlPanel = new ControlPanel();
-    plotPanel = new ConsolePanel();
-    plotController = new ConsoleController(plotPanel, plotModel);
+    plotPanel = new ResultPanel();
+    plotController = new ResultController(plotPanel, plotModel);
     new ControlController(controlPanel, controlModel, dwfProxy);
   }
 
