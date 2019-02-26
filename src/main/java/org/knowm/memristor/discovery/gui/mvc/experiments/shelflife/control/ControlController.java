@@ -24,9 +24,15 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.control;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
+import java.util.concurrent.TimeUnit;
 import javax.swing.AbstractAction;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Controller;
@@ -64,11 +70,71 @@ public class ControlController extends Controller {
     initGUIComponentsFromModel();
   }
 
-  private void initGUIComponentsFromModel() {}
+  private void initGUIComponentsFromModel() {
+
+    controlPanel.getTimeunitComboBox().setModel(new DefaultComboBoxModel<>(TimeUnit.values()));
+    controlPanel.getTimeunitComboBox().setSelectedItem(controlModel.getTimeUnit());
+    controlPanel.getSeriesTextField().setText("" + controlModel.getSeriesResistance());
+    controlPanel.getIntervalTextField().setText("" + controlModel.getRepeatInterval());
+  }
 
   /** Here, all the action listeners are attached to the GUI components */
   @Override
   public void doSetUpViewEvents() {
+
+    controlPanel
+        .getTimeunitComboBox()
+        .addActionListener(
+            new ActionListener() {
+              @Override
+              public void actionPerformed(ActionEvent e) {
+
+                controlModel.setTimeUnit(
+                    controlPanel.getTimeunitComboBox().getSelectedItem().toString());
+              }
+            });
+
+    controlPanel
+        .getIntervalTextField()
+        .addKeyListener(
+            new KeyAdapter() {
+
+              @Override
+              public void keyReleased(KeyEvent e) {
+
+                JTextField textField = (JTextField) e.getSource();
+                String text = textField.getText();
+
+                try {
+                  int newInterval = Integer.parseInt(text);
+                  controlModel.setRepeatInterval(newInterval);
+                } catch (Exception ex) {
+                  // parsing error, default back to previous value
+                  textField.setText(Integer.toString(controlModel.getRepeatInterval()));
+                }
+              }
+            });
+
+    controlPanel
+        .getSeriesTextField()
+        .addKeyListener(
+            new KeyAdapter() {
+
+              @Override
+              public void keyReleased(KeyEvent e) {
+
+                JTextField textField = (JTextField) e.getSource();
+                String text = textField.getText();
+
+                try {
+                  int newSeriesValue = Integer.parseInt(text);
+                  controlModel.setSeriesResistance(newSeriesValue);
+                } catch (Exception ex) {
+                  // parsing error, default back to previous value
+                  textField.setText(Integer.toString(controlModel.getSeriesResistance()));
+                }
+              }
+            });
 
     controlView
         .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)

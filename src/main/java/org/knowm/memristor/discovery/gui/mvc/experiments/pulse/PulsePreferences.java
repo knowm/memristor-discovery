@@ -49,7 +49,6 @@ public class PulsePreferences extends ExperimentPreferences {
   public static final float AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE = 1f;
   public static final String PULSE_WIDTH_INIT_KEY = PREFIX + "PERIOD_INIT_KEY";
   public static final int PULSE_WIDTH_INIT_DEFAULT_VALUE = 5_000;
-  // TODO move this to parent class
   public static final String SERIES_R_INIT_KEY = PREFIX + "SERIES_R_INIT_KEY";
   public static final int SERIES_R_INIT_DEFAULT_VALUE = 1_000;
   public static final String SAMPLE_RATE_INIT_KEY = PREFIX + "SAMPLE_RATE_INIT_KEY";

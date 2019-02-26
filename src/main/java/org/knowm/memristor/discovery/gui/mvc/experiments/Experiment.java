@@ -54,7 +54,6 @@ public abstract class Experiment implements PropertyChangeListener {
     this.experimentPreferences = initAppPreferences();
   }
 
-  // TODO Do we need all these???
   public abstract ExperimentPreferences initAppPreferences();
 
   public abstract Model getControlModel();

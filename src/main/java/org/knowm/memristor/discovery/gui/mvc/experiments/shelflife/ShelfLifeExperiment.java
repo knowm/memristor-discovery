@@ -90,7 +90,6 @@ public class ShelfLifeExperiment extends Experiment {
                   controlModel.setStartToggled(true);
                   controlPanel.getStartStopButton().setText("Stop");
 
-                  // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
                   experimentCaptureWorker = new CaptureWorker();
                   experimentCaptureWorker.execute();
                 } else {
@@ -111,23 +110,7 @@ public class ShelfLifeExperiment extends Experiment {
    * corresponding GUI components get updated.
    */
   @Override
-  public void propertyChange(PropertyChangeEvent evt) {
-
-    String propName = evt.getPropertyName();
-
-    // switch (propName) {
-    //
-    // case EVENT_INSTRUCTION_UPDATE:
-    //
-    // // System.out.println(controlModel.getInstruction());
-    // // dwfProxy.setUpper8IOStates(controlModel.getInstruction().getBits());
-    //
-    // break;
-    //
-    // default:
-    // break;
-    // }
-  }
+  public void propertyChange(PropertyChangeEvent evt) {}
 
   @Override
   public Model getControlModel() {
@@ -162,7 +145,30 @@ public class ShelfLifeExperiment extends Experiment {
 
     @Override
     protected Boolean doInBackground() throws Exception {
-      return null;
+
+      while (!isCancelled()) {
+
+        // TODO run a test and print a CSV line to the console.
+
+        StringBuilder csvBuilder = new StringBuilder();
+        csvBuilder.append("this");
+        csvBuilder.append(",");
+        csvBuilder.append("is");
+        csvBuilder.append(",");
+        csvBuilder.append("fun");
+        csvBuilder.append(",");
+        csvBuilder.append(controlModel.getTimeUnit());
+        csvBuilder.append(",");
+        csvBuilder.append(controlModel.getRepeatInterval());
+        csvBuilder.append(",");
+        csvBuilder.append(controlModel.getSeriesResistance());
+
+        resultController.addNewLine(csvBuilder.toString());
+
+        Thread.sleep(controlModel.getTimeUnit().toMillis(controlModel.getRepeatInterval()));
+      }
+
+      return true;
     }
   }
 }

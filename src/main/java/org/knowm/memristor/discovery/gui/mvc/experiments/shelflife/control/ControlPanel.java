@@ -27,8 +27,12 @@ import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.concurrent.TimeUnit;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 
 /**
@@ -38,7 +42,16 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
  */
 public class ControlPanel extends ControlView {
 
-  public final JButton startStopButton;
+  private final JLabel timeUnitLabel;
+  private final JComboBox<TimeUnit> timeunitComboBox;
+
+  private final JLabel intervalLabel;
+  private final JTextField intervalTextField;
+
+  private final JLabel seriesLabel;
+  private final JTextField seriesTextField;
+
+  private final JButton startStopButton;
 
   /** Constructor */
   public ControlPanel() {
@@ -47,6 +60,42 @@ public class ControlPanel extends ControlView {
     GridBagConstraints c = new GridBagConstraints();
     c.fill = GridBagConstraints.HORIZONTAL;
     setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+
+    timeUnitLabel = new JLabel("Time Unit");
+    timeUnitLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.gridy++;
+    c.insets = new Insets(0, 10, 4, 0);
+    add(timeUnitLabel, c);
+
+    this.timeunitComboBox = new JComboBox<>();
+    timeunitComboBox.setFocusable(false);
+    c.gridy++;
+    c.insets = new Insets(0, 0, 14, 6);
+    add(timeunitComboBox, c);
+
+    intervalLabel = new JLabel("Repeat Interval");
+    intervalLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.gridy++;
+    c.insets = new Insets(0, 10, 4, 0);
+    add(intervalLabel, c);
+
+    intervalTextField = new JTextField();
+    intervalTextField.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.gridy++;
+    c.insets = new Insets(0, 5, 14, 5);
+    add(intervalTextField, c);
+
+    seriesLabel = new JLabel("Series R [Ohm]");
+    seriesLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.gridy++;
+    c.insets = new Insets(0, 10, 4, 0);
+    add(seriesLabel, c);
+
+    seriesTextField = new JTextField();
+    seriesTextField.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.gridy++;
+    c.insets = new Insets(0, 5, 14, 5);
+    add(seriesTextField, c);
 
     startStopButton = new JButton("Start");
     startStopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -58,7 +107,26 @@ public class ControlPanel extends ControlView {
     add(logoLabel, c);
   }
 
-  public void enableAllChildComponents(boolean enabled) {}
+  public void enableAllChildComponents(boolean enabled) {
+
+    timeunitComboBox.setEnabled(enabled);
+    intervalTextField.setEnabled(enabled);
+    seriesTextField.setEnabled(enabled);
+    startStopButton.setEnabled(enabled);
+  }
+
+  public JTextField getIntervalTextField() {
+    return intervalTextField;
+  }
+
+  public JComboBox<TimeUnit> getTimeunitComboBox() {
+    return timeunitComboBox;
+  }
+
+  public JTextField getSeriesTextField() {
+
+    return seriesTextField;
+  }
 
   public JButton getStartStopButton() {
     return startStopButton;
