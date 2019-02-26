@@ -125,12 +125,11 @@ public class ResultModel extends Model {
   }
 
   @Override
-  public void loadModelFromPrefs() {
+  public void doLoadModelFromPrefs() {
 
     k =
         experimentPreferences.getFloat(
             HysteresisPreferences.K_INIT_FLOAT_KEY,
             HysteresisPreferences.K_INIT_FLOAT_DEFAULT_VALUE);
-    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_PREFERENCES_UPDATE, true, false);
   }
 }

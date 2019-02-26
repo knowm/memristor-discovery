@@ -49,7 +49,7 @@ public class ControlModel extends Model {
   }
 
   @Override
-  public void loadModelFromPrefs() {
+  public void doLoadModelFromPrefs() {
 
     waveform =
         DCPreferences.Waveform.valueOf(
@@ -69,7 +69,6 @@ public class ControlModel extends Model {
     pulseNumber =
         experimentPreferences.getInteger(
             DCPreferences.NUM_PULSES_INIT_KEY, DCPreferences.NUM_PULSES_INIT_DEFAULT_VALUE);
-    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
   void updateWaveformChartData() {

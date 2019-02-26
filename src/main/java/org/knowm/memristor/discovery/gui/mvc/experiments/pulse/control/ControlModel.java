@@ -65,7 +65,7 @@ public class ControlModel extends Model {
   }
 
   @Override
-  public void loadModelFromPrefs() {
+  public void doLoadModelFromPrefs() {
 
     waveform =
         PulsePreferences.Waveform.valueOf(
@@ -100,7 +100,6 @@ public class ControlModel extends Model {
     sampleRate =
         experimentPreferences.getInteger(
             PulsePreferences.SAMPLE_RATE_INIT_KEY, PulsePreferences.SAMPLE_RATE_INIT_DEFAULT_VALUE);
-    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
   /** Given the state of the model, update the waveform x and y axis data arrays. */

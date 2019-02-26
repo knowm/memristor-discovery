@@ -67,7 +67,7 @@ public class ControlModel extends Model {
   }
 
   @Override
-  public void loadModelFromPrefs() {
+  public void doLoadModelFromPrefs() {
 
     waveform =
         LogicPreferences.Waveform.valueOf(
@@ -91,7 +91,6 @@ public class ControlModel extends Model {
         experimentPreferences.getInteger(
             LogicPreferences.NUM_EXECUTIONS_INIT_KEY,
             LogicPreferences.NUM_EXECUTIONS_INIT_DEFAULT_VALUE);
-    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
   /** Given the state of the model, update the waveform x and y axis data arrays. */

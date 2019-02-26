@@ -62,7 +62,7 @@ public class ControlModel extends Model {
   }
 
   @Override
-  public void loadModelFromPrefs() {
+  public void doLoadModelFromPrefs() {
 
     waveform =
         ClassifyPreferences.Waveform.valueOf(
@@ -85,7 +85,6 @@ public class ControlModel extends Model {
         experimentPreferences.getInteger(
             ClassifyPreferences.NUM_TRAIN_EPOCHS_INIT_KEY,
             ClassifyPreferences.NUM_TRAIN_EPOCHS_INIT_DEFAULT_VALUE);
-    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
   /** Given the state of the model, update the waveform x and y axis data arrays. */

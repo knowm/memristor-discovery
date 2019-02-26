@@ -42,11 +42,7 @@ public abstract class Experiment implements PropertyChangeListener {
 
   private final boolean isV1Board;
 
-  /**
-   * Constructor
-   *
-   * @param dwfProxy
-   */
+  /** Constructor */
   public Experiment(DWFProxy dwfProxy, Container mainFrameContainer, boolean isV1Board) {
 
     this.dwfProxy = dwfProxy;
@@ -84,6 +80,7 @@ public abstract class Experiment implements PropertyChangeListener {
         new PropertyChangeEvent(this, Model.EVENT_WAVEFORM_UPDATE, true, false);
     propertyChange(evt);
 
+    // TODO add the Results model here too??
     getControlModel().addListener(this);
 
     // Here additional CaptureWorkers are added to addition buttons needed for the experiment
@@ -107,6 +104,9 @@ public abstract class Experiment implements PropertyChangeListener {
     }
   }
 
+  /**
+   * This is called from `MemristorDiscovery` when the Preferences window is closed
+   */
   public void refreshModelFromPreferences() {
 
     getControlModel().loadModelFromPrefs();

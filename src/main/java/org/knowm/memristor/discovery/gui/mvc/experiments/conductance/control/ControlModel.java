@@ -54,7 +54,7 @@ public class ControlModel extends Model {
   }
 
   @Override
-  public void loadModelFromPrefs() {
+  public void doLoadModelFromPrefs() {
 
     // RESET
     resetPulseType =
@@ -90,7 +90,6 @@ public class ControlModel extends Model {
             ConductancePreferences.SERIES_R_INIT_KEY,
             ConductancePreferences.SERIES_R_INIT_DEFAULT_VALUE);
 
-    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
   /** Given the state of the model, update the resetPulseType x and y axis data arrays. */

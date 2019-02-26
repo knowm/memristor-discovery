@@ -51,7 +51,7 @@ public class ControlModel extends Model {
   }
 
   @Override
-  public void loadModelFromPrefs() {
+  public void doLoadModelFromPrefs() {
 
     // load model from prefs
     seriesResistance =
@@ -76,7 +76,6 @@ public class ControlModel extends Model {
         experimentPreferences.getInteger(
             HysteresisPreferences.FREQUENCY_INIT_KEY,
             HysteresisPreferences.FREQUENCY_INIT_DEFAULT_VALUE);
-    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
   /** Given the state of the model, update the waveform x and y axis data arrays. */

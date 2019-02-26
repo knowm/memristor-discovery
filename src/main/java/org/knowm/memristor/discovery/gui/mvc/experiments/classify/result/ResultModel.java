@@ -46,7 +46,7 @@ public class ResultModel extends Model {
   }
 
   @Override
-  public void loadModelFromPrefs() {}
+  public void doLoadModelFromPrefs() {}
 
   public List<Double> getTrainAccuracy() {
     return trainAccuracy;

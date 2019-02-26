@@ -39,7 +39,7 @@ public class ControlModel extends Model {
   public ControlModel() {}
 
   @Override
-  public void loadModelFromPrefs() {
+  public void doLoadModelFromPrefs() {
 
     // load model from prefs
     timeUnit =
@@ -56,7 +56,6 @@ public class ControlModel extends Model {
         experimentPreferences.getInteger(
             ShelfLifePreferences.SERIES_R_INIT_KEY,
             ShelfLifePreferences.SERIES_R_INIT_DEFAULT_VALUE);
-    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
   /////////////////////////////////////////////////////////////

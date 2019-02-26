@@ -32,14 +32,13 @@ public class ControlModel extends Model {
   public ControlModel() {}
 
   @Override
-  public void loadModelFromPrefs() {
+  public void doLoadModelFromPrefs() {
 
     seriesResistance =
         experimentPreferences.getInteger(
             BoardCheckPreferences.SERIES_R_INIT_KEY,
             BoardCheckPreferences.SERIES_R_INIT_DEFAULT_VALUE);
 
-    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
   @Override

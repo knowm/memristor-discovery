@@ -63,7 +63,7 @@ public class ControlModel extends Model {
   }
 
   @Override
-  public void loadModelFromPrefs() {
+  public void doLoadModelFromPrefs() {
 
     seriesResistance =
         experimentPreferences.getInteger(
@@ -91,7 +91,6 @@ public class ControlModel extends Model {
             SynapsePreferences.SAMPLE_RATE_INIT_KEY,
             SynapsePreferences.SAMPLE_RATE_INIT_DEFAULT_VALUE);
 
-    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
   /** Given the state of the model, update the waveform x and y axis data arrays. */

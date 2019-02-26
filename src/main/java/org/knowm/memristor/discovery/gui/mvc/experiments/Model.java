@@ -52,7 +52,15 @@ public abstract class Model {
   // TODO move out to Experiment level
   public abstract ExperimentPreferences initAppPreferences();
 
-  public abstract void loadModelFromPrefs();
+  public abstract void doLoadModelFromPrefs();
+
+  public void loadModelFromPrefs() {
+
+    doLoadModelFromPrefs();
+
+    // this will comminucate to the controllers that a preferences change has occured
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_PREFERENCES_UPDATE, true, false);
+  }
 
   public int getSeriesResistance() {
 

@@ -53,5 +53,5 @@ public class ResultModel extends Model {
   }
 
   @Override
-  public void loadModelFromPrefs() {}
+  public void doLoadModelFromPrefs() {}
 }
