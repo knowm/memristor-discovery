@@ -21,18 +21,18 @@
  * <p>If you have any questions regarding our licensing policy, please contact us at
  * `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.utils;
+package org.knowm.memristor.discovery.core;
 
+import org.knowm.memristor.discovery.core.driver.Driver;
+import org.knowm.memristor.discovery.core.driver.HalfSine;
+import org.knowm.memristor.discovery.core.driver.QuarterSine;
+import org.knowm.memristor.discovery.core.driver.Sawtooth;
+import org.knowm.memristor.discovery.core.driver.SawtoothUpDown;
+import org.knowm.memristor.discovery.core.driver.Square;
+import org.knowm.memristor.discovery.core.driver.SquareSmooth;
+import org.knowm.memristor.discovery.core.driver.Triangle;
+import org.knowm.memristor.discovery.core.driver.TriangleUpDown;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
-import org.knowm.memristor.discovery.utils.driver.Driver;
-import org.knowm.memristor.discovery.utils.driver.HalfSine;
-import org.knowm.memristor.discovery.utils.driver.QuarterSine;
-import org.knowm.memristor.discovery.utils.driver.Sawtooth;
-import org.knowm.memristor.discovery.utils.driver.SawtoothUpDown;
-import org.knowm.memristor.discovery.utils.driver.Square;
-import org.knowm.memristor.discovery.utils.driver.SquareSmooth;
-import org.knowm.memristor.discovery.utils.driver.Triangle;
-import org.knowm.memristor.discovery.utils.driver.TriangleUpDown;
 import org.knowm.waveforms4j.DWF;
 
 /** Created by timmolter on 2/15/17. */

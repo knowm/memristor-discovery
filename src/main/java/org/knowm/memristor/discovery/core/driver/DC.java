@@ -21,39 +21,25 @@
  * <p>If you have any questions regarding our licensing policy, please contact us at
  * `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.utils.driver;
+package org.knowm.memristor.discovery.core.driver;
 
 /** @author timmolter */
-public class Triangle extends Driver {
+public class DC extends Driver {
 
   /**
    * Constructor
    *
-   * @param name
+   * @param id
    * @param dcOffset
-   * @param phase
-   * @param amplitude
-   * @param frequency
    */
-  public Triangle(String name, double dcOffset, double phase, double amplitude, double frequency) {
+  public DC(String id, double dcOffset) {
 
-    super(name, dcOffset, phase, amplitude, frequency);
+    super(id, dcOffset, 0.0, 0.0, 0.0);
   }
 
   @Override
   public double getSignal(double time) {
 
-    double T = 1 / frequency;
-    double remainderTime = (time + phase) % T;
-
-    // up phase
-    if (0 <= (remainderTime) && (remainderTime) * T < .5 / frequency * T) {
-      return 2 * frequency * amplitude * (remainderTime) + dcOffset;
-    }
-
-    // down phase
-    else {
-      return -2 * frequency * amplitude * (remainderTime) + 2 * amplitude + dcOffset;
-    }
+    return dcOffset;
   }
 }

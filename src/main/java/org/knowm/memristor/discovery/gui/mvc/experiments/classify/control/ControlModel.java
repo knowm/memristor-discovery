@@ -24,23 +24,24 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.classify.control;
 
 import java.text.DecimalFormat;
-import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
+import org.knowm.memristor.discovery.core.driver.Driver;
+import org.knowm.memristor.discovery.core.driver.HalfSine;
+import org.knowm.memristor.discovery.core.driver.QuarterSine;
+import org.knowm.memristor.discovery.core.driver.Sawtooth;
+import org.knowm.memristor.discovery.core.driver.Square;
+import org.knowm.memristor.discovery.core.driver.SquareSmooth;
+import org.knowm.memristor.discovery.core.driver.Triangle;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.ClassifyPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.ClassifyPreferences.AHaHRoutine;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.ClassifyPreferences.Datasets;
-import org.knowm.memristor.discovery.utils.driver.Driver;
-import org.knowm.memristor.discovery.utils.driver.HalfSine;
-import org.knowm.memristor.discovery.utils.driver.QuarterSine;
-import org.knowm.memristor.discovery.utils.driver.Sawtooth;
-import org.knowm.memristor.discovery.utils.driver.Square;
-import org.knowm.memristor.discovery.utils.driver.SquareSmooth;
-import org.knowm.memristor.discovery.utils.driver.Triangle;
 
 public class ControlModel extends Model {
 
   /** Events */
   public static final String EVENT_INSTRUCTION_UPDATE = "EVENT_INSTRUCTION_UPDATE";
+
   private final double[] waveformTimeData = new double[ClassifyPreferences.CAPTURE_BUFFER_SIZE];
   private final double[] waveformAmplitudeData =
       new double[ClassifyPreferences.CAPTURE_BUFFER_SIZE];
@@ -84,8 +85,7 @@ public class ControlModel extends Model {
         experimentPreferences.getInteger(
             ClassifyPreferences.NUM_TRAIN_EPOCHS_INIT_KEY,
             ClassifyPreferences.NUM_TRAIN_EPOCHS_INIT_DEFAULT_VALUE);
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_PREFERENCES_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
   /** Given the state of the model, update the waveform x and y axis data arrays. */
@@ -140,8 +140,7 @@ public class ControlModel extends Model {
   public void setAmplitude(float amplitude) {
 
     this.amplitude = amplitude;
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public int getPulseWidth() {
@@ -152,8 +151,7 @@ public class ControlModel extends Model {
   public void setPulseWidth(int pulseWidth) {
 
     this.pulseWidth = pulseWidth;
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public double getCalculatedFrequency() {
@@ -192,15 +190,13 @@ public class ControlModel extends Model {
   public void setWaveform(ClassifyPreferences.Waveform waveform) {
 
     this.waveform = waveform;
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public void setWaveform(String text) {
 
     this.waveform = Enum.valueOf(ClassifyPreferences.Waveform.class, text);
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public int getNumTrainEpochs() {

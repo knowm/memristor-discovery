@@ -30,9 +30,9 @@ import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.JTextField;
+import org.knowm.memristor.discovery.core.Util;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.HysteresisPreferences;
-import org.knowm.memristor.discovery.utils.Util;
 
 public class ResultController implements PropertyChangeListener {
 

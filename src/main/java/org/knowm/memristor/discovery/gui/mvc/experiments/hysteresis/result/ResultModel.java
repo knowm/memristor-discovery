@@ -24,8 +24,8 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.result;
 
 import java.beans.PropertyChangeListener;
-import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.HysteresisPreferences;
 
 public class ResultModel extends Model {
@@ -131,7 +131,6 @@ public class ResultModel extends Model {
         experimentPreferences.getFloat(
             HysteresisPreferences.K_INIT_FLOAT_KEY,
             HysteresisPreferences.K_INIT_FLOAT_DEFAULT_VALUE);
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_PREFERENCES_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_PREFERENCES_UPDATE, true, false);
   }
 }

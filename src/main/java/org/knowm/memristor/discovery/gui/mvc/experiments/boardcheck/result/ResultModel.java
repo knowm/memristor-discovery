@@ -25,8 +25,8 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.result;
 
 import java.util.ArrayList;
 import java.util.Date;
-import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 
 public class ResultModel extends Model {
 

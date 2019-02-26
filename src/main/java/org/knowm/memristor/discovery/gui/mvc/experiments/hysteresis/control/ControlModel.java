@@ -23,13 +23,13 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control;
 
+import org.knowm.memristor.discovery.core.driver.Driver;
+import org.knowm.memristor.discovery.core.driver.Sine;
+import org.knowm.memristor.discovery.core.driver.Square;
+import org.knowm.memristor.discovery.core.driver.Triangle;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.HysteresisPreferences;
-import org.knowm.memristor.discovery.utils.driver.Driver;
-import org.knowm.memristor.discovery.utils.driver.Sine;
-import org.knowm.memristor.discovery.utils.driver.Square;
-import org.knowm.memristor.discovery.utils.driver.Triangle;
 
 public class ControlModel extends Model {
 

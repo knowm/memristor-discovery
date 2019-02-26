@@ -24,17 +24,17 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control;
 
 import java.text.DecimalFormat;
+import org.knowm.memristor.discovery.core.driver.Driver;
+import org.knowm.memristor.discovery.core.driver.HalfSine;
+import org.knowm.memristor.discovery.core.driver.QuarterSine;
+import org.knowm.memristor.discovery.core.driver.Sawtooth;
+import org.knowm.memristor.discovery.core.driver.Square;
+import org.knowm.memristor.discovery.core.driver.SquareSmooth;
+import org.knowm.memristor.discovery.core.driver.Triangle;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.AHaHController_21.Instruction;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.SynapsePreferences;
-import org.knowm.memristor.discovery.utils.driver.Driver;
-import org.knowm.memristor.discovery.utils.driver.HalfSine;
-import org.knowm.memristor.discovery.utils.driver.QuarterSine;
-import org.knowm.memristor.discovery.utils.driver.Sawtooth;
-import org.knowm.memristor.discovery.utils.driver.Square;
-import org.knowm.memristor.discovery.utils.driver.SquareSmooth;
-import org.knowm.memristor.discovery.utils.driver.Triangle;
 
 public class ControlModel extends Model {
 

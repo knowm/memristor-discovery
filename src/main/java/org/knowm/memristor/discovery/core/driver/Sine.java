@@ -21,53 +21,28 @@
  * <p>If you have any questions regarding our licensing policy, please contact us at
  * `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.utils.driver;
+package org.knowm.memristor.discovery.core.driver;
 
 /** @author timmolter */
-public class Arbitrary extends Driver {
-
-  private final double[] activePhases;
+public class Sine extends Driver {
 
   /**
    * Constructor
    *
-   * @param matchingSourceId
+   * @param name
    * @param dcOffset
    * @param phase
    * @param amplitude
    * @param frequency
-   * @param activePhases
    */
-  public Arbitrary(
-      String matchingSourceId,
-      double dcOffset,
-      double phase,
-      double amplitude,
-      double frequency,
-      double[] activePhases) {
+  public Sine(String name, double dcOffset, double phase, double amplitude, double frequency) {
 
-    super(matchingSourceId, dcOffset, phase, amplitude, frequency);
-    this.activePhases = activePhases;
+    super(name, dcOffset, phase, amplitude, frequency);
   }
 
   @Override
   public double getSignal(double time) {
 
-    double T = 1 / frequency;
-    double remainderTime = (time + phase) % T;
-    boolean isActive = false;
-    for (int i = 0; i < activePhases.length; i = i + 2) {
-      double start = activePhases[i];
-      double end = activePhases[i + 1];
-      if (remainderTime >= T * start && remainderTime < T * end) {
-        isActive = true;
-      }
-    }
-    if (isActive) {
-
-      return dcOffset + amplitude;
-    } else {
-      return 0.0;
-    }
+    return amplitude * Math.sin(2 * Math.PI * frequency * time - phase) + dcOffset;
   }
 }

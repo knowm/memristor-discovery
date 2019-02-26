@@ -48,15 +48,13 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.logic.result.ResultPane
 
 public class LogicExperiment extends Experiment {
 
-  private AHaHController_21 aHaHController;
-
   // Control and Result MVC
   private final ControlModel controlModel;
-  private ControlPanel controlPanel;
   private final ResultModel resultModel;
-  private ResultPanel resultPanel;
   private final ResultController resultController;
-
+  private AHaHController_21 aHaHController;
+  private ControlPanel controlPanel;
+  private ResultPanel resultPanel;
   // SwingWorkers
   private SwingWorker routineWorker;
   private SwingWorker runTrialsWorker;

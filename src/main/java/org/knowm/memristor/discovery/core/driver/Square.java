@@ -21,10 +21,10 @@
  * <p>If you have any questions regarding our licensing policy, please contact us at
  * `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.utils.driver;
+package org.knowm.memristor.discovery.core.driver;
 
 /** @author timmolter */
-public class TriangleUpDown extends Driver {
+public class Square extends Driver {
 
   /**
    * Constructor
@@ -35,8 +35,7 @@ public class TriangleUpDown extends Driver {
    * @param amplitude
    * @param frequency
    */
-  public TriangleUpDown(
-      String name, double dcOffset, double phase, double amplitude, double frequency) {
+  public Square(String name, double dcOffset, double phase, double amplitude, double frequency) {
 
     super(name, dcOffset, phase, amplitude, frequency);
   }
@@ -48,19 +47,13 @@ public class TriangleUpDown extends Driver {
     double remainderTime = (time + phase) % T;
 
     // up phase
-    if (0 <= (remainderTime) && (remainderTime) * T < .25 / frequency * T) {
-      return 4 * frequency * amplitude * (remainderTime) + dcOffset;
-    }
-
-    // up phase
-    else if (.75 / frequency * T <= (remainderTime) * T
-        && (remainderTime) * T < 1.0 / frequency * T) {
-      return 4 * frequency * amplitude * (remainderTime) - 4 * amplitude + dcOffset;
+    if (0 <= remainderTime && remainderTime * T < .50 / frequency * T) {
+      return amplitude + dcOffset;
     }
 
     // down phase
     else {
-      return -4 * frequency * amplitude * (remainderTime) + 2 * amplitude + dcOffset;
+      return -1.0 * amplitude + dcOffset;
     }
   }
 }

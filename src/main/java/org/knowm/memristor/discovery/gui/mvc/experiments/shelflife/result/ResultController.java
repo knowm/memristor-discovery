@@ -40,6 +40,7 @@ public class ResultController {
     this.resultModel = resultModel;
     resultPanel.loadLinesToConsole(resultModel.getLines());
   }
+
   public void addNewLine(String newLine) {
 
     resultModel.getLines().add(newLine);

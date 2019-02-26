@@ -21,7 +21,7 @@
  * <p>If you have any questions regarding our licensing policy, please contact us at
  * `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.utils;
+package org.knowm.memristor.discovery.core;
 
 /** Created by timmolter on 2/20/17. */
 public class PostProcessDataUtils {

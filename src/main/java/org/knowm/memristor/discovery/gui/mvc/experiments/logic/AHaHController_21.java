@@ -24,10 +24,10 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.logic;
 
 import org.knowm.memristor.discovery.DWFProxy;
+import org.knowm.memristor.discovery.core.Util;
+import org.knowm.memristor.discovery.core.WaveformUtils;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.logic.control.ControlModel;
-import org.knowm.memristor.discovery.utils.Util;
-import org.knowm.memristor.discovery.utils.WaveformUtils;
 import org.knowm.waveforms4j.DWF;
 
 public class AHaHController_21 {

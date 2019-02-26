@@ -21,72 +21,59 @@
  * <p>If you have any questions regarding our licensing policy, please contact us at
  * `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.utils.driver;
+package org.knowm.memristor.discovery.core.driver;
 
 /** @author timmolter */
-public class Pulse extends Driver {
+public abstract class Driver {
 
-  private final double dutyCycle;
+  protected final String id;
+  protected final double dcOffset;
+  protected final double phase;
+  protected final double amplitude;
+  protected final double frequency;
 
   /**
    * Constructor
    *
-   * @param name
+   * @param id
    * @param dcOffset
    * @param phase
    * @param amplitude
    * @param frequency
-   * @param dutyCycle between 0 and 1
    */
-  public Pulse(
-      String name,
-      double dcOffset,
-      double phase,
-      double amplitude,
-      double frequency,
-      double dutyCycle) {
+  public Driver(String id, double dcOffset, double phase, double amplitude, double frequency) {
 
-    super(name, dcOffset, phase, amplitude, frequency);
-    this.dutyCycle = dutyCycle;
+    this.id = id;
+    this.dcOffset = dcOffset;
+    this.phase = phase;
+    this.amplitude = amplitude;
+    this.frequency = frequency;
   }
 
-  @Override
-  public double getSignal(double time) {
+  public String getId() {
 
-    double T = 1 / frequency;
-    double remainderTime = (time + phase) % T * 0.5 / dutyCycle;
-
-    // up phase
-    if (0 <= remainderTime && remainderTime * T < .50 / frequency * T) {
-      return amplitude + dcOffset;
-    }
-
-    // down phase
-    else {
-      return -1.0 * amplitude + dcOffset;
-    }
+    return id;
   }
 
-  public double getDutyCycle() {
+  public double getDcOffset() {
 
-    return dutyCycle;
+    return dcOffset;
   }
 
-  @Override
-  public String toString() {
+  public double getPhase() {
 
-    return "Pulse [dutyCycle="
-        + dutyCycle
-        + ", id="
-        + id
-        + ", dcOffset="
-        + dcOffset
-        + ", phase="
-        + phase
-        + ", amplitude="
-        + amplitude
-        + ", frequency="
-        + frequency
-        + "]";
+    return phase;
   }
+
+  public double getAmplitude() {
+
+    return amplitude;
+  }
+
+  public double getFrequency() {
+
+    return frequency;
+  }
+
+  public abstract double getSignal(double time);
 }

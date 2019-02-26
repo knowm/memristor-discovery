@@ -24,11 +24,11 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.synapse;
 
 import org.knowm.memristor.discovery.DWFProxy;
-import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
+import org.knowm.memristor.discovery.core.Util;
+import org.knowm.memristor.discovery.core.WaveformUtils;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlModel;
-import org.knowm.memristor.discovery.utils.Util;
-import org.knowm.memristor.discovery.utils.WaveformUtils;
 import org.knowm.waveforms4j.DWF;
 
 public class AHaHController_21 {
@@ -93,9 +93,7 @@ public class AHaHController_21 {
     getControlModel()
         .swingPropertyChangeSupport
         .firePropertyChange(
-            Model.EVENT_NEW_CONSOLE_LOG,
-            null,
-            "Executing Instruction: " + instruction);
+            Model.EVENT_NEW_CONSOLE_LOG, null, "Executing Instruction: " + instruction);
 
     // 1. the IO-bits are set
     dWFProxy.setUpper8IOStates(instruction.getBits());
@@ -212,9 +210,7 @@ public class AHaHController_21 {
         getControlModel()
             .swingPropertyChangeSupport
             .firePropertyChange(
-                Model.EVENT_NEW_CONSOLE_LOG,
-                null,
-                "Voltage drop across Ma too small too measure.");
+                Model.EVENT_NEW_CONSOLE_LOG, null, "Voltage drop across Ma too small too measure.");
         // System.out.println("voltage drop across Ma too small too measure.");
         this.ga = Double.NaN;
       }
@@ -226,9 +222,7 @@ public class AHaHController_21 {
         getControlModel()
             .swingPropertyChangeSupport
             .firePropertyChange(
-                Model.EVENT_NEW_CONSOLE_LOG,
-                null,
-                "Voltage drop across Mb too small too measure.");
+                Model.EVENT_NEW_CONSOLE_LOG, null, "Voltage drop across Mb too small too measure.");
         // System.out.println("voltage drop across Mb too small too measure.");
         this.gb = Double.NaN;
       }

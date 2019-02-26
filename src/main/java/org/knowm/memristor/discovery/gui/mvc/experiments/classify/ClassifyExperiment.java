@@ -48,15 +48,14 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.classify.result.ResultP
 
 public class ClassifyExperiment extends Experiment {
 
-  // exponential running average for measuring train accuracy.
-  private double trainAccuracy = 0;
   private final double k = .05f;
-
   // Control and Result MVC
   private final ControlModel controlModel;
-  private ControlPanel controlPanel;
   private final ResultModel resultModel;
   private final ResultController resultController;
+  // exponential running average for measuring train accuracy.
+  private double trainAccuracy = 0;
+  private ControlPanel controlPanel;
   private ResultPanel resultPanel;
 
   // SwingWorkers

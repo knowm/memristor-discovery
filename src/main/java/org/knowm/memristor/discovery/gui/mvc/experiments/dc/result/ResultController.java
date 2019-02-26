@@ -25,8 +25,8 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.dc.result;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import org.knowm.memristor.discovery.core.Util;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCPreferences;
-import org.knowm.memristor.discovery.utils.Util;
 
 public class ResultController {
 
@@ -133,7 +133,9 @@ public class ResultController {
       double[] timeData, double[] waveformAmplitudeData, double amplitude, int pulseWidth) {
 
     resultPanel.getWaveformChart().setTitle(getWaveformChartTitle(amplitude, pulseWidth));
-    resultPanel.getWaveformChart().updateXYSeries("waveform", timeData, waveformAmplitudeData, null);
+    resultPanel
+        .getWaveformChart()
+        .updateXYSeries("waveform", timeData, waveformAmplitudeData, null);
     resultPanel.getWaveformChartPanel().revalidate();
     resultPanel.getWaveformChartPanel().repaint();
   }

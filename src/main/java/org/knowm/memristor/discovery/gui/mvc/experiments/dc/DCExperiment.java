@@ -30,6 +30,8 @@ import java.beans.PropertyChangeEvent;
 import java.util.List;
 import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
+import org.knowm.memristor.discovery.core.PostProcessDataUtils;
+import org.knowm.memristor.discovery.core.WaveformUtils;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
@@ -40,17 +42,15 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.dc.control.ControlPanel
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.result.ResultController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.result.ResultModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.result.ResultPanel;
-import org.knowm.memristor.discovery.utils.PostProcessDataUtils;
-import org.knowm.memristor.discovery.utils.WaveformUtils;
 import org.knowm.waveforms4j.DWF;
 
 public class DCExperiment extends Experiment {
 
   // Control and Result MVC
   private final ControlModel controlModel;
-  private ControlPanel controlPanel;
   private final ResultModel resultModel;
   private final ResultController resultController;
+  private ControlPanel controlPanel;
   private ResultPanel resultPanel;
 
   // SwingWorkers

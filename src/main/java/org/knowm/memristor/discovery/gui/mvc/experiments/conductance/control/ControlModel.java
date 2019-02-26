@@ -23,13 +23,13 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.conductance.control;
 
+import org.knowm.memristor.discovery.core.driver.Driver;
+import org.knowm.memristor.discovery.core.driver.Sawtooth;
+import org.knowm.memristor.discovery.core.driver.Triangle;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.ConductancePreferences;
-import org.knowm.memristor.discovery.utils.driver.Driver;
-import org.knowm.memristor.discovery.utils.driver.Sawtooth;
-import org.knowm.memristor.discovery.utils.driver.Triangle;
 
 public class ControlModel extends Model {
 

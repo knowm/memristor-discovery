@@ -27,23 +27,21 @@ import java.awt.Component;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import org.knowm.memristor.discovery.utils.Util;
+import org.knowm.memristor.discovery.core.Util;
 
 public abstract class View extends JPanel {
 
-  public abstract void enableAllChildComponents(boolean enabled);
-
   public final JButton startStopButton;
   public final JLabel logoLabel;
-
   public View() {
 
     startStopButton = new JButton("Start");
     startStopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-
     logoLabel = new JLabel(Util.createImageIcon("img/logo_200.png"));
   }
+
+  public abstract void enableAllChildComponents(boolean enabled);
 
   public JButton getStartStopButton() {
 

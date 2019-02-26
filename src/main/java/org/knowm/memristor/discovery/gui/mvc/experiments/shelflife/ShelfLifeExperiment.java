@@ -98,7 +98,6 @@ public class ShelfLifeExperiment extends Experiment {
                 }
               }
             });
-
   }
 
   /**
@@ -125,15 +124,6 @@ public class ShelfLifeExperiment extends Experiment {
     // }
   }
 
-  private class CaptureWorker extends SwingWorker<Boolean, double[][]> {
-
-
-    @Override
-    protected Boolean doInBackground() throws Exception {
-      return null;
-    }
-  }
-
   @Override
   public Model getControlModel() {
 
@@ -157,4 +147,11 @@ public class ShelfLifeExperiment extends Experiment {
     return resultPanel;
   }
 
+  private class CaptureWorker extends SwingWorker<Boolean, double[][]> {
+
+    @Override
+    protected Boolean doInBackground() throws Exception {
+      return null;
+    }
+  }
 }

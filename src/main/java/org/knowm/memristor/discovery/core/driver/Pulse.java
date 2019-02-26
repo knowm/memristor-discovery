@@ -21,25 +21,72 @@
  * <p>If you have any questions regarding our licensing policy, please contact us at
  * `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.utils.driver;
+package org.knowm.memristor.discovery.core.driver;
 
 /** @author timmolter */
-public class DC extends Driver {
+public class Pulse extends Driver {
+
+  private final double dutyCycle;
 
   /**
    * Constructor
    *
-   * @param id
+   * @param name
    * @param dcOffset
+   * @param phase
+   * @param amplitude
+   * @param frequency
+   * @param dutyCycle between 0 and 1
    */
-  public DC(String id, double dcOffset) {
+  public Pulse(
+      String name,
+      double dcOffset,
+      double phase,
+      double amplitude,
+      double frequency,
+      double dutyCycle) {
 
-    super(id, dcOffset, 0.0, 0.0, 0.0);
+    super(name, dcOffset, phase, amplitude, frequency);
+    this.dutyCycle = dutyCycle;
   }
 
   @Override
   public double getSignal(double time) {
 
-    return dcOffset;
+    double T = 1 / frequency;
+    double remainderTime = (time + phase) % T * 0.5 / dutyCycle;
+
+    // up phase
+    if (0 <= remainderTime && remainderTime * T < .50 / frequency * T) {
+      return amplitude + dcOffset;
+    }
+
+    // down phase
+    else {
+      return -1.0 * amplitude + dcOffset;
+    }
+  }
+
+  public double getDutyCycle() {
+
+    return dutyCycle;
+  }
+
+  @Override
+  public String toString() {
+
+    return "Pulse [dutyCycle="
+        + dutyCycle
+        + ", id="
+        + id
+        + ", dcOffset="
+        + dcOffset
+        + ", phase="
+        + phase
+        + ", amplitude="
+        + amplitude
+        + ", frequency="
+        + frequency
+        + "]";
   }
 }

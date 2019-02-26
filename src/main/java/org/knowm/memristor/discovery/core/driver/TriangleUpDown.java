@@ -21,59 +21,46 @@
  * <p>If you have any questions regarding our licensing policy, please contact us at
  * `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.utils.driver;
+package org.knowm.memristor.discovery.core.driver;
 
 /** @author timmolter */
-public abstract class Driver {
-
-  protected final String id;
-  protected final double dcOffset;
-  protected final double phase;
-  protected final double amplitude;
-  protected final double frequency;
+public class TriangleUpDown extends Driver {
 
   /**
    * Constructor
    *
-   * @param id
+   * @param name
    * @param dcOffset
    * @param phase
    * @param amplitude
    * @param frequency
    */
-  public Driver(String id, double dcOffset, double phase, double amplitude, double frequency) {
+  public TriangleUpDown(
+      String name, double dcOffset, double phase, double amplitude, double frequency) {
 
-    this.id = id;
-    this.dcOffset = dcOffset;
-    this.phase = phase;
-    this.amplitude = amplitude;
-    this.frequency = frequency;
+    super(name, dcOffset, phase, amplitude, frequency);
   }
 
-  public String getId() {
+  @Override
+  public double getSignal(double time) {
 
-    return id;
+    double T = 1 / frequency;
+    double remainderTime = (time + phase) % T;
+
+    // up phase
+    if (0 <= (remainderTime) && (remainderTime) * T < .25 / frequency * T) {
+      return 4 * frequency * amplitude * (remainderTime) + dcOffset;
+    }
+
+    // up phase
+    else if (.75 / frequency * T <= (remainderTime) * T
+        && (remainderTime) * T < 1.0 / frequency * T) {
+      return 4 * frequency * amplitude * (remainderTime) - 4 * amplitude + dcOffset;
+    }
+
+    // down phase
+    else {
+      return -4 * frequency * amplitude * (remainderTime) + 2 * amplitude + dcOffset;
+    }
   }
-
-  public double getDcOffset() {
-
-    return dcOffset;
-  }
-
-  public double getPhase() {
-
-    return phase;
-  }
-
-  public double getAmplitude() {
-
-    return amplitude;
-  }
-
-  public double getFrequency() {
-
-    return frequency;
-  }
-
-  public abstract double getSignal(double time);
 }

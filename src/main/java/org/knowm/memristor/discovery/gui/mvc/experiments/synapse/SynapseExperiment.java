@@ -33,6 +33,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
+import org.knowm.memristor.discovery.core.gpio.MuxController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
@@ -44,23 +45,20 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.Control
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.result.ResultController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.result.ResultModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.result.ResultPanel;
-import org.knowm.memristor.discovery.utils.gpio.MuxController;
 
 public class SynapseExperiment extends Experiment {
 
   private static final float INIT_CONDUCTANCE = .0002f;
 
   private final MuxController muxController;
-  DecimalFormat df = new DecimalFormat("0.000E0");
-  private AHaHController_21 aHaHController;
-
   // Control and Result MVC
   private final ControlModel controlModel;
-  private ControlPanel controlPanel;
   private final ResultModel resultModel;
-  private ResultPanel resultPanel;
   private final ResultController resultController;
-
+  DecimalFormat df = new DecimalFormat("0.000E0");
+  private AHaHController_21 aHaHController;
+  private ControlPanel controlPanel;
+  private ResultPanel resultPanel;
   // SwingWorkers
   private SwingWorker initSynapseWorker;
   private SwingWorker experimentCaptureWorker;

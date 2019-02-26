@@ -65,7 +65,7 @@ public class ResultPanel extends ExperimentResultsPanel {
     add(scroll);
   }
 
-   void loadLinesToConsole(ArrayList<String> lines) {
+  void loadLinesToConsole(ArrayList<String> lines) {
 
     StringBuilder sb = new StringBuilder();
     for (int i = 0; i < lines.size(); i++) {

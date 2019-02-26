@@ -35,15 +35,14 @@ public class ShelfLifePreferences extends ExperimentPreferences {
 
   // NOT YET IN PREFERENCES
   public static final int CAPTURE_BUFFER_SIZE = 8000;
-
+  public static final int SERIES_R_INIT_DEFAULT_VALUE = 1_000;
+  public static final String TIME_UNIT_DEFAULT_VALUE = TimeUnit.SECONDS.name();
+  public static final Integer REPEAT_INTERVAL_DEFAULT_VALUE = 1;
   // ALREADY IN PREFERENCES
   private static final String PREFIX = "SHELFLIFE_";
   public static final String SERIES_R_INIT_KEY = PREFIX + "SERIES_R_INIT_KEY";
-  public static final int SERIES_R_INIT_DEFAULT_VALUE = 1_000;
   public static final String TIME_UNIT_INIT_KEY = PREFIX + "TIME_UNIT_INIT_KEY";
-  public static final String TIME_UNIT_DEFAULT_VALUE = TimeUnit.SECONDS.name();
   public static final String REPEAT_INTERVAL_INIT_KEY = PREFIX + "REPEAT_INTERVAL";
-  public static final Integer REPEAT_INTERVAL_DEFAULT_VALUE = 1;
 
   /** Constructor */
   public ShelfLifePreferences() {

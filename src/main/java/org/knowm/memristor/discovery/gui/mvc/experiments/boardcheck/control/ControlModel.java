@@ -23,8 +23,8 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.control;
 
-import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.BoardCheckPreferences;
 
 public class ControlModel extends Model {
@@ -39,8 +39,7 @@ public class ControlModel extends Model {
             BoardCheckPreferences.SERIES_R_INIT_KEY,
             BoardCheckPreferences.SERIES_R_INIT_DEFAULT_VALUE);
 
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_PREFERENCES_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
   @Override

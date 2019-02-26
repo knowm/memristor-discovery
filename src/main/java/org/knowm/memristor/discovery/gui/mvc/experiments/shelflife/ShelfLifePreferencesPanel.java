@@ -34,7 +34,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferencesPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.BoardCheckPreferences;
 
 public class ShelfLifePreferencesPanel extends ExperimentPreferencesPanel {
 

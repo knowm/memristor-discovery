@@ -23,14 +23,14 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.dc.control;
 
+import org.knowm.memristor.discovery.core.driver.Driver;
+import org.knowm.memristor.discovery.core.driver.Sawtooth;
+import org.knowm.memristor.discovery.core.driver.SawtoothUpDown;
+import org.knowm.memristor.discovery.core.driver.Triangle;
+import org.knowm.memristor.discovery.core.driver.TriangleUpDown;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCPreferences;
-import org.knowm.memristor.discovery.utils.driver.Driver;
-import org.knowm.memristor.discovery.utils.driver.Sawtooth;
-import org.knowm.memristor.discovery.utils.driver.SawtoothUpDown;
-import org.knowm.memristor.discovery.utils.driver.Triangle;
-import org.knowm.memristor.discovery.utils.driver.TriangleUpDown;
 
 public class ControlModel extends Model {
 

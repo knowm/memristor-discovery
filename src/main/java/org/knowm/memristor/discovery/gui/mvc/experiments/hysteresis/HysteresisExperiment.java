@@ -30,6 +30,8 @@ import java.beans.PropertyChangeEvent;
 import java.util.List;
 import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
+import org.knowm.memristor.discovery.core.Util;
+import org.knowm.memristor.discovery.core.WaveformUtils;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
@@ -40,8 +42,6 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control.Cont
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.result.ResultController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.result.ResultModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.result.ResultPanel;
-import org.knowm.memristor.discovery.utils.Util;
-import org.knowm.memristor.discovery.utils.WaveformUtils;
 import org.knowm.waveforms4j.DWF;
 import org.knowm.waveforms4j.DWF.AcquisitionMode;
 

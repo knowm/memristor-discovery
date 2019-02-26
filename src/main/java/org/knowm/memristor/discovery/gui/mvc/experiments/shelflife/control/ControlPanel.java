@@ -44,7 +44,6 @@ public class ControlPanel extends View {
     c.fill = GridBagConstraints.HORIZONTAL;
     setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
 
-
     c.gridy++;
     c.insets = new Insets(0, 0, 0, 0);
     add(startStopButton, c);

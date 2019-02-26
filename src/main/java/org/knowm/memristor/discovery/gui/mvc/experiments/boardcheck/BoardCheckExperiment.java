@@ -31,6 +31,9 @@ import java.text.DecimalFormat;
 import java.util.List;
 import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
+import org.knowm.memristor.discovery.core.WaveformUtils;
+import org.knowm.memristor.discovery.core.gpio.MuxController;
+import org.knowm.memristor.discovery.core.gpio.MuxController.Destination;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
@@ -42,9 +45,6 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.control.Cont
 import org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.result.ResultController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.result.ResultModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.result.ResultPanel;
-import org.knowm.memristor.discovery.utils.WaveformUtils;
-import org.knowm.memristor.discovery.utils.gpio.MuxController;
-import org.knowm.memristor.discovery.utils.gpio.MuxController.Destination;
 import org.knowm.waveforms4j.DWF;
 
 public class BoardCheckExperiment extends Experiment {
@@ -60,10 +60,14 @@ public class BoardCheckExperiment extends Experiment {
   private static final float V_MEMINLINE_HARD_RESET = -2.5f;
   private static final float R_CALIBRATE = 0; // Line trace resistance, AD2 Calibration.
   private final MuxController muxController;
-
+  // Control and Result MVC
+  private final ControlModel controlModel;
+  private final ControlPanel controlPanel;
+  private final ResultModel resultModel;
+  private final ResultPanel resultPanel;
+  private final ResultController resultController;
   private float MIN_Q = 2; // minimum ratio between erase/write resistance
   private float MEMINLINE_MIN_R = 10; // if all state are below this (kiloohms), its stuck low
-
   private float MEMINLINE_MAX_R = 100; // if all state are above this (kilohms), its stuck low
   private float MEMINLINE_MIN_SWITCH_OFF =
       1000; // if switch is below this resistance (kOhm) when OFF then its a bad switch
@@ -72,14 +76,6 @@ public class BoardCheckExperiment extends Experiment {
   private DecimalFormat qFormat = new DecimalFormat("0.00 X");
   private DecimalFormat percentFormat = new DecimalFormat("0.00 %");
   private DecimalFormat ohmFormat = new DecimalFormat("0.00 kΩ");
-
-  // Control and Result MVC
-  private final ControlModel controlModel;
-  private final ControlPanel controlPanel;
-  private final ResultModel resultModel;
-  private final ResultPanel resultPanel;
-  private final ResultController resultController;
-
   // SwingWorkers
   private SwingWorker aHAH12X7TestWorker;
   private SwingWorker meminlineTestWorker;

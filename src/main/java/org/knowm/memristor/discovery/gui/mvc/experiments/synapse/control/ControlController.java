@@ -38,8 +38,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Controller;
-import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 
 public class ControlController extends Controller {
 
@@ -253,7 +253,6 @@ public class ControlController extends Controller {
     // }
     // }
     // });
-
 
   }
 

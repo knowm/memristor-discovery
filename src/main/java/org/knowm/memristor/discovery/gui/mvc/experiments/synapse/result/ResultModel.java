@@ -25,8 +25,8 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.synapse.result;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 
 public class ResultModel extends Model {
 
@@ -167,7 +167,5 @@ public class ResultModel extends Model {
   }
 
   @Override
-  public void loadModelFromPrefs() {
-
-  }
+  public void loadModelFromPrefs() {}
 }

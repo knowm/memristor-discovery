@@ -21,10 +21,10 @@
  * <p>If you have any questions regarding our licensing policy, please contact us at
  * `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.utils.driver;
+package org.knowm.memristor.discovery.core.driver;
 
 /** @author timmolter */
-public class QuarterSine extends Driver {
+public class Triangle extends Driver {
 
   /**
    * Constructor
@@ -35,8 +35,7 @@ public class QuarterSine extends Driver {
    * @param amplitude
    * @param frequency
    */
-  public QuarterSine(
-      String name, double dcOffset, double phase, double amplitude, double frequency) {
+  public Triangle(String name, double dcOffset, double phase, double amplitude, double frequency) {
 
     super(name, dcOffset, phase, amplitude, frequency);
   }
@@ -48,13 +47,13 @@ public class QuarterSine extends Driver {
     double remainderTime = (time + phase) % T;
 
     // up phase
-    if (0 <= remainderTime && remainderTime * T < .50 / frequency * T) {
-      return amplitude * Math.abs(Math.sin(Math.PI * frequency * time - phase) + dcOffset);
+    if (0 <= (remainderTime) && (remainderTime) * T < .5 / frequency * T) {
+      return 2 * frequency * amplitude * (remainderTime) + dcOffset;
     }
 
     // down phase
     else {
-      return 0.0;
+      return -2 * frequency * amplitude * (remainderTime) + 2 * amplitude + dcOffset;
     }
   }
 }

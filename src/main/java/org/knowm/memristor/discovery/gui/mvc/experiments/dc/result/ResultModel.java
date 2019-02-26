@@ -23,8 +23,8 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.dc.result;
 
-import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 
 public class ResultModel extends Model {
 
@@ -35,8 +35,6 @@ public class ResultModel extends Model {
 
   Double yMaxGV = null;
   Double yMinGV = null;
-
-
 
   public Double getyMaxIV() {
 
@@ -84,7 +82,5 @@ public class ResultModel extends Model {
   }
 
   @Override
-  public void loadModelFromPrefs() {
-
-  }
+  public void loadModelFromPrefs() {}
 }

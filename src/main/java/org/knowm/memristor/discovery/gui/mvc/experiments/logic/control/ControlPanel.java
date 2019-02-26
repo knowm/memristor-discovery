@@ -39,8 +39,8 @@ import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
-import org.knowm.memristor.discovery.gui.mvc.experiments.View;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
+import org.knowm.memristor.discovery.gui.mvc.experiments.View;
 import org.knowm.memristor.discovery.gui.mvc.experiments.logic.LogicPreferences.DataStructure;
 
 /**

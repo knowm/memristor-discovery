@@ -35,8 +35,8 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
-import org.knowm.memristor.discovery.gui.mvc.experiments.View;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
+import org.knowm.memristor.discovery.gui.mvc.experiments.View;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.ClassifyPreferences.AHaHRoutine;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.ClassifyPreferences.Datasets;
 

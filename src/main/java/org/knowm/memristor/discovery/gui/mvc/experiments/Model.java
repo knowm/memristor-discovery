@@ -30,6 +30,7 @@ public abstract class Model {
 
   /** Events */
   public static final String EVENT_WAVEFORM_UPDATE = "EVENT_WAVEFORM_UPDATE";
+
   public static final String EVENT_FREQUENCY_UPDATE = "EVENT_FREQUENCY_UPDATE";
   public static final String EVENT_PREFERENCES_UPDATE = "EVENT_PREFERENCES_UPDATE";
   public static final String EVENT_NEW_CONSOLE_LOG = "EVENT_NEW_CONSOLE_LOG";
@@ -40,13 +41,6 @@ public abstract class Model {
   public SwingPropertyChangeSupport swingPropertyChangeSupport;
   protected ExperimentPreferences experimentPreferences;
 
-
-
-  // TODO move out to Experiment level
-  public abstract ExperimentPreferences initAppPreferences();
-
-  public abstract void loadModelFromPrefs();
-
   /** Constructor */
   public Model() {
 
@@ -55,7 +49,10 @@ public abstract class Model {
     loadModelFromPrefs();
   }
 
+  // TODO move out to Experiment level
+  public abstract ExperimentPreferences initAppPreferences();
 
+  public abstract void loadModelFromPrefs();
 
   public int getSeriesResistance() {
 
@@ -66,8 +63,6 @@ public abstract class Model {
 
     this.seriesResistance = seriesResistance;
   }
-
-
 
   /**
    * Here is where the Controller registers itself as a listener to model changes.

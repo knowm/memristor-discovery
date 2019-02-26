@@ -21,7 +21,7 @@
  * <p>If you have any questions regarding our licensing policy, please contact us at
  * `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.utils.gpio;
+package org.knowm.memristor.discovery.core.gpio;
 
 /** @author alexnugent */
 public class MuxController {
