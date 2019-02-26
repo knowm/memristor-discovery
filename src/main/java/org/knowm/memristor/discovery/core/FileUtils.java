@@ -23,11 +23,13 @@
  */
 package org.knowm.memristor.discovery.core;
 
+import java.awt.Component;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import javax.swing.JFileChooser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,5 +96,25 @@ public class FileUtils {
     if (!f.exists()) {
       f.mkdir();
     }
+  }
+
+  public static String showSaveAsDialog(Component parent) throws IOException {
+
+    String directoryPath = "";
+    JFileChooser fileChooser = new JFileChooser();
+    fileChooser.setCurrentDirectory(new java.io.File("."));
+    fileChooser.setDialogTitle("Save Directory");
+    fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+    fileChooser.setAcceptAllFileFilterUsed(false);
+
+    if (fileChooser.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
+      //            System.out.println("getCurrentDirectory(): " +
+      // fileChooser.getCurrentDirectory());
+      //      System.out.println("getSelectedFile() : " + fileChooser.getSelectedFile());
+      //      System.out.println("getSelectedFile().getCanonicalPath() : " +
+      // fileChooser.getSelectedFile().getCanonicalPath());
+      directoryPath = fileChooser.getSelectedFile().getCanonicalPath();
+    }
+    return directoryPath;
   }
 }

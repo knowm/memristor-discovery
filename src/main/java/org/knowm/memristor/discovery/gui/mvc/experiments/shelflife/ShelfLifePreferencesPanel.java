@@ -23,19 +23,30 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.shelflife;
 
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import org.knowm.memristor.discovery.core.FileUtils;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferencesPanel;
 
 public class ShelfLifePreferencesPanel extends ExperimentPreferencesPanel {
+
+  private String saveDirectory = "";
+  private JLabel saveDirectoryLabel;
+  private JButton saveDirectoryButton;
+  private JTextField saveDirectoryTextField;
 
   private JLabel timeUnitLabel;
   private JComboBox<TimeUnit> timeUnitComboBox;
@@ -65,6 +76,41 @@ public class ShelfLifePreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridy = 0;
     gc.gridx = 0;
+    this.saveDirectoryLabel = new JLabel("Save Directory:");
+    preferencesPanel.add(saveDirectoryLabel, gc);
+
+    saveDirectoryButton = new JButton("Choose");
+    saveDirectoryButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    gc.gridx = 1;
+    preferencesPanel.add(saveDirectoryButton, gc);
+    saveDirectoryButton.addActionListener(
+        new ActionListener() {
+
+          @Override
+          public void actionPerformed(ActionEvent e) {
+
+            try {
+              saveDirectory = FileUtils.showSaveAsDialog(preferencesPanel);
+              saveDirectoryTextField.setText(saveDirectory);
+            } catch (IOException e1) {
+              e1.printStackTrace();
+            }
+          }
+        });
+    gc.gridy++;
+    gc.gridx = 0;
+    gc.gridwidth = 2;
+    this.saveDirectoryTextField = new JTextField(24);
+    this.saveDirectoryTextField.setText(
+        String.valueOf(
+            experimentPreferences.getString(
+                ShelfLifePreferences.SAVE_DIRECTORY_INIT_KEY,
+                ShelfLifePreferences.SAVE_DIRECTORY_INIT_DEFAULT_VALUE)));
+    preferencesPanel.add(saveDirectoryTextField, gc);
+
+    gc.gridy++;
+    gc.gridx = 0;
+    gc.gridwidth = 1;
     this.timeUnitLabel = new JLabel("Time Unit:");
     preferencesPanel.add(timeUnitLabel, gc);
 
@@ -115,6 +161,8 @@ public class ShelfLifePreferencesPanel extends ExperimentPreferencesPanel {
   @Override
   public void doSavePreferences() {
 
+    experimentPreferences.setString(
+        ShelfLifePreferences.SAVE_DIRECTORY_INIT_KEY, saveDirectory.trim());
     experimentPreferences.setString(
         ShelfLifePreferences.TIME_UNIT_INIT_KEY,
         timeUnitComboBox.getSelectedItem().toString().trim());
