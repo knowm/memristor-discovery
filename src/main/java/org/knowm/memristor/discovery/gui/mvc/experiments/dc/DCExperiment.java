@@ -24,14 +24,16 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.dc;
 
 import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.util.List;
 import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.View;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.control.ControlPanel;
@@ -44,12 +46,15 @@ import org.knowm.waveforms4j.DWF;
 
 public class DCExperiment extends Experiment {
 
+  // Control and Result MVC
   private final ControlModel controlModel;
   private ControlPanel controlPanel;
-
   private final ResultModel resultModel;
   private final ResultController resultController;
   private ResultPanel resultPanel;
+
+  // SwingWorkers
+  private SwingWorker experimentCaptureWorker;
 
   /**
    * Constructor
@@ -71,7 +76,35 @@ public class DCExperiment extends Experiment {
   }
 
   @Override
-  public void addWorkersToButtonEvents() {}
+  public void addWorkersToButtonEvents() {
+
+    controlPanel
+        .getStartStopButton()
+        .addActionListener(
+            new ActionListener() {
+
+              @Override
+              public void actionPerformed(ActionEvent e) {
+
+                if (!controlModel.isStartToggled()) {
+
+                  controlModel.setStartToggled(true);
+                  controlPanel.getStartStopButton().setText("Stop");
+
+                  // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
+                  experimentCaptureWorker = new CaptureWorker();
+                  experimentCaptureWorker.execute();
+                } else {
+
+                  controlModel.setStartToggled(false);
+                  controlPanel.getStartStopButton().setText("Start");
+
+                  // cancel the worker
+                  experimentCaptureWorker.cancel(true);
+                }
+              }
+            });
+  }
 
   /**
    * These property change events are triggered in the controlModel in the case where the underlying
@@ -110,6 +143,7 @@ public class DCExperiment extends Experiment {
 
     return controlPanel;
   }
+
   @Override
   public Model getResultModel() {
     return resultModel;
@@ -119,12 +153,6 @@ public class DCExperiment extends Experiment {
   public ExperimentResultsPanel getResultPanel() {
 
     return resultPanel;
-  }
-
-  @Override
-  public SwingWorker getCaptureWorker() {
-
-    return new CaptureWorker();
   }
 
   private class CaptureWorker extends SwingWorker<Boolean, double[][]> {

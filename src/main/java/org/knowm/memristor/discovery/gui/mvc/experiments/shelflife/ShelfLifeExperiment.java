@@ -24,13 +24,15 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.shelflife;
 
 import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.View;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.control.ControlPanel;
@@ -40,12 +42,15 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.result.Result
 
 public class ShelfLifeExperiment extends Experiment {
 
+  // Control and Result MVC
   private final ControlModel controlModel;
   private final ControlPanel controlPanel;
-
   private final ResultPanel resultPanel;
   private final ResultModel resultModel;
   private final ResultController resultController;
+
+  // SwingWorkers
+  private SwingWorker experimentCaptureWorker;
 
   /** Constructor */
   public ShelfLifeExperiment(DWFProxy dwfProxy, Container mainFrameContainer, boolean isV1Board) {
@@ -67,8 +72,32 @@ public class ShelfLifeExperiment extends Experiment {
   @Override
   public void addWorkersToButtonEvents() {
 
-    // don't need anything here as we're leveraging the default Start/Stop button and the default
-    // CaptureWorker
+    controlPanel
+        .getStartStopButton()
+        .addActionListener(
+            new ActionListener() {
+
+              @Override
+              public void actionPerformed(ActionEvent e) {
+
+                if (!controlModel.isStartToggled()) {
+
+                  controlModel.setStartToggled(true);
+                  controlPanel.getStartStopButton().setText("Stop");
+
+                  // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
+                  experimentCaptureWorker = new CaptureWorker();
+                  experimentCaptureWorker.execute();
+                } else {
+
+                  controlModel.setStartToggled(false);
+                  controlPanel.getStartStopButton().setText("Start");
+
+                  // cancel the worker
+                  experimentCaptureWorker.cancel(true);
+                }
+              }
+            });
 
   }
 
@@ -96,6 +125,15 @@ public class ShelfLifeExperiment extends Experiment {
     // }
   }
 
+  private class CaptureWorker extends SwingWorker<Boolean, double[][]> {
+
+
+    @Override
+    protected Boolean doInBackground() throws Exception {
+      return null;
+    }
+  }
+
   @Override
   public Model getControlModel() {
 
@@ -119,9 +157,4 @@ public class ShelfLifeExperiment extends Experiment {
     return resultPanel;
   }
 
-  @Override
-  public SwingWorker getCaptureWorker() {
-
-    return null;
-  }
 }

@@ -27,12 +27,9 @@ import static javax.swing.BorderFactory.createEmptyBorder;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.JScrollPane;
-import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.rightbar.RightBarController;
 import org.knowm.memristor.discovery.gui.mvc.rightbar.RightBarPanel;
@@ -44,8 +41,6 @@ public abstract class Experiment implements PropertyChangeListener {
   public final Container mainFrameContainer;
 
   private final boolean isV1Board;
-
-  private SwingWorker experimentCaptureWorker;
 
   /**
    * Constructor
@@ -67,8 +62,6 @@ public abstract class Experiment implements PropertyChangeListener {
 
   public abstract ExperimentResultsPanel getResultPanel();
 
-  public abstract SwingWorker getCaptureWorker();
-
   public abstract void addWorkersToButtonEvents();
 
   public void createAndShowGUI() {
@@ -85,41 +78,13 @@ public abstract class Experiment implements PropertyChangeListener {
     jScrollPane.setBorder(createEmptyBorder());
     mainFrameContainer.add(jScrollPane, BorderLayout.WEST);
 
+    // TODO move this out
     // trigger result of waveform
     PropertyChangeEvent evt =
         new PropertyChangeEvent(this, Model.EVENT_WAVEFORM_UPDATE, true, false);
     propertyChange(evt);
 
     getControlModel().addListener(this);
-
-    // Most experiments have a Start/Stop button, so we attach the default CaptureWorker to its
-    // click events here. This doesn't mean that the experiment HAS to use the default CaptureWorker
-    getControlPanel()
-        .getStartStopButton()
-        .addActionListener(
-            new ActionListener() {
-
-              @Override
-              public void actionPerformed(ActionEvent e) {
-
-                if (!getControlModel().isStartToggled()) {
-
-                  getControlModel().setStartToggled(true);
-                  getControlPanel().getStartStopButton().setText("Stop");
-
-                  // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
-                  experimentCaptureWorker = getCaptureWorker();
-                  experimentCaptureWorker.execute();
-                } else {
-
-                  getControlModel().setStartToggled(false);
-                  getControlPanel().getStartStopButton().setText("Start");
-
-                  // cancel the worker
-                  experimentCaptureWorker.cancel(true);
-                }
-              }
-            });
 
     // Here additional CaptureWorkers are added to addition buttons needed for the experiment
     addWorkersToButtonEvents(); // after adding the default start/stop action so actions can be

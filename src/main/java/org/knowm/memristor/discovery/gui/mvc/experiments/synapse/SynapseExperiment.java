@@ -34,9 +34,9 @@ import java.util.List;
 import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.View;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.AHaHController_21.Instruction;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlModel;
@@ -52,15 +52,19 @@ public class SynapseExperiment extends Experiment {
 
   private final MuxController muxController;
   DecimalFormat df = new DecimalFormat("0.000E0");
-  private InitSynapseWorker initSynapseWorker;
   private AHaHController_21 aHaHController;
 
+  // Control and Result MVC
   private final ControlModel controlModel;
   private ControlPanel controlPanel;
-
   private final ResultModel resultModel;
   private ResultPanel resultPanel;
   private final ResultController resultController;
+
+  // SwingWorkers
+  private SwingWorker initSynapseWorker;
+  private SwingWorker experimentCaptureWorker;
+  private SwingWorker clearChartWorker;
 
   /**
    * Constructor
@@ -75,7 +79,6 @@ public class SynapseExperiment extends Experiment {
     controlModel = new ControlModel();
     controlPanel = new ControlPanel();
     new ControlController(controlPanel, controlModel, dwfProxy);
-
     resultModel = new ResultModel();
     resultPanel = new ResultPanel();
     resultController = new ResultController(resultPanel, resultModel);
@@ -84,7 +87,6 @@ public class SynapseExperiment extends Experiment {
 
     aHaHController = new AHaHController_21(controlModel);
     aHaHController.setdWFProxy(dwfProxy);
-
     muxController = new MuxController();
   }
 
@@ -97,9 +99,37 @@ public class SynapseExperiment extends Experiment {
           @Override
           public void actionPerformed(ActionEvent e) {
 
-            resultController.resetChart();
+            clearChartWorker = new ClearChartWorker();
+            clearChartWorker.execute();
           }
         });
+
+    controlPanel
+        .getStartStopButton()
+        .addActionListener(
+            new ActionListener() {
+
+              @Override
+              public void actionPerformed(ActionEvent e) {
+
+                if (!controlModel.isStartToggled()) {
+
+                  controlModel.setStartToggled(true);
+                  controlPanel.getStartStopButton().setText("Stop");
+
+                  // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
+                  experimentCaptureWorker = new CaptureWorker();
+                  experimentCaptureWorker.execute();
+                } else {
+
+                  controlModel.setStartToggled(false);
+                  controlPanel.getStartStopButton().setText("Start");
+
+                  // cancel the worker
+                  experimentCaptureWorker.cancel(true);
+                }
+              }
+            });
 
     controlPanel.initSynapseButton.addActionListener(
         new ActionListener() {
@@ -159,10 +189,14 @@ public class SynapseExperiment extends Experiment {
     return resultPanel;
   }
 
-  @Override
-  public SwingWorker getCaptureWorker() {
+  private class ClearChartWorker extends SwingWorker<Boolean, Double> {
 
-    return new CaptureWorker();
+    @Override
+    protected Boolean doInBackground() throws Exception {
+
+      resultController.resetChart();
+      return true;
+    }
   }
 
   private class CaptureWorker extends SwingWorker<Boolean, Double> {
@@ -246,8 +280,7 @@ public class SynapseExperiment extends Experiment {
 
             getControlModel()
                 .swingPropertyChangeSupport
-                .firePropertyChange(
-                    Model.EVENT_NEW_CONSOLE_LOG, null, "Step 1 Passed.");
+                .firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null, "Step 1 Passed.");
             break;
           }
 
@@ -320,18 +353,14 @@ public class SynapseExperiment extends Experiment {
           getControlModel()
               .swingPropertyChangeSupport
               .firePropertyChange(
-                  Model.EVENT_NEW_CONSOLE_LOG,
-                  null,
-                  "Step 2 Passed. Q=" + df.format(a));
+                  Model.EVENT_NEW_CONSOLE_LOG, null, "Step 2 Passed. Q=" + df.format(a));
         }
 
         if (aGood && bGood && stateChangedCount > 0) {
           getControlModel()
               .swingPropertyChangeSupport
               .firePropertyChange(
-                  Model.EVENT_NEW_CONSOLE_LOG,
-                  null,
-                  "Synapse Initialized Sucessfully");
+                  Model.EVENT_NEW_CONSOLE_LOG, null, "Synapse Initialized Sucessfully");
         }
 
         getControlModel()

@@ -40,8 +40,8 @@ import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
-import org.knowm.memristor.discovery.gui.mvc.experiments.View;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
+import org.knowm.memristor.discovery.gui.mvc.experiments.View;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.AHaHController_21.Instruction;
 
 /**
@@ -57,8 +57,8 @@ public class ControlPanel extends View {
   // private final JSlider pulseWidthSliderNs;
 
   // private final JSlider pulseNumberSlider;
-private final Box instructionRadioButtonBox;
-    private final JLabel sampleRateLabel;;
+  private final Box instructionRadioButtonBox;
+  private final JLabel sampleRateLabel;;
   private final JTextField sampleRateTextField;
   public JButton clearPlotButton;
   public JButton initSynapseButton;

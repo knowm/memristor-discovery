@@ -32,11 +32,11 @@ import java.util.List;
 import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
-import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
-import org.knowm.memristor.discovery.gui.mvc.experiments.View;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
+import org.knowm.memristor.discovery.gui.mvc.experiments.View;
 import org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.control.ControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.result.ResultController;
@@ -60,19 +60,10 @@ public class BoardCheckExperiment extends Experiment {
   private static final float V_MEMINLINE_HARD_RESET = -2.5f;
   private static final float R_CALIBRATE = 0; // Line trace resistance, AD2 Calibration.
   private final MuxController muxController;
-  private SwingWorker aHAH12X7TestWorker;
-  private SwingWorker meminlineTestWorker;
-  private SwingWorker muxTestWorker;
-  private SwingWorker switchTestWorker;
-  private SwingWorker clearConsoleWorker;
-  private SwingWorker synapse12TestWorker;
-  private SwingWorker synapse12iTestWorker;
+
   private float MIN_Q = 2; // minimum ratio between erase/write resistance
   private float MEMINLINE_MIN_R = 10; // if all state are below this (kiloohms), its stuck low
 
-  /*
-   * NOTE
-   */
   private float MEMINLINE_MAX_R = 100; // if all state are above this (kilohms), its stuck low
   private float MEMINLINE_MIN_SWITCH_OFF =
       1000; // if switch is below this resistance (kOhm) when OFF then its a bad switch
@@ -82,11 +73,21 @@ public class BoardCheckExperiment extends Experiment {
   private DecimalFormat percentFormat = new DecimalFormat("0.00 %");
   private DecimalFormat ohmFormat = new DecimalFormat("0.00 kΩ");
 
+  // Control and Result MVC
   private final ControlModel controlModel;
   private final ControlPanel controlPanel;
   private final ResultModel resultModel;
   private final ResultPanel resultPanel;
   private final ResultController resultController;
+
+  // SwingWorkers
+  private SwingWorker aHAH12X7TestWorker;
+  private SwingWorker meminlineTestWorker;
+  private SwingWorker muxTestWorker;
+  private SwingWorker switchTestWorker;
+  private SwingWorker clearConsoleWorker;
+  private SwingWorker synapse12TestWorker;
+  private SwingWorker synapse12iTestWorker;
 
   /**
    * Constructor
@@ -411,17 +412,11 @@ public class BoardCheckExperiment extends Experiment {
   public Model getResultModel() {
     return resultModel;
   }
+
   @Override
   public ExperimentResultsPanel getResultPanel() {
 
     return resultPanel;
-  }
-
-  @Override
-  public SwingWorker getCaptureWorker() {
-
-    // we don't use the default CaptureWorker in this experiment
-    return null;
   }
 
   private class SwitchDiagnosticWorker extends SwingWorker<Boolean, Double> {

@@ -30,7 +30,6 @@ import org.knowm.memristor.discovery.utils.Util;
 import org.knowm.memristor.discovery.utils.WaveformUtils;
 import org.knowm.waveforms4j.DWF;
 
-/** Created by timmolter on 5/25/17. */
 public class AHaHController_21 {
 
   private final double MIN_V_RESOLUTION = .0025;

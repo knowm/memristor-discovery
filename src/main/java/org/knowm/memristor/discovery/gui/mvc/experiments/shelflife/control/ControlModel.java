@@ -24,14 +24,17 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.control;
 
 import java.util.concurrent.TimeUnit;
-import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.ShelfLifePreferences;
 
 public class ControlModel extends Model {
 
   public TimeUnit timeUnit;
   private int repeatInterval;
+
+  private boolean isStartToggled = false;
+
   /** Constructor */
   public ControlModel() {}
 
@@ -53,8 +56,7 @@ public class ControlModel extends Model {
         experimentPreferences.getInteger(
             ShelfLifePreferences.SERIES_R_INIT_KEY,
             ShelfLifePreferences.SERIES_R_INIT_DEFAULT_VALUE);
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_PREFERENCES_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
   /////////////////////////////////////////////////////////////
@@ -67,30 +69,37 @@ public class ControlModel extends Model {
 
   public void setTimeUnit(TimeUnit timeUnit) {
     this.timeUnit = timeUnit;
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_WAVEFORM_UPDATE, true, false); }
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
+  }
 
   public void setTimeUnit(String text) {
 
     timeUnit = Enum.valueOf(TimeUnit.class, text);
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public int getRepeatInterval() {
     return repeatInterval;
-
   }
 
   public void setRepeatInterval(int repeatInterval) {
     this.repeatInterval = repeatInterval;
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   @Override
   public ExperimentPreferences initAppPreferences() {
 
     return new ShelfLifePreferences();
+  }
+
+  public boolean isStartToggled() {
+
+    return isStartToggled;
+  }
+
+  public void setStartToggled(boolean isStartToggled) {
+
+    this.isStartToggled = isStartToggled;
   }
 }

@@ -42,7 +42,6 @@ public class ControlModel extends Model {
   private float amplitude;
   private int frequency;
 
-  // TODO move out
   private boolean isStartToggled = false;
 
   /** Constructor */
@@ -181,6 +180,16 @@ public class ControlModel extends Model {
   public double[] getWaveformAmplitudeData() {
 
     return waveformAmplitudeData;
+  }
+
+  public boolean isStartToggled() {
+
+    return isStartToggled;
+  }
+
+  public void setStartToggled(boolean isStartToggled) {
+
+    this.isStartToggled = isStartToggled;
   }
 
   @Override

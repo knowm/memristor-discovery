@@ -34,9 +34,9 @@ import java.util.List;
 import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.View;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.logic.AHaHController_21.Instruction;
 import org.knowm.memristor.discovery.gui.mvc.experiments.logic.LogicPreferences.DataStructure;
 import org.knowm.memristor.discovery.gui.mvc.experiments.logic.control.ControlController;
@@ -48,21 +48,19 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.logic.result.ResultPane
 
 public class LogicExperiment extends Experiment {
 
-  private SwingWorker routineWorker;
-  private SwingWorker runTrialsWorker;
-  private SwingWorker resetWorker;
+  private AHaHController_21 aHaHController;
 
+  // Control and Result MVC
   private final ControlModel controlModel;
   private ControlPanel controlPanel;
-
   private final ResultModel resultModel;
   private ResultPanel resultPanel;
   private final ResultController resultController;
 
-  private AHaHController_21 aHaHController;
-
-  // private static final double MAX_G = .001;// init of synapses will terminate if one or the other
-  // memristor exceeds this conductance
+  // SwingWorkers
+  private SwingWorker routineWorker;
+  private SwingWorker runTrialsWorker;
+  private SwingWorker resetWorker;
 
   /**
    * Constructor
@@ -273,12 +271,6 @@ public class LogicExperiment extends Experiment {
   public ExperimentResultsPanel getResultPanel() {
 
     return resultPanel;
-  }
-
-  @Override
-  public SwingWorker getCaptureWorker() {
-
-    return null;
   }
 
   private class ResetWorker extends SwingWorker<Boolean, Double> {

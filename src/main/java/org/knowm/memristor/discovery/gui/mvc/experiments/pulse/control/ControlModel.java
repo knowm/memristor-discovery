@@ -24,8 +24,8 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.pulse.control;
 
 import java.text.DecimalFormat;
-import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferences;
 import org.knowm.memristor.discovery.utils.Util;
 import org.knowm.memristor.discovery.utils.driver.Driver;
@@ -38,11 +38,11 @@ import org.knowm.memristor.discovery.utils.driver.Triangle;
 
 public class ControlModel extends Model {
 
+  private final DecimalFormat ohmFormatter = new DecimalFormat("#,### Ω");
   private final double[] waveformTimeData = new double[PulsePreferences.CAPTURE_BUFFER_SIZE];
   private final double[] waveformAmplitudeData = new double[PulsePreferences.CAPTURE_BUFFER_SIZE];
-  /** Waveform */
+
   public PulsePreferences.Waveform waveform;
-  public DecimalFormat ohmFormatter = new DecimalFormat("#,### Ω");
   private boolean isMemristorVoltageDropSelected = false;
   private float amplitude;
   private int pulseWidth; // model store pulse width in nanoseconds
@@ -55,6 +55,8 @@ public class ControlModel extends Model {
   private int maxSliderPulseNumber;
   private double lastG;
   private int sampleRate;
+
+  private boolean isStartToggled = false;
 
   /** Constructor */
   public ControlModel() {
@@ -98,8 +100,7 @@ public class ControlModel extends Model {
     sampleRate =
         experimentPreferences.getInteger(
             PulsePreferences.SAMPLE_RATE_INIT_KEY, PulsePreferences.SAMPLE_RATE_INIT_DEFAULT_VALUE);
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_PREFERENCES_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
   /** Given the state of the model, update the waveform x and y axis data arrays. */
@@ -154,8 +155,7 @@ public class ControlModel extends Model {
   public void setAmplitude(float amplitude) {
 
     this.amplitude = amplitude;
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public int getPulseWidth() {
@@ -166,8 +166,7 @@ public class ControlModel extends Model {
   public void setPulseWidth(int pulseWidth) {
 
     this.pulseWidth = pulseWidth;
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public double getCalculatedFrequency() {
@@ -194,8 +193,7 @@ public class ControlModel extends Model {
   public void setPulseNumber(int pulseNumber) {
 
     this.pulseNumber = pulseNumber;
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public boolean isMemristorVoltageDropSelected() {
@@ -206,8 +204,7 @@ public class ControlModel extends Model {
   public void setMemristorVoltageDropSelected(boolean memristorVoltageDropSelected) {
 
     isMemristorVoltageDropSelected = memristorVoltageDropSelected;
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public double getAppliedAmplitude() {
@@ -223,15 +220,13 @@ public class ControlModel extends Model {
   public void setWaveform(PulsePreferences.Waveform waveform) {
 
     this.waveform = waveform;
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public void setWaveform(String text) {
 
     waveform = Enum.valueOf(PulsePreferences.Waveform.class, text);
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public int getSampleRate() {
@@ -330,5 +325,15 @@ public class ControlModel extends Model {
 
   public int getMaxSliderPulseNumber() {
     return maxSliderPulseNumber;
+  }
+
+  public boolean isStartToggled() {
+
+    return isStartToggled;
+  }
+
+  public void setStartToggled(boolean isStartToggled) {
+
+    this.isStartToggled = isStartToggled;
   }
 }

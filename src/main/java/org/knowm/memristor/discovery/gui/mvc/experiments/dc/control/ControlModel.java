@@ -23,8 +23,8 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.dc.control;
 
-import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCPreferences;
 import org.knowm.memristor.discovery.utils.driver.Driver;
 import org.knowm.memristor.discovery.utils.driver.Sawtooth;
@@ -40,6 +40,7 @@ public class ControlModel extends Model {
   private float amplitude;
   private int period; // model store period
   private int pulseNumber;
+  private boolean isStartToggled = false;
 
   /** Constructor */
   public ControlModel() {
@@ -68,8 +69,7 @@ public class ControlModel extends Model {
     pulseNumber =
         experimentPreferences.getInteger(
             DCPreferences.NUM_PULSES_INIT_KEY, DCPreferences.NUM_PULSES_INIT_DEFAULT_VALUE);
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_PREFERENCES_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
   void updateWaveformChartData() {
@@ -115,15 +115,13 @@ public class ControlModel extends Model {
   public void setWaveform(DCPreferences.Waveform waveform) {
 
     this.waveform = waveform;
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public void setWaveform(String text) {
 
     waveform = Enum.valueOf(DCPreferences.Waveform.class, text);
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public float getAmplitude() {
@@ -134,8 +132,7 @@ public class ControlModel extends Model {
   public void setAmplitude(float amplitude) {
 
     this.amplitude = amplitude;
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public int getPeriod() {
@@ -146,8 +143,7 @@ public class ControlModel extends Model {
   public void setPeriod(int period) {
 
     this.period = period;
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public double getCalculatedFrequency() {
@@ -174,8 +170,17 @@ public class ControlModel extends Model {
   public void setPulseNumber(int pulseNumber) {
 
     this.pulseNumber = pulseNumber;
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
+  }
+
+  public boolean isStartToggled() {
+
+    return isStartToggled;
+  }
+
+  public void setStartToggled(boolean isStartToggled) {
+
+    this.isStartToggled = isStartToggled;
   }
 
   @Override

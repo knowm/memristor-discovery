@@ -23,9 +23,9 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.conductance.control;
 
-import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.ConductancePreferences;
 import org.knowm.memristor.discovery.utils.driver.Driver;
 import org.knowm.memristor.discovery.utils.driver.Sawtooth;
@@ -44,6 +44,8 @@ public class ControlModel extends Model {
   private float setConductance;
   private float setAmplitude;
   private int setPulseWidth; // model store resetPulseWidth in nanoseconds
+
+  private boolean isStartToggled = false;
 
   /** Constructor */
   public ControlModel() {
@@ -88,9 +90,7 @@ public class ControlModel extends Model {
             ConductancePreferences.SERIES_R_INIT_KEY,
             ConductancePreferences.SERIES_R_INIT_DEFAULT_VALUE);
 
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_PREFERENCES_UPDATE, true, false);
-
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
   /** Given the state of the model, update the resetPulseType x and y axis data arrays. */
@@ -136,15 +136,13 @@ public class ControlModel extends Model {
   public void setResetPulseType(ConductancePreferences.Waveform resetPulseType) {
 
     this.resetPulseType = resetPulseType;
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public void setWaveform(String text) {
 
     resetPulseType = Enum.valueOf(ConductancePreferences.Waveform.class, text);
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public float getResetAmplitude() {
@@ -155,8 +153,7 @@ public class ControlModel extends Model {
   public void setResetAmplitude(float resetAmplitude) {
 
     this.resetAmplitude = resetAmplitude;
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public int getResetPulseWidth() {
@@ -167,8 +164,7 @@ public class ControlModel extends Model {
   public void setResetPulseWidth(int resetPulseWidth) {
 
     this.resetPulseWidth = resetPulseWidth;
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   // SET
@@ -181,8 +177,7 @@ public class ControlModel extends Model {
   public void setSetConductance(float setConductance) {
 
     this.setConductance = setConductance;
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public float getSetAmplitude() {
@@ -193,8 +188,7 @@ public class ControlModel extends Model {
   public void setSetAmplitude(float setAmplitude) {
 
     this.setAmplitude = setAmplitude;
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public int getSetPulseWidth() {
@@ -205,8 +199,7 @@ public class ControlModel extends Model {
   public void setSetPulseWidth(int setPulseWidth) {
 
     this.setPulseWidth = setPulseWidth;
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public double[] getWaveformTimeData() {
@@ -217,6 +210,16 @@ public class ControlModel extends Model {
   public double[] getWaveformAmplitudeData() {
 
     return waveformAmplitudeData;
+  }
+
+  public boolean isStartToggled() {
+
+    return isStartToggled;
+  }
+
+  public void setStartToggled(boolean isStartToggled) {
+
+    this.isStartToggled = isStartToggled;
   }
 
   @Override

@@ -34,9 +34,9 @@ import java.util.List;
 import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.View;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.AHaHController_21.Instruction;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.ClassifyPreferences.AHaHRoutine;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.control.ControlController;
@@ -48,18 +48,21 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.classify.result.ResultP
 
 public class ClassifyExperiment extends Experiment {
 
+  // exponential running average for measuring train accuracy.
+  private double trainAccuracy = 0;
+  private final double k = .05f;
+
+  // Control and Result MVC
   private final ControlModel controlModel;
   private ControlPanel controlPanel;
-
   private final ResultModel resultModel;
   private final ResultController resultController;
   private ResultPanel resultPanel;
 
-  // exponential running average for measuring train accuracy.
-  double trainAccuracy = 0;
-  double k = .05f;
+  // SwingWorkers
   private SwingWorker runTrialWorker;
   private SwingWorker resetWorker;
+
   private AHaHController_21 aHaHController;
 
   /**
@@ -197,12 +200,6 @@ public class ClassifyExperiment extends Experiment {
   public ExperimentResultsPanel getResultPanel() {
 
     return resultPanel;
-  }
-
-  @Override
-  public SwingWorker getCaptureWorker() {
-
-    return null;
   }
 
   private class ResetWorker extends SwingWorker<Boolean, Double> {

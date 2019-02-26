@@ -24,8 +24,8 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control;
 
 import java.text.DecimalFormat;
-import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.AHaHController_21.Instruction;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.SynapsePreferences;
 import org.knowm.memristor.discovery.utils.driver.Driver;
@@ -53,6 +53,8 @@ public class ControlModel extends Model {
   private int pulseNumber;
   private double lastY;
   private int sampleRate;
+
+  private boolean isStartToggled = false;
 
   /** Constructor */
   public ControlModel() {
@@ -89,8 +91,7 @@ public class ControlModel extends Model {
             SynapsePreferences.SAMPLE_RATE_INIT_KEY,
             SynapsePreferences.SAMPLE_RATE_INIT_DEFAULT_VALUE);
 
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_PREFERENCES_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
   /** Given the state of the model, update the waveform x and y axis data arrays. */
@@ -145,8 +146,7 @@ public class ControlModel extends Model {
   public void setAmplitude(float amplitude) {
 
     this.amplitude = amplitude;
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public int getPulseWidth() {
@@ -157,8 +157,7 @@ public class ControlModel extends Model {
   public void setPulseWidth(int pulseWidth) {
 
     this.pulseWidth = pulseWidth;
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public double getCalculatedFrequency() {
@@ -185,8 +184,7 @@ public class ControlModel extends Model {
   public void setPulseNumber(int pulseNumber) {
 
     this.pulseNumber = pulseNumber;
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public SynapsePreferences.Waveform getWaveform() {
@@ -197,15 +195,13 @@ public class ControlModel extends Model {
   public void setWaveform(SynapsePreferences.Waveform waveform) {
 
     this.waveform = waveform;
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public void setWaveform(String text) {
 
     this.waveform = Enum.valueOf(SynapsePreferences.Waveform.class, text);
-    swingPropertyChangeSupport.firePropertyChange(
-        Model.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public Instruction getInstruction() {
@@ -241,6 +237,16 @@ public class ControlModel extends Model {
   public void setLastY(double lastY) {
 
     this.lastY = lastY;
+  }
+
+  public boolean isStartToggled() {
+
+    return isStartToggled;
+  }
+
+  public void setStartToggled(boolean isStartToggled) {
+
+    this.isStartToggled = isStartToggled;
   }
 
   @Override

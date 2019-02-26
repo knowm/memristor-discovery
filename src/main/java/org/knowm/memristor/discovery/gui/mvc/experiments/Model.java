@@ -40,8 +40,7 @@ public abstract class Model {
   public SwingPropertyChangeSupport swingPropertyChangeSupport;
   protected ExperimentPreferences experimentPreferences;
 
-  // TODO move out
-  private boolean isStartToggled = false;
+
 
   // TODO move out to Experiment level
   public abstract ExperimentPreferences initAppPreferences();
@@ -68,15 +67,7 @@ public abstract class Model {
     this.seriesResistance = seriesResistance;
   }
 
-  public boolean isStartToggled() {
 
-    return isStartToggled;
-  }
-
-  void setStartToggled(boolean isStartToggled) {
-
-    this.isStartToggled = isStartToggled;
-  }
 
   /**
    * Here is where the Controller registers itself as a listener to model changes.

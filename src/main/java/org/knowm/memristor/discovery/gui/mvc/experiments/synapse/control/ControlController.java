@@ -45,6 +45,7 @@ public class ControlController extends Controller {
 
   private final ControlPanel controlPanel;
   private final ControlModel controlModel;
+
   ActionListener instructionRadioButtonActionListener =
       new ActionListener() {
 
@@ -252,6 +253,8 @@ public class ControlController extends Controller {
     // }
     // }
     // });
+
+
   }
 
   /**
