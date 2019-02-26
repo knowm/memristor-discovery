@@ -36,12 +36,12 @@ import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.knowm.memristor.discovery.DWFProxy;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlController;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Controller;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.result.ResultPanel;
 
-public class ControlController extends ExperimentControlController {
+public class ControlController extends Controller {
 
   private final ControlPanel controlPanel;
   private final ControlModel controlModel;
@@ -316,11 +316,11 @@ public class ControlController extends ExperimentControlController {
         controlPanel.enableAllChildComponents((Boolean) evt.getNewValue());
         break;
 
-      case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
+      case Model.EVENT_PREFERENCES_UPDATE:
         initGUIComponentsFromModel();
         break;
 
-      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
+      case Model.EVENT_WAVEFORM_UPDATE:
         controlModel.updateWaveformChartData();
         break;
 

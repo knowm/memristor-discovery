@@ -24,11 +24,11 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.result;
 
 import java.beans.PropertyChangeListener;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.HysteresisPreferences;
 
-public class ResultModel extends ExperimentControlModel {
+public class ResultModel extends Model {
 
   /** Min Max params */
   Double yMaxIV = null;
@@ -132,6 +132,6 @@ public class ResultModel extends ExperimentControlModel {
             HysteresisPreferences.K_INIT_FLOAT_KEY,
             HysteresisPreferences.K_INIT_FLOAT_DEFAULT_VALUE);
     swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_PREFERENCES_UPDATE, true, false);
+        Model.EVENT_PREFERENCES_UPDATE, true, false);
   }
 }

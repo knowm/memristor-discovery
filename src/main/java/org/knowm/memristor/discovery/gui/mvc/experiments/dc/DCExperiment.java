@@ -29,8 +29,8 @@ import java.util.List;
 import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
+import org.knowm.memristor.discovery.gui.mvc.experiments.View;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.control.ControlModel;
@@ -82,7 +82,7 @@ public class DCExperiment extends Experiment {
   public void propertyChange(PropertyChangeEvent evt) {
 
     switch (evt.getPropertyName()) {
-      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
+      case Model.EVENT_WAVEFORM_UPDATE:
         if (!controlModel.isStartToggled()) {
 
           resultPanel.switch2WaveformChart();
@@ -100,18 +100,18 @@ public class DCExperiment extends Experiment {
   }
 
   @Override
-  public ExperimentControlModel getControlModel() {
+  public Model getControlModel() {
 
     return controlModel;
   }
 
   @Override
-  public ExperimentControlPanel getControlPanel() {
+  public View getControlPanel() {
 
     return controlPanel;
   }
   @Override
-  public ExperimentControlModel getResultModel() {
+  public Model getResultModel() {
     return resultModel;
   }
 

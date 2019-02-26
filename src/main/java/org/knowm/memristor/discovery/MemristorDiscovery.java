@@ -45,7 +45,7 @@ import javax.swing.UIManager;
 import org.knowm.memristor.discovery.gui.AboutDialog;
 import org.knowm.memristor.discovery.gui.ConsoleDialog;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentHelpDialog;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.BoardCheckExperiment;
@@ -589,7 +589,7 @@ public class MemristorDiscovery
     //    System.out.println("PC");
 
     switch (evt.getPropertyName()) {
-      case ExperimentControlModel.EVENT_NEW_CONSOLE_LOG:
+      case Model.EVENT_NEW_CONSOLE_LOG:
         if (consoleDialog != null) {
           // System.out.println("evt = " + evt);
           consoleDialog.addConsoleMessage((String) evt.getNewValue());

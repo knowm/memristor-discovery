@@ -29,8 +29,8 @@ import java.util.List;
 import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
+import org.knowm.memristor.discovery.gui.mvc.experiments.View;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control.ControlModel;
@@ -85,7 +85,7 @@ public class HysteresisExperiment extends Experiment {
     //    System.out.println("evt.getPropertyName() = " + evt.getPropertyName());
 
     switch (evt.getPropertyName()) {
-      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
+      case Model.EVENT_WAVEFORM_UPDATE:
         if (controlModel.isStartToggled()) {
           // AnalogOut
           DWF.Waveform dwfWaveform = WaveformUtils.getDWFWaveform(controlModel.getWaveform());
@@ -108,7 +108,7 @@ public class HysteresisExperiment extends Experiment {
               controlModel.getOffset());
         }
         break;
-      case ExperimentControlModel.EVENT_FREQUENCY_UPDATE:
+      case Model.EVENT_FREQUENCY_UPDATE:
 
         // a special case when the frequency is changed. Not only does the analog out need to change
         // (above), the capture frequency rate must also be changed.
@@ -134,19 +134,19 @@ public class HysteresisExperiment extends Experiment {
   }
 
   @Override
-  public ExperimentControlModel getControlModel() {
+  public Model getControlModel() {
 
     return controlModel;
   }
 
   @Override
-  public ExperimentControlPanel getControlPanel() {
+  public View getControlPanel() {
 
     return controlPanel;
   }
 
   @Override
-  public ExperimentControlModel getResultModel() {
+  public Model getResultModel() {
     return resultModel;
   }
 
@@ -276,7 +276,7 @@ public class HysteresisExperiment extends Experiment {
         // testing the result
         //        if (Math.random() < 0.01) {
         //
-        // getControlModel().swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_NEW_CONSOLE_LOG, "Hi", "Blah");
+        // getControlModel().swingPropertyChangeSupport.firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, "Hi", "Blah");
         //        }
       }
 

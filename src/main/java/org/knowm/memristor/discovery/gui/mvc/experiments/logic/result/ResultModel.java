@@ -25,11 +25,11 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.logic.result;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.logic.TraceDatum;
 
-public class ResultModel extends ExperimentControlModel {
+public class ResultModel extends Model {
 
   List<List<TraceDatum>> traces = new ArrayList<>();
 

@@ -23,13 +23,11 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.result;
 
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
-import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.ShelfLifePreferences;
 
-public class ResultModel extends ExperimentControlModel {
+public class ResultModel extends Model {
 
   private final ArrayList<String> lines = new ArrayList<>();
 

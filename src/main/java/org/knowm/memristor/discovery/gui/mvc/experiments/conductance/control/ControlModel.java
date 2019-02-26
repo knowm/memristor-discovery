@@ -23,7 +23,7 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.conductance.control;
 
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.ConductancePreferences;
@@ -31,7 +31,7 @@ import org.knowm.memristor.discovery.utils.driver.Driver;
 import org.knowm.memristor.discovery.utils.driver.Sawtooth;
 import org.knowm.memristor.discovery.utils.driver.Triangle;
 
-public class ControlModel extends ExperimentControlModel {
+public class ControlModel extends Model {
 
   private final double[] waveformTimeData = new double[ConductancePreferences.CAPTURE_BUFFER_SIZE];
   private final double[] waveformAmplitudeData =
@@ -83,12 +83,14 @@ public class ControlModel extends ExperimentControlModel {
             ConductancePreferences.SET_PULSE_WIDTH_INIT_KEY,
             ConductancePreferences.SET_PERIOD_INIT_DEFAULT_VALUE);
 
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_PREFERENCES_UPDATE, true, false);
     seriesResistance =
         experimentPreferences.getInteger(
             ConductancePreferences.SERIES_R_INIT_KEY,
             ConductancePreferences.SERIES_R_INIT_DEFAULT_VALUE);
+
+    swingPropertyChangeSupport.firePropertyChange(
+        Model.EVENT_PREFERENCES_UPDATE, true, false);
+
   }
 
   /** Given the state of the model, update the resetPulseType x and y axis data arrays. */
@@ -135,14 +137,14 @@ public class ControlModel extends ExperimentControlModel {
 
     this.resetPulseType = resetPulseType;
     swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+        Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public void setWaveform(String text) {
 
     resetPulseType = Enum.valueOf(ConductancePreferences.Waveform.class, text);
     swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+        Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public float getResetAmplitude() {
@@ -154,7 +156,7 @@ public class ControlModel extends ExperimentControlModel {
 
     this.resetAmplitude = resetAmplitude;
     swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+        Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public int getResetPulseWidth() {
@@ -166,7 +168,7 @@ public class ControlModel extends ExperimentControlModel {
 
     this.resetPulseWidth = resetPulseWidth;
     swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+        Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   // SET
@@ -180,7 +182,7 @@ public class ControlModel extends ExperimentControlModel {
 
     this.setConductance = setConductance;
     swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+        Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public float getSetAmplitude() {
@@ -192,7 +194,7 @@ public class ControlModel extends ExperimentControlModel {
 
     this.setAmplitude = setAmplitude;
     swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+        Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public int getSetPulseWidth() {
@@ -204,7 +206,7 @@ public class ControlModel extends ExperimentControlModel {
 
     this.setPulseWidth = setPulseWidth;
     swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+        Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public double[] getWaveformTimeData() {

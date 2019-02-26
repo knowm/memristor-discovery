@@ -25,7 +25,7 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.logic.control;
 
 import java.text.DecimalFormat;
 import java.util.List;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.logic.AHaHController_21.AHaHLogicRoutine;
 import org.knowm.memristor.discovery.gui.mvc.experiments.logic.LogicPreferences;
@@ -38,7 +38,7 @@ import org.knowm.memristor.discovery.utils.driver.Square;
 import org.knowm.memristor.discovery.utils.driver.SquareSmooth;
 import org.knowm.memristor.discovery.utils.driver.Triangle;
 
-public class ControlModel extends ExperimentControlModel {
+public class ControlModel extends Model {
 
   /** Events */
   public static final String EVENT_INSTRUCTION_UPDATE = "EVENT_INSTRUCTION_UPDATE";
@@ -90,7 +90,7 @@ public class ControlModel extends ExperimentControlModel {
             LogicPreferences.NUM_EXECUTIONS_INIT_KEY,
             LogicPreferences.NUM_EXECUTIONS_INIT_DEFAULT_VALUE);
     swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_PREFERENCES_UPDATE, true, false);
+        Model.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
   /** Given the state of the model, update the waveform x and y axis data arrays. */
@@ -146,7 +146,7 @@ public class ControlModel extends ExperimentControlModel {
 
     this.amplitude = amplitude;
     swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+        Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public int getPulseWidth() {
@@ -158,7 +158,7 @@ public class ControlModel extends ExperimentControlModel {
 
     this.pulseWidth = pulseWidth;
     swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+        Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public double getCalculatedFrequency() {
@@ -186,7 +186,7 @@ public class ControlModel extends ExperimentControlModel {
 
     this.pulseNumber = pulseNumber;
     swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+        Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public LogicPreferences.Waveform getWaveform() {
@@ -198,14 +198,14 @@ public class ControlModel extends ExperimentControlModel {
 
     this.waveform = waveform;
     swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+        Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public void setWaveform(String text) {
 
     this.waveform = Enum.valueOf(LogicPreferences.Waveform.class, text);
     swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+        Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public AHaHLogicRoutine getRoutine() {

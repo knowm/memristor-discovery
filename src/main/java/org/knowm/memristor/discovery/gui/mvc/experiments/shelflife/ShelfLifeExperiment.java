@@ -28,8 +28,8 @@ import java.beans.PropertyChangeEvent;
 import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
+import org.knowm.memristor.discovery.gui.mvc.experiments.View;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.control.ControlModel;
@@ -97,19 +97,19 @@ public class ShelfLifeExperiment extends Experiment {
   }
 
   @Override
-  public ExperimentControlModel getControlModel() {
+  public Model getControlModel() {
 
     return controlModel;
   }
 
   @Override
-  public ExperimentControlPanel getControlPanel() {
+  public View getControlPanel() {
 
     return controlPanel;
   }
 
   @Override
-  public ExperimentControlModel getResultModel() {
+  public Model getResultModel() {
     return resultModel;
   }
 

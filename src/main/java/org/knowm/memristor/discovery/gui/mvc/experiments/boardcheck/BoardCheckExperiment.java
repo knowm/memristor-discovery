@@ -32,8 +32,8 @@ import java.util.List;
 import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
+import org.knowm.memristor.discovery.gui.mvc.experiments.View;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
@@ -396,19 +396,19 @@ public class BoardCheckExperiment extends Experiment {
   }
 
   @Override
-  public ExperimentControlModel getControlModel() {
+  public Model getControlModel() {
 
     return controlModel;
   }
 
   @Override
-  public ExperimentControlPanel getControlPanel() {
+  public View getControlPanel() {
 
     return controlPanel;
   }
 
   @Override
-  public ExperimentControlModel getResultModel() {
+  public Model getResultModel() {
     return resultModel;
   }
   @Override

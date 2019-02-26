@@ -24,7 +24,7 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control;
 
 import java.text.DecimalFormat;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.AHaHController_21.Instruction;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.SynapsePreferences;
@@ -36,14 +36,16 @@ import org.knowm.memristor.discovery.utils.driver.Square;
 import org.knowm.memristor.discovery.utils.driver.SquareSmooth;
 import org.knowm.memristor.discovery.utils.driver.Triangle;
 
-public class ControlModel extends ExperimentControlModel {
+public class ControlModel extends Model {
 
   /** Events */
   public static final String EVENT_INSTRUCTION_UPDATE = "EVENT_INSTRUCTION_UPDATE";
+
   private final double[] waveformTimeData = new double[SynapsePreferences.CAPTURE_BUFFER_SIZE];
   private final double[] waveformAmplitudeData = new double[SynapsePreferences.CAPTURE_BUFFER_SIZE];
   /** Waveform */
   public SynapsePreferences.Waveform waveform;
+
   public Instruction instruction = Instruction.FFLV;
   public DecimalFormat ohmFormatter = new DecimalFormat("#,### Ω");
   private float amplitude;
@@ -61,14 +63,15 @@ public class ControlModel extends ExperimentControlModel {
   @Override
   public void loadModelFromPrefs() {
 
+    seriesResistance =
+        experimentPreferences.getInteger(
+            SynapsePreferences.SERIES_R_INIT_KEY, SynapsePreferences.SERIES_R_INIT_DEFAULT_VALUE);
     waveform =
         SynapsePreferences.Waveform.valueOf(
             experimentPreferences.getString(
                 SynapsePreferences.WAVEFORM_INIT_STRING_KEY,
                 SynapsePreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
-    seriesResistance =
-        experimentPreferences.getInteger(
-            SynapsePreferences.SERIES_R_INIT_KEY, SynapsePreferences.SERIES_R_INIT_DEFAULT_VALUE);
+
     amplitude =
         experimentPreferences.getFloat(
             SynapsePreferences.AMPLITUDE_INIT_FLOAT_KEY,
@@ -85,8 +88,9 @@ public class ControlModel extends ExperimentControlModel {
         experimentPreferences.getInteger(
             SynapsePreferences.SAMPLE_RATE_INIT_KEY,
             SynapsePreferences.SAMPLE_RATE_INIT_DEFAULT_VALUE);
+
     swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_PREFERENCES_UPDATE, true, false);
+        Model.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
   /** Given the state of the model, update the waveform x and y axis data arrays. */
@@ -142,7 +146,7 @@ public class ControlModel extends ExperimentControlModel {
 
     this.amplitude = amplitude;
     swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+        Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public int getPulseWidth() {
@@ -154,7 +158,7 @@ public class ControlModel extends ExperimentControlModel {
 
     this.pulseWidth = pulseWidth;
     swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+        Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public double getCalculatedFrequency() {
@@ -182,7 +186,7 @@ public class ControlModel extends ExperimentControlModel {
 
     this.pulseNumber = pulseNumber;
     swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+        Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public SynapsePreferences.Waveform getWaveform() {
@@ -194,14 +198,14 @@ public class ControlModel extends ExperimentControlModel {
 
     this.waveform = waveform;
     swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+        Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public void setWaveform(String text) {
 
     this.waveform = Enum.valueOf(SynapsePreferences.Waveform.class, text);
     swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+        Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public Instruction getInstruction() {

@@ -29,23 +29,20 @@ import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 
-/** Created by timmolter on 3/7/17. */
-public abstract class ExperimentControlController implements PropertyChangeListener {
+public abstract class Controller implements PropertyChangeListener {
 
-  protected final ExperimentControlPanel experimentControlPanel;
-  private final ExperimentControlModel experimentControlModel;
+  protected final View view;
+  private final Model model;
   /**
    * Constuctor
    *
-   * @param experimentControlPanel
-   * @param experimentControlModel
+   * @param view
+   * @param model
    */
-  public ExperimentControlController(
-      ExperimentControlPanel experimentControlPanel,
-      ExperimentControlModel experimentControlModel) {
+  public Controller(View view, Model model) {
 
-    this.experimentControlPanel = experimentControlPanel;
-    this.experimentControlModel = experimentControlModel;
+    this.view = view;
+    this.model = model;
   }
 
   protected abstract void doSetUpViewEvents();
@@ -54,11 +51,10 @@ public abstract class ExperimentControlController implements PropertyChangeListe
 
     doSetUpViewEvents();
 
-    experimentControlPanel
-        .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+    // TODO remove this
+    view.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
         .put(KeyStroke.getKeyStroke("S"), "startstop");
-    experimentControlPanel
-        .getActionMap()
+    view.getActionMap()
         .put(
             "startstop",
             new AbstractAction() {
@@ -66,7 +62,7 @@ public abstract class ExperimentControlController implements PropertyChangeListe
               @Override
               public void actionPerformed(ActionEvent e) {
 
-                experimentControlPanel.getStartStopButton().doClick();
+                view.getStartStopButton().doClick();
               }
             });
   }

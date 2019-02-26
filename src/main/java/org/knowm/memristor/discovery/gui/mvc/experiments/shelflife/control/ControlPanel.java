@@ -23,22 +23,18 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.control;
 
-import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
-import org.knowm.memristor.discovery.utils.Util;
+import org.knowm.memristor.discovery.gui.mvc.experiments.View;
 
 /**
  * Provides controls for running the control
  *
  * @author timmolter
  */
-public class ControlPanel extends ExperimentControlPanel {
+public class ControlPanel extends View {
 
   /** Constructor */
   public ControlPanel() {

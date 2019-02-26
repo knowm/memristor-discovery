@@ -37,15 +37,14 @@ import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
-import org.knowm.memristor.discovery.utils.Util;
+import org.knowm.memristor.discovery.gui.mvc.experiments.View;
 
 /**
  * Provides controls for running the control
  *
  * @author timmolter
  */
-public class ControlPanel extends ExperimentControlPanel {
+public class ControlPanel extends View {
 
   // RESET
   private final Box resetPulseTypeRadioButtonBox;

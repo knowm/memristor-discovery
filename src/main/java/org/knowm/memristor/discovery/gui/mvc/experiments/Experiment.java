@@ -59,11 +59,11 @@ public abstract class Experiment implements PropertyChangeListener {
     this.isV1Board = isV1Board;
   }
 
-  public abstract ExperimentControlModel getControlModel();
+  public abstract Model getControlModel();
 
-  public abstract ExperimentControlPanel getControlPanel();
+  public abstract View getControlPanel();
 
-  public abstract ExperimentControlModel getResultModel();
+  public abstract Model getResultModel();
 
   public abstract ExperimentResultsPanel getResultPanel();
 
@@ -87,7 +87,7 @@ public abstract class Experiment implements PropertyChangeListener {
 
     // trigger result of waveform
     PropertyChangeEvent evt =
-        new PropertyChangeEvent(this, ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+        new PropertyChangeEvent(this, Model.EVENT_WAVEFORM_UPDATE, true, false);
     propertyChange(evt);
 
     getControlModel().addListener(this);

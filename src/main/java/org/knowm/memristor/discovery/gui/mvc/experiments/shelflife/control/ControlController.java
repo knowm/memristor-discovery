@@ -25,10 +25,10 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.control;
 
 import java.beans.PropertyChangeEvent;
 import org.knowm.memristor.discovery.DWFProxy;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlController;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Controller;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 
-public class ControlController extends ExperimentControlController {
+public class ControlController extends Controller {
 
   private final ControlPanel controlPanel;
 
@@ -84,7 +84,7 @@ public class ControlController extends ExperimentControlController {
 
         break;
 
-      case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
+      case Model.EVENT_PREFERENCES_UPDATE:
         initGUIComponentsFromModel();
         break;
 

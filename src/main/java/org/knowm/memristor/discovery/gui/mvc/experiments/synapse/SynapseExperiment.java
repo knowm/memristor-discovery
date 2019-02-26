@@ -34,8 +34,8 @@ import java.util.List;
 import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
+import org.knowm.memristor.discovery.gui.mvc.experiments.View;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.AHaHController_21.Instruction;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlController;
@@ -137,19 +137,19 @@ public class SynapseExperiment extends Experiment {
   }
 
   @Override
-  public ExperimentControlModel getControlModel() {
+  public Model getControlModel() {
 
     return controlModel;
   }
 
   @Override
-  public ExperimentControlPanel getControlPanel() {
+  public View getControlPanel() {
 
     return controlPanel;
   }
 
   @Override
-  public ExperimentControlModel getResultModel() {
+  public Model getResultModel() {
     return resultModel;
   }
 
@@ -247,14 +247,14 @@ public class SynapseExperiment extends Experiment {
             getControlModel()
                 .swingPropertyChangeSupport
                 .firePropertyChange(
-                    ExperimentControlModel.EVENT_NEW_CONSOLE_LOG, null, "Step 1 Passed.");
+                    Model.EVENT_NEW_CONSOLE_LOG, null, "Step 1 Passed.");
             break;
           }
 
           getControlModel()
               .swingPropertyChangeSupport
               .firePropertyChange(
-                  ExperimentControlModel.EVENT_NEW_CONSOLE_LOG,
+                  Model.EVENT_NEW_CONSOLE_LOG,
                   null,
                   "  A="
                       + df.format(aHaHController.getGa())
@@ -281,7 +281,7 @@ public class SynapseExperiment extends Experiment {
           getControlModel()
               .swingPropertyChangeSupport
               .firePropertyChange(
-                  ExperimentControlModel.EVENT_NEW_CONSOLE_LOG,
+                  Model.EVENT_NEW_CONSOLE_LOG,
                   null,
                   "Step 1 Failed. Memristor ("
                       + failed
@@ -310,7 +310,7 @@ public class SynapseExperiment extends Experiment {
           getControlModel()
               .swingPropertyChangeSupport
               .firePropertyChange(
-                  ExperimentControlModel.EVENT_NEW_CONSOLE_LOG,
+                  Model.EVENT_NEW_CONSOLE_LOG,
                   null,
                   "Step 2 Failed. State did not change upon application of Anti-Hebbian cycles");
         } else {
@@ -320,7 +320,7 @@ public class SynapseExperiment extends Experiment {
           getControlModel()
               .swingPropertyChangeSupport
               .firePropertyChange(
-                  ExperimentControlModel.EVENT_NEW_CONSOLE_LOG,
+                  Model.EVENT_NEW_CONSOLE_LOG,
                   null,
                   "Step 2 Passed. Q=" + df.format(a));
         }
@@ -329,7 +329,7 @@ public class SynapseExperiment extends Experiment {
           getControlModel()
               .swingPropertyChangeSupport
               .firePropertyChange(
-                  ExperimentControlModel.EVENT_NEW_CONSOLE_LOG,
+                  Model.EVENT_NEW_CONSOLE_LOG,
                   null,
                   "Synapse Initialized Sucessfully");
         }
@@ -337,7 +337,7 @@ public class SynapseExperiment extends Experiment {
         getControlModel()
             .swingPropertyChangeSupport
             .firePropertyChange(
-                ExperimentControlModel.EVENT_NEW_CONSOLE_LOG,
+                Model.EVENT_NEW_CONSOLE_LOG,
                 null,
                 "  A="
                     + df.format(aHaHController.getGa())

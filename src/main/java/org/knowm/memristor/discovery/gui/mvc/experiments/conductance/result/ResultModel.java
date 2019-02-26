@@ -23,14 +23,12 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.conductance.result;
 
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
-import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.ConductancePreferences;
 
-public class ResultModel  extends ExperimentControlModel {
+public class ResultModel  extends Model {
 
   /** Min Max params */
   Double yMaxIV = null;

@@ -23,12 +23,10 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.dc.result;
 
-import java.beans.PropertyChangeListener;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
-import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCPreferences;
 
-public class ResultModel extends ExperimentControlModel  {
+public class ResultModel extends Model {
 
   /** Min Max params */
   Double yMaxIV = null;

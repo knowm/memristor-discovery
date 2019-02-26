@@ -29,7 +29,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import org.knowm.memristor.discovery.DWFProxy;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.waveforms4j.DWFException;
 
 public class FooterController implements PropertyChangeListener {
@@ -87,7 +87,7 @@ public class FooterController implements PropertyChangeListener {
       case DWFProxy.DIGITAL_IO_READ:
         break;
 
-      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
+      case Model.EVENT_WAVEFORM_UPDATE:
         break;
 
       default:

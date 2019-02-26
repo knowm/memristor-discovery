@@ -29,10 +29,10 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.View;
 
 /** Provides controls for running the control */
-public class ControlPanel extends ExperimentControlPanel {
+public class ControlPanel extends View {
 
   public JButton clearConsolButton;
   public JButton meminlineTestButton;

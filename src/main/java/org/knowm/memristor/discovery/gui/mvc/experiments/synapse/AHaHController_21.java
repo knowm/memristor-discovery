@@ -24,7 +24,7 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.synapse;
 
 import org.knowm.memristor.discovery.DWFProxy;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlModel;
 import org.knowm.memristor.discovery.utils.Util;
@@ -94,7 +94,7 @@ public class AHaHController_21 {
     getControlModel()
         .swingPropertyChangeSupport
         .firePropertyChange(
-            ExperimentControlModel.EVENT_NEW_CONSOLE_LOG,
+            Model.EVENT_NEW_CONSOLE_LOG,
             null,
             "Executing Instruction: " + instruction);
 
@@ -135,7 +135,7 @@ public class AHaHController_21 {
         getControlModel()
             .swingPropertyChangeSupport
             .firePropertyChange(
-                ExperimentControlModel.EVENT_NEW_CONSOLE_LOG,
+                Model.EVENT_NEW_CONSOLE_LOG,
                 null,
                 "Capture has failed! This is usually due to noise/interference. Try a shorter cable or use a magnetic choke.");
         // System.out.println("capture failed!");
@@ -213,7 +213,7 @@ public class AHaHController_21 {
         getControlModel()
             .swingPropertyChangeSupport
             .firePropertyChange(
-                ExperimentControlModel.EVENT_NEW_CONSOLE_LOG,
+                Model.EVENT_NEW_CONSOLE_LOG,
                 null,
                 "Voltage drop across Ma too small too measure.");
         // System.out.println("voltage drop across Ma too small too measure.");
@@ -227,7 +227,7 @@ public class AHaHController_21 {
         getControlModel()
             .swingPropertyChangeSupport
             .firePropertyChange(
-                ExperimentControlModel.EVENT_NEW_CONSOLE_LOG,
+                Model.EVENT_NEW_CONSOLE_LOG,
                 null,
                 "Voltage drop across Mb too small too measure.");
         // System.out.println("voltage drop across Mb too small too measure.");
@@ -238,7 +238,7 @@ public class AHaHController_21 {
       getControlModel()
           .swingPropertyChangeSupport
           .firePropertyChange(
-              ExperimentControlModel.EVENT_NEW_CONSOLE_LOG,
+              Model.EVENT_NEW_CONSOLE_LOG,
               null,
               "Current too low to measure. peakV1=" + String.format("%.4f", (double) peakV1));
       // System.out.println("Current too low to measure. peakV1=" + peakV1);
