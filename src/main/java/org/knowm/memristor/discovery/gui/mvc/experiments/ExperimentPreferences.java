@@ -27,10 +27,10 @@ import java.util.prefs.Preferences;
 
 public abstract class ExperimentPreferences {
 
-  protected Preferences preferences;
-
   public static final float R_SWITCH =
       73F; // Resistance of one of the DG445 switches. Old AD Switches are ~50.
+
+  protected Preferences preferences;
 
   /**
    * Constructor
@@ -40,6 +40,66 @@ public abstract class ExperimentPreferences {
   public ExperimentPreferences(Class<?> c) {
 
     preferences = Preferences.userNodeForPackage(c);
+  }
+
+  public void setString(String key, String value) {
+
+    this.preferences.put(key, value.trim());
+  }
+
+  public void setInteger(String key, int value) {
+
+    this.preferences.putInt(key, value);
+  }
+
+  public void setFloat(String key, float value) {
+
+    this.preferences.putFloat(key, value);
+  }
+
+  public void setDouble(String key, double value) {
+
+    this.preferences.putDouble(key, value);
+  }
+
+  public void setLong(String key, long value) {
+
+    this.preferences.putLong(key, value);
+  }
+
+  public void setBoolean(String key, boolean value) {
+
+    this.preferences.putBoolean(key, value);
+  }
+
+  public String getString(String key, String defaultValue) {
+
+    return this.preferences.get(key, defaultValue);
+  }
+
+  public int getInteger(String key, int defaultValue) {
+
+    return this.preferences.getInt(key, defaultValue);
+  }
+
+  public float getFloat(String key, float defaultValue) {
+
+    return this.preferences.getFloat(key, defaultValue);
+  }
+
+  public double getDouble(String key, double defaultValue) {
+
+    return this.preferences.getDouble(key, defaultValue);
+  }
+
+  public long getLong(String key, long defaultValue) {
+
+    return this.preferences.getLong(key, defaultValue);
+  }
+
+  public boolean getBoolean(String key, boolean defaultValue) {
+
+    return this.preferences.getBoolean(key, defaultValue);
   }
 
   public enum Waveform {
@@ -153,65 +213,5 @@ public abstract class ExperimentPreferences {
 
       return label;
     }
-  }
-
-  public void setString(String key, String value) {
-
-    this.preferences.put(key, value.trim());
-  }
-
-  public void setInteger(String key, int value) {
-
-    this.preferences.putInt(key, value);
-  }
-
-  public void setFloat(String key, float value) {
-
-    this.preferences.putFloat(key, value);
-  }
-
-  public void setDouble(String key, double value) {
-
-    this.preferences.putDouble(key, value);
-  }
-
-  public void setLong(String key, long value) {
-
-    this.preferences.putLong(key, value);
-  }
-
-  public void setBoolean(String key, boolean value) {
-
-    this.preferences.putBoolean(key, value);
-  }
-
-  public String getString(String key, String defaultValue) {
-
-    return this.preferences.get(key, defaultValue);
-  }
-
-  public int getInteger(String key, int defaultValue) {
-
-    return this.preferences.getInt(key, defaultValue);
-  }
-
-  public float getFloat(String key, float defaultValue) {
-
-    return this.preferences.getFloat(key, defaultValue);
-  }
-
-  public double getDouble(String key, double defaultValue) {
-
-    return this.preferences.getDouble(key, defaultValue);
-  }
-
-  public long getLong(String key, long defaultValue) {
-
-    return this.preferences.getLong(key, defaultValue);
-  }
-
-  public boolean getBoolean(String key, boolean defaultValue) {
-
-    return this.preferences.getBoolean(key, defaultValue);
   }
 }

@@ -35,17 +35,14 @@ import org.slf4j.LoggerFactory;
 
 public class ControlModel extends ExperimentControlModel {
 
-  private final Logger logger = LoggerFactory.getLogger(ControlModel.class);
-
-  /** Waveform */
-  public HysteresisPreferences.Waveform waveform;
-
-  float offset;
-  private float amplitude;
-  private int frequency;
   private final double[] waveformTimeData = new double[HysteresisPreferences.CAPTURE_BUFFER_SIZE];
   private final double[] waveformAmplitudeData =
       new double[HysteresisPreferences.CAPTURE_BUFFER_SIZE];
+  /** Waveform */
+  public HysteresisPreferences.Waveform waveform;
+  float offset;
+  private float amplitude;
+  private int frequency;
 
   /** Constructor */
   public ControlModel() {

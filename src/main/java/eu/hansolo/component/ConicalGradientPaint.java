@@ -14,6 +14,7 @@ package eu.hansolo.component;
  * @version 1.0
  */
 public final class ConicalGradientPaint implements java.awt.Paint {
+  private static final float INT_TO_FLOAT_CONST = 1f / 255f;
   private final java.awt.geom.Point2D CENTER;
   private final double[] FRACTION_ANGLES;
   private final double[] RED_STEP_LOOKUP;
@@ -21,7 +22,6 @@ public final class ConicalGradientPaint implements java.awt.Paint {
   private final double[] BLUE_STEP_LOOKUP;
   private final double[] ALPHA_STEP_LOOKUP;
   private final java.awt.Color[] COLORS;
-  private static final float INT_TO_FLOAT_CONST = 1f / 255f;
 
   /**
    * Standard constructor which takes the FRACTIONS in values from 0.0f to 1.0f
@@ -321,6 +321,11 @@ public final class ConicalGradientPaint implements java.awt.Paint {
     return java.awt.Transparency.TRANSLUCENT;
   }
 
+  @Override
+  public String toString() {
+    return "ConicalGradientPaint";
+  }
+
   private final class ConicalGradientPaintContext implements java.awt.PaintContext {
     private final java.awt.geom.Point2D CENTER;
 
@@ -419,10 +424,5 @@ public final class ConicalGradientPaint implements java.awt.Paint {
 
       return RASTER;
     }
-  }
-
-  @Override
-  public String toString() {
-    return "ConicalGradientPaint";
   }
 }

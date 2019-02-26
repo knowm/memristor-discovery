@@ -32,10 +32,9 @@ import org.knowm.waveforms4j.DWF;
 
 public class AHaHController_21 {
 
+  private final double MIN_V_RESOLUTION = .0025;
   private DWFProxy dWFProxy;
   private ControlModel controlModel;
-  private final double MIN_V_RESOLUTION = .0025;
-
   private double vy; // last read value
   private double ga;
   private double gb;
@@ -105,14 +104,21 @@ public class AHaHController_21 {
       W1Amplitude = -.1f;
     }
 
-    double[] W1 = WaveformUtils.generateCustomWaveform(controlModel.getWaveform(), W1Amplitude, controlModel.getCalculatedFrequency());
+    double[] W1 =
+        WaveformUtils.generateCustomWaveform(
+            controlModel.getWaveform(), W1Amplitude, controlModel.getCalculatedFrequency());
 
     if (instruction == Instruction.FFLV) {
 
-      dWFProxy.getDwf().startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency() * 300,
-          300 * 1, true);
+      dWFProxy
+          .getDwf()
+          .startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(
+              DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency() * 300, 300 * 1, true);
       dWFProxy.waitUntilArmed();
-      dWFProxy.getDwf().setCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, 1, W1);
+      dWFProxy
+          .getDwf()
+          .setCustomPulseTrain(
+              DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, 1, W1);
       dWFProxy.getDwf().startPulseTrain(DWF.WAVEFORM_CHANNEL_1);
 
       boolean success = dWFProxy.capturePulseData(controlModel.getCalculatedFrequency(), 1);
@@ -123,10 +129,18 @@ public class AHaHController_21 {
       }
 
     } else {
-      dWFProxy.getDwf().setCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, 1, W1);
+      dWFProxy
+          .getDwf()
+          .setCustomPulseTrain(
+              DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, 1, W1);
       // note w2 amplitude is zero (gnd).
-      double[] W2 = WaveformUtils.generateCustomWaveform(controlModel.getWaveform(), 0.0, controlModel.getCalculatedFrequency());
-      dWFProxy.getDwf().setCustomPulseTrain(DWF.WAVEFORM_CHANNEL_2, controlModel.getCalculatedFrequency(), 0, 1, W2);
+      double[] W2 =
+          WaveformUtils.generateCustomWaveform(
+              controlModel.getWaveform(), 0.0, controlModel.getCalculatedFrequency());
+      dWFProxy
+          .getDwf()
+          .setCustomPulseTrain(
+              DWF.WAVEFORM_CHANNEL_2, controlModel.getCalculatedFrequency(), 0, 1, W2);
       dWFProxy.getDwf().startPulseTrain(DWF.WAVEFORM_CHANNEL_BOTH);
     }
 
@@ -140,11 +154,26 @@ public class AHaHController_21 {
     }
   }
 
+  public double getVy() {
+
+    if (vy > 1) {
+      return 1;
+    } else if (vy < -1) {
+      return -1;
+    }
+
+    return vy;
+  }
+
   private void setVy(double W1Amplitude) {
 
     int validSamples = dWFProxy.getDwf().FDwfAnalogInStatusSamplesValid();
-    double peakV1 = Util.maxAbs(dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples));
-    double peakV2 = Util.maxAbs(dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples));
+    double peakV1 =
+        Util.maxAbs(
+            dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples));
+    double peakV2 =
+        Util.maxAbs(
+            dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples));
 
     // note: if V1 is less than resolution of scope, the measurments will be useless
     double vb = peakV2;
@@ -187,64 +216,6 @@ public class AHaHController_21 {
     }
   }
 
-  public enum AHaHLogicRoutine {
-    FFRU_Trace, Reset,
-  }
-
-  public enum Instruction {
-
-    /*
-     * NOTE: Charge injection from the MUX can affect voltage across memristors when routing the scopes. The scope configuration [1011] is chosen
-     * because this is the configuration used to measure the state of the synapse, resulting in minor charge injection. It is unclear if charge
-     * injection for waveform generators is an issue, but currently (7/29/2017) appears to not be.
-     */
-
-    // Order ==> W2, W1, 2+, 1+
-    // 00 None
-    // 10 Y
-    // 01 A
-    // 11 B
-
-    // @formatter:off
-    FFLV(0b0001_1011_0000_0000, .1f), FF_RL(0b1001_1011_0000_0000, -1), FF_RH(0b1011_1011_0000_0000, 1f), FF_RU(0b1011_1011_0000_0000,
-        1f), FF_RA(0b1011_1011_0000_0000, 1f), FF(0b1101_1011_0000_0000, 1.0f), RHbdn(0b1011_1011_0000_0000, 1f), // w2-->Y, w1-->B
-    RLadn(0b1001_1011_0000_0000, -1f), // w2-->Y, w1-->A
-    RFLV(0b0001_1011_0000_0000, -.1f), RF(0b1101_1011_0000_0000, -1.0f), RHaup(0b1001_1011_0000_0000, 1), RLbup(0b1011_1011_0000_0000, -1);
-
-    // @formatter:on
-    // RZ;
-
-    private final int bits;
-    private final float pulseAmplitudeMultiplier;
-
-    Instruction(int bits, float pulseAmplitudeMultiplier) {
-
-      this.bits = bits;
-      this.pulseAmplitudeMultiplier = pulseAmplitudeMultiplier;
-    }
-
-    public int getBits() {
-
-      return bits;
-    }
-
-    public float getW1PulseAmplitudeMultiplier() {
-
-      return pulseAmplitudeMultiplier;
-    }
-  }
-
-  public double getVy() {
-
-    if (vy > 1) {
-      return 1;
-    } else if (vy < -1) {
-      return -1;
-    }
-
-    return vy;
-  }
-
   public DWFProxy getdWFProxy() {
 
     return dWFProxy;
@@ -283,6 +254,62 @@ public class AHaHController_21 {
   public void setGb(double gb) {
 
     this.gb = gb;
+  }
+
+  public enum AHaHLogicRoutine {
+    FFRU_Trace,
+    Reset,
+  }
+
+  public enum Instruction {
+
+    /*
+     * NOTE: Charge injection from the MUX can affect voltage across memristors when routing the scopes. The scope configuration [1011] is chosen
+     * because this is the configuration used to measure the state of the synapse, resulting in minor charge injection. It is unclear if charge
+     * injection for waveform generators is an issue, but currently (7/29/2017) appears to not be.
+     */
+
+    // Order ==> W2, W1, 2+, 1+
+    // 00 None
+    // 10 Y
+    // 01 A
+    // 11 B
+
+    // @formatter:off
+    FFLV(0b0001_1011_0000_0000, .1f),
+    FF_RL(0b1001_1011_0000_0000, -1),
+    FF_RH(0b1011_1011_0000_0000, 1f),
+    FF_RU(0b1011_1011_0000_0000, 1f),
+    FF_RA(0b1011_1011_0000_0000, 1f),
+    FF(0b1101_1011_0000_0000, 1.0f),
+    RHbdn(0b1011_1011_0000_0000, 1f), // w2-->Y, w1-->B
+    RLadn(0b1001_1011_0000_0000, -1f), // w2-->Y, w1-->A
+    RFLV(0b0001_1011_0000_0000, -.1f),
+    RF(0b1101_1011_0000_0000, -1.0f),
+    RHaup(0b1001_1011_0000_0000, 1),
+    RLbup(0b1011_1011_0000_0000, -1);
+
+    // @formatter:on
+    // RZ;
+
+    private final int bits;
+    private final float pulseAmplitudeMultiplier;
+
+    Instruction(int bits, float pulseAmplitudeMultiplier) {
+
+      this.bits = bits;
+      this.pulseAmplitudeMultiplier = pulseAmplitudeMultiplier;
+    }
+
+    public int getBits() {
+
+      return bits;
+    }
+
+    public float getW1PulseAmplitudeMultiplier() {
+
+      return pulseAmplitudeMultiplier;
+    }
   }
 
   // public double getAmplitude() {

@@ -55,14 +55,9 @@ public class HysteresisPreferencesPanel extends ExperimentPreferencesPanel {
   private JLabel kLabel;
   private JTextField kTextField;
 
-  /**
-   * Constructor
-   *
-   * @param owner
-   */
-  public HysteresisPreferencesPanel(JFrame owner) {
+  public HysteresisPreferencesPanel(JFrame owner, String experimentName) {
 
-    super(owner);
+    super(owner, experimentName);
   }
 
   @Override
@@ -165,8 +160,8 @@ public class HysteresisPreferencesPanel extends ExperimentPreferencesPanel {
     this.kTextField.setText(
         String.valueOf(
             experimentPreferences.getDouble(
-                HysteresisPreferences.K_INIT_DOUBLE_KEY,
-                HysteresisPreferences.K_INIT_DOUBLE_DEFAULT_VALUE)));
+                HysteresisPreferences.K_INIT_FLOAT_KEY,
+                HysteresisPreferences.K_INIT_FLOAT_DEFAULT_VALUE)));
     preferencesPanel.add(kTextField, gc);
   }
 
@@ -187,18 +182,12 @@ public class HysteresisPreferencesPanel extends ExperimentPreferencesPanel {
         HysteresisPreferences.SERIES_R_INIT_KEY,
         Integer.parseInt(seriesResistorTextField.getText()));
     experimentPreferences.setDouble(
-        HysteresisPreferences.K_INIT_DOUBLE_KEY, Double.parseDouble(kTextField.getText()));
+        HysteresisPreferences.K_INIT_FLOAT_KEY, Double.parseDouble(kTextField.getText()));
   }
 
   @Override
   public ExperimentPreferences initAppPreferences() {
 
     return new HysteresisPreferences();
-  }
-
-  @Override
-  public String getAppName() {
-
-    return "Hysteresis";
   }
 }

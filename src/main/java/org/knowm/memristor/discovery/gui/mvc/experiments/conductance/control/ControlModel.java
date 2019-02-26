@@ -33,19 +33,17 @@ import org.knowm.memristor.discovery.utils.driver.Triangle;
 
 public class ControlModel extends ExperimentControlModel {
 
+  private final double[] waveformTimeData = new double[ConductancePreferences.CAPTURE_BUFFER_SIZE];
+  private final double[] waveformAmplitudeData =
+      new double[ConductancePreferences.CAPTURE_BUFFER_SIZE];
   // RESET
   private Waveform resetPulseType;
   private float resetAmplitude;
   private int resetPulseWidth; // model store resetPulseWidth in nanoseconds
-
   // SET
   private float setConductance;
   private float setAmplitude;
   private int setPulseWidth; // model store resetPulseWidth in nanoseconds
-
-  private final double[] waveformTimeData = new double[ConductancePreferences.CAPTURE_BUFFER_SIZE];
-  private final double[] waveformAmplitudeData =
-      new double[ConductancePreferences.CAPTURE_BUFFER_SIZE];
 
   /** Constructor */
   public ControlModel() {

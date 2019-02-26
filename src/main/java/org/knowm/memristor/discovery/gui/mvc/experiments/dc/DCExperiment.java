@@ -31,25 +31,25 @@ import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.control.ControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.dc.plot.PlotControlModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.dc.plot.PlotController;
-import org.knowm.memristor.discovery.gui.mvc.experiments.dc.plot.PlotPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.dc.result.ResultController;
+import org.knowm.memristor.discovery.gui.mvc.experiments.dc.result.ResultModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.dc.result.ResultPanel;
 import org.knowm.memristor.discovery.utils.PostProcessDataUtils;
 import org.knowm.memristor.discovery.utils.WaveformUtils;
 import org.knowm.waveforms4j.DWF;
 
 public class DCExperiment extends Experiment {
 
-  private final ControlModel controlModel = new ControlModel();
+  private final ControlModel controlModel;
   private ControlPanel controlPanel;
 
-  private PlotPanel plotPanel;
-  private final PlotControlModel plotModel = new PlotControlModel();
-  private final PlotController plotController;
+  private final ResultModel resultModel;
+  private final ResultController resultController;
+  private ResultPanel resultPanel;
 
   /**
    * Constructor
@@ -61,14 +61,71 @@ public class DCExperiment extends Experiment {
 
     super(dwfProxy, mainFrameContainer, isV1Board);
 
+    controlModel = new ControlModel();
     controlPanel = new ControlPanel();
-    plotPanel = new PlotPanel();
-    plotController = new PlotController(plotPanel, plotModel);
-    new ControlController(controlPanel, plotPanel, controlModel, dwfProxy);
+    resultPanel = new ResultPanel();
+
+    resultModel = new ResultModel();
+    resultController = new ResultController(resultPanel, resultModel);
+    new ControlController(controlPanel, resultPanel, controlModel, dwfProxy);
   }
 
   @Override
-  public void doCreateAndShowGUI() {}
+  public void addWorkersToButtonEvents() {}
+
+  /**
+   * These property change events are triggered in the controlModel in the case where the underlying
+   * controlModel is updated. Here, the controller can respond to those events and make sure the
+   * corresponding GUI components get updated.
+   */
+  @Override
+  public void propertyChange(PropertyChangeEvent evt) {
+
+    switch (evt.getPropertyName()) {
+      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
+        if (!controlModel.isStartToggled()) {
+
+          resultPanel.switch2WaveformChart();
+          resultController.updateWaveformChart(
+              controlModel.getWaveformTimeData(),
+              controlModel.getWaveformAmplitudeData(),
+              controlModel.getAmplitude(),
+              controlModel.getPeriod());
+        }
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  @Override
+  public ExperimentControlModel getControlModel() {
+
+    return controlModel;
+  }
+
+  @Override
+  public ExperimentControlPanel getControlPanel() {
+
+    return controlPanel;
+  }
+  @Override
+  public ExperimentControlModel getResultModel() {
+    return resultModel;
+  }
+
+  @Override
+  public ExperimentResultsPanel getResultPanel() {
+
+    return resultPanel;
+  }
+
+  @Override
+  public SwingWorker getCaptureWorker() {
+
+    return new CaptureWorker();
+  }
 
   private class CaptureWorker extends SwingWorker<Boolean, double[][]> {
 
@@ -176,79 +233,29 @@ public class DCExperiment extends Experiment {
 
       double[][] newestChunk = chunks.get(chunks.size() - 1);
 
-      plotController.updateCaptureChartData(
+      resultController.updateCaptureChartData(
           newestChunk[0],
           newestChunk[1],
           newestChunk[2],
           newestChunk[3],
           controlModel.getPeriod(),
           controlModel.getAmplitude());
-      plotController.updateIVChartData(
+      resultController.updateIVChartData(
           newestChunk[1], newestChunk[4], controlModel.getPeriod(), controlModel.getAmplitude());
-      plotController.updateGVChartData(
+      resultController.updateGVChartData(
           newestChunk[1], newestChunk[5], controlModel.getPeriod(), controlModel.getAmplitude());
 
-      if (plotPanel.getCaptureButton().isSelected()) {
-        plotController.repaintCaptureChart();
-        plotPanel.switch2CaptureChart();
-      } else if (plotPanel.getIVButton().isSelected()) {
-        plotController.repaintItChart();
-        plotPanel.switch2IVChart();
+      if (resultPanel.getCaptureButton().isSelected()) {
+        resultController.repaintCaptureChart();
+        resultPanel.switch2CaptureChart();
+      } else if (resultPanel.getIVButton().isSelected()) {
+        resultController.repaintItChart();
+        resultPanel.switch2IVChart();
       } else {
-        plotController.repaintRtChart();
-        plotPanel.switch2GVChart();
+        resultController.repaintRtChart();
+        resultPanel.switch2GVChart();
       }
       controlPanel.getStartStopButton().doClick();
     }
-  }
-
-  /**
-   * These property change events are triggered in the controlModel in the case where the underlying
-   * controlModel is updated. Here, the controller can respond to those events and make sure the
-   * corresponding GUI components get updated.
-   */
-  @Override
-  public void propertyChange(PropertyChangeEvent evt) {
-
-    switch (evt.getPropertyName()) {
-      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
-        if (!controlModel.isStartToggled()) {
-
-          plotPanel.switch2WaveformChart();
-          plotController.updateWaveformChart(
-              controlModel.getWaveformTimeData(),
-              controlModel.getWaveformAmplitudeData(),
-              controlModel.getAmplitude(),
-              controlModel.getPeriod());
-        }
-        break;
-
-      default:
-        break;
-    }
-  }
-
-  @Override
-  public ExperimentControlModel getControlModel() {
-
-    return controlModel;
-  }
-
-  @Override
-  public ExperimentControlPanel getControlPanel() {
-
-    return controlPanel;
-  }
-
-  @Override
-  public ExperimentPlotPanel getPlotPanel() {
-
-    return plotPanel;
-  }
-
-  @Override
-  public SwingWorker getCaptureWorker() {
-
-    return new CaptureWorker();
   }
 }

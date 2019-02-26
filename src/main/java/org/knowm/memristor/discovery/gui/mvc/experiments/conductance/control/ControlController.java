@@ -38,30 +38,41 @@ import javax.swing.event.ChangeListener;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.plot.PlotPanel;
 
 public class ControlController extends ExperimentControlController {
 
   private final ControlPanel controlPanel;
   private final ControlModel controlModel;
 
-  private final PlotPanel plotPanel;
+  ActionListener waveformRadioButtonActionListener =
+      new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+
+          for (Enumeration<AbstractButton> buttons =
+                  controlPanel.getResetPulseTypeRadioButtonGroup().getElements();
+              buttons.hasMoreElements(); ) {
+            AbstractButton button = buttons.nextElement();
+            if (button.isSelected()) {
+              controlModel.setWaveform(button.getText());
+            }
+          }
+        }
+      };
 
   /**
    * Constructor
    *
    * @param controlPanel
-   * @param plotPanel
    * @param controlModel
    * @param dwf
    */
-  public ControlController(
-      ControlPanel controlPanel, PlotPanel plotPanel, ControlModel controlModel, DWFProxy dwf) {
+  public ControlController(ControlPanel controlPanel, ControlModel controlModel, DWFProxy dwf) {
 
     super(controlPanel, controlModel);
 
     this.controlPanel = controlPanel;
-    this.plotPanel = plotPanel;
     this.controlModel = controlModel;
     dwf.addListener(this);
 
@@ -70,9 +81,6 @@ public class ControlController extends ExperimentControlController {
 
     // register the controller as the listener of the controlModel
     controlModel.addListener(this);
-
-    // init resetWaveform chart
-    plotPanel.switch2WaveformChart();
   }
 
   private void initGUIComponents() {
@@ -255,36 +263,7 @@ public class ControlController extends ExperimentControlController {
                 }
               }
             });
-
-    plotPanel
-        .getCaptureButton()
-        .addActionListener(
-            new ActionListener() {
-
-              @Override
-              public void actionPerformed(ActionEvent e) {
-
-                plotPanel.switch2CaptureChart();
-              }
-            });
   }
-
-  ActionListener waveformRadioButtonActionListener =
-      new ActionListener() {
-
-        @Override
-        public void actionPerformed(ActionEvent actionEvent) {
-
-          for (Enumeration<AbstractButton> buttons =
-                  controlPanel.getResetPulseTypeRadioButtonGroup().getElements();
-              buttons.hasMoreElements(); ) {
-            AbstractButton button = buttons.nextElement();
-            if (button.isSelected()) {
-              controlModel.setWaveform(button.getText());
-            }
-          }
-        }
-      };
 
   /**
    * These property change events are triggered in the controlModel in the case where the underlying

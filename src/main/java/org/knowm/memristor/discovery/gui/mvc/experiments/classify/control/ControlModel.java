@@ -39,22 +39,20 @@ import org.knowm.memristor.discovery.utils.driver.Triangle;
 
 public class ControlModel extends ExperimentControlModel {
 
-  /** Waveform */
-  public ClassifyPreferences.Waveform waveform;
-
   /** Events */
   public static final String EVENT_INSTRUCTION_UPDATE = "EVENT_INSTRUCTION_UPDATE";
-
-  private float amplitude;
-  private int pulseWidth; // model store pulse width in nanoseconds
-  // private int pulseNumber = 1;
-  public DecimalFormat ohmFormatter = new DecimalFormat("#,### Ω");
   private final double[] waveformTimeData = new double[ClassifyPreferences.CAPTURE_BUFFER_SIZE];
   private final double[] waveformAmplitudeData =
       new double[ClassifyPreferences.CAPTURE_BUFFER_SIZE];
-  private int numTrainEpochs;
+  /** Waveform */
+  public ClassifyPreferences.Waveform waveform;
+  // private int pulseNumber = 1;
+  public DecimalFormat ohmFormatter = new DecimalFormat("#,### Ω");
   public ClassifyPreferences.Datasets dataset = Datasets.Ortho4Pattern;
   public AHaHRoutine ahahroutine = AHaHRoutine.LearnAlways;
+  private float amplitude;
+  private int pulseWidth; // model store pulse width in nanoseconds
+  private int numTrainEpochs;
 
   /** Constructor */
   public ControlModel() {
@@ -151,17 +149,17 @@ public class ControlModel extends ExperimentControlModel {
     return pulseWidth;
   }
 
-  public double getCalculatedFrequency() {
-
-    // System.out.println("pulseWidth = " + pulseWidth);
-    return (1.0 / (2.0 * pulseWidth) * 1_000_000_000); // 50% duty cycle
-  }
-
   public void setPulseWidth(int pulseWidth) {
 
     this.pulseWidth = pulseWidth;
     swingPropertyChangeSupport.firePropertyChange(
         ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+  }
+
+  public double getCalculatedFrequency() {
+
+    // System.out.println("pulseWidth = " + pulseWidth);
+    return (1.0 / (2.0 * pulseWidth) * 1_000_000_000); // 50% duty cycle
   }
 
   public double[] getWaveformTimeData() {

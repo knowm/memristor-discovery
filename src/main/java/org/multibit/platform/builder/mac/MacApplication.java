@@ -59,6 +59,8 @@ public class MacApplication implements GenericApplication {
   private Class nativePreferencesHandlerClass;
   /** Handles the About use case */
   private Class nativeAboutHandlerClass;
+  /** Handles the Quit use case */
+  private Class nativeQuitHandlerClass;
 
   public void addOpenURIHandler(GenericOpenURIHandler openURIHandler) {
 
@@ -88,9 +90,6 @@ public class MacApplication implements GenericApplication {
 
     log.debug("GenericOpenURIHandler configured");
   }
-
-  /** Handles the Quit use case */
-  private Class nativeQuitHandlerClass;
 
   public void addPreferencesHandler(GenericPreferencesHandler preferencesHandler) {
 

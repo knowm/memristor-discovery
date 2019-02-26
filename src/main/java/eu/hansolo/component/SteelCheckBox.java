@@ -3,14 +3,13 @@ package eu.hansolo.component;
 /** @author hansolo */
 public class SteelCheckBox extends javax.swing.JCheckBox {
 
-  private final int id;
-
-  private boolean colored = false;
-  private boolean rised = false;
-  private eu.hansolo.component.ColorDef selectedColor = eu.hansolo.component.ColorDef.JUG_GREEN;
   protected static final String COLORED_PROPERTY = "colored";
   protected static final String COLOR_PROPERTY = "color";
   protected static final String RISED_PROPERTY = "rised";
+  private final int id;
+  private boolean colored = false;
+  private boolean rised = false;
+  private eu.hansolo.component.ColorDef selectedColor = eu.hansolo.component.ColorDef.JUG_GREEN;
 
   /** Constructor */
   public SteelCheckBox(int id) {

@@ -29,15 +29,9 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
-import org.knowm.memristor.discovery.utils.Util;
 
-/**
- * Provides controls for running the control
- *
- * @author timmolter
- */
+/** Provides controls for running the control */
 public class ControlPanel extends ExperimentControlPanel {
 
   public JButton clearConsolButton;
@@ -60,48 +54,48 @@ public class ControlPanel extends ExperimentControlPanel {
 
     clearConsolButton = new JButton("Clear");
     clearConsolButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+
     c.gridy++;
     c.insets = new Insets(0, 0, 0, 0);
     add(clearConsolButton, c);
-    c.gridy++;
 
+    c.gridy++;
     meminlineTestButton = new JButton("Mem-Inline Chip Test");
     meminlineTestButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.insets = new Insets(0, 0, 0, 0);
     add(meminlineTestButton, c);
-    c.gridy++;
 
+    c.gridy++;
     aHAH12X7TestButton = new JButton("1-2 X 7 AHaH Chip Test");
     aHAH12X7TestButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.insets = new Insets(0, 0, 0, 0);
     add(aHAH12X7TestButton, c);
-    c.gridy++;
 
+    c.gridy++;
     synapse12TestButton = new JButton("1-2 Synapse Chip Test");
     synapse12TestButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.insets = new Insets(0, 0, 0, 0);
     add(synapse12TestButton, c);
-    c.gridy++;
 
+    c.gridy++;
     synapse12iTestButton = new JButton("1-2i Synapse Chip Test");
     synapse12iTestButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.insets = new Insets(0, 0, 0, 0);
     add(synapse12iTestButton, c);
-    c.gridy++;
 
+    c.gridy++;
     muxTestButton = new JButton("1-4 Mux Board Test (V1.x)");
     muxTestButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.insets = new Insets(0, 0, 0, 0);
     add(muxTestButton, c);
-    c.gridy++;
 
+    c.gridy++;
     switchTestButton = new JButton("Switch Board Test (R=5kΩ)");
     switchTestButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.insets = new Insets(0, 0, 0, 0);
     add(switchTestButton, c);
-    c.gridy++;
 
-    JLabel logoLabel = new JLabel(Util.createImageIcon("img/logo_200.png"));
+    c.gridy++;
     add(logoLabel, c);
   }
 

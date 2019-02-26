@@ -46,14 +46,9 @@ public class LogicPreferencesPanel extends ExperimentPreferencesPanel {
   private JLabel numExecutionsLabel;
   private JTextField numExecutionsTextField;
 
-  /**
-   * Constructor
-   *
-   * @param owner
-   */
-  public LogicPreferencesPanel(JFrame owner) {
+  public LogicPreferencesPanel(JFrame owner, String experimentName) {
 
-    super(owner);
+    super(owner, experimentName);
   }
 
   @Override
@@ -125,9 +120,6 @@ public class LogicPreferencesPanel extends ExperimentPreferencesPanel {
   @Override
   public void doSavePreferences() {
 
-    // TODO add num pulses prefs.
-    // experimentPreferences.setInteger(LogicPreferences.NUM_PULSES_INIT_KEY,
-    // Integer.parseInt(seriesResistorTextField.getText()));
     experimentPreferences.setInteger(
         LogicPreferences.SERIES_R_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
     experimentPreferences.setFloat(
@@ -143,11 +135,5 @@ public class LogicPreferencesPanel extends ExperimentPreferencesPanel {
   public ExperimentPreferences initAppPreferences() {
 
     return new LogicPreferences();
-  }
-
-  @Override
-  public String getAppName() {
-
-    return "Logic";
   }
 }

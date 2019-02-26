@@ -28,24 +28,18 @@ import javax.swing.event.SwingPropertyChangeSupport;
 
 public abstract class ExperimentControlModel {
 
-  /** runtime variables */
-  public int seriesResistance;
-
-  private boolean isStartToggled = false;
-
   /** Events */
   public static final String EVENT_WAVEFORM_UPDATE = "EVENT_WAVEFORM_UPDATE";
-
   public static final String EVENT_FREQUENCY_UPDATE = "EVENT_FREQUENCY_UPDATE";
   public static final String EVENT_PREFERENCES_UPDATE = "EVENT_PREFERENCES_UPDATE";
   public static final String EVENT_NEW_CONSOLE_LOG = "EVENT_NEW_CONSOLE_LOG";
 
-  public abstract ExperimentPreferences initAppPreferences();
+  /** runtime variables */
+  public int seriesResistance;
 
-  public abstract void loadModelFromPrefs();
-
-  protected ExperimentPreferences experimentPreferences;
   public SwingPropertyChangeSupport swingPropertyChangeSupport;
+  protected ExperimentPreferences experimentPreferences;
+  private boolean isStartToggled = false;
 
   /** Constructor */
   public ExperimentControlModel() {
@@ -54,6 +48,10 @@ public abstract class ExperimentControlModel {
     this.experimentPreferences = initAppPreferences();
     loadModelFromPrefs();
   }
+
+  public abstract ExperimentPreferences initAppPreferences();
+
+  public abstract void loadModelFromPrefs();
 
   public int getSeriesResistance() {
 
@@ -70,7 +68,7 @@ public abstract class ExperimentControlModel {
     return isStartToggled;
   }
 
-  public void setStartToggled(boolean isStartToggled) {
+  void setStartToggled(boolean isStartToggled) {
 
     this.isStartToggled = isStartToggled;
   }

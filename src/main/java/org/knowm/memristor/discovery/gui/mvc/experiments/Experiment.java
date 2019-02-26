@@ -47,16 +47,6 @@ public abstract class Experiment implements PropertyChangeListener {
 
   private SwingWorker experimentCaptureWorker;
 
-  public abstract ExperimentControlModel getControlModel();
-
-  public abstract ExperimentControlPanel getControlPanel();
-
-  public abstract ExperimentPlotPanel getPlotPanel();
-
-  public abstract SwingWorker getCaptureWorker();
-
-  public abstract void doCreateAndShowGUI();
-
   /**
    * Constructor
    *
@@ -68,6 +58,18 @@ public abstract class Experiment implements PropertyChangeListener {
     this.mainFrameContainer = mainFrameContainer;
     this.isV1Board = isV1Board;
   }
+
+  public abstract ExperimentControlModel getControlModel();
+
+  public abstract ExperimentControlPanel getControlPanel();
+
+  public abstract ExperimentControlModel getResultModel();
+
+  public abstract ExperimentResultsPanel getResultPanel();
+
+  public abstract SwingWorker getCaptureWorker();
+
+  public abstract void addWorkersToButtonEvents();
 
   public void createAndShowGUI() {
 
@@ -83,55 +85,51 @@ public abstract class Experiment implements PropertyChangeListener {
     jScrollPane.setBorder(createEmptyBorder());
     mainFrameContainer.add(jScrollPane, BorderLayout.WEST);
 
-    // trigger plot of waveform
+    // trigger result of waveform
     PropertyChangeEvent evt =
         new PropertyChangeEvent(this, ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
     propertyChange(evt);
 
     getControlModel().addListener(this);
 
-    try {
-      getControlPanel()
-          .getStartStopButton()
-          .addActionListener(
-              new ActionListener() {
+    // Most experiments have a Start/Stop button, so we attach the default CaptureWorker to its
+    // click events here. This doesn't mean that the experiment HAS to use the default CaptureWorker
+    getControlPanel()
+        .getStartStopButton()
+        .addActionListener(
+            new ActionListener() {
 
-                @Override
-                public void actionPerformed(ActionEvent e) {
+              @Override
+              public void actionPerformed(ActionEvent e) {
 
-                  if (!getControlModel().isStartToggled()) {
+                if (!getControlModel().isStartToggled()) {
 
-                    getControlModel().setStartToggled(true);
-                    getControlPanel().getStartStopButton().setText("Stop");
+                  getControlModel().setStartToggled(true);
+                  getControlPanel().getStartStopButton().setText("Stop");
 
-                    // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
-                    experimentCaptureWorker = getCaptureWorker();
-                    experimentCaptureWorker.execute();
-                  } else {
+                  // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
+                  experimentCaptureWorker = getCaptureWorker();
+                  experimentCaptureWorker.execute();
+                } else {
 
-                    getControlModel().setStartToggled(false);
-                    getControlPanel().getStartStopButton().setText("Start");
+                  getControlModel().setStartToggled(false);
+                  getControlPanel().getStartStopButton().setText("Start");
 
-                    // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
-                    experimentCaptureWorker.cancel(true);
-                  }
+                  // cancel the worker
+                  experimentCaptureWorker.cancel(true);
                 }
-              });
-    } catch (java.lang.NullPointerException e) {
+              }
+            });
 
-      // this will occur if the start-stop button has been over-written in an experiment (like
-      // BoardCheck)
-
-    }
-
-    doCreateAndShowGUI(); // after adding the default start/stop action so actions can be
+    // Here additional CaptureWorkers are added to addition buttons needed for the experiment
+    addWorkersToButtonEvents(); // after adding the default start/stop action so actions can be
     // overridden.
 
     // //////////////////////
     // Plot Panel //////////
     // //////////////////////
 
-    mainFrameContainer.add(getPlotPanel(), BorderLayout.CENTER);
+    mainFrameContainer.add(getResultPanel(), BorderLayout.CENTER);
 
     // //////////////////////
     // Plot Panel //////////
@@ -147,5 +145,6 @@ public abstract class Experiment implements PropertyChangeListener {
   public void refreshModelFromPreferences() {
 
     getControlModel().loadModelFromPrefs();
+    getResultModel().loadModelFromPrefs();
   }
 }

@@ -38,23 +38,18 @@ import org.knowm.memristor.discovery.utils.driver.Triangle;
 
 public class ControlModel extends ExperimentControlModel {
 
-  /** Waveform */
-  public SynapsePreferences.Waveform waveform;
-
-  public Instruction instruction = Instruction.FFLV;
   /** Events */
   public static final String EVENT_INSTRUCTION_UPDATE = "EVENT_INSTRUCTION_UPDATE";
-
+  private final double[] waveformTimeData = new double[SynapsePreferences.CAPTURE_BUFFER_SIZE];
+  private final double[] waveformAmplitudeData = new double[SynapsePreferences.CAPTURE_BUFFER_SIZE];
+  /** Waveform */
+  public SynapsePreferences.Waveform waveform;
+  public Instruction instruction = Instruction.FFLV;
+  public DecimalFormat ohmFormatter = new DecimalFormat("#,### Ω");
   private float amplitude;
   private int pulseWidth; // model store pulse width in nanoseconds
   private int pulseNumber;
-
   private double lastY;
-  public DecimalFormat ohmFormatter = new DecimalFormat("#,### Ω");
-
-  private final double[] waveformTimeData = new double[SynapsePreferences.CAPTURE_BUFFER_SIZE];
-  private final double[] waveformAmplitudeData = new double[SynapsePreferences.CAPTURE_BUFFER_SIZE];
-
   private int sampleRate;
 
   /** Constructor */
@@ -155,17 +150,17 @@ public class ControlModel extends ExperimentControlModel {
     return pulseWidth;
   }
 
-  public double getCalculatedFrequency() {
-
-    // System.out.println("pulseWidth = " + pulseWidth);
-    return (1.0 / (2.0 * pulseWidth) * 1_000_000_000); // 50% duty cycle
-  }
-
   public void setPulseWidth(int pulseWidth) {
 
     this.pulseWidth = pulseWidth;
     swingPropertyChangeSupport.firePropertyChange(
         ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+  }
+
+  public double getCalculatedFrequency() {
+
+    // System.out.println("pulseWidth = " + pulseWidth);
+    return (1.0 / (2.0 * pulseWidth) * 1_000_000_000); // 50% duty cycle
   }
 
   public double[] getWaveformTimeData() {

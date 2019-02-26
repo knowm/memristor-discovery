@@ -49,14 +49,9 @@ public class DCPreferencesPanel extends ExperimentPreferencesPanel {
   private JLabel periodLabel;
   private JTextField periodTextField;
 
-  /**
-   * Constructor
-   *
-   * @param owner
-   */
-  public DCPreferencesPanel(JFrame owner) {
+  public DCPreferencesPanel(JFrame owner, String experimentName) {
 
-    super(owner);
+    super(owner, experimentName);
   }
 
   @Override
@@ -150,11 +145,5 @@ public class DCPreferencesPanel extends ExperimentPreferencesPanel {
   public ExperimentPreferences initAppPreferences() {
 
     return new DCPreferences();
-  }
-
-  @Override
-  public String getAppName() {
-
-    return "DC";
   }
 }

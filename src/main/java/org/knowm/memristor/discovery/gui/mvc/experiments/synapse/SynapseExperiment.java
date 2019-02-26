@@ -36,33 +36,31 @@ import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.AHaHController_21.Instruction;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.plot.PlotControlModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.plot.PlotController;
-import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.plot.PlotPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.result.ResultController;
+import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.result.ResultModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.result.ResultPanel;
 import org.knowm.memristor.discovery.utils.gpio.MuxController;
 
 public class SynapseExperiment extends Experiment {
 
   private static final float INIT_CONDUCTANCE = .0002f;
 
+  private final MuxController muxController;
+  DecimalFormat df = new DecimalFormat("0.000E0");
   private InitSynapseWorker initSynapseWorker;
+  private AHaHController_21 aHaHController;
 
-  private final ControlModel controlModel = new ControlModel();
+  private final ControlModel controlModel;
   private ControlPanel controlPanel;
 
-  private PlotPanel plotPanel;
-  private final PlotControlModel plotModel = new PlotControlModel();
-  private final PlotController plotController;
-
-  private AHaHController_21 aHaHController;
-  private final MuxController muxController;
-
-  DecimalFormat df = new DecimalFormat("0.000E0");
+  private final ResultModel resultModel;
+  private ResultPanel resultPanel;
+  private final ResultController resultController;
 
   /**
    * Constructor
@@ -74,31 +72,32 @@ public class SynapseExperiment extends Experiment {
 
     super(dwfProxy, mainFrameContainer, isV1Board);
 
+    controlModel = new ControlModel();
     controlPanel = new ControlPanel();
-    plotPanel = new PlotPanel();
-    plotController = new PlotController(plotPanel, plotModel);
     new ControlController(controlPanel, controlModel, dwfProxy);
-    System.out.println(controlModel.getInstruction());
+
+    resultModel = new ResultModel();
+    resultPanel = new ResultPanel();
+    resultController = new ResultController(resultPanel, resultModel);
+
     dwfProxy.setUpper8IOStates(controlModel.getInstruction().getBits());
 
     aHaHController = new AHaHController_21(controlModel);
     aHaHController.setdWFProxy(dwfProxy);
-    // aHaHController.setAmplitude(controlModel.getAmplitude());
-    // aHaHController.setCalculatedFrequency(controlModel.getCalculatedFrequency());
-    // aHaHController.setWaveform(controlModel.getWaveform());
 
     muxController = new MuxController();
   }
 
   @Override
-  public void doCreateAndShowGUI() {
+  public void addWorkersToButtonEvents() {
+
     controlPanel.clearPlotButton.addActionListener(
         new ActionListener() {
 
           @Override
           public void actionPerformed(ActionEvent e) {
 
-            plotController.resetChart();
+            resultController.resetChart();
           }
         });
 
@@ -112,41 +111,6 @@ public class SynapseExperiment extends Experiment {
             initSynapseWorker.execute();
           }
         });
-  }
-
-  private class CaptureWorker extends SwingWorker<Boolean, Double> {
-
-    @Override
-    protected Boolean doInBackground() throws Exception {
-
-      aHaHController.executeInstruction(controlModel.getInstruction());
-      while (!isCancelled()) {
-
-        try {
-          Thread.sleep(controlModel.getSampleRate() * 1000);
-        } catch (InterruptedException e) {
-          // eat it. caught when interrupt is called
-
-        }
-
-        // set to constant pulse width for reads to help mitigate RC issues
-        int pW = controlModel.getPulseWidth();
-        controlModel.setPulseWidth(100_000);
-        aHaHController.executeInstruction(Instruction.FFLV);
-        controlModel.setPulseWidth(pW); // set it back to whatever it was
-
-        // System.out.println("Vy=" + aHaHController.getVy());
-        publish(aHaHController.getGa(), aHaHController.getGb(), aHaHController.getVy());
-      }
-      return true;
-    }
-
-    @Override
-    protected void process(List<Double> chunks) {
-
-      plotController.updateYChartData(chunks.get(0), chunks.get(1), chunks.get(2));
-      plotController.repaintYChart();
-    }
   }
 
   /**
@@ -185,15 +149,55 @@ public class SynapseExperiment extends Experiment {
   }
 
   @Override
-  public ExperimentPlotPanel getPlotPanel() {
+  public ExperimentControlModel getResultModel() {
+    return resultModel;
+  }
 
-    return plotPanel;
+  @Override
+  public ExperimentResultsPanel getResultPanel() {
+
+    return resultPanel;
   }
 
   @Override
   public SwingWorker getCaptureWorker() {
 
     return new CaptureWorker();
+  }
+
+  private class CaptureWorker extends SwingWorker<Boolean, Double> {
+
+    @Override
+    protected Boolean doInBackground() throws Exception {
+
+      aHaHController.executeInstruction(controlModel.getInstruction());
+      while (!isCancelled()) {
+
+        try {
+          Thread.sleep(controlModel.getSampleRate() * 1000);
+        } catch (InterruptedException e) {
+          // eat it. caught when interrupt is called
+
+        }
+
+        // set to constant pulse width for reads to help mitigate RC issues
+        int pW = controlModel.getPulseWidth();
+        controlModel.setPulseWidth(100_000);
+        aHaHController.executeInstruction(Instruction.FFLV);
+        controlModel.setPulseWidth(pW); // set it back to whatever it was
+
+        // System.out.println("Vy=" + aHaHController.getVy());
+        publish(aHaHController.getGa(), aHaHController.getGb(), aHaHController.getVy());
+      }
+      return true;
+    }
+
+    @Override
+    protected void process(List<Double> chunks) {
+
+      resultController.updateYChartData(chunks.get(0), chunks.get(1), chunks.get(2));
+      resultController.repaintYChart();
+    }
   }
 
   private class InitSynapseWorker extends SwingWorker<Boolean, Double> {

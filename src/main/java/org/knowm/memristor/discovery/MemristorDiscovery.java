@@ -61,7 +61,8 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.logic.LogicExperiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.logic.LogicPreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulseExperiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferencesPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.qc.QCExperiment;
+import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.ShelfLifeExperiment;
+import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.ShelfLifePreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.SynapseExperiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.SynapsePreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.footer.FooterController;
@@ -88,14 +89,11 @@ public class MemristorDiscovery
         PropertyChangeListener {
 
   private static final String FRAME_TITLE_BASE = "Knowm Memristor Discovery - ";
-
-  private MemristorDiscoveryPreferences memristorDiscoveryPreferences;
-  private boolean isV1Board;
-
-  private DWFProxy dwf;
-
   private final String[] appsV0;
   private final String[] appsV1;
+  private MemristorDiscoveryPreferences memristorDiscoveryPreferences;
+  private boolean isV1Board;
+  private DWFProxy dwf;
   private Experiment experiment;
   private String experimentName;
 
@@ -104,6 +102,18 @@ public class MemristorDiscovery
   private HeaderPanel headerPanel;
   private FooterPanel footerPanel;
   private ConsoleDialog consoleDialog;
+
+  public MemristorDiscovery() {
+
+    memristorDiscoveryPreferences = new MemristorDiscoveryPreferences();
+    isV1Board = memristorDiscoveryPreferences.getBoardVersion().equalsIgnoreCase("v1");
+    experimentName = memristorDiscoveryPreferences.getExperiment();
+    this.appsV1 = new String[] {"Synapse", "Logic", "Classify"};
+    this.appsV0 =
+        new String[] {
+          "BoardCheck", "Hysteresis", "DC", "Pulse", "ShelfLife",
+        };
+  }
 
   public static void main(String[] args) {
 
@@ -133,18 +143,6 @@ public class MemristorDiscovery
             memristorDiscovery.createAndShowGUI();
           }
         });
-  }
-
-  public MemristorDiscovery() {
-
-    memristorDiscoveryPreferences = new MemristorDiscoveryPreferences();
-    isV1Board = memristorDiscoveryPreferences.getBoardVersion().equalsIgnoreCase("v1");
-    experimentName = memristorDiscoveryPreferences.getExperiment();
-    this.appsV1 = new String[] {"Synapse", "Logic", "Classify"};
-    this.appsV0 =
-        new String[] {
-          "BoardCheck", "Hysteresis", "DC", "Pulse",
-        };
   }
 
   public void createAndShowGUI() {
@@ -281,12 +279,13 @@ public class MemristorDiscovery
                     case "DC":
                       experiment = new DCExperiment(dwf, mainFrame.getContentPane(), isV1Board);
                       break;
-                    case "QC":
-                      experiment = new QCExperiment(dwf, mainFrame.getContentPane(), isV1Board);
-                      break;
                     case "BoardCheck":
                       experiment =
                           new BoardCheckExperiment(dwf, mainFrame.getContentPane(), isV1Board);
+                      break;
+                    case "ShelfLife":
+                      experiment =
+                          new ShelfLifeExperiment(dwf, mainFrame.getContentPane(), isV1Board);
                       break;
 
                     default:
@@ -294,7 +293,7 @@ public class MemristorDiscovery
                   }
 
                   experiment.createAndShowGUI();
-                  // for console message from experiments
+                  // for result message from experiments
                   experiment.getControlModel().addListener(MemristorDiscovery.this);
 
                   dwf.startupAD2();
@@ -358,7 +357,7 @@ public class MemristorDiscovery
                         break;
                     }
                     experiment.createAndShowGUI();
-                    // for console message from experiments
+                    // for result message from experiments
                     experiment.getControlModel().addListener(MemristorDiscovery.this);
 
                     dwf.startupAD2();
@@ -438,6 +437,10 @@ public class MemristorDiscovery
     // default control injected here
 
     switch (memristorDiscoveryPreferences.getExperiment()) {
+      case "ShelfLife":
+        experiment = new ShelfLifeExperiment(dwf, mainFrameContainer, isV1Board);
+        experimentName = "ShelfLife";
+        break;
       case "BoardCheck":
         experiment = new BoardCheckExperiment(dwf, mainFrameContainer, isV1Board);
         experimentName = "BoardCheck";
@@ -468,7 +471,7 @@ public class MemristorDiscovery
     }
     experiment.createAndShowGUI();
 
-    // for console message from experiments
+    // for result message from experiments
     experiment.getControlModel().addListener(this);
 
     mainFrame.setTitle(FRAME_TITLE_BASE + experimentName);
@@ -539,28 +542,31 @@ public class MemristorDiscovery
     // System.out.println("experimentName= " + experimentName);
     switch (experimentName) {
       case "Hysteresis":
-        result = new HysteresisPreferencesPanel(mainFrame).doModal();
+        result = new HysteresisPreferencesPanel(mainFrame, experimentName).doModal();
         break;
       case "Pulse":
-        result = new PulsePreferencesPanel(mainFrame).doModal();
+        result = new PulsePreferencesPanel(mainFrame, experimentName).doModal();
         break;
       case "DC":
-        result = new DCPreferencesPanel(mainFrame).doModal();
+        result = new DCPreferencesPanel(mainFrame, experimentName).doModal();
         break;
       case "Conductance":
-        result = new ConductancePreferencesPanel(mainFrame).doModal();
+        result = new ConductancePreferencesPanel(mainFrame, experimentName).doModal();
         break;
       case "Synapse":
-        result = new SynapsePreferencesPanel(mainFrame).doModal();
+        result = new SynapsePreferencesPanel(mainFrame, experimentName).doModal();
         break;
       case "Logic":
-        result = new LogicPreferencesPanel(mainFrame).doModal();
+        result = new LogicPreferencesPanel(mainFrame, experimentName).doModal();
         break;
       case "Classify":
-        result = new ClassifyPreferencesPanel(mainFrame).doModal();
+        result = new ClassifyPreferencesPanel(mainFrame, experimentName).doModal();
         break;
       case "BoardCheck":
-        result = new BoardCheckPreferencesPanel(mainFrame).doModal();
+        result = new BoardCheckPreferencesPanel(mainFrame, experimentName).doModal();
+        break;
+      case "ShelfLife":
+        result = new ShelfLifePreferencesPanel(mainFrame, experimentName).doModal();
         break;
 
       default:

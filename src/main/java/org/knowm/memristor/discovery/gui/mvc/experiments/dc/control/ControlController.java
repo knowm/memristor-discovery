@@ -39,14 +39,30 @@ import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCPreferences;
-import org.knowm.memristor.discovery.gui.mvc.experiments.dc.plot.PlotPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.dc.result.ResultPanel;
 
 public class ControlController extends ExperimentControlController {
 
   private final ControlPanel controlPanel;
   private final ControlModel controlModel;
 
-  private final PlotPanel plotPanel;
+  private final ResultPanel plotPanel;
+  ActionListener waveformRadioButtonActionListener =
+      new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+
+          for (Enumeration<AbstractButton> buttons =
+                  controlPanel.getWaveformRadioButtonGroup().getElements();
+              buttons.hasMoreElements(); ) {
+            AbstractButton button = buttons.nextElement();
+            if (button.isSelected()) {
+              controlModel.setWaveform(button.getText());
+            }
+          }
+        }
+      };
 
   /**
    * Constructor
@@ -57,7 +73,7 @@ public class ControlController extends ExperimentControlController {
    * @param dwf
    */
   public ControlController(
-      ControlPanel controlPanel, PlotPanel plotPanel, ControlModel controlModel, DWFProxy dwf) {
+      ControlPanel controlPanel, ResultPanel plotPanel, ControlModel controlModel, DWFProxy dwf) {
 
     super(controlPanel, controlModel);
 
@@ -286,23 +302,6 @@ public class ControlController extends ExperimentControlController {
               }
             });
   }
-
-  ActionListener waveformRadioButtonActionListener =
-      new ActionListener() {
-
-        @Override
-        public void actionPerformed(ActionEvent actionEvent) {
-
-          for (Enumeration<AbstractButton> buttons =
-                  controlPanel.getWaveformRadioButtonGroup().getElements();
-              buttons.hasMoreElements(); ) {
-            AbstractButton button = buttons.nextElement();
-            if (button.isSelected()) {
-              controlModel.setWaveform(button.getText());
-            }
-          }
-        }
-      };
 
   /**
    * These property change events are triggered in the controlModel in the case where the underlying

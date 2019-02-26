@@ -32,11 +32,8 @@ import javax.swing.KeyStroke;
 /** Created by timmolter on 3/7/17. */
 public abstract class ExperimentControlController implements PropertyChangeListener {
 
-  protected abstract void doSetUpViewEvents();
-
   protected final ExperimentControlPanel experimentControlPanel;
   private final ExperimentControlModel experimentControlModel;
-
   /**
    * Constuctor
    *
@@ -50,6 +47,8 @@ public abstract class ExperimentControlController implements PropertyChangeListe
     this.experimentControlPanel = experimentControlPanel;
     this.experimentControlModel = experimentControlModel;
   }
+
+  protected abstract void doSetUpViewEvents();
 
   public void setUpViewEvents() {
 

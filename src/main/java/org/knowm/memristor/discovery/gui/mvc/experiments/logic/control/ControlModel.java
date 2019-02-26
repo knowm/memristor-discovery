@@ -40,30 +40,23 @@ import org.knowm.memristor.discovery.utils.driver.Triangle;
 
 public class ControlModel extends ExperimentControlModel {
 
-  /** Waveform */
-  public LogicPreferences.Waveform waveform;
-
-  public AHaHLogicRoutine routine = AHaHLogicRoutine.FFRU_Trace;
   /** Events */
   public static final String EVENT_INSTRUCTION_UPDATE = "EVENT_INSTRUCTION_UPDATE";
-
+  private final double[] waveformTimeData = new double[LogicPreferences.CAPTURE_BUFFER_SIZE];
+  private final double[] waveformAmplitudeData = new double[LogicPreferences.CAPTURE_BUFFER_SIZE];
+  /** Waveform */
+  public LogicPreferences.Waveform waveform;
+  public AHaHLogicRoutine routine = AHaHLogicRoutine.FFRU_Trace;
+  public DecimalFormat ohmFormatter = new DecimalFormat("#,### Ω");
+  public LogicPreferences.DataStructure dataStructure = DataStructure.TwoPattern;
   private float amplitude;
   private int pulseWidth; // model store pulse width in nanoseconds
   private int pulseNumber;
-
   private double lastY;
-  public DecimalFormat ohmFormatter = new DecimalFormat("#,### Ω");
-
-  private final double[] waveformTimeData = new double[LogicPreferences.CAPTURE_BUFFER_SIZE];
-  private final double[] waveformAmplitudeData = new double[LogicPreferences.CAPTURE_BUFFER_SIZE];
-
   private int numExecutions;
-
   private List<Integer> inputMaskA;
   private List<Integer> inputMaskB;
   private List<Integer> inputBiasMask;
-
-  public LogicPreferences.DataStructure dataStructure = DataStructure.TwoPattern;
 
   /** Constructor */
   public ControlModel() {
@@ -161,17 +154,17 @@ public class ControlModel extends ExperimentControlModel {
     return pulseWidth;
   }
 
-  public double getCalculatedFrequency() {
-
-    // System.out.println("pulseWidth = " + pulseWidth);
-    return (1.0 / (2.0 * pulseWidth) * 1_000_000_000); // 50% duty cycle
-  }
-
   public void setPulseWidth(int pulseWidth) {
 
     this.pulseWidth = pulseWidth;
     swingPropertyChangeSupport.firePropertyChange(
         ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+  }
+
+  public double getCalculatedFrequency() {
+
+    // System.out.println("pulseWidth = " + pulseWidth);
+    return (1.0 / (2.0 * pulseWidth) * 1_000_000_000); // 50% duty cycle
   }
 
   public double[] getWaveformTimeData() {
