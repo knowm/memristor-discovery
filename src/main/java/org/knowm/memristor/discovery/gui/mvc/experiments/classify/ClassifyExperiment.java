@@ -31,13 +31,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
-import org.knowm.memristor.discovery.gui.mvc.experiments.View;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.AHaHController_21.Instruction;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.ClassifyPreferences.AHaHRoutine;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.control.ControlController;
@@ -60,7 +60,6 @@ public class ClassifyExperiment extends Experiment {
   private final ControlModel controlModel;
   private final ResultModel resultModel;
   private final ResultController resultController;
-
 
   // SwingWorkers
   private SwingWorker runTrialWorker;
@@ -193,7 +192,7 @@ public class ClassifyExperiment extends Experiment {
   }
 
   @Override
-  public View getControlPanel() {
+  public ControlView getControlPanel() {
 
     return controlPanel;
   }
@@ -204,7 +203,7 @@ public class ClassifyExperiment extends Experiment {
   }
 
   @Override
-  public ExperimentResultsPanel getResultPanel() {
+  public JPanel getResultPanel() {
 
     return resultPanel;
   }

@@ -32,18 +32,19 @@ import java.util.Hashtable;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
-import org.knowm.memristor.discovery.gui.mvc.experiments.View;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 
 /**
  * Provides controls for running the control
  *
  * @author timmolter
  */
-public class ControlPanel extends View {
+public class ControlPanel extends ControlView {
 
   private final Box waveformRadioButtonBox;
   private final ButtonGroup waveformRadioButtonGroup;
@@ -58,6 +59,8 @@ public class ControlPanel extends View {
 
   private final JLabel seriesLabel;
   private final JTextField seriesTextField;
+
+  public final JButton startStopButton;
 
   /** Constructor */
   public ControlPanel() {
@@ -158,6 +161,8 @@ public class ControlPanel extends View {
     c.insets = new Insets(0, 5, 14, 5);
     add(seriesTextField, c);
 
+    startStopButton = new JButton("Start");
+    startStopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.gridy++;
     c.insets = new Insets(0, 0, 0, 0);
     add(startStopButton, c);
@@ -222,5 +227,9 @@ public class ControlPanel extends View {
   public JTextField getSeriesTextField() {
 
     return seriesTextField;
+  }
+
+  public JButton getStartStopButton() {
+    return startStopButton;
   }
 }

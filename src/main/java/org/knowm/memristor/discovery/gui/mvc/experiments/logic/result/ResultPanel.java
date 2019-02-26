@@ -25,12 +25,12 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.logic.result;
 
 import java.awt.BorderLayout;
 import javax.swing.BorderFactory;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
+import javax.swing.JPanel;
 import org.knowm.xchart.XChartPanel;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
 
-public class ResultPanel extends ExperimentResultsPanel {
+public class ResultPanel extends JPanel {
 
   XYChart chart;
   XChartPanel<XYChart> chartPanel;

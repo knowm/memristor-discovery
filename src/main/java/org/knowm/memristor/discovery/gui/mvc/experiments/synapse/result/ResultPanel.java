@@ -29,7 +29,6 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.xchart.XChartPanel;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
@@ -38,7 +37,7 @@ import org.knowm.xchart.style.Styler;
 import org.knowm.xchart.style.Styler.LegendPosition;
 import org.knowm.xchart.style.markers.SeriesMarkers;
 
-public class ResultPanel extends ExperimentResultsPanel {
+public class ResultPanel extends JPanel {
 
   private final JCheckBox freezeYAxisCheckBoxIV;
   private final JCheckBox resistanceConductanceCheckBox;

@@ -28,15 +28,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.util.List;
+import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.core.Util;
 import org.knowm.memristor.discovery.core.WaveformUtils;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
-import org.knowm.memristor.discovery.gui.mvc.experiments.View;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control.ControlPanel;
@@ -130,7 +130,7 @@ public class HysteresisExperiment extends Experiment {
   }
 
   @Override
-  public View getControlPanel() {
+  public ControlView getControlPanel() {
 
     return controlPanel;
   }
@@ -141,7 +141,7 @@ public class HysteresisExperiment extends Experiment {
   }
 
   @Override
-  public ExperimentResultsPanel getResultPanel() {
+  public JPanel getResultPanel() {
 
     return resultPanel;
   }

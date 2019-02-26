@@ -31,14 +31,14 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.text.DecimalFormat;
 import java.util.List;
+import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.core.gpio.MuxController;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
-import org.knowm.memristor.discovery.gui.mvc.experiments.View;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.AHaHController_21.Instruction;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlModel;
@@ -157,7 +157,7 @@ public class SynapseExperiment extends Experiment {
   }
 
   @Override
-  public View getControlPanel() {
+  public ControlView getControlPanel() {
 
     return controlPanel;
   }
@@ -168,7 +168,7 @@ public class SynapseExperiment extends Experiment {
   }
 
   @Override
-  public ExperimentResultsPanel getResultPanel() {
+  public JPanel getResultPanel() {
 
     return resultPanel;
   }

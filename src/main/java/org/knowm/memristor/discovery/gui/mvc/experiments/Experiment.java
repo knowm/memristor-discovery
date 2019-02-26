@@ -28,6 +28,7 @@ import static javax.swing.BorderFactory.createEmptyBorder;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.beans.PropertyChangeListener;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.rightbar.RightBarController;
@@ -58,11 +59,11 @@ public abstract class Experiment implements PropertyChangeListener {
 
   public abstract Model getControlModel();
 
-  public abstract View getControlPanel();
+  public abstract ControlView getControlPanel();
 
   public abstract Model getResultModel();
 
-  public abstract ExperimentResultsPanel getResultPanel();
+  public abstract JPanel getResultPanel();
 
   public abstract void addWorkersToButtonEvents();
 

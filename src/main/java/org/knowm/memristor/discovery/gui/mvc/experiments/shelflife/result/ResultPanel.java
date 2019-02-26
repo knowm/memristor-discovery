@@ -28,12 +28,12 @@ import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.text.DefaultCaret;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 
-public class ResultPanel extends ExperimentResultsPanel {
+public class ResultPanel extends JPanel {
 
   JTextArea consoleTextArea;
 

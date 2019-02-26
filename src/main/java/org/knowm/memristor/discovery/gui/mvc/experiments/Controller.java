@@ -23,25 +23,21 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments;
 
-import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
-import javax.swing.AbstractAction;
-import javax.swing.JComponent;
-import javax.swing.KeyStroke;
 
 public abstract class Controller implements PropertyChangeListener {
 
-  protected final View view;
+  protected final ControlView controlView;
   private final Model model;
   /**
-   * Constuctor
+   * Constructor
    *
-   * @param view
+   * @param controlView
    * @param model
    */
-  public Controller(View view, Model model) {
+  public Controller(ControlView controlView, Model model) {
 
-    this.view = view;
+    this.controlView = controlView;
     this.model = model;
   }
 
@@ -50,20 +46,5 @@ public abstract class Controller implements PropertyChangeListener {
   public void setUpViewEvents() {
 
     doSetUpViewEvents();
-
-    // TODO remove this
-    view.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke("S"), "startstop");
-    view.getActionMap()
-        .put(
-            "startstop",
-            new AbstractAction() {
-
-              @Override
-              public void actionPerformed(ActionEvent e) {
-
-                view.getStartStopButton().doClick();
-              }
-            });
   }
 }

@@ -67,7 +67,8 @@ public class ControlController extends Controller {
   public void doSetUpViewEvents() {
 
     // Is this really true? They appear to be set up in the experiment.
-
+    // triggering SwingWorkers are setup in the Experiment. Everything else is setup here.
+    // Boardcheck doesn't have any gui com[ponents like sliders or radio buttons
   }
 
   /**

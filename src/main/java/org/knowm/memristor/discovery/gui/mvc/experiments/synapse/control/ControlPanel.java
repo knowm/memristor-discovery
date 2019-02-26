@@ -40,8 +40,8 @@ import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
-import org.knowm.memristor.discovery.gui.mvc.experiments.View;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.AHaHController_21.Instruction;
 
 /**
@@ -49,7 +49,7 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.AHaHController_
  *
  * @author timmolter
  */
-public class ControlPanel extends View {
+public class ControlPanel extends ControlView {
 
   private final JSlider amplitudeSlider;
   private final JSlider pulseWidthSlider;
@@ -63,6 +63,8 @@ public class ControlPanel extends View {
   public JButton clearPlotButton;
   public JButton initSynapseButton;
   private JComboBox<Waveform> waveformComboBox;
+
+  public final JButton startStopButton;
 
   /** Constructor */
   public ControlPanel() {
@@ -154,6 +156,8 @@ public class ControlPanel extends View {
     c.insets = new Insets(0, 0, 0, 0);
     add(clearPlotButton, c);
 
+    startStopButton = new JButton("Start");
+    startStopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.gridy++;
     c.insets = new Insets(0, 0, 0, 0);
     add(startStopButton, c);
@@ -206,5 +210,9 @@ public class ControlPanel extends View {
   public ButtonGroup getInstructionRadioButtonGroup() {
 
     return instructionRadioButtonGroup;
+  }
+
+  public JButton getStartStopButton() {
+    return startStopButton;
   }
 }

@@ -28,9 +28,8 @@ import javax.swing.event.SwingPropertyChangeSupport;
 
 public abstract class Model {
 
-  /** Events */
+  // Events
   public static final String EVENT_WAVEFORM_UPDATE = "EVENT_WAVEFORM_UPDATE";
-
   public static final String EVENT_FREQUENCY_UPDATE = "EVENT_FREQUENCY_UPDATE";
   public static final String EVENT_PREFERENCES_UPDATE = "EVENT_PREFERENCES_UPDATE";
   public static final String EVENT_NEW_CONSOLE_LOG = "EVENT_NEW_CONSOLE_LOG";
@@ -44,7 +43,6 @@ public abstract class Model {
   public Model() {
 
     swingPropertyChangeSupport = new SwingPropertyChangeSupport(this);
-    //    loadModelFromPrefs();
   }
 
   public abstract void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences);
@@ -53,7 +51,7 @@ public abstract class Model {
 
     doLoadModelFromPrefs(experimentPreferences);
 
-    // this will communicate to the controllers that a preferences change has occured
+    // this will communicate to the controllers that a preferences change has occurred
     swingPropertyChangeSupport.firePropertyChange(Model.EVENT_PREFERENCES_UPDATE, true, false);
   }
 

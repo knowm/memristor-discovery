@@ -23,18 +23,22 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.control;
 
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.BorderFactory;
-import org.knowm.memristor.discovery.gui.mvc.experiments.View;
+import javax.swing.JButton;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 
 /**
  * Provides controls for running the control
  *
  * @author timmolter
  */
-public class ControlPanel extends View {
+public class ControlPanel extends ControlView {
+
+  public final JButton startStopButton;
 
   /** Constructor */
   public ControlPanel() {
@@ -44,6 +48,8 @@ public class ControlPanel extends View {
     c.fill = GridBagConstraints.HORIZONTAL;
     setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
 
+    startStopButton = new JButton("Start");
+    startStopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.gridy++;
     c.insets = new Insets(0, 0, 0, 0);
     add(startStopButton, c);
@@ -53,4 +59,8 @@ public class ControlPanel extends View {
   }
 
   public void enableAllChildComponents(boolean enabled) {}
+
+  public JButton getStartStopButton() {
+    return startStopButton;
+  }
 }

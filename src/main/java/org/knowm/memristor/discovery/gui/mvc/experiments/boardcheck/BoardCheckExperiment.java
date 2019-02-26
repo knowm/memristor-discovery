@@ -29,17 +29,17 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.text.DecimalFormat;
 import java.util.List;
+import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.core.WaveformUtils;
 import org.knowm.memristor.discovery.core.gpio.MuxController;
 import org.knowm.memristor.discovery.core.gpio.MuxController.Destination;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
-import org.knowm.memristor.discovery.gui.mvc.experiments.View;
 import org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.control.ControlPanel;
@@ -408,7 +408,7 @@ public class BoardCheckExperiment extends Experiment {
   }
 
   @Override
-  public View getControlPanel() {
+  public ControlView getControlPanel() {
 
     return controlPanel;
   }
@@ -419,7 +419,7 @@ public class BoardCheckExperiment extends Experiment {
   }
 
   @Override
-  public ExperimentResultsPanel getResultPanel() {
+  public JPanel getResultPanel() {
 
     return resultPanel;
   }

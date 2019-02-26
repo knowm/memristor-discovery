@@ -30,14 +30,15 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.Hashtable;
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import org.knowm.memristor.discovery.core.Util;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
-import org.knowm.memristor.discovery.gui.mvc.experiments.View;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferences;
 
 /**
@@ -45,7 +46,7 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferences;
  *
  * @author timmolter
  */
-public class ControlPanel extends View {
+public class ControlPanel extends ControlView {
 
   private final JLabel appliedAmplitudeLabel;
   private final JLabel currentLabel;
@@ -61,6 +62,8 @@ public class ControlPanel extends View {
   private final JLabel sampleRateLabel;
   private final JTextField sampleRateTextField;
   private JComboBox<Waveform> waveformComboBox;
+
+  public final JButton startStopButton;
 
   /** Constructor */
   public ControlPanel() {
@@ -110,7 +113,6 @@ public class ControlPanel extends View {
     //  int amplitude=
     // experimentPreferences.getInteger(PulsePreferences.MAX_SLIDER_VOLTAGE_INIT_KEY,
     // PulsePreferences.MAX_SLIDER_VOLTAGE_INIT_DEFAULT_VALUE)
-
 
     amplitudeSlider = new JSlider(JSlider.HORIZONTAL, -250, 200, 0);
     amplitudeSlider.setBorder(BorderFactory.createTitledBorder("Amplitude [V]"));
@@ -178,7 +180,6 @@ public class ControlPanel extends View {
     labelTable.put(5, new JLabel("5"));
     labelTable.put(10, new JLabel("10"));
 
-
     pulseNumberSlider.setLabelTable(labelTable);
     c.gridy++;
     add(pulseNumberSlider, c);
@@ -207,6 +208,8 @@ public class ControlPanel extends View {
     c.insets = new Insets(0, 5, 14, 5);
     add(sampleRateTextField, c);
 
+    startStopButton = new JButton("Start");
+    startStopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.gridy++;
     c.insets = new Insets(0, 0, 0, 0);
     add(startStopButton, c);
@@ -281,5 +284,9 @@ public class ControlPanel extends View {
   public JCheckBox getMemristorVoltageCheckBox() {
 
     return memristorVoltageCheckBox;
+  }
+
+  public JButton getStartStopButton() {
+    return startStopButton;
   }
 }

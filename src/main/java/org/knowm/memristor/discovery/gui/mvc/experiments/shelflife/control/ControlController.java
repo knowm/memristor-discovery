@@ -23,7 +23,11 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.control;
 
+import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
+import javax.swing.AbstractAction;
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Controller;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
@@ -66,8 +70,21 @@ public class ControlController extends Controller {
   @Override
   public void doSetUpViewEvents() {
 
-    // Is this really true? They appear to be set up in the experiment.
+    controlView
+        .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+        .put(KeyStroke.getKeyStroke("S"), "startstop");
+    controlView
+        .getActionMap()
+        .put(
+            "startstop",
+            new AbstractAction() {
 
+              @Override
+              public void actionPerformed(ActionEvent e) {
+
+                controlPanel.getStartStopButton().doClick();
+              }
+            });
   }
 
   /**

@@ -45,10 +45,7 @@ public class ControlModel extends Model {
   private boolean isStartToggled = false;
 
   /** Constructor */
-  public ControlModel() {
-
-
-  }
+  public ControlModel() {}
 
   @Override
   public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {

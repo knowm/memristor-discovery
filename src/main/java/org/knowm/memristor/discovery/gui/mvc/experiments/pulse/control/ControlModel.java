@@ -57,9 +57,7 @@ public class ControlModel extends Model {
   private boolean isStartToggled = false;
 
   /** Constructor */
-  public ControlModel() {
-
-  }
+  public ControlModel() {}
 
   @Override
   public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {
@@ -77,7 +75,6 @@ public class ControlModel extends Model {
             PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY,
             PulsePreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
     appliedAmplitude = amplitude;
-
 
     pulseWidth =
         experimentPreferences.getInteger(
@@ -300,7 +297,6 @@ public class ControlModel extends Model {
       this.appliedAmplitude = amplitude;
     }
   }
-
 
   public boolean isStartToggled() {
 

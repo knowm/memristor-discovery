@@ -29,10 +29,13 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.util.Enumeration;
+import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.knowm.memristor.discovery.DWFProxy;
@@ -263,6 +266,21 @@ public class ControlController extends Controller {
                   // parsing error, default back to previous value
                   textField.setText(Integer.toString(controlModel.getSeriesResistance()));
                 }
+              }
+            });
+    controlView
+        .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+        .put(KeyStroke.getKeyStroke("S"), "startstop");
+    controlView
+        .getActionMap()
+        .put(
+            "startstop",
+            new AbstractAction() {
+
+              @Override
+              public void actionPerformed(ActionEvent e) {
+
+                controlPanel.getStartStopButton().doClick();
               }
             });
   }

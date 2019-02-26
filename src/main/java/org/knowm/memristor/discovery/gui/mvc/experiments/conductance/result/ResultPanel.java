@@ -29,7 +29,6 @@ import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.ConductancePreferences;
 import org.knowm.xchart.XChartPanel;
 import org.knowm.xchart.XYChart;
@@ -39,7 +38,7 @@ import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
 import org.knowm.xchart.style.Styler.LegendPosition;
 import org.knowm.xchart.style.markers.SeriesMarkers;
 
-public class ResultPanel extends ExperimentResultsPanel {
+public class ResultPanel extends JPanel {
 
   private final JPanel radioPanel;
   private final ButtonGroup radioButtonGroup;
