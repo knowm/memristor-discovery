@@ -67,7 +67,7 @@ public class ControlModel extends Model {
   }
 
   @Override
-  public void doLoadModelFromPrefs() {
+  public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {
 
     waveform =
         LogicPreferences.Waveform.valueOf(
@@ -238,12 +238,6 @@ public class ControlModel extends Model {
   public void setLastY(double lastY) {
 
     this.lastY = lastY;
-  }
-
-  @Override
-  public ExperimentPreferences initAppPreferences() {
-
-    return new LogicPreferences();
   }
 
   public List<Integer> getInputMaskA() {

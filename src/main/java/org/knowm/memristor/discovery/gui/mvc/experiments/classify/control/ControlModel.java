@@ -62,7 +62,7 @@ public class ControlModel extends Model {
   }
 
   @Override
-  public void doLoadModelFromPrefs() {
+  public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {
 
     waveform =
         ClassifyPreferences.Waveform.valueOf(
@@ -206,12 +206,6 @@ public class ControlModel extends Model {
   public void setNumTrainEpochs(int epochs) {
 
     this.numTrainEpochs = epochs;
-  }
-
-  @Override
-  public ExperimentPreferences initAppPreferences() {
-
-    return new ClassifyPreferences();
   }
 
   public ClassifyPreferences.Datasets getDataset() {

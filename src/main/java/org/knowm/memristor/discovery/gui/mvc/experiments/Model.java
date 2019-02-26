@@ -39,26 +39,21 @@ public abstract class Model {
   public int seriesResistance;
 
   public SwingPropertyChangeSupport swingPropertyChangeSupport;
-  protected ExperimentPreferences experimentPreferences;
 
   /** Constructor */
   public Model() {
 
     swingPropertyChangeSupport = new SwingPropertyChangeSupport(this);
-    this.experimentPreferences = initAppPreferences();
-    loadModelFromPrefs();
+    //    loadModelFromPrefs();
   }
 
-  // TODO move out to Experiment level
-  public abstract ExperimentPreferences initAppPreferences();
+  public abstract void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences);
 
-  public abstract void doLoadModelFromPrefs();
+  public void loadModelFromPrefs(ExperimentPreferences experimentPreferences) {
 
-  public void loadModelFromPrefs() {
+    doLoadModelFromPrefs(experimentPreferences);
 
-    doLoadModelFromPrefs();
-
-    // this will comminucate to the controllers that a preferences change has occured
+    // this will communicate to the controllers that a preferences change has occured
     swingPropertyChangeSupport.firePropertyChange(Model.EVENT_PREFERENCES_UPDATE, true, false);
   }
 

@@ -63,7 +63,7 @@ public class ControlModel extends Model {
   }
 
   @Override
-  public void doLoadModelFromPrefs() {
+  public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {
 
     seriesResistance =
         experimentPreferences.getInteger(
@@ -90,7 +90,6 @@ public class ControlModel extends Model {
         experimentPreferences.getInteger(
             SynapsePreferences.SAMPLE_RATE_INIT_KEY,
             SynapsePreferences.SAMPLE_RATE_INIT_DEFAULT_VALUE);
-
   }
 
   /** Given the state of the model, update the waveform x and y axis data arrays. */
@@ -246,11 +245,5 @@ public class ControlModel extends Model {
   public void setStartToggled(boolean isStartToggled) {
 
     this.isStartToggled = isStartToggled;
-  }
-
-  @Override
-  public ExperimentPreferences initAppPreferences() {
-
-    return new SynapsePreferences();
   }
 }

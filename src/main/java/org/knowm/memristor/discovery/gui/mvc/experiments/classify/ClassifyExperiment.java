@@ -34,6 +34,7 @@ import java.util.List;
 import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.View;
@@ -49,14 +50,17 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.classify.result.ResultP
 public class ClassifyExperiment extends Experiment {
 
   private final double k = .05f;
-  // Control and Result MVC
-  private final ControlModel controlModel;
-  private final ResultModel resultModel;
-  private final ResultController resultController;
+
   // exponential running average for measuring train accuracy.
   private double trainAccuracy = 0;
   private ControlPanel controlPanel;
   private ResultPanel resultPanel;
+
+  // Control and Result MVC
+  private final ControlModel controlModel;
+  private final ResultModel resultModel;
+  private final ResultController resultController;
+
 
   // SwingWorkers
   private SwingWorker runTrialWorker;
@@ -76,11 +80,12 @@ public class ClassifyExperiment extends Experiment {
 
     controlModel = new ControlModel();
     controlPanel = new ControlPanel();
+    resultModel = new ResultModel();
     resultPanel = new ResultPanel();
 
-    resultModel = new ResultModel();
-    resultController = new ResultController(resultPanel, resultModel);
+    refreshModelsFromPreferences();
     new ControlController(controlPanel, controlModel, dwfProxy);
+    resultController = new ResultController(resultPanel, resultModel);
 
     aHaHController = new AHaHController_21(controlModel);
     aHaHController.setdWFProxy(dwfProxy);
@@ -202,6 +207,12 @@ public class ClassifyExperiment extends Experiment {
   public ExperimentResultsPanel getResultPanel() {
 
     return resultPanel;
+  }
+
+  @Override
+  public ExperimentPreferences initAppPreferences() {
+
+    return new ClassifyPreferences();
   }
 
   private class ResetWorker extends SwingWorker<Boolean, Double> {

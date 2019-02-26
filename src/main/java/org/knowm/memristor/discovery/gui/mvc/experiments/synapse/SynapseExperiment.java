@@ -35,6 +35,7 @@ import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.core.gpio.MuxController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.View;
@@ -51,14 +52,17 @@ public class SynapseExperiment extends Experiment {
   private static final float INIT_CONDUCTANCE = .0002f;
 
   private final MuxController muxController;
-  // Control and Result MVC
-  private final ControlModel controlModel;
-  private final ResultModel resultModel;
-  private final ResultController resultController;
+
   DecimalFormat df = new DecimalFormat("0.000E0");
   private AHaHController_21 aHaHController;
-  private ControlPanel controlPanel;
-  private ResultPanel resultPanel;
+
+  // Control and Result MVC
+  private final ControlModel controlModel;
+  private final ControlPanel controlPanel;
+  private final ResultModel resultModel;
+  private final ResultPanel resultPanel;
+  private final ResultController resultController;
+
   // SwingWorkers
   private SwingWorker initSynapseWorker;
   private SwingWorker experimentCaptureWorker;
@@ -76,9 +80,11 @@ public class SynapseExperiment extends Experiment {
 
     controlModel = new ControlModel();
     controlPanel = new ControlPanel();
-    new ControlController(controlPanel, controlModel, dwfProxy);
     resultModel = new ResultModel();
     resultPanel = new ResultPanel();
+
+    refreshModelsFromPreferences();
+    new ControlController(controlPanel, controlModel, dwfProxy);
     resultController = new ResultController(resultPanel, resultModel);
 
     dwfProxy.setUpper8IOStates(controlModel.getInstruction().getBits());
@@ -165,6 +171,36 @@ public class SynapseExperiment extends Experiment {
   public ExperimentResultsPanel getResultPanel() {
 
     return resultPanel;
+  }
+
+  /**
+   * These property change events are triggered in the controlModel in the case where the underlying
+   * controlModel is updated. Here, the controller can respond to those events and make sure the
+   * corresponding GUI components get updated.
+   */
+  @Override
+  public void propertyChange(PropertyChangeEvent evt) {
+
+    String propName = evt.getPropertyName();
+
+    switch (propName) {
+      case EVENT_INSTRUCTION_UPDATE:
+
+        // TODO handle instruction updates here.
+        // System.out.println(controlModel.getInstruction());
+        // dwfProxy.setUpper8IOStates(controlModel.getInstruction().getBits());
+
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  @Override
+  public ExperimentPreferences initAppPreferences() {
+
+    return new SynapsePreferences();
   }
 
   private class ClearChartWorker extends SwingWorker<Boolean, Double> {
@@ -365,29 +401,6 @@ public class SynapseExperiment extends Experiment {
       }
 
       return true;
-    }
-  }
-  /**
-   * These property change events are triggered in the controlModel in the case where the underlying
-   * controlModel is updated. Here, the controller can respond to those events and make sure the
-   * corresponding GUI components get updated.
-   */
-  @Override
-  public void propertyChange(PropertyChangeEvent evt) {
-
-    String propName = evt.getPropertyName();
-
-    switch (propName) {
-      case EVENT_INSTRUCTION_UPDATE:
-
-        // TODO handle instruction updates here.
-        // System.out.println(controlModel.getInstruction());
-        // dwfProxy.setUpper8IOStates(controlModel.getInstruction().getBits());
-
-        break;
-
-      default:
-        break;
     }
   }
 }

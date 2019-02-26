@@ -30,6 +30,7 @@ import java.beans.PropertyChangeEvent;
 import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.View;
@@ -59,10 +60,11 @@ public class ShelfLifeExperiment extends Experiment {
 
     controlModel = new ControlModel();
     controlPanel = new ControlPanel();
-    new ControlController(controlPanel, controlModel, dwfProxy);
-
-    resultPanel = new ResultPanel();
     resultModel = new ResultModel();
+    resultPanel = new ResultPanel();
+
+    refreshModelsFromPreferences();
+    new ControlController(controlPanel, controlModel, dwfProxy);
     resultController = new ResultController(resultPanel, resultModel);
   }
 
@@ -148,6 +150,12 @@ public class ShelfLifeExperiment extends Experiment {
   public ExperimentResultsPanel getResultPanel() {
 
     return resultPanel;
+  }
+
+  @Override
+  public ExperimentPreferences initAppPreferences() {
+
+    return new ShelfLifePreferences();
   }
 
   private class CaptureWorker extends SwingWorker<Boolean, double[][]> {

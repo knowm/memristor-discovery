@@ -573,7 +573,7 @@ public class MemristorDiscovery
         break;
     }
     if (result == ExperimentPreferencesPanel.ID_OK) {
-      experiment.refreshModelFromPreferences();
+      experiment.refreshModelsFromPreferences();
     }
   }
 

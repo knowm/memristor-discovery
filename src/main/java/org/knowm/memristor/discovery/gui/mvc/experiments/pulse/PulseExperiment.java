@@ -33,6 +33,7 @@ import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.core.PostProcessDataUtils;
 import org.knowm.memristor.discovery.core.WaveformUtils;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
@@ -55,6 +56,7 @@ public class PulseExperiment extends Experiment {
   private boolean initialPulseTrainCaptured = false;
   private ControlPanel controlPanel;
   private ResultPanel resultPanel;
+
   // SwingWorkers
   private SwingWorker experimentCaptureWorker;
 
@@ -69,12 +71,12 @@ public class PulseExperiment extends Experiment {
     super(dwfProxy, mainFrameContainer, isV1Board);
 
     controlModel = new ControlModel();
-    // TODO remove passing in controlModel here
-    controlPanel = new ControlPanel(controlModel);
-    new ControlController(controlPanel, controlModel, dwfProxy);
-
+    controlPanel = new ControlPanel();
     resultModel = new ResultModel();
     resultPanel = new ResultPanel();
+
+    refreshModelsFromPreferences();
+    new ControlController(controlPanel, controlModel, dwfProxy);
     resultController = new ResultController(resultPanel, resultModel);
   }
 
@@ -143,6 +145,33 @@ public class PulseExperiment extends Experiment {
   public ExperimentResultsPanel getResultPanel() {
 
     return resultPanel;
+  }
+
+  @Override
+  public void propertyChange(PropertyChangeEvent evt) {
+
+    String propName = evt.getPropertyName();
+
+    switch (propName) {
+      case Model.EVENT_WAVEFORM_UPDATE:
+        resultPanel.switch2WaveformChart();
+        resultController.updateWaveformChart(
+            controlModel.getWaveformTimeData(),
+            controlModel.getWaveformAmplitudeData(),
+            controlModel.getAmplitude(),
+            controlModel.getPulseWidth());
+
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  @Override
+  public ExperimentPreferences initAppPreferences() {
+
+    return new PulsePreferences();
   }
 
   private class CaptureWorker extends SwingWorker<Boolean, double[][]> {
@@ -403,27 +432,6 @@ public class PulseExperiment extends Experiment {
             controlModel.getAppliedEnergy(),
             controlModel.getAppliedMemristorEnergy());
       }
-    }
-  }
-
-  @Override
-  public void propertyChange(PropertyChangeEvent evt) {
-
-    String propName = evt.getPropertyName();
-
-    switch (propName) {
-      case Model.EVENT_WAVEFORM_UPDATE:
-        resultPanel.switch2WaveformChart();
-        resultController.updateWaveformChart(
-            controlModel.getWaveformTimeData(),
-            controlModel.getWaveformAmplitudeData(),
-            controlModel.getAmplitude(),
-            controlModel.getPulseWidth());
-
-        break;
-
-      default:
-        break;
     }
   }
 }

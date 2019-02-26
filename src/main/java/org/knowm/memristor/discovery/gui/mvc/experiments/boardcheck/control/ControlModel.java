@@ -32,18 +32,11 @@ public class ControlModel extends Model {
   public ControlModel() {}
 
   @Override
-  public void doLoadModelFromPrefs() {
+  public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {
 
     seriesResistance =
         experimentPreferences.getInteger(
             BoardCheckPreferences.SERIES_R_INIT_KEY,
             BoardCheckPreferences.SERIES_R_INIT_DEFAULT_VALUE);
-
-  }
-
-  @Override
-  public ExperimentPreferences initAppPreferences() {
-
-    return new BoardCheckPreferences();
   }
 }

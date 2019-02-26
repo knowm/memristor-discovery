@@ -54,7 +54,7 @@ public class ControlModel extends Model {
   }
 
   @Override
-  public void doLoadModelFromPrefs() {
+  public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {
 
     // RESET
     resetPulseType =
@@ -89,7 +89,6 @@ public class ControlModel extends Model {
         experimentPreferences.getInteger(
             ConductancePreferences.SERIES_R_INIT_KEY,
             ConductancePreferences.SERIES_R_INIT_DEFAULT_VALUE);
-
   }
 
   /** Given the state of the model, update the resetPulseType x and y axis data arrays. */
@@ -219,12 +218,6 @@ public class ControlModel extends Model {
   public void setStartToggled(boolean isStartToggled) {
 
     this.isStartToggled = isStartToggled;
-  }
-
-  @Override
-  public ExperimentPreferences initAppPreferences() {
-
-    return new ConductancePreferences();
   }
 
   public double getCalculatedFrequency() {

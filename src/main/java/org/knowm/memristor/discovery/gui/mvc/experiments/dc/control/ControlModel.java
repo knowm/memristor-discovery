@@ -43,13 +43,10 @@ public class ControlModel extends Model {
   private boolean isStartToggled = false;
 
   /** Constructor */
-  public ControlModel() {
-
-    updateWaveformChartData();
-  }
+  public ControlModel() {}
 
   @Override
-  public void doLoadModelFromPrefs() {
+  public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {
 
     waveform =
         DCPreferences.Waveform.valueOf(
@@ -69,6 +66,7 @@ public class ControlModel extends Model {
     pulseNumber =
         experimentPreferences.getInteger(
             DCPreferences.NUM_PULSES_INIT_KEY, DCPreferences.NUM_PULSES_INIT_DEFAULT_VALUE);
+    updateWaveformChartData();
   }
 
   void updateWaveformChartData() {
@@ -180,11 +178,5 @@ public class ControlModel extends Model {
   public void setStartToggled(boolean isStartToggled) {
 
     this.isStartToggled = isStartToggled;
-  }
-
-  @Override
-  public ExperimentPreferences initAppPreferences() {
-
-    return new DCPreferences();
   }
 }

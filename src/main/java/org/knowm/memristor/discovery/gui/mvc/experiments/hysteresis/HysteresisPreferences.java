@@ -38,20 +38,21 @@ public class HysteresisPreferences extends ExperimentPreferences {
   public static final boolean IS_VIN = true;
   public static final int CAPTURE_BUFFER_SIZE = 100;
   public static final int CAPTURE_PERIOD_COUNT = 1;
-  public static final String WAVEFORM_INIT_STRING_DEFAULT_VALUE = "Sine";
-  public static final float OFFSET_INIT_FLOAT_DEFAULT_VALUE = 0.0f;
-  public static final float AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE = 0.5f;
-  public static final int FREQUENCY_INIT_DEFAULT_VALUE = 100;
-  public static final int SERIES_R_INIT_DEFAULT_VALUE = 5_000;
-  public static final float K_INIT_FLOAT_DEFAULT_VALUE = 1.0f;
+
   // ALREADY IN PREFERENCES
   private static final String PREFIX = "HYSTERESIS_";
   public static final String WAVEFORM_INIT_STRING_KEY = PREFIX + "WAVEFORM_INIT_STRING_KEY";
+  public static final String WAVEFORM_INIT_STRING_DEFAULT_VALUE = "Sine";
   public static final String OFFSET_INIT_FLOAT_KEY = PREFIX + "OFFSET_INIT_FLOAT_KEY";
+  public static final float OFFSET_INIT_FLOAT_DEFAULT_VALUE = 0.0f;
   public static final String AMPLITUDE_INIT_FLOAT_KEY = PREFIX + "AMPLITUDE_INIT_FLOAT_KEY";
+  public static final float AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE = 0.5f;
   public static final String FREQUENCY_INIT_KEY = PREFIX + "FREQUENCY_INIT_KEY";
+  public static final int FREQUENCY_INIT_DEFAULT_VALUE = 100;
   public static final String SERIES_R_INIT_KEY = PREFIX + "SERIES_R_INIT_KEY";
+  public static final int SERIES_R_INIT_DEFAULT_VALUE = 5_000;
   public static final String K_INIT_FLOAT_KEY = PREFIX + "K_INIT_FLOAT_KEY";
+  public static final float K_INIT_FLOAT_DEFAULT_VALUE = 1.0f;
 
   /** Constructor */
   public HysteresisPreferences() {

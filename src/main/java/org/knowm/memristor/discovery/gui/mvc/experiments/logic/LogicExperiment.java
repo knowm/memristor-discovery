@@ -34,6 +34,7 @@ import java.util.List;
 import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.View;
@@ -55,6 +56,7 @@ public class LogicExperiment extends Experiment {
   private AHaHController_21 aHaHController;
   private ControlPanel controlPanel;
   private ResultPanel resultPanel;
+
   // SwingWorkers
   private SwingWorker routineWorker;
   private SwingWorker runTrialsWorker;
@@ -72,10 +74,11 @@ public class LogicExperiment extends Experiment {
 
     controlModel = new ControlModel();
     controlPanel = new ControlPanel();
-    new ControlController(controlPanel, controlModel, dwfProxy);
-
     resultModel = new ResultModel();
     resultPanel = new ResultPanel();
+
+    refreshModelsFromPreferences();
+    new ControlController(controlPanel, controlModel, dwfProxy);
     resultController = new ResultController(resultPanel, resultModel);
 
     aHaHController = new AHaHController_21(controlModel);
@@ -272,6 +275,12 @@ public class LogicExperiment extends Experiment {
   public ExperimentResultsPanel getResultPanel() {
 
     return resultPanel;
+  }
+
+  @Override
+  public ExperimentPreferences initAppPreferences() {
+
+    return new LogicPreferences();
   }
 
   private class ResetWorker extends SwingWorker<Boolean, Double> {

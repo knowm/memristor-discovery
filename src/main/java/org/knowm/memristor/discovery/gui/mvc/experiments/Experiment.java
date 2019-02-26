@@ -41,13 +41,20 @@ public abstract class Experiment implements PropertyChangeListener {
 
   private final boolean isV1Board;
 
+  protected ExperimentPreferences experimentPreferences;
+
   /** Constructor */
   public Experiment(DWFProxy dwfProxy, Container mainFrameContainer, boolean isV1Board) {
 
     this.dwfProxy = dwfProxy;
     this.mainFrameContainer = mainFrameContainer;
     this.isV1Board = isV1Board;
+
+    this.experimentPreferences = initAppPreferences();
   }
+
+  // TODO Do we need all these???
+  public abstract ExperimentPreferences initAppPreferences();
 
   public abstract Model getControlModel();
 
@@ -94,16 +101,18 @@ public abstract class Experiment implements PropertyChangeListener {
     // take care of anything else that may need to ccur after the main GUI structure has been setup
     doCreateAndShowGUI();
 
-
     // Here additional CaptureWorkers are added to addition buttons needed for the experiment
     addWorkersToButtonEvents(); // after adding the default start/stop action so actions can be
     // overridden.
   }
 
-  /** This is called from `MemristorDiscovery` when the Preferences window is closed */
-  public void refreshModelFromPreferences() {
+  /**
+   * This is called from `MemristorDiscovery` when the Preferences window is closed and by the
+   * Experiments when their models are created
+   */
+  public void refreshModelsFromPreferences() {
 
-    getControlModel().loadModelFromPrefs();
-    getResultModel().loadModelFromPrefs();
+    getControlModel().loadModelFromPrefs(experimentPreferences);
+    getResultModel().loadModelFromPrefs(experimentPreferences);
   }
 }

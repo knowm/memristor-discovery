@@ -33,6 +33,7 @@ import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.core.PostProcessDataUtils;
 import org.knowm.memristor.discovery.core.WaveformUtils;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
@@ -69,11 +70,12 @@ public class ConductanceExperiment extends Experiment {
 
     controlModel = new ControlModel();
     controlPanel = new ControlPanel();
+    resultModel = new ResultModel();
     resultPanel = new ResultPanel();
 
-    resultModel = new ResultModel();
-    resultController = new ResultController(resultPanel, resultModel);
+    refreshModelsFromPreferences();
     new ControlController(controlPanel, controlModel, dwfProxy);
+    resultController = new ResultController(resultPanel, resultModel);
   }
 
   @Override
@@ -171,6 +173,12 @@ public class ConductanceExperiment extends Experiment {
   public ExperimentResultsPanel getResultPanel() {
 
     return resultPanel;
+  }
+
+  @Override
+  public ExperimentPreferences initAppPreferences() {
+
+    return new ConductancePreferences();
   }
 
   private class ResetCaptureWorker extends SwingWorker<Boolean, double[][]> {

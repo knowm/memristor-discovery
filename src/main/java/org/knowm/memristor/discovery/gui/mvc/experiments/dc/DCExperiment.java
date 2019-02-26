@@ -33,6 +33,7 @@ import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.core.PostProcessDataUtils;
 import org.knowm.memristor.discovery.core.WaveformUtils;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentResultsPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.View;
@@ -68,11 +69,12 @@ public class DCExperiment extends Experiment {
 
     controlModel = new ControlModel();
     controlPanel = new ControlPanel();
-    resultPanel = new ResultPanel();
-
     resultModel = new ResultModel();
+    resultPanel = new ResultPanel(); //
+
+    refreshModelsFromPreferences();
+    new ControlController(controlPanel, controlModel, dwfProxy);
     resultController = new ResultController(resultPanel, resultModel);
-    new ControlController(controlPanel, resultPanel, controlModel, dwfProxy);
   }
 
   @Override
@@ -83,7 +85,8 @@ public class DCExperiment extends Experiment {
         new PropertyChangeEvent(this, Model.EVENT_WAVEFORM_UPDATE, true, false);
     propertyChange(evt);
 
-    // when the control panel is manipulated, we need to communicate the changes to the results panel
+    // when the control panel is manipulated, we need to communicate the changes to the results
+    // panel
     getControlModel().addListener(this);
   }
 
@@ -139,6 +142,38 @@ public class DCExperiment extends Experiment {
   public ExperimentResultsPanel getResultPanel() {
 
     return resultPanel;
+  }
+
+  /**
+   * These property change events are triggered in the controlModel in the case where the underlying
+   * controlModel is updated. Here, the controller can respond to those events and make sure the
+   * corresponding GUI components get updated.
+   */
+  @Override
+  public void propertyChange(PropertyChangeEvent evt) {
+
+    switch (evt.getPropertyName()) {
+      case Model.EVENT_WAVEFORM_UPDATE:
+        if (!controlModel.isStartToggled()) {
+
+          resultPanel.switch2WaveformChart();
+          resultController.updateWaveformChart(
+              controlModel.getWaveformTimeData(),
+              controlModel.getWaveformAmplitudeData(),
+              controlModel.getAmplitude(),
+              controlModel.getPeriod());
+        }
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  @Override
+  public ExperimentPreferences initAppPreferences() {
+
+    return new DCPreferences();
   }
 
   private class CaptureWorker extends SwingWorker<Boolean, double[][]> {
@@ -270,32 +305,6 @@ public class DCExperiment extends Experiment {
         resultPanel.switch2GVChart();
       }
       controlPanel.getStartStopButton().doClick();
-    }
-  }
-  /**
-   * These property change events are triggered in the controlModel in the case where the underlying
-   * controlModel is updated. Here, the controller can respond to those events and make sure the
-   * corresponding GUI components get updated.
-   */
-
-  @Override
-  public void propertyChange(PropertyChangeEvent evt) {
-
-    switch (evt.getPropertyName()) {
-      case Model.EVENT_WAVEFORM_UPDATE:
-        if (!controlModel.isStartToggled()) {
-
-          resultPanel.switch2WaveformChart();
-          resultController.updateWaveformChart(
-              controlModel.getWaveformTimeData(),
-              controlModel.getWaveformAmplitudeData(),
-              controlModel.getAmplitude(),
-              controlModel.getPeriod());
-        }
-        break;
-
-      default:
-        break;
     }
   }
 }

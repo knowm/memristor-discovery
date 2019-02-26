@@ -49,12 +49,6 @@ public class PulsePreferencesPanel extends ExperimentPreferencesPanel {
   private JLabel numPulsesLabel;
   private JTextField numPulsesTextField;
 
-  private JLabel maxSliderVoltageLabel;
-  private JTextField maxSliderVoltageTextField;
-
-  private JLabel maxSliderPulseNumberLabel;
-  private JTextField maxSliderPulseNumberTextField;
-
   public PulsePreferencesPanel(JFrame owner, String experimentName) {
 
     super(owner, experimentName);
@@ -137,46 +131,6 @@ public class PulsePreferencesPanel extends ExperimentPreferencesPanel {
                 PulsePreferences.NUM_PULSES_INIT_KEY,
                 PulsePreferences.NUM_PULSES_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(numPulsesTextField, gc);
-
-    // Slider control--->
-
-    gc.gridx = 0;
-    gc.gridy++;
-    preferencesPanel.add(new JLabel("Max Slider Controls"), gc);
-
-    gc.gridx = 1;
-    preferencesPanel.add(new JLabel("Requires Experiment Restart"), gc);
-
-    // voltage amplitude
-    gc.gridy++;
-    gc.gridx = 0;
-    this.maxSliderVoltageLabel = new JLabel("Max Amplitude [V]");
-    preferencesPanel.add(maxSliderVoltageLabel, gc);
-
-    gc.gridx = 1;
-    this.maxSliderVoltageTextField = new JTextField(12);
-
-    this.maxSliderVoltageTextField.setText(
-        String.valueOf(
-            experimentPreferences.getFloat(
-                PulsePreferences.MAX_SLIDER_VOLTAGE_INIT_KEY,
-                PulsePreferences.MAX_SLIDER_VOLTAGE_INIT_DEFAULT_VALUE)));
-    preferencesPanel.add(maxSliderVoltageTextField, gc);
-
-    // pulse number
-    gc.gridy++;
-    gc.gridx = 0;
-    this.maxSliderPulseNumberLabel = new JLabel("Max Pulse Number");
-    preferencesPanel.add(maxSliderPulseNumberLabel, gc);
-
-    gc.gridx = 1;
-    this.maxSliderPulseNumberTextField = new JTextField(12);
-    this.maxSliderPulseNumberTextField.setText(
-        String.valueOf(
-            experimentPreferences.getInteger(
-                PulsePreferences.MAX_SLIDER_PULSE_NUM_INIT_KEY,
-                PulsePreferences.MAX_SLIDER_PULSE_NUM_INIT_DEFAULT_VALUE)));
-    preferencesPanel.add(maxSliderPulseNumberTextField, gc);
   }
 
   @Override
@@ -192,18 +146,6 @@ public class PulsePreferencesPanel extends ExperimentPreferencesPanel {
         PulsePreferences.PULSE_WIDTH_INIT_KEY, Integer.parseInt(pulseWidthTextField.getText()));
     experimentPreferences.setInteger(
         PulsePreferences.SAMPLE_RATE_INIT_KEY, Integer.parseInt(sampleRateTextField.getText()));
-
-    // max 5 volts
-    float maxVoltage = Float.parseFloat(maxSliderVoltageTextField.getText());
-    if (maxVoltage > 5) {
-      maxVoltage = 5;
-    }
-
-    experimentPreferences.setFloat(PulsePreferences.MAX_SLIDER_VOLTAGE_INIT_KEY, maxVoltage);
-
-    experimentPreferences.setInteger(
-        PulsePreferences.MAX_SLIDER_PULSE_NUM_INIT_KEY,
-        Integer.parseInt(maxSliderPulseNumberTextField.getText()));
   }
 
   @Override

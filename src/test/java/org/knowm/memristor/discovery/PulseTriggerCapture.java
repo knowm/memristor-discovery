@@ -23,8 +23,8 @@
  */
 package org.knowm.memristor.discovery;
 
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
 import org.knowm.memristor.discovery.core.WaveformUtils;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
 import org.knowm.waveforms4j.DWF;
 import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.XYChart;

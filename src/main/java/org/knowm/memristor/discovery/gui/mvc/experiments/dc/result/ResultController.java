@@ -127,6 +127,17 @@ public class ResultController {
                 }
               }
             });
+    resultPanel
+        .getCaptureButton()
+        .addActionListener(
+            new ActionListener() {
+
+              @Override
+              public void actionPerformed(ActionEvent e) {
+
+                resultPanel.switch2CaptureChart();
+              }
+            });
   }
 
   public void updateWaveformChart(

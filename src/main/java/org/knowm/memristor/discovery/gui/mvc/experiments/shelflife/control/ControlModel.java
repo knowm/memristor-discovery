@@ -39,7 +39,7 @@ public class ControlModel extends Model {
   public ControlModel() {}
 
   @Override
-  public void doLoadModelFromPrefs() {
+  public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {
 
     // load model from prefs
     timeUnit =
@@ -84,12 +84,6 @@ public class ControlModel extends Model {
   public void setRepeatInterval(int repeatInterval) {
     this.repeatInterval = repeatInterval;
     swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
-  }
-
-  @Override
-  public ExperimentPreferences initAppPreferences() {
-
-    return new ShelfLifePreferences();
   }
 
   public boolean isStartToggled() {

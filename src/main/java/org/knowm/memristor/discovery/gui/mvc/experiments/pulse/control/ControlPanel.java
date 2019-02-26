@@ -63,7 +63,7 @@ public class ControlPanel extends View {
   private JComboBox<Waveform> waveformComboBox;
 
   /** Constructor */
-  public ControlPanel(ControlModel controlModel) {
+  public ControlPanel() {
 
     setLayout(new GridBagLayout());
     GridBagConstraints c = new GridBagConstraints();
@@ -111,9 +111,8 @@ public class ControlPanel extends View {
     // experimentPreferences.getInteger(PulsePreferences.MAX_SLIDER_VOLTAGE_INIT_KEY,
     // PulsePreferences.MAX_SLIDER_VOLTAGE_INIT_DEFAULT_VALUE)
 
-    int amplitude = (int) (100 * controlModel.getMaxSliderVoltageAmplitude());
 
-    amplitudeSlider = new JSlider(JSlider.HORIZONTAL, -amplitude, amplitude, 0);
+    amplitudeSlider = new JSlider(JSlider.HORIZONTAL, -250, 200, 0);
     amplitudeSlider.setBorder(BorderFactory.createTitledBorder("Amplitude [V]"));
     amplitudeSlider.setMajorTickSpacing(50);
     amplitudeSlider.setMinorTickSpacing(10);
@@ -122,10 +121,12 @@ public class ControlPanel extends View {
     amplitudeSlider.setSnapToTicks(true);
     Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
 
-    for (int i = -amplitude; i <= amplitude; i += 100) {
-      labelTable.put(i, new JLabel(i / 100 + ""));
-    }
-
+    labelTable.put(-250, new JLabel("-2.5"));
+    labelTable.put(-200, new JLabel("-2"));
+    labelTable.put(-100, new JLabel("-1"));
+    labelTable.put(0, new JLabel("0"));
+    labelTable.put(100, new JLabel("1"));
+    labelTable.put(200, new JLabel("2"));
     amplitudeSlider.setLabelTable(labelTable);
 
     c.gridy++;
@@ -164,9 +165,8 @@ public class ControlPanel extends View {
     c.gridy++;
     add(pulseWidthSliderNs, c);
 
-    int maxPulseNumber = controlModel.getMaxSliderPulseNumber();
+    pulseNumberSlider = new JSlider(JSlider.HORIZONTAL, 1, 10, 1);
 
-    pulseNumberSlider = new JSlider(JSlider.HORIZONTAL, 1, maxPulseNumber, 1);
     pulseNumberSlider.setBorder(BorderFactory.createTitledBorder("Pulse Number"));
     pulseNumberSlider.setMinorTickSpacing(1);
     pulseNumberSlider.setPaintTicks(true);
@@ -174,12 +174,10 @@ public class ControlPanel extends View {
     pulseNumberSlider.setSnapToTicks(true);
     labelTable = new Hashtable<>();
 
-    for (int i = 1; i <= maxPulseNumber; i++) {
+    labelTable.put(1, new JLabel("1"));
+    labelTable.put(5, new JLabel("5"));
+    labelTable.put(10, new JLabel("10"));
 
-      if (i % 5 == 0 || i == 1 || i == maxPulseNumber) {
-        labelTable.put(i, new JLabel("" + i));
-      }
-    }
 
     pulseNumberSlider.setLabelTable(labelTable);
     c.gridy++;

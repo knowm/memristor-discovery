@@ -44,10 +44,5 @@ public class ResultModel extends Model {
   }
 
   @Override
-  public ExperimentPreferences initAppPreferences() {
-    return null;
-  }
-
-  @Override
-  public void doLoadModelFromPrefs() {}
+  public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {}
 }

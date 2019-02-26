@@ -47,11 +47,11 @@ public class ControlModel extends Model {
   /** Constructor */
   public ControlModel() {
 
-    updateWaveformChartData();
+
   }
 
   @Override
-  public void doLoadModelFromPrefs() {
+  public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {
 
     // load model from prefs
     seriesResistance =
@@ -76,6 +76,8 @@ public class ControlModel extends Model {
         experimentPreferences.getInteger(
             HysteresisPreferences.FREQUENCY_INIT_KEY,
             HysteresisPreferences.FREQUENCY_INIT_DEFAULT_VALUE);
+
+    updateWaveformChartData();
   }
 
   /** Given the state of the model, update the waveform x and y axis data arrays. */
@@ -189,11 +191,5 @@ public class ControlModel extends Model {
   public void setStartToggled(boolean isStartToggled) {
 
     this.isStartToggled = isStartToggled;
-  }
-
-  @Override
-  public ExperimentPreferences initAppPreferences() {
-
-    return new HysteresisPreferences();
   }
 }

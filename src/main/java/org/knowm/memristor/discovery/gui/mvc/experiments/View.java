@@ -33,6 +33,7 @@ public abstract class View extends JPanel {
 
   public final JButton startStopButton;
   public final JLabel logoLabel;
+
   public View() {
 
     startStopButton = new JButton("Start");

@@ -51,8 +51,6 @@ public class ControlModel extends Model {
   private double appliedCurrent;
   private double appliedEnergy;
   private double appliedMemristorEnergy;
-  private double maxSliderVoltageAmplitude;
-  private int maxSliderPulseNumber;
   private double lastG;
   private int sampleRate;
 
@@ -61,11 +59,10 @@ public class ControlModel extends Model {
   /** Constructor */
   public ControlModel() {
 
-    updateWaveformChartData();
   }
 
   @Override
-  public void doLoadModelFromPrefs() {
+  public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {
 
     waveform =
         PulsePreferences.Waveform.valueOf(
@@ -81,15 +78,6 @@ public class ControlModel extends Model {
             PulsePreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
     appliedAmplitude = amplitude;
 
-    maxSliderVoltageAmplitude =
-        experimentPreferences.getFloat(
-            PulsePreferences.MAX_SLIDER_VOLTAGE_INIT_KEY,
-            PulsePreferences.MAX_SLIDER_VOLTAGE_INIT_DEFAULT_VALUE);
-
-    maxSliderPulseNumber =
-        experimentPreferences.getInteger(
-            PulsePreferences.MAX_SLIDER_PULSE_NUM_INIT_KEY,
-            PulsePreferences.MAX_SLIDER_PULSE_NUM_INIT_DEFAULT_VALUE);
 
     pulseWidth =
         experimentPreferences.getInteger(
@@ -100,6 +88,7 @@ public class ControlModel extends Model {
     sampleRate =
         experimentPreferences.getInteger(
             PulsePreferences.SAMPLE_RATE_INIT_KEY, PulsePreferences.SAMPLE_RATE_INIT_DEFAULT_VALUE);
+    updateWaveformChartData();
   }
 
   /** Given the state of the model, update the waveform x and y axis data arrays. */
@@ -271,12 +260,6 @@ public class ControlModel extends Model {
     return ohmFormatter.format(getLastR());
   }
 
-  @Override
-  public ExperimentPreferences initAppPreferences() {
-
-    return new PulsePreferences();
-  }
-
   public void updateEnergyData() {
 
     // calculate applied voltage
@@ -318,13 +301,6 @@ public class ControlModel extends Model {
     }
   }
 
-  public double getMaxSliderVoltageAmplitude() {
-    return maxSliderVoltageAmplitude;
-  }
-
-  public int getMaxSliderPulseNumber() {
-    return maxSliderPulseNumber;
-  }
 
   public boolean isStartToggled() {
 

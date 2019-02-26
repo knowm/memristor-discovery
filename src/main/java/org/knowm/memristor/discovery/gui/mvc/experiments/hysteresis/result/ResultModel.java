@@ -119,13 +119,7 @@ public class ResultModel extends Model {
   }
 
   @Override
-  public ExperimentPreferences initAppPreferences() {
-
-    return new HysteresisPreferences();
-  }
-
-  @Override
-  public void doLoadModelFromPrefs() {
+  public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {
 
     k =
         experimentPreferences.getFloat(
