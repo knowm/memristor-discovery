@@ -66,6 +66,9 @@ public class ShelfLifeExperiment extends Experiment {
     resultController = new ResultController(resultPanel, resultModel);
   }
 
+  @Override
+  public void doCreateAndShowGUI() {}
+
   /*
    * Here action listeners are attached to the widgets in the control panel and mapped to a worker, also defined here in the experiment.
    */

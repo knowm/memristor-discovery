@@ -77,6 +77,9 @@ public class ConductanceExperiment extends Experiment {
   }
 
   @Override
+  public void doCreateAndShowGUI() {}
+
+  @Override
   public void addWorkersToButtonEvents() {
     controlPanel
         .getStartStopButton()

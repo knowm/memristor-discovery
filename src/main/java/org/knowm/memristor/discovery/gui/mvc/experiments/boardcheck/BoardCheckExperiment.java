@@ -105,6 +105,9 @@ public class BoardCheckExperiment extends Experiment {
     muxController = new MuxController();
   }
 
+  @Override
+  public void doCreateAndShowGUI() {}
+
   /*
    * Here action listeners are attached to the widgets in the control panel and mapped to a worker, also defined here in the experiment.
    */

@@ -79,6 +79,19 @@ public class PulseExperiment extends Experiment {
   }
 
   @Override
+  public void doCreateAndShowGUI() {
+
+    //     trigger waveform update event
+    PropertyChangeEvent evt =
+        new PropertyChangeEvent(this, Model.EVENT_WAVEFORM_UPDATE, true, false);
+    propertyChange(evt);
+
+    // when the control panel is manipulated, we need to communicate the changes to the results
+    // panel
+    getControlModel().addListener(this);
+  }
+
+  @Override
   public void addWorkersToButtonEvents() {
 
     controlPanel
@@ -107,32 +120,6 @@ public class PulseExperiment extends Experiment {
                 }
               }
             });
-  }
-
-  /**
-   * These property change events are triggered in the controlModel in the case where the underlying
-   * controlModel is updated. Here, the controller can respond to those events and make sure the
-   * corresponding GUI components get updated.
-   */
-  @Override
-  public void propertyChange(PropertyChangeEvent evt) {
-
-    String propName = evt.getPropertyName();
-
-    switch (propName) {
-      case Model.EVENT_WAVEFORM_UPDATE:
-        resultPanel.switch2WaveformChart();
-        resultController.updateWaveformChart(
-            controlModel.getWaveformTimeData(),
-            controlModel.getWaveformAmplitudeData(),
-            controlModel.getAmplitude(),
-            controlModel.getPulseWidth());
-
-        break;
-
-      default:
-        break;
-    }
   }
 
   @Override
@@ -416,6 +403,27 @@ public class PulseExperiment extends Experiment {
             controlModel.getAppliedEnergy(),
             controlModel.getAppliedMemristorEnergy());
       }
+    }
+  }
+
+  @Override
+  public void propertyChange(PropertyChangeEvent evt) {
+
+    String propName = evt.getPropertyName();
+
+    switch (propName) {
+      case Model.EVENT_WAVEFORM_UPDATE:
+        resultPanel.switch2WaveformChart();
+        resultController.updateWaveformChart(
+            controlModel.getWaveformTimeData(),
+            controlModel.getWaveformAmplitudeData(),
+            controlModel.getAmplitude(),
+            controlModel.getPulseWidth());
+
+        break;
+
+      default:
+        break;
     }
   }
 }

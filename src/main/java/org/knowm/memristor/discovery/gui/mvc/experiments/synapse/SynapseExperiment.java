@@ -89,6 +89,9 @@ public class SynapseExperiment extends Experiment {
   }
 
   @Override
+  public void doCreateAndShowGUI() {}
+
+  @Override
   public void addWorkersToButtonEvents() {
 
     controlPanel.clearPlotButton.addActionListener(
@@ -139,29 +142,6 @@ public class SynapseExperiment extends Experiment {
             initSynapseWorker.execute();
           }
         });
-  }
-
-  /**
-   * These property change events are triggered in the controlModel in the case where the underlying
-   * controlModel is updated. Here, the controller can respond to those events and make sure the
-   * corresponding GUI components get updated.
-   */
-  @Override
-  public void propertyChange(PropertyChangeEvent evt) {
-
-    String propName = evt.getPropertyName();
-
-    switch (propName) {
-      case EVENT_INSTRUCTION_UPDATE:
-
-        // System.out.println(controlModel.getInstruction());
-        // dwfProxy.setUpper8IOStates(controlModel.getInstruction().getBits());
-
-        break;
-
-      default:
-        break;
-    }
   }
 
   @Override
@@ -385,6 +365,29 @@ public class SynapseExperiment extends Experiment {
       }
 
       return true;
+    }
+  }
+  /**
+   * These property change events are triggered in the controlModel in the case where the underlying
+   * controlModel is updated. Here, the controller can respond to those events and make sure the
+   * corresponding GUI components get updated.
+   */
+  @Override
+  public void propertyChange(PropertyChangeEvent evt) {
+
+    String propName = evt.getPropertyName();
+
+    switch (propName) {
+      case EVENT_INSTRUCTION_UPDATE:
+
+        // TODO handle instruction updates here.
+        // System.out.println(controlModel.getInstruction());
+        // dwfProxy.setUpper8IOStates(controlModel.getInstruction().getBits());
+
+        break;
+
+      default:
+        break;
     }
   }
 }

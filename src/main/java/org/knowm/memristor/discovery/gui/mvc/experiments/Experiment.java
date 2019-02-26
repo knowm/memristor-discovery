@@ -27,7 +27,6 @@ import static javax.swing.BorderFactory.createEmptyBorder;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.JScrollPane;
 import org.knowm.memristor.discovery.DWFProxy;
@@ -60,6 +59,8 @@ public abstract class Experiment implements PropertyChangeListener {
 
   public abstract void addWorkersToButtonEvents();
 
+  public abstract void doCreateAndShowGUI();
+
   public void createAndShowGUI() {
 
     // //////////////////////
@@ -74,27 +75,14 @@ public abstract class Experiment implements PropertyChangeListener {
     jScrollPane.setBorder(createEmptyBorder());
     mainFrameContainer.add(jScrollPane, BorderLayout.WEST);
 
-    // TODO move this out
-    // trigger result of waveform
-    PropertyChangeEvent evt =
-        new PropertyChangeEvent(this, Model.EVENT_WAVEFORM_UPDATE, true, false);
-    propertyChange(evt);
-
-    // TODO add the Results model here too??
-    getControlModel().addListener(this);
-
-    // Here additional CaptureWorkers are added to addition buttons needed for the experiment
-    addWorkersToButtonEvents(); // after adding the default start/stop action so actions can be
-    // overridden.
-
     // //////////////////////
-    // Plot Panel //////////
+    // RESULTS Panel //////////
     // //////////////////////
 
     mainFrameContainer.add(getResultPanel(), BorderLayout.CENTER);
 
     // //////////////////////
-    // Plot Panel //////////
+    // Right Bar Panel //////////
     // //////////////////////
 
     if (isV1Board) {
@@ -102,11 +90,17 @@ public abstract class Experiment implements PropertyChangeListener {
       RightBarController rightBarController = new RightBarController(rightBarPanel, dwfProxy);
       mainFrameContainer.add(rightBarPanel, BorderLayout.EAST);
     }
+
+    // take care of anything else that may need to ccur after the main GUI structure has been setup
+    doCreateAndShowGUI();
+
+
+    // Here additional CaptureWorkers are added to addition buttons needed for the experiment
+    addWorkersToButtonEvents(); // after adding the default start/stop action so actions can be
+    // overridden.
   }
 
-  /**
-   * This is called from `MemristorDiscovery` when the Preferences window is closed
-   */
+  /** This is called from `MemristorDiscovery` when the Preferences window is closed */
   public void refreshModelFromPreferences() {
 
     getControlModel().loadModelFromPrefs();

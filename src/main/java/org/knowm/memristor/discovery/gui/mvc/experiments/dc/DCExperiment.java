@@ -76,6 +76,18 @@ public class DCExperiment extends Experiment {
   }
 
   @Override
+  public void doCreateAndShowGUI() {
+
+    //     trigger waveform update event
+    PropertyChangeEvent evt =
+        new PropertyChangeEvent(this, Model.EVENT_WAVEFORM_UPDATE, true, false);
+    propertyChange(evt);
+
+    // when the control panel is manipulated, we need to communicate the changes to the results panel
+    getControlModel().addListener(this);
+  }
+
+  @Override
   public void addWorkersToButtonEvents() {
 
     controlPanel
@@ -104,32 +116,6 @@ public class DCExperiment extends Experiment {
                 }
               }
             });
-  }
-
-  /**
-   * These property change events are triggered in the controlModel in the case where the underlying
-   * controlModel is updated. Here, the controller can respond to those events and make sure the
-   * corresponding GUI components get updated.
-   */
-  @Override
-  public void propertyChange(PropertyChangeEvent evt) {
-
-    switch (evt.getPropertyName()) {
-      case Model.EVENT_WAVEFORM_UPDATE:
-        if (!controlModel.isStartToggled()) {
-
-          resultPanel.switch2WaveformChart();
-          resultController.updateWaveformChart(
-              controlModel.getWaveformTimeData(),
-              controlModel.getWaveformAmplitudeData(),
-              controlModel.getAmplitude(),
-              controlModel.getPeriod());
-        }
-        break;
-
-      default:
-        break;
-    }
   }
 
   @Override
@@ -284,6 +270,32 @@ public class DCExperiment extends Experiment {
         resultPanel.switch2GVChart();
       }
       controlPanel.getStartStopButton().doClick();
+    }
+  }
+  /**
+   * These property change events are triggered in the controlModel in the case where the underlying
+   * controlModel is updated. Here, the controller can respond to those events and make sure the
+   * corresponding GUI components get updated.
+   */
+
+  @Override
+  public void propertyChange(PropertyChangeEvent evt) {
+
+    switch (evt.getPropertyName()) {
+      case Model.EVENT_WAVEFORM_UPDATE:
+        if (!controlModel.isStartToggled()) {
+
+          resultPanel.switch2WaveformChart();
+          resultController.updateWaveformChart(
+              controlModel.getWaveformTimeData(),
+              controlModel.getWaveformAmplitudeData(),
+              controlModel.getAmplitude(),
+              controlModel.getPeriod());
+        }
+        break;
+
+      default:
+        break;
     }
   }
 }

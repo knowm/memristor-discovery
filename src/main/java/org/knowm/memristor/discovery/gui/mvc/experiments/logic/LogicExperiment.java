@@ -83,6 +83,9 @@ public class LogicExperiment extends Experiment {
   }
 
   @Override
+  public void doCreateAndShowGUI() {}
+
+  @Override
   public void addWorkersToButtonEvents() {
 
     controlPanel.clearPlotButton.addActionListener(
