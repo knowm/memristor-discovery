@@ -28,6 +28,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
@@ -35,6 +36,7 @@ import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import org.knowm.memristor.discovery.DWFProxy;
+import org.knowm.memristor.discovery.core.FileUtils;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Controller;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 
@@ -72,6 +74,7 @@ public class ControlController extends Controller {
 
   private void initGUIComponentsFromModel() {
 
+    controlPanel.getSaveDirectoryTextField().setText("" + controlModel.getSaveDirectory());
     controlPanel.getTimeunitComboBox().setModel(new DefaultComboBoxModel<>(TimeUnit.values()));
     controlPanel.getTimeunitComboBox().setSelectedItem(controlModel.getTimeUnit());
     controlPanel.getSeriesTextField().setText("" + controlModel.getSeriesResistance());
@@ -81,6 +84,23 @@ public class ControlController extends Controller {
   /** Here, all the action listeners are attached to the GUI components */
   @Override
   public void doSetUpViewEvents() {
+
+    controlPanel
+        .getSaveDirectoryButton()
+        .addActionListener(
+            new ActionListener() {
+
+              @Override
+              public void actionPerformed(ActionEvent e) {
+
+                try {
+                  String saveDirectory = FileUtils.showSaveAsDialog(controlPanel);
+                  controlModel.setSaveDirectory(saveDirectory);
+                } catch (IOException e1) {
+                  e1.printStackTrace();
+                }
+              }
+            });
 
     controlPanel
         .getTimeunitComboBox()

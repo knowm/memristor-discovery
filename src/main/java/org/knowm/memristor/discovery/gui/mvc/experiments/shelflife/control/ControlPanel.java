@@ -42,6 +42,11 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
  */
 public class ControlPanel extends ControlView {
 
+  private  final JLabel saveDirectoryLabel;
+  private final  JButton saveDirectoryButton;
+  private  final JTextField saveDirectoryTextField;
+
+
   private final JLabel timeUnitLabel;
   private final JComboBox<TimeUnit> timeunitComboBox;
 
@@ -60,6 +65,26 @@ public class ControlPanel extends ControlView {
     GridBagConstraints c = new GridBagConstraints();
     c.fill = GridBagConstraints.HORIZONTAL;
     setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+
+    saveDirectoryLabel = new JLabel("Save Directory");
+    saveDirectoryLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.gridy++;
+    c.insets = new Insets(0, 10, 4, 0);
+    add(saveDirectoryLabel, c);
+
+    saveDirectoryButton = new JButton("Choose");
+    saveDirectoryButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.gridy++;
+    c.insets = new Insets(0, 0, 0, 0);
+    add(saveDirectoryButton, c);
+
+
+    saveDirectoryTextField = new JTextField();
+    saveDirectoryTextField.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.gridy++;
+    c.insets = new Insets(0, 5, 14, 5);
+    add(saveDirectoryTextField, c);
+
 
     timeUnitLabel = new JLabel("Time Unit");
     timeUnitLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -109,10 +134,20 @@ public class ControlPanel extends ControlView {
 
   public void enableAllChildComponents(boolean enabled) {
 
+    saveDirectoryButton.setEnabled(enabled);
+    saveDirectoryTextField.setEnabled(enabled);
     timeunitComboBox.setEnabled(enabled);
     intervalTextField.setEnabled(enabled);
     seriesTextField.setEnabled(enabled);
     startStopButton.setEnabled(enabled);
+  }
+
+  public JButton getSaveDirectoryButton() {
+    return saveDirectoryButton;
+  }
+
+  public JTextField getSaveDirectoryTextField() {
+    return saveDirectoryTextField;
   }
 
   public JTextField getIntervalTextField() {

@@ -162,7 +162,7 @@ public class ShelfLifePreferencesPanel extends ExperimentPreferencesPanel {
   public void doSavePreferences() {
 
     experimentPreferences.setString(
-        ShelfLifePreferences.SAVE_DIRECTORY_INIT_KEY, saveDirectory.trim());
+        ShelfLifePreferences.SAVE_DIRECTORY_INIT_KEY, saveDirectoryTextField.getText().trim());
     experimentPreferences.setString(
         ShelfLifePreferences.TIME_UNIT_INIT_KEY,
         timeUnitComboBox.getSelectedItem().toString().trim());

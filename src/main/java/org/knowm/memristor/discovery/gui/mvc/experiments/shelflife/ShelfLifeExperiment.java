@@ -27,6 +27,12 @@ import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
@@ -42,6 +48,10 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.result.Result
 import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.result.ResultPanel;
 
 public class ShelfLifeExperiment extends Experiment {
+
+  private static final DateFormat dateTimeFormat =
+      new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+  private String cSVFileName;
 
   // Control and Result MVC
   private final ControlModel controlModel;
@@ -90,6 +100,10 @@ public class ShelfLifeExperiment extends Experiment {
                   controlModel.setStartToggled(true);
                   controlPanel.getStartStopButton().setText("Stop");
 
+                  // clear the console
+                  resultController.clear();
+
+                  // start capture
                   experimentCaptureWorker = new CaptureWorker();
                   experimentCaptureWorker.execute();
                 } else {
@@ -146,29 +160,44 @@ public class ShelfLifeExperiment extends Experiment {
     @Override
     protected Boolean doInBackground() throws Exception {
 
-      while (!isCancelled()) {
+      String saveFilePath =
+          controlModel.getSaveDirectory() + "/" + getDateTimeString(new Date()) + ".csv";
+      try (PrintWriter printWriter =
+          new PrintWriter(new BufferedWriter(new FileWriter(saveFilePath, true)))) {
 
-        // TODO run a test and print a CSV line to the console.
+        while (!isCancelled()) {
 
-        StringBuilder csvBuilder = new StringBuilder();
-        csvBuilder.append("this");
-        csvBuilder.append(",");
-        csvBuilder.append("is");
-        csvBuilder.append(",");
-        csvBuilder.append("fun");
-        csvBuilder.append(",");
-        csvBuilder.append(controlModel.getTimeUnit());
-        csvBuilder.append(",");
-        csvBuilder.append(controlModel.getRepeatInterval());
-        csvBuilder.append(",");
-        csvBuilder.append(controlModel.getSeriesResistance());
+          //  print a CSV line to the console.
+          StringBuilder csvBuilder = new StringBuilder();
+          csvBuilder.append("this");
+          csvBuilder.append(",");
+          csvBuilder.append("is");
+          csvBuilder.append(",");
+          csvBuilder.append("fun");
+          csvBuilder.append(",");
+          csvBuilder.append(controlModel.getTimeUnit());
+          csvBuilder.append(",");
+          csvBuilder.append(controlModel.getRepeatInterval());
+          csvBuilder.append(",");
+          csvBuilder.append(controlModel.getSeriesResistance());
 
-        resultController.addNewLine(csvBuilder.toString());
+          String csvString = csvBuilder.toString();
 
-        Thread.sleep(controlModel.getTimeUnit().toMillis(controlModel.getRepeatInterval()));
+          // CSV to console
+          resultController.addNewLine(csvString);
+
+          // CSV to file
+          printWriter.println(csvString);
+          printWriter.flush();
+
+          Thread.sleep(controlModel.getTimeUnit().toMillis(controlModel.getRepeatInterval()));
+        }
       }
-
       return true;
     }
+  }
+
+  private String getDateTimeString(Date value) {
+    return dateTimeFormat.format(value);
   }
 }

@@ -31,7 +31,7 @@ public class ResultModel extends Model {
 
   private final ArrayList<String> lines = new ArrayList<>();
 
-  ArrayList<String> getLines() {
+  public ArrayList<String> getLines() {
     return lines;
   }
 

@@ -30,6 +30,7 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.ShelfLifePref
 
 public class ControlModel extends Model {
 
+  private String saveDirectory = "";
   public TimeUnit timeUnit;
   private int repeatInterval;
 
@@ -42,6 +43,12 @@ public class ControlModel extends Model {
   public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {
 
     // load model from prefs
+
+    saveDirectory =
+        experimentPreferences.getString(
+            ShelfLifePreferences.SAVE_DIRECTORY_INIT_KEY,
+            ShelfLifePreferences.SAVE_DIRECTORY_INIT_DEFAULT_VALUE);
+
     timeUnit =
         TimeUnit.valueOf(
             experimentPreferences.getString(
@@ -62,19 +69,25 @@ public class ControlModel extends Model {
   // GETTERS AND SETTERS //////////////////////////////////////
   /////////////////////////////////////////////////////////////
 
+  public String getSaveDirectory() {
+    return saveDirectory;
+  }
+
+  public void setSaveDirectory(String saveDirectory) {
+    this.saveDirectory = saveDirectory;
+  }
+
   public TimeUnit getTimeUnit() {
     return timeUnit;
   }
 
   public void setTimeUnit(TimeUnit timeUnit) {
     this.timeUnit = timeUnit;
-    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public void setTimeUnit(String text) {
 
     timeUnit = Enum.valueOf(TimeUnit.class, text);
-    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public int getRepeatInterval() {
@@ -83,7 +96,6 @@ public class ControlModel extends Model {
 
   public void setRepeatInterval(int repeatInterval) {
     this.repeatInterval = repeatInterval;
-    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public boolean isStartToggled() {

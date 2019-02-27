@@ -69,7 +69,7 @@ public class ResultPanel extends JPanel {
 
     StringBuilder sb = new StringBuilder();
     for (int i = 0; i < lines.size(); i++) {
-      sb.append(lines.get(i) + "\n");
+      sb.append(lines.get(i)).append("\n");
     }
 
     consoleTextArea.setText(sb.toString());
