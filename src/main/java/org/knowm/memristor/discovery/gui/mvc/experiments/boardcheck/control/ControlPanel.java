@@ -54,10 +54,21 @@ public class ControlPanel extends ControlView {
 
     clearConsolButton = new JButton("Clear");
     clearConsolButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-
     c.gridy++;
     c.insets = new Insets(0, 0, 0, 0);
     add(clearConsolButton, c);
+
+    c.gridy++;
+    muxTestButton = new JButton("1-4 Mux Board Test (V1.x)");
+    muxTestButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.insets = new Insets(0, 0, 0, 0);
+    add(muxTestButton, c);
+
+    c.gridy++;
+    switchTestButton = new JButton("Switch Board Test (R=5kΩ)");
+    switchTestButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+    c.insets = new Insets(0, 0, 0, 0);
+    add(switchTestButton, c);
 
     c.gridy++;
     meminlineTestButton = new JButton("Mem-Inline Chip Test");
@@ -82,18 +93,6 @@ public class ControlPanel extends ControlView {
     synapse12iTestButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.insets = new Insets(0, 0, 0, 0);
     add(synapse12iTestButton, c);
-
-    c.gridy++;
-    muxTestButton = new JButton("1-4 Mux Board Test (V1.x)");
-    muxTestButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-    c.insets = new Insets(0, 0, 0, 0);
-    add(muxTestButton, c);
-
-    c.gridy++;
-    switchTestButton = new JButton("Switch Board Test (R=5kΩ)");
-    switchTestButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-    c.insets = new Insets(0, 0, 0, 0);
-    add(switchTestButton, c);
 
     c.gridy++;
     add(logoLabel, c);
