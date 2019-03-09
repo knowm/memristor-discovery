@@ -47,6 +47,24 @@ public class ShelfLifePreferences extends ExperimentPreferences {
   public static final String REPEAT_INTERVAL_INIT_KEY = PREFIX + "REPEAT_INTERVAL";
   public static final Integer REPEAT_INTERVAL_DEFAULT_VALUE = 1;
 
+  public static final String READ_VOLTS_INIT_KEY = PREFIX + "READ_VOLTS_INIT_KEY";
+  public static final float READ_VOLTS_DEFAULT_VALUE = .1f;
+
+  public static final String WRITE_VOLTS_INIT_KEY = PREFIX + "WRITE_VOLTS_INIT_KEY";
+  public static final float WRITE_VOLTS_DEFAULT_VALUE = 1f;
+
+  public static final String ERASE_VOLTS_INIT_KEY = PREFIX + "ERASE_VOLTS_INIT_KEY";
+  public static final float ERASE_VOLTS_DEFAULT_VALUE = -1f;
+
+  public static final String READ_PULSE_WIDTH_INIT_KEY = PREFIX + "READ_PULSE_WIDTH_INIT_KEY";
+  public static final int READ_PULSE_WIDTH_DEFAULT_VALUE = 10;
+
+  public static final String WRITE_PULSE_WIDTH_INIT_KEY = PREFIX + "WRITE_PULSE_WIDTH_INIT_KEY";
+  public static final int WRITE_PULSE_WIDTH_DEFAULT_VALUE = 10;
+
+  public static final String ERASE_PULSE_WIDTH_INIT_KEY = PREFIX + "ERASE_PULSE_WIDTH_INIT_KEY";
+  public static final int ERASE_PULSE_WIDTH_DEFAULT_VALUE = 10;
+
   /** Constructor */
   public ShelfLifePreferences() {
 

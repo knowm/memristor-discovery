@@ -49,8 +49,7 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.result.Result
 
 public class ShelfLifeExperiment extends Experiment {
 
-  private static final DateFormat dateTimeFormat =
-      new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+  private static final DateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
   private String cSVFileName;
 
   // Control and Result MVC
@@ -79,7 +78,8 @@ public class ShelfLifeExperiment extends Experiment {
   }
 
   @Override
-  public void doCreateAndShowGUI() {}
+  public void doCreateAndShowGUI() {
+  }
 
   /*
    * Here action listeners are attached to the widgets in the control panel and mapped to a worker, also defined here in the experiment.
@@ -87,44 +87,41 @@ public class ShelfLifeExperiment extends Experiment {
   @Override
   public void addWorkersToButtonEvents() {
 
-    controlPanel
-        .getStartStopButton()
-        .addActionListener(
-            new ActionListener() {
+    controlPanel.getStartStopButton().addActionListener(new ActionListener() {
 
-              @Override
-              public void actionPerformed(ActionEvent e) {
+      @Override
+      public void actionPerformed(ActionEvent e) {
 
-                if (!controlModel.isStartToggled()) {
+        if (!controlModel.isStartToggled()) {
 
-                  controlModel.setStartToggled(true);
-                  controlPanel.getStartStopButton().setText("Stop");
+          controlModel.setStartToggled(true);
+          controlPanel.getStartStopButton().setText("Stop");
 
-                  // clear the console
-                  resultController.clear();
+          // clear the console
+          resultController.clear();
 
-                  // start capture
-                  experimentCaptureWorker = new CaptureWorker();
-                  experimentCaptureWorker.execute();
-                } else {
+          // start capture
+          experimentCaptureWorker = new CaptureWorker();
+          experimentCaptureWorker.execute();
+        } else {
 
-                  controlModel.setStartToggled(false);
-                  controlPanel.getStartStopButton().setText("Start");
+          controlModel.setStartToggled(false);
+          controlPanel.getStartStopButton().setText("Start");
 
-                  // cancel the worker
-                  experimentCaptureWorker.cancel(true);
-                }
-              }
-            });
+          // cancel the worker
+          experimentCaptureWorker.cancel(true);
+        }
+      }
+    });
   }
 
   /**
-   * These property change events are triggered in the controlModel in the case where the underlying
-   * controlModel is updated. Here, the controller can respond to those events and make sure the
-   * corresponding GUI components get updated.
+   * These property change events are triggered in the controlModel in the case where the underlying controlModel is updated. Here, the controller can
+   * respond to those events and make sure the corresponding GUI components get updated.
    */
   @Override
-  public void propertyChange(PropertyChangeEvent evt) {}
+  public void propertyChange(PropertyChangeEvent evt) {
+  }
 
   @Override
   public Model getControlModel() {
@@ -160,10 +157,8 @@ public class ShelfLifeExperiment extends Experiment {
     @Override
     protected Boolean doInBackground() throws Exception {
 
-      String saveFilePath =
-          controlModel.getSaveDirectory() + "/" + getDateTimeString(new Date()) + ".csv";
-      try (PrintWriter printWriter =
-          new PrintWriter(new BufferedWriter(new FileWriter(saveFilePath, true)))) {
+      String saveFilePath = controlModel.getSaveDirectory() + "/" + getDateTimeString(new Date()) + ".csv";
+      try (PrintWriter printWriter = new PrintWriter(new BufferedWriter(new FileWriter(saveFilePath, true)))) {
 
         while (!isCancelled()) {
 

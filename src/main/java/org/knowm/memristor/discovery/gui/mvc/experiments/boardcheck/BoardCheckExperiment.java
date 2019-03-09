@@ -28,6 +28,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
@@ -35,6 +36,7 @@ import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.core.WaveformUtils;
 import org.knowm.memristor.discovery.core.gpio.MuxController;
 import org.knowm.memristor.discovery.core.gpio.MuxController.Destination;
+import org.knowm.memristor.discovery.core.pulse.PulseUtility;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
@@ -50,23 +52,26 @@ import org.knowm.waveforms4j.DWF;
 
 public class BoardCheckExperiment extends Experiment {
 
-  private static final float V_MUX_TEST =
-      1.2345f; // the voltage used to test the waveform generators/muxes
-  private static final float V_SWITCH_RESISTANCE =
-      1; // the voltage used to test the switch resistance
+  private static final float V_MUX_TEST = 1.2345f; // the voltage used to test the waveform generators/muxes
+  private static final float V_SWITCH_RESISTANCE = 1; // the voltage used to test the switch resistance
+
   private static final float V_READ = .1f;
-  private static final float V_WRITE = 1.5f;
+  private static final float V_WRITE = 2.0f;
   private static final float V_HARD_WRITE = 2.0f;
-  private static final float V_RESET = -2f;
-  private static final float V_MEMINLINE_HARD_RESET = -2.5f;
-  private static final float R_CALIBRATE = 0; // Line trace resistance, AD2 Calibration.
+  private static final float V_RESET = -3f;
+  //private static final float V_MEMINLINE_HARD_RESET = -3f;
+
+  // private static final float R_CALIBRATE = 0; // Line trace resistance, AD2 Calibration.
   private final MuxController muxController;
 
+  private static final int PULSE_WIDTH_IN_MICRO_SECONDS = 1000;
+
+  private static final float VOLTAGE_READ_NOISE_FLOOR = .001f;//if the measured voltage across series resistor is less than this, you are getting noisy. 
+
   private float MIN_Q = 2; // minimum ratio between erase/write resistance
-  private float MEMINLINE_MIN_R = 10; // if all state are below this (kiloohms), its stuck low
+  private float MEMINLINE_MIN_R = 10; // if all states are below this (kiloohms), its stuck low
   private float MEMINLINE_MAX_R = 100; // if all state are above this (kilohms), its stuck low
-  private float MEMINLINE_MIN_SWITCH_OFF =
-      1000; // if switch is below this resistance (kOhm) when OFF then its a bad switch
+  private float MEMINLINE_MIN_SWITCH_OFF = 1000; // if switch is below this resistance (kOhm) when OFF then its a bad switch
   private int meminline_numFailed = 0;
   private int COL_WIDTH = 12;
   private DecimalFormat qFormat = new DecimalFormat("0.00 X");
@@ -89,6 +94,8 @@ public class BoardCheckExperiment extends Experiment {
   private SwingWorker synapse12TestWorker;
   private SwingWorker synapse12iTestWorker;
 
+  private PulseUtility pulseUtility;
+
   /**
    * Constructor
    *
@@ -109,10 +116,13 @@ public class BoardCheckExperiment extends Experiment {
     resultController = new ResultController(resultPanel, resultModel);
 
     muxController = new MuxController();
+
+    pulseUtility = new PulseUtility(controlModel, dwfProxy, muxController, VOLTAGE_READ_NOISE_FLOOR);
   }
 
   @Override
-  public void doCreateAndShowGUI() {}
+  public void doCreateAndShowGUI() {
+  }
 
   /*
    * Here action listeners are attached to the widgets in the control panel and mapped to a worker, also defined here in the experiment.
@@ -120,160 +130,155 @@ public class BoardCheckExperiment extends Experiment {
   @Override
   public void addWorkersToButtonEvents() {
 
-    controlPanel.synapse12iTestButton.addActionListener(
-        new ActionListener() {
+    controlPanel.synapse12iTestButton.addActionListener(new ActionListener() {
 
-          @Override
-          public void actionPerformed(ActionEvent e) {
+      @Override
+      public void actionPerformed(ActionEvent e) {
 
-            // System.out.addNewLine("1-2 X 7 AHaHX Test Button button was clicked. e=" +
-            // e.toString());
+        // System.out.addNewLine("1-2 X 7 AHaHX Test Button button was clicked. e=" +
+        // e.toString());
 
-            synapse12iTestWorker = new Synapse12iTestWorker();
-            synapse12iTestWorker.execute();
-          }
-        });
-
-    controlPanel.synapse12TestButton.addActionListener(
-        new ActionListener() {
-
-          @Override
-          public void actionPerformed(ActionEvent e) {
-
-            // System.out.addNewLine("1-2 X 7 AHaHX Test Button button was clicked. e=" +
-            // e.toString());
-
-            synapse12TestWorker = new Synapse12TestWorker();
-            synapse12TestWorker.execute();
-          }
-        });
-
-    controlPanel.aHAH12X7TestButton.addActionListener(
-        new ActionListener() {
-
-          @Override
-          public void actionPerformed(ActionEvent e) {
-
-            // System.out.addNewLine("1-2 X 7 AHaHX Test Button button was clicked. e=" +
-            // e.toString());
-
-            aHAH12X7TestWorker = new AHaH21X7TestWorker();
-            aHAH12X7TestWorker.execute();
-          }
-        });
-
-    controlPanel.meminlineTestButton.addActionListener(
-        new ActionListener() {
-
-          @Override
-          public void actionPerformed(ActionEvent e) {
-
-            // System.out.addNewLine("Meminline button was clicked. e=" + e.toString());
-
-            meminlineTestWorker = new MeminlineTestWorker();
-            meminlineTestWorker.execute();
-          }
-        });
-
-    controlPanel.muxTestButton.addActionListener(
-        new ActionListener() {
-
-          @Override
-          public void actionPerformed(ActionEvent e) {
-
-            // System.out.addNewLine("Meminline button was clicked. e=" + e.toString());
-
-            muxTestWorker = new MuxDiagnosticWorker();
-            muxTestWorker.execute();
-          }
-        });
-
-    controlPanel.switchTestButton.addActionListener(
-        new ActionListener() {
-
-          @Override
-          public void actionPerformed(ActionEvent e) {
-
-            // System.out.addNewLine("Meminline button was clicked. e=" + e.toString());
-
-            switchTestWorker = new SwitchDiagnosticWorker();
-            switchTestWorker.execute();
-          }
-        });
-
-    controlPanel.clearConsolButton.addActionListener(
-        new ActionListener() {
-
-          @Override
-          public void actionPerformed(ActionEvent e) {
-
-            // System.out.addNewLine("Meminline button was clicked. e=" + e.toString());
-
-            clearConsoleWorker = new ClearConsoleWorker();
-            clearConsoleWorker.execute();
-          }
-        });
-  }
-
-  float[] measureAllSwitchResistances(float readVoltage, int sleep, boolean configureMux) {
-
-    if (configureMux) {
-      muxController.setW1(Destination.A);
-      muxController.setW2(Destination.OUT);
-      muxController.setScope1(Destination.A);
-      muxController.setScope2(Destination.B);
-      dwfProxy.setUpper8IOStates(muxController.getGPIOConfig());
-    }
-
-    // dwfProxy.setAllIOStates(0b0000_0000);// turn off all switches.
-
-    float[] r_array = new float[9];
-    r_array[0] = getSwitchResistancekOhm(readVoltage, DWF.WAVEFORM_CHANNEL_1); // all switches off
-
-    for (int i = 0; i < 8; i++) {
-
-      // try {
-      // Thread.sleep(sleep);
-      // } catch (InterruptedException e) {
-      // }
-
-      dwfProxy.update2DigitalIOStatesAtOnce(i, true);
-
-      try {
-        Thread.sleep(sleep);
-      } catch (InterruptedException e) {
-
+        synapse12iTestWorker = new Synapse12iTestWorker();
+        synapse12iTestWorker.execute();
       }
+    });
 
-      r_array[i + 1] = getSwitchResistancekOhm(readVoltage, DWF.WAVEFORM_CHANNEL_1);
+    controlPanel.synapse12TestButton.addActionListener(new ActionListener() {
 
-      dwfProxy.update2DigitalIOStatesAtOnce(i, false);
-    }
+      @Override
+      public void actionPerformed(ActionEvent e) {
 
-    return r_array;
+        // System.out.addNewLine("1-2 X 7 AHaHX Test Button button was clicked. e=" +
+        // e.toString());
+
+        synapse12TestWorker = new Synapse12TestWorker();
+        synapse12TestWorker.execute();
+      }
+    });
+
+    controlPanel.aHAH12X7TestButton.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+
+        // System.out.addNewLine("1-2 X 7 AHaHX Test Button button was clicked. e=" +
+        // e.toString());
+
+        aHAH12X7TestWorker = new AHaH21X7TestWorker();
+        aHAH12X7TestWorker.execute();
+      }
+    });
+
+    controlPanel.meminlineTestButton.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+
+        // System.out.addNewLine("Meminline button was clicked. e=" + e.toString());
+
+        meminlineTestWorker = new MeminlineTestWorker();
+        meminlineTestWorker.execute();
+      }
+    });
+
+    controlPanel.muxTestButton.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+
+        // System.out.addNewLine("Meminline button was clicked. e=" + e.toString());
+
+        muxTestWorker = new MuxDiagnosticWorker();
+        muxTestWorker.execute();
+      }
+    });
+
+    controlPanel.switchTestButton.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+
+        // System.out.addNewLine("Meminline button was clicked. e=" + e.toString());
+
+        switchTestWorker = new SwitchDiagnosticWorker();
+        switchTestWorker.execute();
+      }
+    });
+
+    controlPanel.clearConsolButton.addActionListener(new ActionListener() {
+
+      @Override
+      public void actionPerformed(ActionEvent e) {
+
+        // System.out.addNewLine("Meminline button was clicked. e=" + e.toString());
+
+        clearConsoleWorker = new ClearConsoleWorker();
+        clearConsoleWorker.execute();
+      }
+    });
   }
 
-  private float getSwitchResistancekOhm(float readVoltage, int dWFWaveformChannel) {
+  //  float[] measureAllSwitchResistances(float readVoltage, int sleep, boolean configureMux) {
+  //
+  //    if (configureMux) {
+  //      muxController.setW1(Destination.A);
+  //      muxController.setW2(Destination.OUT);
+  //      muxController.setScope1(Destination.A);
+  //      muxController.setScope2(Destination.B);
+  //      dwfProxy.setUpper8IOStates(muxController.getGPIOConfig());
+  //    }
+  //
+  //    // dwfProxy.setAllIOStates(0b0000_0000);// turn off all switches.
+  //
+  //    float[] r_array = new float[9];
+  //    r_array[0] = getSwitchResistancekOhm(readVoltage, DWF.WAVEFORM_CHANNEL_1); // all switches off
+  //
+  //    for (int i = 0; i < 8; i++) {
+  //
+  //      // try {
+  //      // Thread.sleep(sleep);
+  //      // } catch (InterruptedException e) {
+  //      // }
+  //
+  //      dwfProxy.update2DigitalIOStatesAtOnce(i, true);
+  //
+  //      try {
+  //        Thread.sleep(sleep);
+  //      } catch (InterruptedException e) {
+  //
+  //      }
+  //
+  //      r_array[i + 1] = getSwitchResistancekOhm(readVoltage, DWF.WAVEFORM_CHANNEL_1);
+  //
+  //      dwfProxy.update2DigitalIOStatesAtOnce(i, false);
+  //    }
+  //
+  //    return r_array;
+  //  }
 
-    float[] vMeasure = getScopesAverageVoltage(readVoltage, dWFWaveformChannel);
-    /*
-     * Vy/Rseries=I Vdrop/I=Rswitch (Vin-Vy)/I=Rswitch
-     */
-
-    // System.out.addNewLine("measurevoltage: " + Arrays.toString(vMeasure));
-    // System.out.addNewLine("series resistance: " + controlModel.getSeriesResistance());
-    // BoardCheckPreferences.SERIES_R_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText())
-    float seriesResistance = controlModel.seriesResistance;
-    // System.out.addNewLine("seriesResistance: " + seriesResistance);
-
-    float I = Math.abs(vMeasure[1] / seriesResistance);
-    float rSwitch =
-        (Math.abs(vMeasure[0] - vMeasure[1]) / I)
-            - 2 * ExperimentPreferences.R_SWITCH
-            - R_CALIBRATE;
-
-    return rSwitch / 1000; // to kilohms
-  }
+  //  private float getSwitchResistancekOhm(float readVoltage, int dWFWaveformChannel) {
+  //
+  //    float[] vMeasure = PulseUtils.getScopesAverageVoltage(dwfProxy, readVoltage, PULSE_WIDTH_IN_MICRO_SECONDS, dWFWaveformChannel);
+  //
+  //    if (vMeasure == null) {
+  //      resultController.addNewLine("Pulse capture failed. This is usually a triggering issue.");
+  //    }
+  //
+  //    /*
+  //     * Vy/Rseries=I Vdrop/I=Rswitch (Vin-Vy)/I=Rswitch
+  //     */
+  //
+  //    // System.out.addNewLine("measurevoltage: " + Arrays.toString(vMeasure));
+  //    // System.out.addNewLine("series resistance: " + controlModel.getSeriesResistance());
+  //    // BoardCheckPreferences.SERIES_R_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText())
+  //    float seriesResistance = controlModel.seriesResistance;
+  //    // System.out.addNewLine("seriesResistance: " + seriesResistance);
+  //
+  //    float I = Math.abs(vMeasure[1] / seriesResistance);
+  //    float rSwitch = (Math.abs(vMeasure[0] - vMeasure[1]) / I) - 2 * ExperimentPreferences.R_SWITCH - R_CALIBRATE;
+  //
+  //    return rSwitch / 1000; // to kilohms
+  //  }
 
   float[] measureMuxDeviation(int dWFWaveformChannel, Destination destination) {
 
@@ -290,63 +295,65 @@ public class BoardCheckExperiment extends Experiment {
 
     dwfProxy.setUpper8IOStates(muxController.getGPIOConfig());
 
-    float[] scopeReading = getScopesAverageVoltage(V_MUX_TEST, dWFWaveformChannel);
+    float[] scopeReading = pulseUtility.getScopesAverageVoltage(Waveform.Square, V_MUX_TEST, PULSE_WIDTH_IN_MICRO_SECONDS, dWFWaveformChannel);
 
-    return new float[] {
-      Math.abs(scopeReading[0] - V_MUX_TEST), Math.abs(scopeReading[1] - V_MUX_TEST)
-    };
-  }
-
-  private float[] getScopesAverageVoltage(float readVoltage, int dWFWaveformChannel) {
-
-    int samplesPerPulse = 300;
-    int sampleFrequency = 50;
-    int samples = sampleFrequency * samplesPerPulse;
-
-    // resultController.addNewLine("Starting Pulse Measurment");
-
-    dwfProxy
-        .getDwf()
-        .startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(
-            dWFWaveformChannel, samples, samplesPerPulse, true);
-    dwfProxy.waitUntilArmed();
-    double[] pulse =
-        WaveformUtils.generateCustomWaveform(Waveform.Square, readVoltage, sampleFrequency);
-    dwfProxy.getDwf().startCustomPulseTrain(dWFWaveformChannel, sampleFrequency, 0, 1, pulse);
-    boolean success = dwfProxy.capturePulseData(samples, 1);
-    if (success) {
-      int validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
-      double[] v1 =
-          dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
-      double[] v2 =
-          dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
-
-      //      System.out.addNewLine("v1: " + Arrays.toString(v1));
-      //      System.out.addNewLine("v2: " + Arrays.toString(v2));
-
-      /*
-       * Alex: The output is a pulse with the last half of the measurement data at ground. Taking the first 25% insures we get the pulse amplitude.
-       */
-
-      // average over the first 25%.
-
-      float aveScope1 = 0;
-      float aveScope2 = 0;
-      for (int i = 0; i < v1.length / 4; i++) {
-        aveScope1 += v1[i];
-        aveScope2 += v2[i];
-      }
-
-      aveScope1 /= v1.length / 4;
-      aveScope2 /= v2.length / 4;
-
-      return new float[] {(float) aveScope1, (float) aveScope2};
-
-    } else {
+    if (scopeReading == null) {
       resultController.addNewLine("Pulse capture failed. This is usually a triggering issue.");
-      return null;
     }
+
+    return new float[]{Math.abs(scopeReading[0] - V_MUX_TEST), Math.abs(scopeReading[1] - V_MUX_TEST)};
   }
+
+  //  private float[] getScopesAverageVoltage(float readVoltage, int dWFWaveformChannel) {
+  //
+  //    int samplesPerPulse = 300;
+  //    int sampleFrequency = 50;
+  //    int samples = sampleFrequency * samplesPerPulse;
+  //
+  //    // resultController.addNewLine("Starting Pulse Measurment");
+  //
+  //    dwfProxy
+  //        .getDwf()
+  //        .startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(
+  //            dWFWaveformChannel, samples, samplesPerPulse, true);
+  //    dwfProxy.waitUntilArmed();
+  //    double[] pulse =
+  //        WaveformUtils.generateCustomWaveform(Waveform.Square, readVoltage, sampleFrequency);
+  //    dwfProxy.getDwf().startCustomPulseTrain(dWFWaveformChannel, sampleFrequency, 0, 1, pulse);
+  //    boolean success = dwfProxy.capturePulseData(samples, 1);
+  //    if (success) {
+  //      int validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
+  //      double[] v1 =
+  //          dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
+  //      double[] v2 =
+  //          dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
+  //
+  //      //      System.out.addNewLine("v1: " + Arrays.toString(v1));
+  //      //      System.out.addNewLine("v2: " + Arrays.toString(v2));
+  //
+  //      /*
+  //       * Alex: The output is a pulse with the last half of the measurement data at ground. Taking the first 25% insures we get the pulse amplitude.
+  //       */
+  //
+  //      // average over the first 25%.
+  //
+  //      float aveScope1 = 0;
+  //      float aveScope2 = 0;
+  //      for (int i = 0; i < v1.length / 4; i++) {
+  //        aveScope1 += v1[i];
+  //        aveScope2 += v2[i];
+  //      }
+  //
+  //      aveScope1 /= v1.length / 4;
+  //      aveScope2 /= v2.length / 4;
+  //
+  //      return new float[] {(float) aveScope1, (float) aveScope2};
+  //
+  //    } else {
+  //      resultController.addNewLine("Pulse capture failed. This is usually a triggering issue.");
+  //      return null;
+  //    }
+  //  }
 
   private boolean isWithenPercentPercent(float value, float reference, float percent) {
 
@@ -378,9 +385,8 @@ public class BoardCheckExperiment extends Experiment {
   }
 
   /**
-   * These property change events are triggered in the controlModel in the case where the underlying
-   * controlModel is updated. Here, the controller can respond to those events and make sure the
-   * corresponding GUI components get updated.
+   * These property change events are triggered in the controlModel in the case where the underlying controlModel is updated. Here, the controller can
+   * respond to those events and make sure the corresponding GUI components get updated.
    */
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
@@ -438,9 +444,10 @@ public class BoardCheckExperiment extends Experiment {
       resultController.addNewLine("");
       resultController.addNewLine("Testing Board Switches(assuming 5kΩ resistors in socket)");
       resultController.addNewLine("");
-      int sleep = 250; // so the tester can see the LEDs blink in the V1 board.
 
-      float[] r = measureAllSwitchResistances(V_SWITCH_RESISTANCE, sleep, true);
+      // getControlModel().swingPropertyChangeSupport.firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null, "Measuring Switch Resistances");
+
+      float[] r = pulseUtility.measureAllSwitchResistances(Waveform.Square, V_READ, PULSE_WIDTH_IN_MICRO_SECONDS);
 
       boolean pass = true;
       for (int i = 0; i < r.length; i++) {
@@ -520,66 +527,42 @@ public class BoardCheckExperiment extends Experiment {
 
         boolean pass = true;
         float[] deviations = measureMuxDeviation(DWF.WAVEFORM_CHANNEL_1, Destination.A);
-        resultController.addNewLine(
-            "W1-->A      "
-                + percentFormat.format(deviations[0])
-                + "          "
-                + percentFormat.format(deviations[1]));
+        resultController.addNewLine("W1-->A      " + percentFormat.format(deviations[0]) + "          " + percentFormat.format(deviations[1]));
 
         if (deviations[0] > .02 | deviations[1] > .02) {
           pass = false;
         }
 
         deviations = measureMuxDeviation(DWF.WAVEFORM_CHANNEL_1, Destination.B);
-        resultController.addNewLine(
-            "W1-->B      "
-                + percentFormat.format(deviations[0])
-                + "          "
-                + percentFormat.format(deviations[1]));
+        resultController.addNewLine("W1-->B      " + percentFormat.format(deviations[0]) + "          " + percentFormat.format(deviations[1]));
 
         if (deviations[0] > .02 | deviations[1] > .02) {
           pass = false;
         }
 
         deviations = measureMuxDeviation(DWF.WAVEFORM_CHANNEL_1, Destination.Y);
-        resultController.addNewLine(
-            "W1-->Y      "
-                + percentFormat.format(deviations[0])
-                + "          "
-                + percentFormat.format(deviations[1]));
+        resultController.addNewLine("W1-->Y      " + percentFormat.format(deviations[0]) + "          " + percentFormat.format(deviations[1]));
 
         if (deviations[0] > .02 | deviations[1] > .02) {
           pass = false;
         }
 
         deviations = measureMuxDeviation(DWF.WAVEFORM_CHANNEL_2, Destination.A);
-        resultController.addNewLine(
-            "W2-->A      "
-                + percentFormat.format(deviations[0])
-                + "          "
-                + percentFormat.format(deviations[1]));
+        resultController.addNewLine("W2-->A      " + percentFormat.format(deviations[0]) + "          " + percentFormat.format(deviations[1]));
 
         if (deviations[0] > .02 | deviations[1] > .02) {
           pass = false;
         }
 
         deviations = measureMuxDeviation(DWF.WAVEFORM_CHANNEL_2, Destination.B);
-        resultController.addNewLine(
-            "W2-->B      "
-                + percentFormat.format(deviations[0])
-                + "          "
-                + percentFormat.format(deviations[1]));
+        resultController.addNewLine("W2-->B      " + percentFormat.format(deviations[0]) + "          " + percentFormat.format(deviations[1]));
 
         if (deviations[0] > .02 | deviations[1] > .02) {
           pass = false;
         }
 
         deviations = measureMuxDeviation(DWF.WAVEFORM_CHANNEL_2, Destination.Y);
-        resultController.addNewLine(
-            "W2-->Y      "
-                + percentFormat.format(deviations[0])
-                + "          "
-                + percentFormat.format(deviations[1]));
+        resultController.addNewLine("W2-->Y      " + percentFormat.format(deviations[0]) + "          " + percentFormat.format(deviations[1]));
 
         if (deviations[0] > .02 | deviations[1] > .02) {
           pass = false;
@@ -638,7 +621,7 @@ public class BoardCheckExperiment extends Experiment {
         //          System.out.addNewLine(Arrays.toString(synapses_0[i]));
         //        }
         // RESET
-        applyPulse(V_MEMINLINE_HARD_RESET);
+        applyPulse(V_RESET, Waveform.Square);
 
         // READ 1
         float[][] synapses_1 = measureSynapsePairResistances(V_READ); // resistances of each pair
@@ -651,7 +634,7 @@ public class BoardCheckExperiment extends Experiment {
         //        }
 
         // WRITE
-        applyPulse(V_HARD_WRITE);
+        applyPulse(V_HARD_WRITE, Waveform.Square);
 
         // READ 2
         float[][] synapses_2 = measureSynapsePairResistances(V_READ); // resistances of each pair
@@ -664,7 +647,7 @@ public class BoardCheckExperiment extends Experiment {
         //        }
 
         // RESET
-        applyPulse(V_RESET);
+        applyPulse(V_RESET, Waveform.Square);
 
         // READ 1
         float[][] synapses_3 = measureSynapsePairResistances(V_READ); // resistances of each pair
@@ -681,18 +664,12 @@ public class BoardCheckExperiment extends Experiment {
         // ratio of erase to write
         float[][] Q1 = new float[7][2];
         for (int i = 0; i < Q1.length; i++) {
-          Q1[i] =
-              new float[] {
-                (synapses_1[i][0] / synapses_2[i][0]), (synapses_1[i][1] / synapses_2[i][1])
-              };
+          Q1[i] = new float[]{(synapses_1[i][0] / synapses_2[i][0]), (synapses_1[i][1] / synapses_2[i][1])};
         }
 
         float[][] Q2 = new float[7][2];
         for (int i = 0; i < Q2.length; i++) {
-          Q2[i] =
-              new float[] {
-                (synapses_3[i][0] / synapses_2[i][0]), (synapses_3[i][1] / synapses_2[i][1])
-              };
+          Q2[i] = new float[]{(synapses_3[i][0] / synapses_2[i][0]), (synapses_3[i][1] / synapses_2[i][1])};
         }
 
         //        resultController.addNewLine("Q1: ");
@@ -714,21 +691,17 @@ public class BoardCheckExperiment extends Experiment {
         int numGood = 0;
         for (int i = 0; i < Q1.length; i++) {
 
-          boolean aGood =
-              ((Q1[i][0] > 1) && (Q2[i][0] > 1)) && (Q1[i][0] > MIN_Q || Q2[i][0] > MIN_Q);
-          boolean bGood =
-              ((Q1[i][1] > 1) && (Q2[i][1] > 1)) && (Q1[i][1] > MIN_Q || Q2[i][1] > MIN_Q);
+          boolean aGood = ((Q1[i][0] > 1) && (Q2[i][0] > 1)) && (Q1[i][0] > MIN_Q || Q2[i][0] > MIN_Q);
+          boolean bGood = ((Q1[i][1] > 1) && (Q2[i][1] > 1)) && (Q1[i][1] > MIN_Q || Q2[i][1] > MIN_Q);
 
           String a = aGood ? "PASS" : "FAIL";
           String b = bGood ? "PASS" : "FAIL";
 
           if (aGood && bGood) {
-            resultController.addNewLine(
-                i + "<[" + prependWhiteSpace(a, 13) + "," + prependWhiteSpace(b, 13) + "]> ✓");
+            resultController.addNewLine(i + "<[" + prependWhiteSpace(a, 13) + "," + prependWhiteSpace(b, 13) + "]> ✓");
             numGood++;
           } else {
-            resultController.addNewLine(
-                i + "<[" + prependWhiteSpace(a, 13) + "," + prependWhiteSpace(b, 13) + "]> X");
+            resultController.addNewLine(i + "<[" + prependWhiteSpace(a, 13) + "," + prependWhiteSpace(b, 13) + "]> X");
           }
         }
 
@@ -750,7 +723,7 @@ public class BoardCheckExperiment extends Experiment {
       return true;
     }
 
-    void applyPulse(float pulseVoltage) {
+    void applyPulse(float pulseVoltage, Waveform waveform) {
 
       muxController.setW1(Destination.Y);
       muxController.setW2(Destination.OUT);
@@ -758,13 +731,9 @@ public class BoardCheckExperiment extends Experiment {
       muxController.setScope2(Destination.B);
       dwfProxy.setUpper8IOStates(muxController.getGPIOConfig());
 
-      for (int i = 1;
-          i < 8;
-          i++) { // cycle through switches 2 through 8 and pulse each of the synapses.
+      for (int i = 1; i < 8; i++) { // cycle through switches 2 through 8 and pulse each of the synapses.
         dwfProxy.update2DigitalIOStatesAtOnce(i, true); // turn on switch
-        getScopesAverageVoltage(
-            pulseVoltage,
-            DWF.WAVEFORM_CHANNEL_1); // this applies the pulse and returns captured waveform.
+        pulseUtility.getScopesAverageVoltage(waveform, pulseVoltage, PULSE_WIDTH_IN_MICRO_SECONDS, DWF.WAVEFORM_CHANNEL_1); // this applies the pulse and returns captured waveform.
         dwfProxy.update2DigitalIOStatesAtOnce(i, false); // turn off switch
       }
     }
@@ -787,7 +756,11 @@ public class BoardCheckExperiment extends Experiment {
       for (int i = 0; i < 8; i++) { // cycle through switches 2 through 8
         dwfProxy.update2DigitalIOStatesAtOnce(i, true); // turn on switch
 
-        float[] aveV = getScopesAverageVoltage(readVoltage, DWF.WAVEFORM_CHANNEL_1);
+        float[] aveV = pulseUtility.getScopesAverageVoltage(Waveform.Square, readVoltage, PULSE_WIDTH_IN_MICRO_SECONDS, DWF.WAVEFORM_CHANNEL_1);
+
+        if (aveV == null) {
+          resultController.addNewLine("Pulse capture failed. This is usually a triggering issue.");
+        }
 
         Vya[i] = aveV[0];
         Vyb[i] = aveV[1];
@@ -804,7 +777,11 @@ public class BoardCheckExperiment extends Experiment {
       for (int i = 1; i < 8; i++) { // cycle through switches 2 through 8
         dwfProxy.update2DigitalIOStatesAtOnce(i, true); // turn on switch
 
-        float[] aveV = getScopesAverageVoltage(readVoltage, DWF.WAVEFORM_CHANNEL_1);
+        float[] aveV = pulseUtility.getScopesAverageVoltage(Waveform.Square, readVoltage, PULSE_WIDTH_IN_MICRO_SECONDS, DWF.WAVEFORM_CHANNEL_1);
+
+        if (aveV == null) {
+          resultController.addNewLine("Pulse capture failed. This is usually a triggering issue.");
+        }
 
         // compute resistance as voltage drop across series resistors.
 
@@ -821,18 +798,14 @@ public class BoardCheckExperiment extends Experiment {
 
         // could measure negative resistance due to noise if resistance is very high. Just assume it
         // 10MOhms.
-        Ra =
-            Ra < 0
-                ? 1E4f
-                : (Ra - ExperimentPreferences.R_SWITCH)
-                    / 1000.0f; // account for bilateral switch resistance and convert to kiloohms.
+        Ra = Ra < 0 ? 1E4f : (Ra - ExperimentPreferences.R_SWITCH) / 1000.0f; // account for bilateral switch resistance and convert to kiloohms.
         Rb = Rb < 0 ? 1E4f : (Rb - ExperimentPreferences.R_SWITCH) / 1000.0f;
 
         // if its really high, its just likely just noise. Set to 10MOhm
         Ra = Ra > 1E4f ? 1E4f : Ra;
         Rb = Rb > 1E4f ? 1E4f : Rb;
 
-        synapses[i - 1] = new float[] {Ra, Rb};
+        synapses[i - 1] = new float[]{Ra, Rb};
 
         dwfProxy.update2DigitalIOStatesAtOnce(i, false); // turn off switch
       }
@@ -842,7 +815,7 @@ public class BoardCheckExperiment extends Experiment {
 
   private class Synapse12TestWorker extends SwingWorker<Boolean, Double> {
 
-    private int[] switches = new int[] {0, 2, 3, 5, 7};
+    private int[] switches = new int[]{0, 2, 3, 5, 7};
 
     @Override
     protected Boolean doInBackground() {
@@ -857,7 +830,7 @@ public class BoardCheckExperiment extends Experiment {
         resultController.addNewLine("");
 
         // RESET
-        applyPulse(V_MEMINLINE_HARD_RESET);
+        applyPulse(V_RESET);
 
         // READ 1
         float[][] synapses_1 = measureSynapsePairResistances(V_READ); // resistances of each pair
@@ -900,18 +873,12 @@ public class BoardCheckExperiment extends Experiment {
         // ratio of erase to write
         float[][] Q1 = new float[5][2];
         for (int i = 0; i < Q1.length; i++) {
-          Q1[i] =
-              new float[] {
-                (synapses_1[i][0] / synapses_2[i][0]), (synapses_1[i][1] / synapses_2[i][1])
-              };
+          Q1[i] = new float[]{(synapses_1[i][0] / synapses_2[i][0]), (synapses_1[i][1] / synapses_2[i][1])};
         }
 
         float[][] Q2 = new float[5][2];
         for (int i = 0; i < Q2.length; i++) {
-          Q2[i] =
-              new float[] {
-                (synapses_3[i][0] / synapses_2[i][0]), (synapses_3[i][1] / synapses_2[i][1])
-              };
+          Q2[i] = new float[]{(synapses_3[i][0] / synapses_2[i][0]), (synapses_3[i][1] / synapses_2[i][1])};
         }
 
         //        resultController.addNewLine("Q1: ");
@@ -933,21 +900,17 @@ public class BoardCheckExperiment extends Experiment {
         int numGood = 0;
         for (int i = 0; i < Q1.length; i++) {
 
-          boolean aGood =
-              ((Q1[i][0] > 1) && (Q2[i][0] > 1)) && (Q1[i][0] > MIN_Q || Q2[i][0] > MIN_Q);
-          boolean bGood =
-              ((Q1[i][1] > 1) && (Q2[i][1] > 1)) && (Q1[i][1] > MIN_Q || Q2[i][1] > MIN_Q);
+          boolean aGood = ((Q1[i][0] > 1) && (Q2[i][0] > 1)) && (Q1[i][0] > MIN_Q || Q2[i][0] > MIN_Q);
+          boolean bGood = ((Q1[i][1] > 1) && (Q2[i][1] > 1)) && (Q1[i][1] > MIN_Q || Q2[i][1] > MIN_Q);
 
           String a = aGood ? "PASS" : "FAIL";
           String b = bGood ? "PASS" : "FAIL";
 
           if (aGood && bGood) {
-            resultController.addNewLine(
-                i + "<[" + prependWhiteSpace(a, 13) + "," + prependWhiteSpace(b, 13) + "]> ✓");
+            resultController.addNewLine(i + "<[" + prependWhiteSpace(a, 13) + "," + prependWhiteSpace(b, 13) + "]> ✓");
             numGood++;
           } else {
-            resultController.addNewLine(
-                i + "<[" + prependWhiteSpace(a, 13) + "," + prependWhiteSpace(b, 13) + "]> X");
+            resultController.addNewLine(i + "<[" + prependWhiteSpace(a, 13) + "," + prependWhiteSpace(b, 13) + "]> X");
           }
         }
 
@@ -979,9 +942,7 @@ public class BoardCheckExperiment extends Experiment {
 
       for (int i : switches) { // cycle through switches
         dwfProxy.update2DigitalIOStatesAtOnce(i, true); // turn on switch
-        getScopesAverageVoltage(
-            pulseVoltage,
-            DWF.WAVEFORM_CHANNEL_1); // this applies the pulse and returns captured waveform.
+        pulseUtility.getScopesAverageVoltage(Waveform.Square, pulseVoltage, PULSE_WIDTH_IN_MICRO_SECONDS, DWF.WAVEFORM_CHANNEL_1); // this applies the pulse and returns captured waveform.
         dwfProxy.update2DigitalIOStatesAtOnce(i, false); // turn off switch
       }
     }
@@ -1005,7 +966,11 @@ public class BoardCheckExperiment extends Experiment {
       for (int i : switches) { // cycle through switches
         dwfProxy.update2DigitalIOStatesAtOnce(i, true); // turn on switch
 
-        float[] aveV = getScopesAverageVoltage(readVoltage, DWF.WAVEFORM_CHANNEL_1);
+        float[] aveV = pulseUtility.getScopesAverageVoltage(Waveform.Square, readVoltage, PULSE_WIDTH_IN_MICRO_SECONDS, DWF.WAVEFORM_CHANNEL_1);
+
+        if (aveV == null) {
+          resultController.addNewLine("Pulse capture failed. This is usually a triggering issue.");
+        }
 
         Vya[idx] = aveV[0];
         Vyb[idx] = aveV[1];
@@ -1023,7 +988,11 @@ public class BoardCheckExperiment extends Experiment {
       for (int i : switches) { // cycle through switches
         dwfProxy.update2DigitalIOStatesAtOnce(i, true); // turn on switch
 
-        float[] aveV = getScopesAverageVoltage(readVoltage, DWF.WAVEFORM_CHANNEL_1);
+        float[] aveV = pulseUtility.getScopesAverageVoltage(Waveform.Square, readVoltage, PULSE_WIDTH_IN_MICRO_SECONDS, DWF.WAVEFORM_CHANNEL_1);
+
+        if (aveV == null) {
+          resultController.addNewLine("Pulse capture failed. This is usually a triggering issue.");
+        }
 
         // compute resistance as voltage drop across series resistors.
 
@@ -1040,18 +1009,14 @@ public class BoardCheckExperiment extends Experiment {
 
         // could measure negative resistance due to noise if resistance is very high. Just assume it
         // 10MOhms.
-        Ra =
-            Ra < 0
-                ? 1E4f
-                : (Ra - ExperimentPreferences.R_SWITCH)
-                    / 1000.0f; // account for bilateral switch resistance and convert to kiloohms.
+        Ra = Ra < 0 ? 1E4f : (Ra - ExperimentPreferences.R_SWITCH) / 1000.0f; // account for bilateral switch resistance and convert to kiloohms.
         Rb = Rb < 0 ? 1E4f : (Rb - ExperimentPreferences.R_SWITCH) / 1000.0f;
 
         // if its really high, its just likely just noise. Set to 10MOhm
         Ra = Ra > 1E4f ? 1E4f : Ra;
         Rb = Rb > 1E4f ? 1E4f : Rb;
 
-        synapses[idx] = new float[] {Ra, Rb};
+        synapses[idx] = new float[]{Ra, Rb};
 
         dwfProxy.update2DigitalIOStatesAtOnce(i, false); // turn off switch
         idx++;
@@ -1062,7 +1027,7 @@ public class BoardCheckExperiment extends Experiment {
 
   private class Synapse12iTestWorker extends SwingWorker<Boolean, Double> {
 
-    private int[] switches = new int[] {0, 2, 3, 5, 7};
+    private int[] switches = new int[]{0, 2, 3, 5, 7};
 
     @Override
     protected Boolean doInBackground() {
@@ -1077,7 +1042,7 @@ public class BoardCheckExperiment extends Experiment {
         resultController.addNewLine("");
 
         // RESET
-        applyPulse(-V_MEMINLINE_HARD_RESET);
+        applyPulse(-V_RESET);
 
         // READ 1
         float[][] synapses_1 = measureSynapsePairResistances(-V_READ); // resistances of each pair
@@ -1120,18 +1085,12 @@ public class BoardCheckExperiment extends Experiment {
         // ratio of erase to write
         float[][] Q1 = new float[5][2];
         for (int i = 0; i < Q1.length; i++) {
-          Q1[i] =
-              new float[] {
-                (synapses_1[i][0] / synapses_2[i][0]), (synapses_1[i][1] / synapses_2[i][1])
-              };
+          Q1[i] = new float[]{(synapses_1[i][0] / synapses_2[i][0]), (synapses_1[i][1] / synapses_2[i][1])};
         }
 
         float[][] Q2 = new float[5][2];
         for (int i = 0; i < Q2.length; i++) {
-          Q2[i] =
-              new float[] {
-                (synapses_3[i][0] / synapses_2[i][0]), (synapses_3[i][1] / synapses_2[i][1])
-              };
+          Q2[i] = new float[]{(synapses_3[i][0] / synapses_2[i][0]), (synapses_3[i][1] / synapses_2[i][1])};
         }
 
         //        resultController.addNewLine("Q1: ");
@@ -1153,21 +1112,17 @@ public class BoardCheckExperiment extends Experiment {
         int numGood = 0;
         for (int i = 0; i < Q1.length; i++) {
 
-          boolean aGood =
-              ((Q1[i][0] > 1) && (Q2[i][0] > 1)) && (Q1[i][0] > MIN_Q || Q2[i][0] > MIN_Q);
-          boolean bGood =
-              ((Q1[i][1] > 1) && (Q2[i][1] > 1)) && (Q1[i][1] > MIN_Q || Q2[i][1] > MIN_Q);
+          boolean aGood = ((Q1[i][0] > 1) && (Q2[i][0] > 1)) && (Q1[i][0] > MIN_Q || Q2[i][0] > MIN_Q);
+          boolean bGood = ((Q1[i][1] > 1) && (Q2[i][1] > 1)) && (Q1[i][1] > MIN_Q || Q2[i][1] > MIN_Q);
 
           String a = aGood ? "PASS" : "FAIL";
           String b = bGood ? "PASS" : "FAIL";
 
           if (aGood && bGood) {
-            resultController.addNewLine(
-                i + "<[" + prependWhiteSpace(a, 13) + "," + prependWhiteSpace(b, 13) + "]> ✓");
+            resultController.addNewLine(i + "<[" + prependWhiteSpace(a, 13) + "," + prependWhiteSpace(b, 13) + "]> ✓");
             numGood++;
           } else {
-            resultController.addNewLine(
-                i + "<[" + prependWhiteSpace(a, 13) + "," + prependWhiteSpace(b, 13) + "]> X");
+            resultController.addNewLine(i + "<[" + prependWhiteSpace(a, 13) + "," + prependWhiteSpace(b, 13) + "]> X");
           }
         }
 
@@ -1199,9 +1154,7 @@ public class BoardCheckExperiment extends Experiment {
 
       for (int i : switches) { // cycle through switches
         dwfProxy.update2DigitalIOStatesAtOnce(i, true); // turn on switch
-        getScopesAverageVoltage(
-            pulseVoltage,
-            DWF.WAVEFORM_CHANNEL_1); // this applies the pulse and returns captured waveform.
+        pulseUtility.getScopesAverageVoltage(Waveform.Square, pulseVoltage, PULSE_WIDTH_IN_MICRO_SECONDS, DWF.WAVEFORM_CHANNEL_1); // this applies the pulse and returns captured waveform.
         dwfProxy.update2DigitalIOStatesAtOnce(i, false); // turn off switch
       }
     }
@@ -1225,7 +1178,11 @@ public class BoardCheckExperiment extends Experiment {
       for (int i : switches) { // cycle through switches
         dwfProxy.update2DigitalIOStatesAtOnce(i, true); // turn on switch
 
-        float[] aveV = getScopesAverageVoltage(readVoltage, DWF.WAVEFORM_CHANNEL_1);
+        float[] aveV = pulseUtility.getScopesAverageVoltage(Waveform.Square, readVoltage, PULSE_WIDTH_IN_MICRO_SECONDS, DWF.WAVEFORM_CHANNEL_1);
+
+        if (aveV == null) {
+          resultController.addNewLine("Pulse capture failed. This is usually a triggering issue.");
+        }
 
         Vya[idx] = aveV[0];
         Vyb[idx] = aveV[1];
@@ -1243,7 +1200,11 @@ public class BoardCheckExperiment extends Experiment {
       for (int i : switches) { // cycle through switches
         dwfProxy.update2DigitalIOStatesAtOnce(i, true); // turn on switch
 
-        float[] aveV = getScopesAverageVoltage(readVoltage, DWF.WAVEFORM_CHANNEL_1);
+        float[] aveV = pulseUtility.getScopesAverageVoltage(Waveform.Square, readVoltage, PULSE_WIDTH_IN_MICRO_SECONDS, DWF.WAVEFORM_CHANNEL_1);
+
+        if (aveV == null) {
+          resultController.addNewLine("Pulse capture failed. This is usually a triggering issue.");
+        }
 
         // compute resistance as voltage drop across series resistors.
 
@@ -1260,18 +1221,14 @@ public class BoardCheckExperiment extends Experiment {
 
         // could measure negative resistance due to noise if resistance is very high. Just assume it
         // 10MOhms.
-        Ra =
-            Ra < 0
-                ? 1E4f
-                : (Ra - ExperimentPreferences.R_SWITCH)
-                    / 1000.0f; // account for bilateral switch resistance and convert to kiloohms.
+        Ra = Ra < 0 ? 1E4f : (Ra - ExperimentPreferences.R_SWITCH) / 1000.0f; // account for bilateral switch resistance and convert to kiloohms.
         Rb = Rb < 0 ? 1E4f : (Rb - ExperimentPreferences.R_SWITCH) / 1000.0f;
 
         // if its really high, its just likely just noise. Set to 10MOhm
         Ra = Ra > 1E4f ? 1E4f : Ra;
         Rb = Rb > 1E4f ? 1E4f : Rb;
 
-        synapses[idx] = new float[] {Ra, Rb};
+        synapses[idx] = new float[]{Ra, Rb};
 
         dwfProxy.update2DigitalIOStatesAtOnce(i, false); // turn off switch
         idx++;
@@ -1289,13 +1246,15 @@ public class BoardCheckExperiment extends Experiment {
 
       if (dwfProxy.isV1Board()) {
         MuxController muxController = new MuxController();
-        dwfProxy.setUpper8IOStates(
-            muxController
-                .getGPIOConfig()); // default configuration is for series resistor measurment.
+        dwfProxy.setUpper8IOStates(muxController.getGPIOConfig()); // default configuration is for series resistor measurment.
       }
 
-      resultController.addNewLine("");
       resultController.addNewLine("Mem-Inline Chip Test");
+      resultController.addNewLine("");
+      resultController.addNewLine("V_WRITE: " + V_WRITE + "V");
+      resultController.addNewLine("V_RESET: " + V_RESET + "V");
+      resultController.addNewLine("V_READ: " + V_READ + "V");
+
       resultController.addNewLine("");
 
       StringBuilder b = new StringBuilder();
@@ -1311,32 +1270,56 @@ public class BoardCheckExperiment extends Experiment {
       resultController.addNewLine(b.toString());
 
       float[][] reads = new float[3][9];
-      measureAllSwitchResistances(
-          V_WRITE, 0, true); // first call to measureAllSwitchResistances will set the muxes.
-      Thread.sleep(50);
 
-      measureAllSwitchResistances(V_RESET, 0, false);
-      Thread.sleep(50);
+      //form
+      pulseUtility.measureAllSwitchResistances(Waveform.Triangle, V_WRITE, PULSE_WIDTH_IN_MICRO_SECONDS);
+      pulseUtility.measureAllSwitchResistances(Waveform.Triangle, V_RESET, PULSE_WIDTH_IN_MICRO_SECONDS);
+      Thread.sleep(25);
 
-      reads[0] = measureAllSwitchResistances(V_READ, 0, false);
-      Thread.sleep(50);
+      reads[0] = pulseUtility.measureAllSwitchResistances(Waveform.Square, V_READ, PULSE_WIDTH_IN_MICRO_SECONDS);
+
+      Thread.sleep(25);
       resultController.addNewLine(formatResistanceArray("ERASE       ", reads[0]));
 
-      measureAllSwitchResistances(V_WRITE, 0, false);
-      Thread.sleep(50);
+      pulseUtility.measureAllSwitchResistances(Waveform.Square, V_WRITE, PULSE_WIDTH_IN_MICRO_SECONDS);
 
-      reads[1] = measureAllSwitchResistances(V_READ, 0, false);
-      Thread.sleep(50);
+      Thread.sleep(25);
+
+      reads[1] = pulseUtility.measureAllSwitchResistances(Waveform.Square, V_READ, PULSE_WIDTH_IN_MICRO_SECONDS);
+
+      Thread.sleep(25);
       resultController.addNewLine(formatResistanceArray("WRITE       ", reads[1]));
-      measureAllSwitchResistances(V_RESET, 0, false);
-      Thread.sleep(50);
 
-      reads[2] = measureAllSwitchResistances(V_READ, 0, false);
+      pulseUtility.measureAllSwitchResistances(Waveform.Square, V_RESET, PULSE_WIDTH_IN_MICRO_SECONDS);
+
+      Thread.sleep(25);
+
+      reads[2] = pulseUtility.measureAllSwitchResistances(Waveform.Square, V_READ, PULSE_WIDTH_IN_MICRO_SECONDS);
+
       Thread.sleep(50);
-      resultController.addNewLine(formatResistanceArray("ERASE2      ", reads[2]));
+      resultController.addNewLine(formatResistanceArray("ERASE      ", reads[2]));
 
       resultController.addNewLine("RESULT      " + verifyMemInlineReads(reads));
       resultController.addNewLine("");
+
+      //for client debugging
+      boolean pulseCaptureFail = false;
+      controlModel.swingPropertyChangeSupport.firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null, "MeminlineTestWorker Read Voltage Array: ");
+      for (int i = 0; i < reads.length; i++) {
+        controlModel.swingPropertyChangeSupport.firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null, Arrays.toString(reads[i]));
+
+        for (int j = 0; j < reads[i].length; j++) {
+          if (reads[i][j] == Float.NaN) {
+            pulseCaptureFail = true;
+          }
+        }
+
+      }
+
+      if (pulseCaptureFail) {
+        resultController.addNewLine("PULSE CAPTURE FAILURE");
+        return true;
+      }
 
       if (meminline_numFailed == 0) {
         resultController.addNewLine("TIER 1");
@@ -1353,7 +1336,6 @@ public class BoardCheckExperiment extends Experiment {
 
     private String verifyMemInlineReads(float[][] reads) {
 
-      // System.out.addNewLine("WTF MATE?");
       meminline_numFailed = 0;
       StringBuilder b = new StringBuilder();
       for (int i = 0; i < reads[0].length; i++) {
@@ -1366,7 +1348,6 @@ public class BoardCheckExperiment extends Experiment {
             break;
           }
         } else { // memristor
-          // System.out.addNewLine("WTF MATE 3?");
 
           float q1 = reads[0][i] / reads[1][i];
           float q2 = reads[2][i] / reads[1][i];
@@ -1375,14 +1356,10 @@ public class BoardCheckExperiment extends Experiment {
           //          System.out.addNewLine("q1=" + q1);
           //          System.out.addNewLine("q2=" + q2);
 
-          if (reads[0][i] < MEMINLINE_MIN_R
-              && reads[1][i] < MEMINLINE_MIN_R
-              && reads[2][i] < MEMINLINE_MIN_R) {
+          if (reads[0][i] < MEMINLINE_MIN_R && reads[1][i] < MEMINLINE_MIN_R && reads[2][i] < MEMINLINE_MIN_R) {
             testResult = "X [STK LOW]";
             meminline_numFailed++;
-          } else if (reads[0][i] > MEMINLINE_MAX_R
-              && reads[1][i] > MEMINLINE_MAX_R
-              && reads[2][i] > MEMINLINE_MAX_R) {
+          } else if (reads[0][i] > MEMINLINE_MAX_R && reads[1][i] > MEMINLINE_MAX_R && reads[2][i] > MEMINLINE_MAX_R) {
             testResult = "X [STK HIGH]";
             meminline_numFailed++;
           } else if (q1 < MIN_Q) {
