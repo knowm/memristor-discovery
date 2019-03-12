@@ -31,15 +31,19 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
+import org.knowm.memristor.discovery.core.experiment_common.PulseUtility;
+import org.knowm.memristor.discovery.core.gpio.MuxController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
 import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.control.ControlPanel;
@@ -62,6 +66,13 @@ public class ShelfLifeExperiment extends Experiment {
   // SwingWorkers
   private SwingWorker experimentCaptureWorker;
 
+  private MuxController muxController;
+  private PulseUtility pulseUtility;
+
+  private static final float VOLTAGE_READ_NOISE_FLOOR = .001f;//if the measured voltage across series resistor is less than this, you are getting noisy. 
+
+  private DecimalFormat kOhmFormat = new DecimalFormat("0.00");
+
   /** Constructor */
   public ShelfLifeExperiment(DWFProxy dwfProxy, Container mainFrameContainer, boolean isV1Board) {
 
@@ -75,6 +86,10 @@ public class ShelfLifeExperiment extends Experiment {
     refreshModelsFromPreferences();
     new ControlController(controlPanel, controlModel, dwfProxy);
     resultController = new ResultController(resultPanel, resultModel);
+
+    muxController = new MuxController();
+    pulseUtility = new PulseUtility(controlModel, dwfProxy, muxController, VOLTAGE_READ_NOISE_FLOOR);
+
   }
 
   @Override
@@ -160,23 +175,61 @@ public class ShelfLifeExperiment extends Experiment {
       String saveFilePath = controlModel.getSaveDirectory() + "/" + getDateTimeString(new Date()) + ".csv";
       try (PrintWriter printWriter = new PrintWriter(new BufferedWriter(new FileWriter(saveFilePath, true)))) {
 
+        //cycle devices in case they have not yet been formed
+        float V_READ = controlModel.getReadVoltageAmplitude();
+        float V_WRITE = controlModel.getWriteVoltageAmplitude();
+        float V_ERASE = controlModel.getEraseVoltageAmplitude();
+
+        int PULSE_WIDTH_READ = controlModel.getReadPulseWidthInMicroSeconds();
+        int PULSE_WIDTH_WRITE = controlModel.getWritePulseWidthInMicroSeconds();
+        int PULSE_WIDTH_ERASE = controlModel.getErasePulseWidthInMicroSeconds();
+
+        String dateFormatString = "yyyy.MM.dd 'at' HH:mm:ss z";//this should be in preferences.
+
+        System.out.println("V_READ=" + V_READ);
+        System.out.println("V_WRITE=" + V_WRITE);
+        System.out.println("V_ERASE=" + V_ERASE);
+        System.out.println("PULSE_WIDTH_READ=" + PULSE_WIDTH_READ);
+        System.out.println("PULSE_WIDTH_WRITE=" + PULSE_WIDTH_WRITE);
+        System.out.println("PULSE_WIDTH_ERASE=" + PULSE_WIDTH_ERASE);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat(dateFormatString);
+
+        //CVS FILE HEADERS--->
+        StringBuilder csvBuilder = new StringBuilder();
+        csvBuilder.append("Time");
+
+        for (int i = 1; i < 9; i++) {
+          csvBuilder.append(",");
+          csvBuilder.append("M" + i + "_E0");
+          csvBuilder.append(",");
+          csvBuilder.append("M" + i + "_W0");
+          csvBuilder.append(",");
+          csvBuilder.append("M" + i + "_E2");
+        }
+
+        String csvString = csvBuilder.toString();
+        resultController.addNewLine(csvString);
+        printWriter.println(csvString);
+        printWriter.flush();
+
         while (!isCancelled()) {
 
-          //  print a CSV line to the console.
-          StringBuilder csvBuilder = new StringBuilder();
-          csvBuilder.append("this");
-          csvBuilder.append(",");
-          csvBuilder.append("is");
-          csvBuilder.append(",");
-          csvBuilder.append("fun");
-          csvBuilder.append(",");
-          csvBuilder.append(controlModel.getTimeUnit());
-          csvBuilder.append(",");
-          csvBuilder.append(controlModel.getRepeatInterval());
-          csvBuilder.append(",");
-          csvBuilder.append(controlModel.getSeriesResistance());
+          float[][] reads = pulseUtility.testMeminline(V_WRITE, V_ERASE, V_READ, PULSE_WIDTH_READ, PULSE_WIDTH_WRITE, PULSE_WIDTH_ERASE);
 
-          String csvString = csvBuilder.toString();
+          csvBuilder = new StringBuilder();
+          csvBuilder.append(dateFormat.format(new Date(System.currentTimeMillis())));
+
+          for (int i = 1; i < 9; i++) {
+            csvBuilder.append(",");
+            csvBuilder.append(formatResistance(reads[0][i]));
+            csvBuilder.append(",");
+            csvBuilder.append(formatResistance(reads[1][i]));
+            csvBuilder.append(",");
+            csvBuilder.append(formatResistance(reads[2][i]));
+          }
+
+          csvString = csvBuilder.toString();
 
           // CSV to console
           resultController.addNewLine(csvString);
@@ -190,6 +243,16 @@ public class ShelfLifeExperiment extends Experiment {
       }
       return true;
     }
+  }
+
+  private String formatResistance(float resistanceInKiloOhms) {
+
+    if (resistanceInKiloOhms == Float.POSITIVE_INFINITY) {
+      return "∞";
+    } else {
+      return kOhmFormat.format(resistanceInKiloOhms);
+    }
+
   }
 
   private String getDateTimeString(Date value) {

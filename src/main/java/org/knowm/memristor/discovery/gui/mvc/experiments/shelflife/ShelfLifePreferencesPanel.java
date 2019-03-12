@@ -140,6 +140,19 @@ public class ShelfLifePreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridy++;
     gc.gridx = 0;
+    this.seriesResistorLabel = new JLabel("Series Resistor:");
+    preferencesPanel.add(seriesResistorLabel, gc);
+
+    gc.gridx = 1;
+    this.seriesResistorTextField = new JTextField(12);
+    this.seriesResistorTextField.setText(
+        String.valueOf(experimentPreferences.getInteger(ShelfLifePreferences.SERIES_R_INIT_KEY, ShelfLifePreferences.SERIES_R_INIT_DEFAULT_VALUE)));
+    preferencesPanel.add(seriesResistorTextField, gc);
+
+    /////////////////////////////////////////////////////////
+
+    gc.gridy++;
+    gc.gridx = 0;
     this.repeatIntervalLabel = new JLabel("Repeat Interval:");
     preferencesPanel.add(repeatIntervalLabel, gc);
 
@@ -172,7 +185,7 @@ public class ShelfLifePreferencesPanel extends ExperimentPreferencesPanel {
     gc.gridx = 1;
     this.readPulseWidthInMicroSecondsTextField = new JTextField(12);
     this.readPulseWidthInMicroSecondsTextField.setText(String.valueOf(
-        experimentPreferences.getFloat(ShelfLifePreferences.READ_PULSE_WIDTH_INIT_KEY, ShelfLifePreferences.READ_PULSE_WIDTH_DEFAULT_VALUE)));
+        experimentPreferences.getInteger(ShelfLifePreferences.READ_PULSE_WIDTH_INIT_KEY, ShelfLifePreferences.READ_PULSE_WIDTH_DEFAULT_VALUE)));
     preferencesPanel.add(readPulseWidthInMicroSecondsTextField, gc);
 
     /////////////////////////////////////////////////////////

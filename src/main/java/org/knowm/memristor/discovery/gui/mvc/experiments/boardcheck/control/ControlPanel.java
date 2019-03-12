@@ -71,7 +71,7 @@ public class ControlPanel extends ControlView {
     add(switchTestButton, c);
 
     c.gridy++;
-    meminlineTestButton = new JButton("Mem-Inline Chip Test");
+    meminlineTestButton = new JButton("8X Discrete Chip Test");
     meminlineTestButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.insets = new Insets(0, 0, 0, 0);
     add(meminlineTestButton, c);

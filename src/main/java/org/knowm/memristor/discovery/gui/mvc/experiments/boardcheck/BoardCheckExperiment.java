@@ -34,9 +34,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.core.WaveformUtils;
+import org.knowm.memristor.discovery.core.experiment_common.PulseUtility;
 import org.knowm.memristor.discovery.core.gpio.MuxController;
 import org.knowm.memristor.discovery.core.gpio.MuxController.Destination;
-import org.knowm.memristor.discovery.core.pulse.PulseUtility;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
@@ -57,14 +57,14 @@ public class BoardCheckExperiment extends Experiment {
 
   private static final float V_READ = .1f;
   private static final float V_WRITE = 2.0f;
-  private static final float V_HARD_WRITE = 2.0f;
-  private static final float V_RESET = -3f;
+  private static final float V_HARD_WRITE = 2.5f;
+  private static final float V_RESET = -2f;
   //private static final float V_MEMINLINE_HARD_RESET = -3f;
 
-  // private static final float R_CALIBRATE = 0; // Line trace resistance, AD2 Calibration.
+  private static final float MIN_DEVIATION = .02F; // Line trace resistance, AD2 Calibration.
   private final MuxController muxController;
 
-  private static final int PULSE_WIDTH_IN_MICRO_SECONDS = 1000;
+  private static final int PULSE_WIDTH_IN_MICRO_SECONDS = 10_000;
 
   private static final float VOLTAGE_READ_NOISE_FLOOR = .001f;//if the measured voltage across series resistor is less than this, you are getting noisy. 
 
@@ -394,42 +394,42 @@ public class BoardCheckExperiment extends Experiment {
         float[] deviations = measureMuxDeviation(DWF.WAVEFORM_CHANNEL_1, Destination.A);
         resultController.addNewLine("W1-->A      " + percentFormat.format(deviations[0]) + "          " + percentFormat.format(deviations[1]));
 
-        if (deviations[0] > .02 | deviations[1] > .02) {
+        if (deviations[0] > MIN_DEVIATION | deviations[1] > MIN_DEVIATION) {
           pass = false;
         }
 
         deviations = measureMuxDeviation(DWF.WAVEFORM_CHANNEL_1, Destination.B);
         resultController.addNewLine("W1-->B      " + percentFormat.format(deviations[0]) + "          " + percentFormat.format(deviations[1]));
 
-        if (deviations[0] > .02 | deviations[1] > .02) {
+        if (deviations[0] > MIN_DEVIATION | deviations[1] > MIN_DEVIATION) {
           pass = false;
         }
 
         deviations = measureMuxDeviation(DWF.WAVEFORM_CHANNEL_1, Destination.Y);
         resultController.addNewLine("W1-->Y      " + percentFormat.format(deviations[0]) + "          " + percentFormat.format(deviations[1]));
 
-        if (deviations[0] > .02 | deviations[1] > .02) {
+        if (deviations[0] > MIN_DEVIATION | deviations[1] > MIN_DEVIATION) {
           pass = false;
         }
 
         deviations = measureMuxDeviation(DWF.WAVEFORM_CHANNEL_2, Destination.A);
         resultController.addNewLine("W2-->A      " + percentFormat.format(deviations[0]) + "          " + percentFormat.format(deviations[1]));
 
-        if (deviations[0] > .02 | deviations[1] > .02) {
+        if (deviations[0] > MIN_DEVIATION | deviations[1] > MIN_DEVIATION) {
           pass = false;
         }
 
         deviations = measureMuxDeviation(DWF.WAVEFORM_CHANNEL_2, Destination.B);
         resultController.addNewLine("W2-->B      " + percentFormat.format(deviations[0]) + "          " + percentFormat.format(deviations[1]));
 
-        if (deviations[0] > .02 | deviations[1] > .02) {
+        if (deviations[0] > MIN_DEVIATION | deviations[1] > MIN_DEVIATION) {
           pass = false;
         }
 
         deviations = measureMuxDeviation(DWF.WAVEFORM_CHANNEL_2, Destination.Y);
         resultController.addNewLine("W2-->Y      " + percentFormat.format(deviations[0]) + "          " + percentFormat.format(deviations[1]));
 
-        if (deviations[0] > .02 | deviations[1] > .02) {
+        if (deviations[0] > MIN_DEVIATION | deviations[1] > MIN_DEVIATION) {
           pass = false;
         }
 
@@ -1092,45 +1092,25 @@ public class BoardCheckExperiment extends Experiment {
 
       resultController.addNewLine(b.toString());
 
-      float[][] reads = new float[3][9];
-
-      //form
-      pulseUtility.measureAllSwitchResistances(Waveform.Triangle, V_WRITE, PULSE_WIDTH_IN_MICRO_SECONDS);
-      pulseUtility.measureAllSwitchResistances(Waveform.Triangle, V_RESET, PULSE_WIDTH_IN_MICRO_SECONDS);
+      //form device 
+      pulseUtility.measureAllSwitchResistances(Waveform.Triangle, V_WRITE, 50_000);
       Thread.sleep(25);
+      pulseUtility.measureAllSwitchResistances(Waveform.Triangle, V_RESET, 50_000);
 
-      reads[0] = pulseUtility.measureAllSwitchResistances(Waveform.Square, V_READ, PULSE_WIDTH_IN_MICRO_SECONDS);
+      float[][] reads = pulseUtility.testMeminline(V_WRITE, V_RESET, V_READ, PULSE_WIDTH_IN_MICRO_SECONDS, PULSE_WIDTH_IN_MICRO_SECONDS,
+          PULSE_WIDTH_IN_MICRO_SECONDS);
 
-      Thread.sleep(25);
       resultController.addNewLine(formatResistanceArray("ERASE       ", reads[0]));
-
-      pulseUtility.measureAllSwitchResistances(Waveform.Square, V_WRITE, PULSE_WIDTH_IN_MICRO_SECONDS);
-
-      Thread.sleep(25);
-
-      reads[1] = pulseUtility.measureAllSwitchResistances(Waveform.Square, V_READ, PULSE_WIDTH_IN_MICRO_SECONDS);
-
-      Thread.sleep(25);
       resultController.addNewLine(formatResistanceArray("WRITE       ", reads[1]));
-
-      pulseUtility.measureAllSwitchResistances(Waveform.Square, V_RESET, PULSE_WIDTH_IN_MICRO_SECONDS);
-
-      Thread.sleep(25);
-
-      reads[2] = pulseUtility.measureAllSwitchResistances(Waveform.Square, V_READ, PULSE_WIDTH_IN_MICRO_SECONDS);
-
-      Thread.sleep(50);
       resultController.addNewLine(formatResistanceArray("ERASE      ", reads[2]));
-
       resultController.addNewLine("RESULT      " + verifyMemInlineReads(reads));
       resultController.addNewLine("");
 
-      //for client debugging
+      //for debugging-->
       boolean pulseCaptureFail = false;
       controlModel.swingPropertyChangeSupport.firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null, "MeminlineTestWorker Read Voltage Array: ");
       for (int i = 0; i < reads.length; i++) {
         controlModel.swingPropertyChangeSupport.firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null, Arrays.toString(reads[i]));
-
         for (int j = 0; j < reads[i].length; j++) {
           if (reads[i][j] == Float.NaN) {
             pulseCaptureFail = true;

@@ -75,7 +75,10 @@ public class ControlController extends Controller {
   private void initGUIComponentsFromModel() {
 
     controlPanel.getSaveDirectoryTextField().setText("" + controlModel.getSaveDirectory());
-    controlPanel.getTimeunitComboBox().setModel(new DefaultComboBoxModel<>(TimeUnit.values()));
+    //controlPanel.getTimeunitComboBox().setModel(new DefaultComboBoxModel<>(TimeUnit.values()));
+
+    controlPanel.getTimeunitComboBox().setModel(new DefaultComboBoxModel<>(new TimeUnit[]{TimeUnit.SECONDS, TimeUnit.MINUTES, TimeUnit.DAYS}));
+
     controlPanel.getTimeunitComboBox().setSelectedItem(controlModel.getTimeUnit());
     controlPanel.getSeriesTextField().setText("" + controlModel.getSeriesResistance());
     controlPanel.getIntervalTextField().setText("" + controlModel.getRepeatInterval());
@@ -85,98 +88,78 @@ public class ControlController extends Controller {
   @Override
   public void doSetUpViewEvents() {
 
-    controlPanel
-        .getSaveDirectoryButton()
-        .addActionListener(
-            new ActionListener() {
+    controlPanel.getSaveDirectoryButton().addActionListener(new ActionListener() {
 
-              @Override
-              public void actionPerformed(ActionEvent e) {
+      @Override
+      public void actionPerformed(ActionEvent e) {
 
-                try {
-                  String saveDirectory = FileUtils.showSaveAsDialog(controlPanel);
-                  controlModel.setSaveDirectory(saveDirectory);
-                } catch (IOException e1) {
-                  e1.printStackTrace();
-                }
-              }
-            });
+        try {
+          String saveDirectory = FileUtils.showSaveAsDialog(controlPanel);
+          controlModel.setSaveDirectory(saveDirectory);
+        } catch (IOException e1) {
+          e1.printStackTrace();
+        }
+      }
+    });
 
-    controlPanel
-        .getTimeunitComboBox()
-        .addActionListener(
-            new ActionListener() {
-              @Override
-              public void actionPerformed(ActionEvent e) {
+    controlPanel.getTimeunitComboBox().addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
 
-                controlModel.setTimeUnit(
-                    controlPanel.getTimeunitComboBox().getSelectedItem().toString());
-              }
-            });
+        controlModel.setTimeUnit(controlPanel.getTimeunitComboBox().getSelectedItem().toString());
+      }
+    });
 
-    controlPanel
-        .getIntervalTextField()
-        .addKeyListener(
-            new KeyAdapter() {
+    controlPanel.getIntervalTextField().addKeyListener(new KeyAdapter() {
 
-              @Override
-              public void keyReleased(KeyEvent e) {
+      @Override
+      public void keyReleased(KeyEvent e) {
 
-                JTextField textField = (JTextField) e.getSource();
-                String text = textField.getText();
+        JTextField textField = (JTextField) e.getSource();
+        String text = textField.getText();
 
-                try {
-                  int newInterval = Integer.parseInt(text);
-                  controlModel.setRepeatInterval(newInterval);
-                } catch (Exception ex) {
-                  // parsing error, default back to previous value
-                  textField.setText(Integer.toString(controlModel.getRepeatInterval()));
-                }
-              }
-            });
+        try {
+          int newInterval = Integer.parseInt(text);
+          controlModel.setRepeatInterval(newInterval);
+        } catch (Exception ex) {
+          // parsing error, default back to previous value
+          textField.setText(Integer.toString(controlModel.getRepeatInterval()));
+        }
+      }
+    });
 
-    controlPanel
-        .getSeriesTextField()
-        .addKeyListener(
-            new KeyAdapter() {
+    controlPanel.getSeriesTextField().addKeyListener(new KeyAdapter() {
 
-              @Override
-              public void keyReleased(KeyEvent e) {
+      @Override
+      public void keyReleased(KeyEvent e) {
 
-                JTextField textField = (JTextField) e.getSource();
-                String text = textField.getText();
+        JTextField textField = (JTextField) e.getSource();
+        String text = textField.getText();
 
-                try {
-                  int newSeriesValue = Integer.parseInt(text);
-                  controlModel.setSeriesResistance(newSeriesValue);
-                } catch (Exception ex) {
-                  // parsing error, default back to previous value
-                  textField.setText(Integer.toString(controlModel.getSeriesResistance()));
-                }
-              }
-            });
+        try {
+          int newSeriesValue = Integer.parseInt(text);
+          controlModel.setSeriesResistance(newSeriesValue);
+        } catch (Exception ex) {
+          // parsing error, default back to previous value
+          textField.setText(Integer.toString(controlModel.getSeriesResistance()));
+        }
+      }
+    });
 
-    controlView
-        .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-        .put(KeyStroke.getKeyStroke("S"), "startstop");
-    controlView
-        .getActionMap()
-        .put(
-            "startstop",
-            new AbstractAction() {
+    controlView.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("S"), "startstop");
+    controlView.getActionMap().put("startstop", new AbstractAction() {
 
-              @Override
-              public void actionPerformed(ActionEvent e) {
+      @Override
+      public void actionPerformed(ActionEvent e) {
 
-                controlPanel.getStartStopButton().doClick();
-              }
-            });
+        controlPanel.getStartStopButton().doClick();
+      }
+    });
   }
 
   /**
-   * These property change events are triggered in the controlModel in the case where the underlying
-   * controlModel is updated. Here, the controller can respond to those events and make sure the
-   * corresponding GUI components get updated.
+   * These property change events are triggered in the controlModel in the case where the underlying controlModel is updated. Here, the controller can
+   * respond to those events and make sure the corresponding GUI components get updated.
    */
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
