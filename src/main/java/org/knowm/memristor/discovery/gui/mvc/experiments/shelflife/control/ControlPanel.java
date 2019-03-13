@@ -42,10 +42,9 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
  */
 public class ControlPanel extends ControlView {
 
-  private  final JLabel saveDirectoryLabel;
-  private final  JButton saveDirectoryButton;
-  private  final JTextField saveDirectoryTextField;
-
+  private final JLabel saveDirectoryLabel;
+  private final JButton saveDirectoryButton;
+  private final JTextField saveDirectoryTextField;
 
   private final JLabel timeUnitLabel;
   private final JComboBox<TimeUnit> timeunitComboBox;
@@ -78,13 +77,11 @@ public class ControlPanel extends ControlView {
     c.insets = new Insets(0, 0, 0, 0);
     add(saveDirectoryButton, c);
 
-
     saveDirectoryTextField = new JTextField();
     saveDirectoryTextField.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.gridy++;
     c.insets = new Insets(0, 5, 14, 5);
     add(saveDirectoryTextField, c);
-
 
     timeUnitLabel = new JLabel("Time Unit");
     timeUnitLabel.setAlignmentX(Component.CENTER_ALIGNMENT);

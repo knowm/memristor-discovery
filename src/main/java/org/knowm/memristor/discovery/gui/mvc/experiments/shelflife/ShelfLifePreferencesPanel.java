@@ -107,7 +107,7 @@ public class ShelfLifePreferencesPanel extends ExperimentPreferencesPanel {
       public void actionPerformed(ActionEvent e) {
 
         try {
-          saveDirectory = FileUtils.showSaveAsDialog(preferencesPanel);
+          saveDirectory = FileUtils.showSaveAsDialog(preferencesPanel, saveDirectoryLabel.getText());
           saveDirectoryTextField.setText(saveDirectory);
         } catch (IOException e1) {
           e1.printStackTrace();
@@ -118,8 +118,10 @@ public class ShelfLifePreferencesPanel extends ExperimentPreferencesPanel {
     gc.gridx = 0;
     gc.gridwidth = 2;
     this.saveDirectoryTextField = new JTextField(24);
+
     this.saveDirectoryTextField.setText(String.valueOf(
         experimentPreferences.getString(ShelfLifePreferences.SAVE_DIRECTORY_INIT_KEY, ShelfLifePreferences.SAVE_DIRECTORY_INIT_DEFAULT_VALUE)));
+
     preferencesPanel.add(saveDirectoryTextField, gc);
 
     gc.gridy++;

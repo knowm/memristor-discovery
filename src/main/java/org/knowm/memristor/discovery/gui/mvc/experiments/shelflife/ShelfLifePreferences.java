@@ -39,7 +39,7 @@ public class ShelfLifePreferences extends ExperimentPreferences {
   // ALREADY IN PREFERENCES
   private static final String PREFIX = "SHELFLIFE_";
   public static final String SAVE_DIRECTORY_INIT_KEY = PREFIX + "SAVE_DIRECTORY_INIT_KEY";
-  public static final String SAVE_DIRECTORY_INIT_DEFAULT_VALUE = "";
+  public static final String SAVE_DIRECTORY_INIT_DEFAULT_VALUE = "/";
   public static final String SERIES_R_INIT_KEY = PREFIX + "SERIES_R_INIT_KEY";
   public static final int SERIES_R_INIT_DEFAULT_VALUE = 5_000;
   public static final String TIME_UNIT_INIT_KEY = PREFIX + "TIME_UNIT_INIT_KEY";

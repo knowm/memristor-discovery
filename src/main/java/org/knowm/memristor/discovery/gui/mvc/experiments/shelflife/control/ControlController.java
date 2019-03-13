@@ -94,8 +94,11 @@ public class ControlController extends Controller {
       public void actionPerformed(ActionEvent e) {
 
         try {
-          String saveDirectory = FileUtils.showSaveAsDialog(controlPanel);
+          String saveDirectory = FileUtils.showSaveAsDialog(controlPanel, controlModel.getSaveDirectory());
           controlModel.setSaveDirectory(saveDirectory);
+
+          controlPanel.getSaveDirectoryTextField().setText(saveDirectory);
+
         } catch (IOException e1) {
           e1.printStackTrace();
         }
