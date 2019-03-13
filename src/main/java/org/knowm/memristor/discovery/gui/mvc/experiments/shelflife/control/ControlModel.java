@@ -47,6 +47,9 @@ public class ControlModel extends Model {
   private int writePulseWidthInMicroSeconds;
   private int erasePulseWidthInMicroSeconds;
 
+  private float maxWriteResistance;
+  private float minEraseResistance;
+
   /** Constructor */
   public ControlModel() {
   }
@@ -76,6 +79,11 @@ public class ControlModel extends Model {
         ShelfLifePreferences.WRITE_PULSE_WIDTH_DEFAULT_VALUE);
     erasePulseWidthInMicroSeconds = experimentPreferences.getInteger(ShelfLifePreferences.ERASE_PULSE_WIDTH_INIT_KEY,
         ShelfLifePreferences.ERASE_PULSE_WIDTH_DEFAULT_VALUE);
+
+    minEraseResistance = experimentPreferences.getFloat(ShelfLifePreferences.MIN_ERASE_RESISTANCE_INIT_KEY,
+        ShelfLifePreferences.MIN_ERASE_RESISTANCE_DEFAULT_VALUE);
+    maxWriteResistance = experimentPreferences.getFloat(ShelfLifePreferences.MAX_WRITE_RESISTANCE_INIT_KEY,
+        ShelfLifePreferences.MAX_WRITE_RESISTANCE_DEFAULT_VALUE);
 
   }
 
@@ -169,4 +177,21 @@ public class ControlModel extends Model {
   public void setErasePulseWidthInMicroSeconds(int erasePulseWidthInMicroSeconds) {
     this.erasePulseWidthInMicroSeconds = erasePulseWidthInMicroSeconds;
   }
+
+  public float getMaxWriteResistance() {
+    return maxWriteResistance;
+  }
+
+  public void setMaxWriteResistance(float maxWriteResistance) {
+    this.maxWriteResistance = maxWriteResistance;
+  }
+
+  public float getMinEraseResistance() {
+    return minEraseResistance;
+  }
+
+  public void setMinEraseResistance(float minEraseResistance) {
+    this.minEraseResistance = minEraseResistance;
+  }
+
 }

@@ -53,7 +53,7 @@ public class ControlPanel extends ControlView {
   private final JTextField intervalTextField;
 
   private final JLabel seriesLabel;
-  private final JTextField seriesTextField;
+  //private final JTextField seriesTextField;
 
   private final JButton startStopButton;
 
@@ -107,17 +107,23 @@ public class ControlPanel extends ControlView {
     c.insets = new Insets(0, 5, 14, 5);
     add(intervalTextField, c);
 
-    seriesLabel = new JLabel("Series R [Ohm]");
+    //    seriesLabel = new JLabel("Series R [Ohm]");
+    //    seriesLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    //    c.gridy++;
+    //    c.insets = new Insets(0, 10, 4, 0);
+    //    add(seriesLabel, c);
+    //
+    //    seriesTextField = new JTextField();
+    //    seriesTextField.setAlignmentX(Component.CENTER_ALIGNMENT);
+    //    c.gridy++;
+    //    c.insets = new Insets(0, 5, 14, 5);
+    //    add(seriesTextField, c);
+
+    seriesLabel = new JLabel("Set Measurment Parameters in Preferences");
     seriesLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.gridy++;
     c.insets = new Insets(0, 10, 4, 0);
     add(seriesLabel, c);
-
-    seriesTextField = new JTextField();
-    seriesTextField.setAlignmentX(Component.CENTER_ALIGNMENT);
-    c.gridy++;
-    c.insets = new Insets(0, 5, 14, 5);
-    add(seriesTextField, c);
 
     startStopButton = new JButton("Start");
     startStopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -135,7 +141,7 @@ public class ControlPanel extends ControlView {
     saveDirectoryTextField.setEnabled(enabled);
     timeunitComboBox.setEnabled(enabled);
     intervalTextField.setEnabled(enabled);
-    seriesTextField.setEnabled(enabled);
+    //seriesTextField.setEnabled(enabled);
     startStopButton.setEnabled(enabled);
   }
 
@@ -155,10 +161,10 @@ public class ControlPanel extends ControlView {
     return timeunitComboBox;
   }
 
-  public JTextField getSeriesTextField() {
-
-    return seriesTextField;
-  }
+  //  public JTextField getSeriesTextField() {
+  //
+  //    return seriesTextField;
+  //  }
 
   public JButton getStartStopButton() {
     return startStopButton;

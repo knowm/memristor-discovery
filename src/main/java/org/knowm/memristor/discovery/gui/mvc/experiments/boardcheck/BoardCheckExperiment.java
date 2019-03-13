@@ -1103,6 +1103,7 @@ public class BoardCheckExperiment extends Experiment {
       resultController.addNewLine(formatResistanceArray("ERASE       ", reads[0]));
       resultController.addNewLine(formatResistanceArray("WRITE       ", reads[1]));
       resultController.addNewLine(formatResistanceArray("ERASE      ", reads[2]));
+
       resultController.addNewLine("RESULT      " + verifyMemInlineReads(reads));
       resultController.addNewLine("");
 

@@ -75,6 +75,12 @@ public class ShelfLifePreferencesPanel extends ExperimentPreferencesPanel {
   private JLabel erasePulseWidthInMicroSecondsLabel;
   private JTextField erasePulseWidthInMicroSecondsTextField;
 
+  private JLabel minEraseResistanceLabel;
+  private JTextField minEraseResistanceTextField;
+
+  private JLabel maxWriteResistanceLabel;
+  private JTextField maxWriteResistanceTextField;
+
   /**
    * Constructor
    *
@@ -90,7 +96,7 @@ public class ShelfLifePreferencesPanel extends ExperimentPreferencesPanel {
 
     GridBagConstraints gc = new GridBagConstraints();
     gc.fill = GridBagConstraints.HORIZONTAL;
-    gc.insets = new Insets(10, 10, 10, 10);
+    gc.insets = new Insets(2, 10, 2, 10);
 
     gc.gridy = 0;
     gc.gridx = 0;
@@ -142,20 +148,7 @@ public class ShelfLifePreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridy++;
     gc.gridx = 0;
-    this.seriesResistorLabel = new JLabel("Series Resistor:");
-    preferencesPanel.add(seriesResistorLabel, gc);
-
-    gc.gridx = 1;
-    this.seriesResistorTextField = new JTextField(12);
-    this.seriesResistorTextField.setText(
-        String.valueOf(experimentPreferences.getInteger(ShelfLifePreferences.SERIES_R_INIT_KEY, ShelfLifePreferences.SERIES_R_INIT_DEFAULT_VALUE)));
-    preferencesPanel.add(seriesResistorTextField, gc);
-
-    /////////////////////////////////////////////////////////
-
-    gc.gridy++;
-    gc.gridx = 0;
-    this.repeatIntervalLabel = new JLabel("Repeat Interval:");
+    this.repeatIntervalLabel = new JLabel("Repeat Interval (Time Unit):");
     preferencesPanel.add(repeatIntervalLabel, gc);
 
     gc.gridx = 1;
@@ -163,6 +156,19 @@ public class ShelfLifePreferencesPanel extends ExperimentPreferencesPanel {
     this.repeatIntervalTextField.setText(String.valueOf(
         experimentPreferences.getInteger(ShelfLifePreferences.REPEAT_INTERVAL_INIT_KEY, ShelfLifePreferences.REPEAT_INTERVAL_DEFAULT_VALUE)));
     preferencesPanel.add(repeatIntervalTextField, gc);
+
+    /////////////////////////////////////////////////////////
+
+    gc.gridy++;
+    gc.gridx = 0;
+    this.seriesResistorLabel = new JLabel("Series Resistor (Ω):");
+    preferencesPanel.add(seriesResistorLabel, gc);
+
+    gc.gridx = 1;
+    this.seriesResistorTextField = new JTextField(12);
+    this.seriesResistorTextField.setText(
+        String.valueOf(experimentPreferences.getInteger(ShelfLifePreferences.SERIES_R_INIT_KEY, ShelfLifePreferences.SERIES_R_INIT_DEFAULT_VALUE)));
+    preferencesPanel.add(seriesResistorTextField, gc);
 
     /////////////////////////////////////////////////////////
 
@@ -244,6 +250,32 @@ public class ShelfLifePreferencesPanel extends ExperimentPreferencesPanel {
 
     /////////////////////////////////////////////////////////
 
+    gc.gridy++;
+    gc.gridx = 0;
+    this.maxWriteResistanceLabel = new JLabel("Max Write Resistance (kΩ)");
+    preferencesPanel.add(maxWriteResistanceLabel, gc);
+
+    gc.gridx = 1;
+    this.maxWriteResistanceTextField = new JTextField(12);
+    this.maxWriteResistanceTextField.setText(String.valueOf(
+        experimentPreferences.getFloat(ShelfLifePreferences.MAX_WRITE_RESISTANCE_INIT_KEY, ShelfLifePreferences.MAX_WRITE_RESISTANCE_DEFAULT_VALUE)));
+    preferencesPanel.add(maxWriteResistanceTextField, gc);
+
+    /////////////////////////////////////////////////////////
+
+    gc.gridy++;
+    gc.gridx = 0;
+    this.minEraseResistanceLabel = new JLabel("Min Erase Resistance (kΩ)");
+    preferencesPanel.add(minEraseResistanceLabel, gc);
+
+    gc.gridx = 1;
+    this.minEraseResistanceTextField = new JTextField(12);
+    this.minEraseResistanceTextField.setText(String.valueOf(
+        experimentPreferences.getFloat(ShelfLifePreferences.MIN_ERASE_RESISTANCE_INIT_KEY, ShelfLifePreferences.MIN_ERASE_RESISTANCE_DEFAULT_VALUE)));
+    preferencesPanel.add(minEraseResistanceTextField, gc);
+
+    /////////////////////////////////////////////////////////
+
   }
 
   @Override
@@ -264,6 +296,9 @@ public class ShelfLifePreferencesPanel extends ExperimentPreferencesPanel {
         Integer.parseInt(writePulseWidthInMicroSecondsTextField.getText()));
     experimentPreferences.setInteger(ShelfLifePreferences.ERASE_PULSE_WIDTH_INIT_KEY,
         Integer.parseInt(erasePulseWidthInMicroSecondsTextField.getText()));
+
+    experimentPreferences.setFloat(ShelfLifePreferences.MAX_WRITE_RESISTANCE_INIT_KEY, Float.parseFloat(maxWriteResistanceTextField.getText()));
+    experimentPreferences.setFloat(ShelfLifePreferences.MIN_ERASE_RESISTANCE_INIT_KEY, Float.parseFloat(minEraseResistanceTextField.getText()));
 
   }
 
