@@ -31,22 +31,22 @@ public class PulseUtility {
    * for each device (in kOhms): start, write, erase
    */
 
-  public float[][] testMeminline(float V_WRITE, float V_ERASE, float V_READ, int READ_PULSE_WIDTH_IN_MICRO_SECONDS,
+  public float[][] testMeminline(Waveform writeEraseWaveform, float V_WRITE, float V_ERASE, float V_READ, int READ_PULSE_WIDTH_IN_MICRO_SECONDS,
       int WRITE_PULSE_WIDTH_IN_MICRO_SECONDS, int ERASE_PULSE_WIDTH_IN_MICRO_SECONDS) {
 
     try {
 
       //initialize in erased state
-      measureAllSwitchResistances(Waveform.Square, V_ERASE, ERASE_PULSE_WIDTH_IN_MICRO_SECONDS);
+      measureAllSwitchResistances(writeEraseWaveform, V_ERASE, ERASE_PULSE_WIDTH_IN_MICRO_SECONDS);
       Thread.sleep(25);
       float[][] reads = new float[3][9];
       reads[0] = measureAllSwitchResistances(Waveform.Square, V_READ, READ_PULSE_WIDTH_IN_MICRO_SECONDS);
       Thread.sleep(25);
-      measureAllSwitchResistances(Waveform.Square, V_WRITE, WRITE_PULSE_WIDTH_IN_MICRO_SECONDS);
+      measureAllSwitchResistances(writeEraseWaveform, V_WRITE, WRITE_PULSE_WIDTH_IN_MICRO_SECONDS);
       Thread.sleep(25);
       reads[1] = measureAllSwitchResistances(Waveform.Square, V_READ, READ_PULSE_WIDTH_IN_MICRO_SECONDS);
       Thread.sleep(25);
-      measureAllSwitchResistances(Waveform.Square, V_ERASE, ERASE_PULSE_WIDTH_IN_MICRO_SECONDS);
+      measureAllSwitchResistances(writeEraseWaveform, V_ERASE, ERASE_PULSE_WIDTH_IN_MICRO_SECONDS);
       Thread.sleep(25);
       reads[2] = measureAllSwitchResistances(Waveform.Square, V_READ, READ_PULSE_WIDTH_IN_MICRO_SECONDS);
       return reads;

@@ -27,13 +27,13 @@ package org.knowm.memristor.discovery.core;
 public class PostProcessDataUtils {
 
   public enum MemristorTestResult {
-    SWITCHES_BAD, //resistance of open switches is less than minMaxR
-    SWITCHES_GOOD, //switches are good.
+    S_BAD, //resistance of open switches is less than minMaxR
+    S_GOOD, //switches are good.
     PASS, //all good!
-    STUCK_HIGH, //resistance is stuck above minMaxR 
-    STUCK_LOW, //resistance is stuck below maxMinR
-    WRITE_FAILED, //resistance decrease is less than minRChange 
-    ERASE_FAILED; //resistance increase is less than minRChange 
+    STK_HI, //resistance is stuck above minMaxR 
+    STK_LO, //resistance is stuck below maxMinR
+    W_FAIL, //resistance decrease is less than minRChange 
+    E_FAIL; //resistance increase is less than minRChange 
   }
 
   /*
@@ -48,21 +48,21 @@ public class PostProcessDataUtils {
 
       if (i == 0) { // this is all switches off. R1, R2 and R3 should all be over 10mOhm
         if (reads[0][0] < minOpenSwitchR) { // should be in high resistance state.
-          results[i] = MemristorTestResult.SWITCHES_BAD;
+          results[i] = MemristorTestResult.S_BAD;
           break;
         } else {
-          results[i] = MemristorTestResult.SWITCHES_GOOD;
+          results[i] = MemristorTestResult.S_GOOD;
         }
       } else { // memristor
 
         if (reads[0][i] < maxWriteResistance && reads[1][i] < maxWriteResistance && reads[2][i] < maxWriteResistance) {
-          results[i] = MemristorTestResult.STUCK_LOW;
+          results[i] = MemristorTestResult.STK_LO;
         } else if (reads[0][i] > minEraseResistance && reads[1][i] > minEraseResistance && reads[2][i] > minEraseResistance) {
-          results[i] = MemristorTestResult.STUCK_HIGH;
+          results[i] = MemristorTestResult.STK_HI;
         } else if (reads[1][i] > maxWriteResistance) {
-          results[i] = MemristorTestResult.WRITE_FAILED;
+          results[i] = MemristorTestResult.W_FAIL;
         } else if (reads[2][i] < minEraseResistance) {
-          results[i] = MemristorTestResult.ERASE_FAILED;
+          results[i] = MemristorTestResult.E_FAIL;
         } else {
           results[i] = MemristorTestResult.PASS;
         }

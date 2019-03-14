@@ -76,7 +76,7 @@ public class ShelfLifeExperiment extends Experiment {
 
   private static final float VOLTAGE_READ_NOISE_FLOOR = .001f;//if the measured voltage across series resistor is less than this, you are getting noisy. 
 
-  private DecimalFormat kOhmFormat = new DecimalFormat("0.00");
+  private DecimalFormat kOhmFormat = new DecimalFormat("0.0");
 
   /** Constructor */
   public ShelfLifeExperiment(DWFProxy dwfProxy, Container mainFrameContainer, boolean isV1Board) {
@@ -201,7 +201,6 @@ public class ShelfLifeExperiment extends Experiment {
 
       String saveInfoFilePath = controlModel.getSaveDirectory() + "/" + infoFileName;
       try (PrintWriter printWriter = new PrintWriter(new BufferedWriter(new FileWriter(saveInfoFilePath, true)))) {
-
         printWriter.println("Memristor Discovery Shelf Life Experiment");
         printWriter.println("");
         printWriter.println("Memristor Discovery Version: " + Util.getVersionNumber());
@@ -227,12 +226,17 @@ public class ShelfLifeExperiment extends Experiment {
         printWriter.println(" os.name: " + System.getProperty("os.name"));
         printWriter.println(" os.version: " + System.getProperty("os.version"));
         printWriter.println(" user.name: " + System.getProperty("user.name"));
-
         printWriter.flush();
-
       }
 
       String saveDataFilePath = controlModel.getSaveDirectory() + "/" + dataFileName;
+
+      resultController.addNewLine("SHELF LIFE TEST START");
+      resultController.addNewLine("");
+      resultController.addNewLine("data file: " + saveDataFilePath);
+      resultController.addNewLine("info file: " + saveInfoFilePath);
+      resultController.addNewLine("");
+      resultController.addNewLine("");
 
       try (PrintWriter printWriter = new PrintWriter(new BufferedWriter(new FileWriter(saveDataFilePath, true)))) {
 
@@ -241,14 +245,17 @@ public class ShelfLifeExperiment extends Experiment {
         //CVS FILE HEADERS--->
         StringBuilder csvBuilder = new StringBuilder();
         csvBuilder.append("Time");
-
+        csvBuilder.append(",");
+        csvBuilder.append("SwitchTest");
         for (int i = 1; i < 9; i++) {
           csvBuilder.append(",");
-          csvBuilder.append("M" + i + "_E0");
+          csvBuilder.append(i + "_E0");
           csvBuilder.append(",");
-          csvBuilder.append("M" + i + "_W0");
+          csvBuilder.append(i + "_W");
           csvBuilder.append(",");
-          csvBuilder.append("M" + i + "_E1");
+          csvBuilder.append(i + "_E1");
+          csvBuilder.append(",");
+          csvBuilder.append(i + "C");
         }
 
         String csvString = csvBuilder.toString();
@@ -258,10 +265,14 @@ public class ShelfLifeExperiment extends Experiment {
 
         while (!isCancelled()) {
 
-          float[][] reads = pulseUtility.testMeminline(V_WRITE, V_ERASE, V_READ, PULSE_WIDTH_READ, PULSE_WIDTH_WRITE, PULSE_WIDTH_ERASE);
+          float[][] reads = pulseUtility.testMeminline(Waveform.HalfSine, V_WRITE, V_ERASE, V_READ, PULSE_WIDTH_READ, PULSE_WIDTH_WRITE,
+              PULSE_WIDTH_ERASE);
+          MemristorTestResult[] result = PostProcessDataUtils.categorizeMemristorTestReads(reads, minEraseResistance, maxWriteResistance, 1000f);
 
           csvBuilder = new StringBuilder();
           csvBuilder.append(dateFormat.format(new Date()));
+          csvBuilder.append(",");
+          csvBuilder.append(result[0]);
 
           for (int i = 1; i < 9; i++) {
             csvBuilder.append(",");
@@ -270,6 +281,8 @@ public class ShelfLifeExperiment extends Experiment {
             csvBuilder.append(formatResistance(reads[1][i]));
             csvBuilder.append(",");
             csvBuilder.append(formatResistance(reads[2][i]));
+            csvBuilder.append(",");
+            csvBuilder.append(result[i]);
           }
 
           csvString = csvBuilder.toString();
@@ -277,9 +290,9 @@ public class ShelfLifeExperiment extends Experiment {
           // CSV to console
           resultController.addNewLine(csvString);
 
-          MemristorTestResult[] result = PostProcessDataUtils.categorizeMemristorTestReads(reads, minEraseResistance, maxWriteResistance, 1000f);
+          // MemristorTestResult[] result = PostProcessDataUtils.categorizeMemristorTestReads(reads, minEraseResistance, maxWriteResistance, 1000f);
 
-          resultController.addNewLine(Arrays.toString(result));
+          // resultController.addNewLine(Arrays.toString(result));
 
           // CSV to file
           printWriter.println(csvString);

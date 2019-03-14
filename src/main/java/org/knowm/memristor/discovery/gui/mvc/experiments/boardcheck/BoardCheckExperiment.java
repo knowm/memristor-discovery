@@ -1093,12 +1093,12 @@ public class BoardCheckExperiment extends Experiment {
       resultController.addNewLine(b.toString());
 
       //form device 
-      pulseUtility.measureAllSwitchResistances(Waveform.Triangle, V_WRITE, 50_000);
+      pulseUtility.measureAllSwitchResistances(Waveform.HalfSine, V_WRITE, 50_000);
       Thread.sleep(25);
-      pulseUtility.measureAllSwitchResistances(Waveform.Triangle, V_RESET, 50_000);
+      pulseUtility.measureAllSwitchResistances(Waveform.HalfSine, V_RESET, 50_000);
 
-      float[][] reads = pulseUtility.testMeminline(V_WRITE, V_RESET, V_READ, PULSE_WIDTH_IN_MICRO_SECONDS, PULSE_WIDTH_IN_MICRO_SECONDS,
-          PULSE_WIDTH_IN_MICRO_SECONDS);
+      float[][] reads = pulseUtility.testMeminline(Waveform.HalfSine, V_WRITE, V_RESET, V_READ, PULSE_WIDTH_IN_MICRO_SECONDS,
+          PULSE_WIDTH_IN_MICRO_SECONDS, PULSE_WIDTH_IN_MICRO_SECONDS);
 
       resultController.addNewLine(formatResistanceArray("ERASE       ", reads[0]));
       resultController.addNewLine(formatResistanceArray("WRITE       ", reads[1]));
