@@ -80,7 +80,7 @@ public class ControlController extends Controller {
     controlPanel.getTimeunitComboBox().setModel(new DefaultComboBoxModel<>(new TimeUnit[]{TimeUnit.SECONDS, TimeUnit.MINUTES, TimeUnit.DAYS}));
 
     controlPanel.getTimeunitComboBox().setSelectedItem(controlModel.getTimeUnit());
-    controlPanel.getSeriesTextField().setText("" + controlModel.getSeriesResistance());
+    //controlPanel.getSeriesTextField().setText("" + controlModel.getSeriesResistance());
     controlPanel.getIntervalTextField().setText("" + controlModel.getRepeatInterval());
   }
 
@@ -131,23 +131,23 @@ public class ControlController extends Controller {
       }
     });
 
-    controlPanel.getSeriesTextField().addKeyListener(new KeyAdapter() {
-
-      @Override
-      public void keyReleased(KeyEvent e) {
-
-        JTextField textField = (JTextField) e.getSource();
-        String text = textField.getText();
-
-        try {
-          int newSeriesValue = Integer.parseInt(text);
-          controlModel.setSeriesResistance(newSeriesValue);
-        } catch (Exception ex) {
-          // parsing error, default back to previous value
-          textField.setText(Integer.toString(controlModel.getSeriesResistance()));
-        }
-      }
-    });
+    //    controlPanel.getSeriesTextField().addKeyListener(new KeyAdapter() {
+    //
+    //      @Override
+    //      public void keyReleased(KeyEvent e) {
+    //
+    //        JTextField textField = (JTextField) e.getSource();
+    //        String text = textField.getText();
+    //
+    //        try {
+    //          int newSeriesValue = Integer.parseInt(text);
+    //          controlModel.setSeriesResistance(newSeriesValue);
+    //        } catch (Exception ex) {
+    //          // parsing error, default back to previous value
+    //          textField.setText(Integer.toString(controlModel.getSeriesResistance()));
+    //        }
+    //      }
+    //    });
 
     controlView.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("S"), "startstop");
     controlView.getActionMap().put("startstop", new AbstractAction() {

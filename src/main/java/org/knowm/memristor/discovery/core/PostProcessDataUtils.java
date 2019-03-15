@@ -26,9 +26,57 @@ package org.knowm.memristor.discovery.core;
 /** Created by timmolter on 2/20/17. */
 public class PostProcessDataUtils {
 
+  public enum MemristorTestResult {
+    S_BAD, //resistance of open switches is less than minMaxR
+    S_GOOD, //switches are good.
+    PASS, //all good!
+    STK_HI, //resistance is stuck above minMaxR 
+    STK_LO, //resistance is stuck below maxMinR
+    W_FAIL, //resistance decrease is less than minRChange 
+    E_FAIL; //resistance increase is less than minRChange 
+  }
+
+  /*
+   * given a 3XN array of resistance values corrosponding to erase-read-write-read-erase-read read values for memristors, categorize code:
+   */
+  public static MemristorTestResult[] categorizeMemristorTestReads(float[][] reads, float minEraseResistance, float maxWriteResistance,
+      float minOpenSwitchR) {
+
+    MemristorTestResult[] results = new MemristorTestResult[reads[0].length];
+
+    for (int i = 0; i < reads[0].length; i++) {
+
+      if (i == 0) { // this is all switches off. R1, R2 and R3 should all be over 10mOhm
+        if (reads[0][0] < minOpenSwitchR) { // should be in high resistance state.
+          results[i] = MemristorTestResult.S_BAD;
+          break;
+        } else {
+          results[i] = MemristorTestResult.S_GOOD;
+        }
+      } else { // memristor
+
+        if (reads[0][i] < maxWriteResistance && reads[1][i] < maxWriteResistance && reads[2][i] < maxWriteResistance) {
+          results[i] = MemristorTestResult.STK_LO;
+        } else if (reads[0][i] > minEraseResistance && reads[1][i] > minEraseResistance && reads[2][i] > minEraseResistance) {
+          results[i] = MemristorTestResult.STK_HI;
+        } else if (reads[1][i] > maxWriteResistance) {
+          results[i] = MemristorTestResult.W_FAIL;
+        } else if (reads[2][i] < minEraseResistance) {
+          results[i] = MemristorTestResult.E_FAIL;
+        } else {
+          results[i] = MemristorTestResult.PASS;
+        }
+
+      }
+
+    }
+
+    return results;
+
+  }
+
   /**
-   * The data is a bit weird, as what's captured is a long window of "idle" voltage before and after
-   * the pulses. We clean that now...
+   * The data is a bit weird, as what's captured is a long window of "idle" voltage before and after the pulses. We clean that now...
    *
    * @param v1
    * @param v2
@@ -36,8 +84,7 @@ public class PostProcessDataUtils {
    * @param windowBuffer - how many data points outside the window should be included
    * @return
    */
-  public static double[][] trimIdleData(
-      double[] v1, double[] v2, double v1Threshold, int windowBuffer) {
+  public static double[][] trimIdleData(double[] v1, double[] v2, double v1Threshold, int windowBuffer) {
 
     double vThresholdAbs = Math.abs(v1Threshold);
     int startIndex = 0;
@@ -65,7 +112,7 @@ public class PostProcessDataUtils {
       V1Cleaned[i] = v1[i + startIndex];
       V2Cleaned[i] = v2[i + startIndex];
     }
-    return new double[][] {V1Cleaned, V2Cleaned};
+    return new double[][]{V1Cleaned, V2Cleaned};
   }
 
   /**
