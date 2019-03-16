@@ -46,11 +46,11 @@ public class ControlPanel extends ControlView {
   private final JButton saveDirectoryButton;
   private final JTextField saveDirectoryTextField;
 
-  private final JLabel timeUnitLabel;
-  private final JComboBox<TimeUnit> timeunitComboBox;
-
-  private final JLabel intervalLabel;
-  private final JTextField intervalTextField;
+  //  private final JLabel timeUnitLabel;
+  //  private final JComboBox<TimeUnit> timeunitComboBox;
+  //
+  //  private final JLabel intervalLabel;
+  //  private final JTextField intervalTextField;
 
   private final JLabel seriesLabel;
   //private final JTextField seriesTextField;
@@ -83,29 +83,29 @@ public class ControlPanel extends ControlView {
     c.insets = new Insets(0, 5, 14, 5);
     add(saveDirectoryTextField, c);
 
-    timeUnitLabel = new JLabel("Time Unit");
-    timeUnitLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-    c.gridy++;
-    c.insets = new Insets(0, 10, 4, 0);
-    add(timeUnitLabel, c);
-
-    this.timeunitComboBox = new JComboBox<>();
-    timeunitComboBox.setFocusable(false);
-    c.gridy++;
-    c.insets = new Insets(0, 0, 14, 6);
-    add(timeunitComboBox, c);
-
-    intervalLabel = new JLabel("Repeat Interval");
-    intervalLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-    c.gridy++;
-    c.insets = new Insets(0, 10, 4, 0);
-    add(intervalLabel, c);
-
-    intervalTextField = new JTextField();
-    intervalTextField.setAlignmentX(Component.CENTER_ALIGNMENT);
-    c.gridy++;
-    c.insets = new Insets(0, 5, 14, 5);
-    add(intervalTextField, c);
+    //    timeUnitLabel = new JLabel("Time Unit");
+    //    timeUnitLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    //    c.gridy++;
+    //    c.insets = new Insets(0, 10, 4, 0);
+    //    add(timeUnitLabel, c);
+    //
+    //    this.timeunitComboBox = new JComboBox<>();
+    //    timeunitComboBox.setFocusable(false);
+    //    c.gridy++;
+    //    c.insets = new Insets(0, 0, 14, 6);
+    //    add(timeunitComboBox, c);
+    //
+    //    intervalLabel = new JLabel("Repeat Interval");
+    //    intervalLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    //    c.gridy++;
+    //    c.insets = new Insets(0, 10, 4, 0);
+    //    add(intervalLabel, c);
+    //
+    //    intervalTextField = new JTextField();
+    //    intervalTextField.setAlignmentX(Component.CENTER_ALIGNMENT);
+    //    c.gridy++;
+    //    c.insets = new Insets(0, 5, 14, 5);
+    //    add(intervalTextField, c);
 
     //    seriesLabel = new JLabel("Series R [Ohm]");
     //    seriesLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -139,8 +139,8 @@ public class ControlPanel extends ControlView {
 
     saveDirectoryButton.setEnabled(enabled);
     saveDirectoryTextField.setEnabled(enabled);
-    timeunitComboBox.setEnabled(enabled);
-    intervalTextField.setEnabled(enabled);
+    //    timeunitComboBox.setEnabled(enabled);
+    //    intervalTextField.setEnabled(enabled);
     //seriesTextField.setEnabled(enabled);
     startStopButton.setEnabled(enabled);
   }
@@ -153,13 +153,13 @@ public class ControlPanel extends ControlView {
     return saveDirectoryTextField;
   }
 
-  public JTextField getIntervalTextField() {
-    return intervalTextField;
-  }
-
-  public JComboBox<TimeUnit> getTimeunitComboBox() {
-    return timeunitComboBox;
-  }
+  //  public JTextField getIntervalTextField() {
+  //    return intervalTextField;
+  //  }
+  //
+  //  public JComboBox<TimeUnit> getTimeunitComboBox() {
+  //    return timeunitComboBox;
+  //  }
 
   //  public JTextField getSeriesTextField() {
   //

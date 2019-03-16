@@ -114,21 +114,26 @@ public class ControlPanel extends ControlView {
     // experimentPreferences.getInteger(PulsePreferences.MAX_SLIDER_VOLTAGE_INIT_KEY,
     // PulsePreferences.MAX_SLIDER_VOLTAGE_INIT_DEFAULT_VALUE)
 
-    amplitudeSlider = new JSlider(JSlider.HORIZONTAL, -250, 200, 0);
+    amplitudeSlider = new JSlider(JSlider.HORIZONTAL, -500, 500, 0);
     amplitudeSlider.setBorder(BorderFactory.createTitledBorder("Amplitude [V]"));
-    amplitudeSlider.setMajorTickSpacing(50);
-    amplitudeSlider.setMinorTickSpacing(10);
+    amplitudeSlider.setMajorTickSpacing(100);
+    amplitudeSlider.setMinorTickSpacing(5);
     amplitudeSlider.setPaintTicks(true);
     amplitudeSlider.setPaintLabels(true);
     amplitudeSlider.setSnapToTicks(true);
     Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
 
-    labelTable.put(-250, new JLabel("-2.5"));
+    labelTable.put(-500, new JLabel("-5"));
+    labelTable.put(-400, new JLabel("-4"));
+    labelTable.put(-300, new JLabel("-3"));
     labelTable.put(-200, new JLabel("-2"));
     labelTable.put(-100, new JLabel("-1"));
     labelTable.put(0, new JLabel("0"));
     labelTable.put(100, new JLabel("1"));
     labelTable.put(200, new JLabel("2"));
+    labelTable.put(300, new JLabel("3"));
+    labelTable.put(400, new JLabel("4"));
+    labelTable.put(500, new JLabel("5"));
     amplitudeSlider.setLabelTable(labelTable);
 
     c.gridy++;
@@ -167,9 +172,10 @@ public class ControlPanel extends ControlView {
     c.gridy++;
     add(pulseWidthSliderNs, c);
 
-    pulseNumberSlider = new JSlider(JSlider.HORIZONTAL, 1, 10, 1);
+    pulseNumberSlider = new JSlider(JSlider.HORIZONTAL, 1, 100, 1);
 
     pulseNumberSlider.setBorder(BorderFactory.createTitledBorder("Pulse Number"));
+    pulseNumberSlider.setMajorTickSpacing(25);
     pulseNumberSlider.setMinorTickSpacing(1);
     pulseNumberSlider.setPaintTicks(true);
     pulseNumberSlider.setPaintLabels(true);
@@ -177,8 +183,10 @@ public class ControlPanel extends ControlView {
     labelTable = new Hashtable<>();
 
     labelTable.put(1, new JLabel("1"));
-    labelTable.put(5, new JLabel("5"));
-    labelTable.put(10, new JLabel("10"));
+    labelTable.put(25, new JLabel("20"));
+    labelTable.put(50, new JLabel("50"));
+    labelTable.put(75, new JLabel("75"));
+    labelTable.put(100, new JLabel("100"));
 
     pulseNumberSlider.setLabelTable(labelTable);
     c.gridy++;
@@ -231,18 +239,10 @@ public class ControlPanel extends ControlView {
     startStopButton.setEnabled(enabled);
   }
 
-  public void updateEnergyGUI(
-      double appliedAmplitude,
-      double appliedCurrent,
-      double appliedEnergy,
-      double appliedMemristorEnergy) {
+  public void updateEnergyGUI(double appliedAmplitude, double appliedCurrent, double appliedEnergy, double appliedMemristorEnergy) {
 
     appliedAmplitudeLabel.setText("Applied Amplitude [V]: " + Util.round(appliedAmplitude, 2));
-    currentLabel.setText(
-        "Current ["
-            + PulsePreferences.CURRENT_UNIT.getLabel()
-            + "]: "
-            + Util.round(appliedCurrent, 3));
+    currentLabel.setText("Current [" + PulsePreferences.CURRENT_UNIT.getLabel() + "]: " + Util.round(appliedCurrent, 3));
     energyLabel.setText("Energy M+R [nJ]: " + Util.round(appliedEnergy, 3));
     energyMemRistorOnlyLabel.setText("Energy M [fJ]: " + Util.round(appliedMemristorEnergy, 3));
   }

@@ -77,11 +77,11 @@ public class ControlController extends Controller {
     controlPanel.getSaveDirectoryTextField().setText("" + controlModel.getSaveDirectory());
     //controlPanel.getTimeunitComboBox().setModel(new DefaultComboBoxModel<>(TimeUnit.values()));
 
-    controlPanel.getTimeunitComboBox().setModel(new DefaultComboBoxModel<>(new TimeUnit[]{TimeUnit.SECONDS, TimeUnit.MINUTES, TimeUnit.DAYS}));
-
-    controlPanel.getTimeunitComboBox().setSelectedItem(controlModel.getTimeUnit());
-    //controlPanel.getSeriesTextField().setText("" + controlModel.getSeriesResistance());
-    controlPanel.getIntervalTextField().setText("" + controlModel.getRepeatInterval());
+    //    controlPanel.getTimeunitComboBox().setModel(new DefaultComboBoxModel<>(new TimeUnit[]{TimeUnit.SECONDS, TimeUnit.MINUTES, TimeUnit.DAYS}));
+    //
+    //    controlPanel.getTimeunitComboBox().setSelectedItem(controlModel.getTimeUnit());
+    //    //controlPanel.getSeriesTextField().setText("" + controlModel.getSeriesResistance());
+    //    controlPanel.getIntervalTextField().setText("" + controlModel.getRepeatInterval());
   }
 
   /** Here, all the action listeners are attached to the GUI components */
@@ -105,31 +105,31 @@ public class ControlController extends Controller {
       }
     });
 
-    controlPanel.getTimeunitComboBox().addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-
-        controlModel.setTimeUnit(controlPanel.getTimeunitComboBox().getSelectedItem().toString());
-      }
-    });
-
-    controlPanel.getIntervalTextField().addKeyListener(new KeyAdapter() {
-
-      @Override
-      public void keyReleased(KeyEvent e) {
-
-        JTextField textField = (JTextField) e.getSource();
-        String text = textField.getText();
-
-        try {
-          int newInterval = Integer.parseInt(text);
-          controlModel.setRepeatInterval(newInterval);
-        } catch (Exception ex) {
-          // parsing error, default back to previous value
-          textField.setText(Integer.toString(controlModel.getRepeatInterval()));
-        }
-      }
-    });
+    //    controlPanel.getTimeunitComboBox().addActionListener(new ActionListener() {
+    //      @Override
+    //      public void actionPerformed(ActionEvent e) {
+    //
+    //        controlModel.setTimeUnit(controlPanel.getTimeunitComboBox().getSelectedItem().toString());
+    //      }
+    //    });
+    //
+    //    controlPanel.getIntervalTextField().addKeyListener(new KeyAdapter() {
+    //
+    //      @Override
+    //      public void keyReleased(KeyEvent e) {
+    //
+    //        JTextField textField = (JTextField) e.getSource();
+    //        String text = textField.getText();
+    //
+    //        try {
+    //          int newInterval = Integer.parseInt(text);
+    //          controlModel.setRepeatInterval(newInterval);
+    //        } catch (Exception ex) {
+    //          // parsing error, default back to previous value
+    //          textField.setText(Integer.toString(controlModel.getRepeatInterval()));
+    //        }
+    //      }
+    //    });
 
     //    controlPanel.getSeriesTextField().addKeyListener(new KeyAdapter() {
     //
