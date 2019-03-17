@@ -21,23 +21,29 @@
  * <p>If you have any questions regarding our licensing policy, please contact us at
  * `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.core.driver;
+package org.knowm.memristor.discovery.core.driver.waveform;
+
+import org.knowm.memristor.discovery.core.driver.Driver;
 
 /** @author timmolter */
-public class HalfSine extends Driver {
+public class Arbitrary extends WaveformDriver {
+
+  private final double[] activePhases;
 
   /**
    * Constructor
    *
-   * @param name
+   * @param matchingSourceId
    * @param dcOffset
    * @param phase
    * @param amplitude
    * @param frequency
+   * @param activePhases
    */
-  public HalfSine(String name, double dcOffset, double phase, double amplitude, double frequency) {
+  public Arbitrary(String matchingSourceId, double dcOffset, double phase, double amplitude, double frequency, double[] activePhases) {
 
-    super(name, dcOffset, phase, amplitude, frequency);
+    super(matchingSourceId, dcOffset, phase, amplitude, frequency);
+    this.activePhases = activePhases;
   }
 
   @Override
@@ -45,14 +51,18 @@ public class HalfSine extends Driver {
 
     double T = 1 / frequency;
     double remainderTime = (time + phase) % T;
-
-    // up phase
-    if (0 <= remainderTime && remainderTime * T < .50 / frequency * T) {
-      return amplitude * Math.abs(Math.sin(2 * Math.PI * frequency * time - phase) + dcOffset);
+    boolean isActive = false;
+    for (int i = 0; i < activePhases.length; i = i + 2) {
+      double start = activePhases[i];
+      double end = activePhases[i + 1];
+      if (remainderTime >= T * start && remainderTime < T * end) {
+        isActive = true;
+      }
     }
+    if (isActive) {
 
-    // down phase
-    else {
+      return dcOffset + amplitude;
+    } else {
       return 0.0;
     }
   }

@@ -21,10 +21,12 @@
  * <p>If you have any questions regarding our licensing policy, please contact us at
  * `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.core.driver;
+package org.knowm.memristor.discovery.core.driver.waveform;
+
+import org.knowm.memristor.discovery.core.driver.Driver;
 
 /** @author timmolter */
-public class Triangle extends Driver {
+public class Sawtooth extends WaveformDriver {
 
   /**
    * Constructor
@@ -35,7 +37,7 @@ public class Triangle extends Driver {
    * @param amplitude
    * @param frequency
    */
-  public Triangle(String name, double dcOffset, double phase, double amplitude, double frequency) {
+  public Sawtooth(String name, double dcOffset, double phase, double amplitude, double frequency) {
 
     super(name, dcOffset, phase, amplitude, frequency);
   }
@@ -46,14 +48,6 @@ public class Triangle extends Driver {
     double T = 1 / frequency;
     double remainderTime = (time + phase) % T;
 
-    // up phase
-    if (0 <= (remainderTime) && (remainderTime) * T < .5 / frequency * T) {
-      return 2 * frequency * amplitude * (remainderTime) + dcOffset;
-    }
-
-    // down phase
-    else {
-      return -2 * frequency * amplitude * (remainderTime) + 2 * amplitude + dcOffset;
-    }
+    return frequency * amplitude * (remainderTime) + dcOffset;
   }
 }

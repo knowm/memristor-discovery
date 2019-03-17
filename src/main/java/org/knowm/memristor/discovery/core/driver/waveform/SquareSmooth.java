@@ -21,10 +21,12 @@
  * <p>If you have any questions regarding our licensing policy, please contact us at
  * `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.core.driver;
+package org.knowm.memristor.discovery.core.driver.waveform;
+
+import org.knowm.memristor.discovery.core.driver.Driver;
 
 /** @author timmolter */
-public class Square extends Driver {
+public class SquareSmooth extends WaveformDriver {
 
   /**
    * Constructor
@@ -35,7 +37,7 @@ public class Square extends Driver {
    * @param amplitude
    * @param frequency
    */
-  public Square(String name, double dcOffset, double phase, double amplitude, double frequency) {
+  public SquareSmooth(String name, double dcOffset, double phase, double amplitude, double frequency) {
 
     super(name, dcOffset, phase, amplitude, frequency);
   }
@@ -46,14 +48,22 @@ public class Square extends Driver {
     double T = 1 / frequency;
     double remainderTime = (time + phase) % T;
 
-    // up phase
-    if (0 <= remainderTime && remainderTime * T < .50 / frequency * T) {
+    // up phase 1
+    if (0 <= remainderTime && remainderTime * T < .10 / frequency * T) {
+      return 10 * frequency * amplitude * (remainderTime) + dcOffset;
+    }
+    // up phase 2
+    else if (0 <= remainderTime && remainderTime * T < .40 / frequency * T) {
       return amplitude + dcOffset;
+    }
+    // up phase 3
+    else if (0 <= remainderTime && remainderTime * T < .50 / frequency * T) {
+      return -10 * frequency * amplitude * (remainderTime) + dcOffset + amplitude * 5;
     }
 
     // down phase
     else {
-      return -1.0 * amplitude + dcOffset;
+      return 0.0;
     }
   }
 }

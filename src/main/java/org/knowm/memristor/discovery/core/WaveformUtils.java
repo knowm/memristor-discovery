@@ -24,14 +24,20 @@
 package org.knowm.memristor.discovery.core;
 
 import org.knowm.memristor.discovery.core.driver.Driver;
-import org.knowm.memristor.discovery.core.driver.HalfSine;
-import org.knowm.memristor.discovery.core.driver.QuarterSine;
-import org.knowm.memristor.discovery.core.driver.Sawtooth;
-import org.knowm.memristor.discovery.core.driver.SawtoothUpDown;
-import org.knowm.memristor.discovery.core.driver.Square;
-import org.knowm.memristor.discovery.core.driver.SquareSmooth;
-import org.knowm.memristor.discovery.core.driver.Triangle;
-import org.knowm.memristor.discovery.core.driver.TriangleUpDown;
+import org.knowm.memristor.discovery.core.driver.pulse.HalfSinePulse;
+import org.knowm.memristor.discovery.core.driver.pulse.QuarterSinePulse;
+import org.knowm.memristor.discovery.core.driver.pulse.SquareDecayPulse;
+import org.knowm.memristor.discovery.core.driver.pulse.SquarePulse;
+import org.knowm.memristor.discovery.core.driver.pulse.SquareSmoothPulse;
+import org.knowm.memristor.discovery.core.driver.pulse.TrianglePulse;
+import org.knowm.memristor.discovery.core.driver.waveform.HalfSine;
+import org.knowm.memristor.discovery.core.driver.waveform.QuarterSine;
+import org.knowm.memristor.discovery.core.driver.waveform.Sawtooth;
+import org.knowm.memristor.discovery.core.driver.waveform.SawtoothUpDown;
+import org.knowm.memristor.discovery.core.driver.waveform.Square;
+import org.knowm.memristor.discovery.core.driver.waveform.SquareSmooth;
+import org.knowm.memristor.discovery.core.driver.waveform.Triangle;
+import org.knowm.memristor.discovery.core.driver.waveform.TriangleUpDown;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
 import org.knowm.waveforms4j.DWF;
 
@@ -57,8 +63,63 @@ public class WaveformUtils {
     return rgdData; // weird name, but that's what Waveforms SDK calls it.
   }
 
-  public static double[] generateCustomWaveform(
-      Waveform waveform, double amplitude, double frequency) {
+  public static double[] generateCustomPulse(Waveform waveform, double amplitude, double pulseWidthInNS, double dutyCycle) {
+
+    System.out.println("generateCustomPulse");
+    System.out.println("pulseWidth=" + pulseWidthInNS);
+    System.out.println("dutyCycle=" + dutyCycle);
+    System.out.println("amplitude=" + amplitude);
+    System.out.println("waveform=" + waveform);
+
+    Driver driver;
+    switch (waveform) {
+      //      case Sawtooth:
+      //        driver = new Sawtooth("Sawtooth", 0, 0, amplitude, frequency);
+      //        break;
+      case SquareDecay:
+        driver = new SquareDecayPulse("SquareDecay", 0, pulseWidthInNS, dutyCycle, amplitude);
+        break;
+      case Triangle:
+
+        driver = new TrianglePulse("Triangle", 0, pulseWidthInNS, dutyCycle, amplitude);
+        break;
+      //      case TriangleUpDown:
+      //        driver = new TriangleUpDown("TriangleUpDown", 0, 0, amplitude, frequency);
+      //        break;
+      case Square:
+        driver = new SquarePulse("Square", 0, pulseWidthInNS, dutyCycle, amplitude);
+        break;
+      //      case SquareUpDown:
+      //        driver = new Square("SquareUpDown", 0, 0, amplitude, frequency);
+      //        break;
+      case QuarterSine:
+        driver = new QuarterSinePulse("QuarterSine", 0, pulseWidthInNS, dutyCycle, amplitude);
+        break;
+      case HalfSine:
+        driver = new HalfSinePulse("HalfSine", 0, pulseWidthInNS, dutyCycle, amplitude);
+        break;
+      case SquareSmooth:
+        driver = new SquareSmoothPulse("SquareSmooth", 0, pulseWidthInNS, dutyCycle, amplitude);
+        break;
+      default:
+        driver = new SquarePulse("Square", 0, pulseWidthInNS, dutyCycle, amplitude);
+        break;
+    }
+
+    int counter = 0;
+    double[] customWaveform = new double[4096];
+    double timeInc = driver.getPeriod() / 4096;
+
+    do {
+      double time = counter * timeInc;
+      customWaveform[counter] = driver.getSignal(time) / 5.0; // / 5.0 to scale between 1 and -1  HUH???
+
+    } while (++counter < 4096);
+    return customWaveform;
+
+  }
+
+  public static double[] generateCustomWaveform(Waveform waveform, double amplitude, double frequency) {
 
     Driver driver;
     switch (waveform) {

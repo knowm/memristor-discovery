@@ -24,9 +24,9 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control;
 
 import org.knowm.memristor.discovery.core.driver.Driver;
-import org.knowm.memristor.discovery.core.driver.Sine;
-import org.knowm.memristor.discovery.core.driver.Square;
-import org.knowm.memristor.discovery.core.driver.Triangle;
+import org.knowm.memristor.discovery.core.driver.waveform.Sine;
+import org.knowm.memristor.discovery.core.driver.waveform.Square;
+import org.knowm.memristor.discovery.core.driver.waveform.Triangle;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.HysteresisPreferences;

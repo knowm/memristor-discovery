@@ -21,10 +21,12 @@
  * <p>If you have any questions regarding our licensing policy, please contact us at
  * `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.core.driver;
+package org.knowm.memristor.discovery.core.driver.waveform;
+
+import org.knowm.memristor.discovery.core.driver.Driver;
 
 /** @author timmolter */
-public class QuarterSine extends Driver {
+public class Square extends WaveformDriver {
 
   /**
    * Constructor
@@ -35,8 +37,7 @@ public class QuarterSine extends Driver {
    * @param amplitude
    * @param frequency
    */
-  public QuarterSine(
-      String name, double dcOffset, double phase, double amplitude, double frequency) {
+  public Square(String name, double dcOffset, double phase, double amplitude, double frequency) {
 
     super(name, dcOffset, phase, amplitude, frequency);
   }
@@ -49,12 +50,12 @@ public class QuarterSine extends Driver {
 
     // up phase
     if (0 <= remainderTime && remainderTime * T < .50 / frequency * T) {
-      return amplitude * Math.abs(Math.sin(Math.PI * frequency * time - phase) + dcOffset);
+      return amplitude + dcOffset;
     }
 
     // down phase
     else {
-      return 0.0;
+      return -1.0 * amplitude + dcOffset;
     }
   }
 }

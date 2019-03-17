@@ -57,6 +57,9 @@ public class ControlPanel extends ControlView {
   private final JSlider pulseWidthSlider;
   private final JSlider pulseWidthSliderNs;
   private final JSlider pulseNumberSlider;
+
+  private final JSlider dutyCycleSlider;
+
   private final JLabel seriesLabel;
   private final JTextField seriesTextField;
   private final JLabel sampleRateLabel;
@@ -155,13 +158,14 @@ public class ControlPanel extends ControlView {
     c.gridy++;
     add(pulseWidthSlider, c);
 
-    pulseWidthSliderNs = new JSlider(JSlider.HORIZONTAL, 500, 5000, 5000);
+    pulseWidthSliderNs = new JSlider(JSlider.HORIZONTAL, 100, 5000, 5000);
     pulseWidthSliderNs.setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
-    pulseWidthSliderNs.setMinorTickSpacing(500);
+    pulseWidthSliderNs.setMinorTickSpacing(100);
     pulseWidthSliderNs.setPaintTicks(true);
     pulseWidthSliderNs.setPaintLabels(true);
     pulseWidthSliderNs.setSnapToTicks(true);
     labelTable = new Hashtable<>();
+    labelTable.put(100, new JLabel(".1"));
     labelTable.put(500, new JLabel(".5"));
     labelTable.put(1000, new JLabel("1"));
     labelTable.put(2000, new JLabel("2"));
@@ -173,7 +177,6 @@ public class ControlPanel extends ControlView {
     add(pulseWidthSliderNs, c);
 
     pulseNumberSlider = new JSlider(JSlider.HORIZONTAL, 1, 100, 1);
-
     pulseNumberSlider.setBorder(BorderFactory.createTitledBorder("Pulse Number"));
     pulseNumberSlider.setMajorTickSpacing(25);
     pulseNumberSlider.setMinorTickSpacing(1);
@@ -181,16 +184,31 @@ public class ControlPanel extends ControlView {
     pulseNumberSlider.setPaintLabels(true);
     pulseNumberSlider.setSnapToTicks(true);
     labelTable = new Hashtable<>();
-
     labelTable.put(1, new JLabel("1"));
-    labelTable.put(25, new JLabel("20"));
+    labelTable.put(25, new JLabel("25"));
     labelTable.put(50, new JLabel("50"));
     labelTable.put(75, new JLabel("75"));
     labelTable.put(100, new JLabel("100"));
-
     pulseNumberSlider.setLabelTable(labelTable);
     c.gridy++;
     add(pulseNumberSlider, c);
+
+    dutyCycleSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 1);
+    dutyCycleSlider.setBorder(BorderFactory.createTitledBorder("Duty Cycle"));
+    dutyCycleSlider.setMajorTickSpacing(25);
+    dutyCycleSlider.setMinorTickSpacing(1);
+    dutyCycleSlider.setPaintTicks(true);
+    dutyCycleSlider.setPaintLabels(true);
+    dutyCycleSlider.setSnapToTicks(true);
+    labelTable = new Hashtable<>();
+    labelTable.put(0, new JLabel("0"));
+    labelTable.put(25, new JLabel(".25"));
+    labelTable.put(50, new JLabel(".5"));
+    labelTable.put(75, new JLabel(".75"));
+    labelTable.put(100, new JLabel("1"));
+    dutyCycleSlider.setLabelTable(labelTable);
+    c.gridy++;
+    add(dutyCycleSlider, c);
 
     seriesLabel = new JLabel("Series R [Ohm]");
     seriesLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -234,6 +252,7 @@ public class ControlPanel extends ControlView {
     pulseWidthSlider.setEnabled(enabled);
     pulseWidthSliderNs.setEnabled(enabled);
     pulseNumberSlider.setEnabled(enabled);
+    dutyCycleSlider.setEnabled(enabled);
     seriesTextField.setEnabled(enabled);
     sampleRateTextField.setEnabled(enabled);
     startStopButton.setEnabled(enabled);
@@ -270,6 +289,11 @@ public class ControlPanel extends ControlView {
   public JSlider getPulseNumberSlider() {
 
     return pulseNumberSlider;
+  }
+
+  public JSlider getDutyCycleSlider() {
+
+    return dutyCycleSlider;
   }
 
   public JTextField getSeriesTextField() {

@@ -21,10 +21,12 @@
  * <p>If you have any questions regarding our licensing policy, please contact us at
  * `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.core.driver;
+package org.knowm.memristor.discovery.core.driver.waveform;
+
+import org.knowm.memristor.discovery.core.driver.Driver;
 
 /** @author timmolter */
-public class TriangleUpDown extends Driver {
+public class Sine extends WaveformDriver {
 
   /**
    * Constructor
@@ -35,8 +37,7 @@ public class TriangleUpDown extends Driver {
    * @param amplitude
    * @param frequency
    */
-  public TriangleUpDown(
-      String name, double dcOffset, double phase, double amplitude, double frequency) {
+  public Sine(String name, double dcOffset, double phase, double amplitude, double frequency) {
 
     super(name, dcOffset, phase, amplitude, frequency);
   }
@@ -44,23 +45,6 @@ public class TriangleUpDown extends Driver {
   @Override
   public double getSignal(double time) {
 
-    double T = 1 / frequency;
-    double remainderTime = (time + phase) % T;
-
-    // up phase
-    if (0 <= (remainderTime) && (remainderTime) * T < .25 / frequency * T) {
-      return 4 * frequency * amplitude * (remainderTime) + dcOffset;
-    }
-
-    // up phase
-    else if (.75 / frequency * T <= (remainderTime) * T
-        && (remainderTime) * T < 1.0 / frequency * T) {
-      return 4 * frequency * amplitude * (remainderTime) - 4 * amplitude + dcOffset;
-    }
-
-    // down phase
-    else {
-      return -4 * frequency * amplitude * (remainderTime) + 2 * amplitude + dcOffset;
-    }
+    return amplitude * Math.sin(2 * Math.PI * frequency * time - phase) + dcOffset;
   }
 }

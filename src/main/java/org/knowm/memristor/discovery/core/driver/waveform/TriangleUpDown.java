@@ -21,10 +21,12 @@
  * <p>If you have any questions regarding our licensing policy, please contact us at
  * `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.core.driver;
+package org.knowm.memristor.discovery.core.driver.waveform;
+
+import org.knowm.memristor.discovery.core.driver.Driver;
 
 /** @author timmolter */
-public class SquareSmooth extends Driver {
+public class TriangleUpDown extends WaveformDriver {
 
   /**
    * Constructor
@@ -35,8 +37,7 @@ public class SquareSmooth extends Driver {
    * @param amplitude
    * @param frequency
    */
-  public SquareSmooth(
-      String name, double dcOffset, double phase, double amplitude, double frequency) {
+  public TriangleUpDown(String name, double dcOffset, double phase, double amplitude, double frequency) {
 
     super(name, dcOffset, phase, amplitude, frequency);
   }
@@ -47,22 +48,19 @@ public class SquareSmooth extends Driver {
     double T = 1 / frequency;
     double remainderTime = (time + phase) % T;
 
-    // up phase 1
-    if (0 <= remainderTime && remainderTime * T < .10 / frequency * T) {
-      return 10 * frequency * amplitude * (remainderTime) + dcOffset;
+    // up phase
+    if (0 <= (remainderTime) && (remainderTime) * T < .25 / frequency * T) {
+      return 4 * frequency * amplitude * (remainderTime) + dcOffset;
     }
-    // up phase 2
-    else if (0 <= remainderTime && remainderTime * T < .40 / frequency * T) {
-      return amplitude + dcOffset;
-    }
-    // up phase 3
-    else if (0 <= remainderTime && remainderTime * T < .50 / frequency * T) {
-      return -10 * frequency * amplitude * (remainderTime) + dcOffset + amplitude * 5;
+
+    // up phase
+    else if (.75 / frequency * T <= (remainderTime) * T && (remainderTime) * T < 1.0 / frequency * T) {
+      return 4 * frequency * amplitude * (remainderTime) - 4 * amplitude + dcOffset;
     }
 
     // down phase
     else {
-      return 0.0;
+      return -4 * frequency * amplitude * (remainderTime) + 2 * amplitude + dcOffset;
     }
   }
 }

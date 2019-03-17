@@ -21,25 +21,39 @@
  * <p>If you have any questions regarding our licensing policy, please contact us at
  * `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.core.driver;
+package org.knowm.memristor.discovery.core.driver.waveform;
 
 /** @author timmolter */
-public class DC extends Driver {
+public class HalfSine extends WaveformDriver {
 
   /**
    * Constructor
    *
-   * @param id
+   * @param name
    * @param dcOffset
+   * @param phase
+   * @param amplitude
+   * @param frequency
    */
-  public DC(String id, double dcOffset) {
+  public HalfSine(String name, double dcOffset, double phase, double amplitude, double frequency) {
 
-    super(id, dcOffset, 0.0, 0.0, 0.0);
+    super(name, dcOffset, phase, amplitude, frequency);
   }
 
   @Override
   public double getSignal(double time) {
 
-    return dcOffset;
+    double T = 1 / frequency;
+    double remainderTime = (time + phase) % T;
+
+    // up phase
+    if (0 <= remainderTime && remainderTime * T < .50 / frequency * T) {
+      return amplitude * Math.abs(Math.sin(2 * Math.PI * frequency * time - phase) + dcOffset);
+    }
+
+    // down phase
+    else {
+      return 0.0;
+    }
   }
 }

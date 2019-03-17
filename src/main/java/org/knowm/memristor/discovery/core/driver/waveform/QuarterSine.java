@@ -21,12 +21,12 @@
  * <p>If you have any questions regarding our licensing policy, please contact us at
  * `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.core.driver;
+package org.knowm.memristor.discovery.core.driver.waveform;
+
+import org.knowm.memristor.discovery.core.driver.Driver;
 
 /** @author timmolter */
-public class Pulse extends Driver {
-
-  private final double dutyCycle;
+public class QuarterSine extends WaveformDriver {
 
   /**
    * Constructor
@@ -36,57 +36,26 @@ public class Pulse extends Driver {
    * @param phase
    * @param amplitude
    * @param frequency
-   * @param dutyCycle between 0 and 1
    */
-  public Pulse(
-      String name,
-      double dcOffset,
-      double phase,
-      double amplitude,
-      double frequency,
-      double dutyCycle) {
+  public QuarterSine(String name, double dcOffset, double phase, double amplitude, double frequency) {
 
     super(name, dcOffset, phase, amplitude, frequency);
-    this.dutyCycle = dutyCycle;
   }
 
   @Override
   public double getSignal(double time) {
 
     double T = 1 / frequency;
-    double remainderTime = (time + phase) % T * 0.5 / dutyCycle;
+    double remainderTime = (time + phase) % T;
 
     // up phase
     if (0 <= remainderTime && remainderTime * T < .50 / frequency * T) {
-      return amplitude + dcOffset;
+      return amplitude * Math.abs(Math.sin(Math.PI * frequency * time - phase) + dcOffset);
     }
 
     // down phase
     else {
-      return -1.0 * amplitude + dcOffset;
+      return 0.0;
     }
-  }
-
-  public double getDutyCycle() {
-
-    return dutyCycle;
-  }
-
-  @Override
-  public String toString() {
-
-    return "Pulse [dutyCycle="
-        + dutyCycle
-        + ", id="
-        + id
-        + ", dcOffset="
-        + dcOffset
-        + ", phase="
-        + phase
-        + ", amplitude="
-        + amplitude
-        + ", frequency="
-        + frequency
-        + "]";
   }
 }

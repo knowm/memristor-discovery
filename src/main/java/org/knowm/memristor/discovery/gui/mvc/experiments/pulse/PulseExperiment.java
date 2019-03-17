@@ -176,16 +176,17 @@ public class PulseExperiment extends Experiment {
       // Analog In /////////////////
       // ////////////////////////////////
 
-      int samplesPerPulse = 100;
+      int samplesPerPulse = 200;
       double sampleFrequency = controlModel.getCalculatedFrequency() * samplesPerPulse;
       // dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02 *
       // (controlModel.getAmplitude() > 0 ? 1 : -1), samplesPerPulse *
       // controlModel.getPulseNumber());
 
-      boolean isScale2V = controlModel.getAppliedAmplitude() <= 2.5;
+      boolean isScale2V = Math.abs(controlModel.getAppliedAmplitude()) <= 2.5;
 
-      dwfProxy.getDwf().startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(DWF.WAVEFORM_CHANNEL_1, sampleFrequency,
-          samplesPerPulse * controlModel.getPulseNumber(), isScale2V);
+      int bufferSize = samplesPerPulse * controlModel.getPulseNumber() + samplesPerPulse;
+
+      dwfProxy.getDwf().startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(DWF.WAVEFORM_CHANNEL_1, sampleFrequency, bufferSize, isScale2V);
 
       dwfProxy.waitUntilArmed();
 
@@ -193,10 +194,11 @@ public class PulseExperiment extends Experiment {
       // Pulse Out /////////////////
       // ////////////////////////////////
 
-      // System.out.println("generateCustomWaveform");
+      //      double[] customWaveform = WaveformUtils.generateCustomWaveform(controlModel.getWaveform(), controlModel.getAppliedAmplitude(),
+      //          controlModel.getCalculatedFrequency());
 
-      double[] customWaveform = WaveformUtils.generateCustomWaveform(controlModel.getWaveform(), controlModel.getAppliedAmplitude(),
-          controlModel.getCalculatedFrequency());
+      double[] customWaveform = WaveformUtils.generateCustomPulse(controlModel.getWaveform(), controlModel.getAppliedAmplitude(),
+          controlModel.getPulseWidth(), controlModel.getDutyCycle());
 
       dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, controlModel.getPulseNumber(),
           customWaveform);
@@ -285,7 +287,10 @@ public class PulseExperiment extends Experiment {
 
         // trigger on 20% the rising .1 V read pulse
         samplesPerPulse = 300;
-        sampleFrequency = 100_000 * samplesPerPulse;
+
+        double f = 10_000;
+
+        sampleFrequency = f * samplesPerPulse;
         // dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02,
         // samplesPerPulse * 1);
 
@@ -298,11 +303,11 @@ public class PulseExperiment extends Experiment {
         // ////////////////////////////////
 
         // read pulse: 0.1 V, 5 us pulse width
-        customWaveform = WaveformUtils.generateCustomWaveform(Waveform.SquareSmooth, 0.1, 100_000);
-        dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, 100_000, 0, 1, customWaveform);
+        customWaveform = WaveformUtils.generateCustomWaveform(Waveform.SquareSmooth, 0.1, f);
+        dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, f, 0, 1, customWaveform);
 
         // Read In Data
-        success = dwfProxy.capturePulseData(100_000, 1);
+        success = dwfProxy.capturePulseData(f, 1);
         if (!success) {
           // Stop Analog In and Out
           dwfProxy.getDwf().stopWave(DWF.WAVEFORM_CHANNEL_1);

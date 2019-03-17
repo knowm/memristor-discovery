@@ -21,28 +21,27 @@
  * <p>If you have any questions regarding our licensing policy, please contact us at
  * `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.core.driver;
+package org.knowm.memristor.discovery.core.driver.waveform;
+
+import org.knowm.memristor.discovery.core.driver.Driver;
 
 /** @author timmolter */
-public class Sine extends Driver {
+public class DC extends WaveformDriver {
 
   /**
    * Constructor
    *
-   * @param name
+   * @param id
    * @param dcOffset
-   * @param phase
-   * @param amplitude
-   * @param frequency
    */
-  public Sine(String name, double dcOffset, double phase, double amplitude, double frequency) {
+  public DC(String id, double dcOffset) {
 
-    super(name, dcOffset, phase, amplitude, frequency);
+    super(id, dcOffset, 0.0, 0.0, 0.0);
   }
 
   @Override
   public double getSignal(double time) {
 
-    return amplitude * Math.sin(2 * Math.PI * frequency * time - phase) + dcOffset;
+    return dcOffset;
   }
 }

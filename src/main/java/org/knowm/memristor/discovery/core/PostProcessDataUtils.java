@@ -84,9 +84,9 @@ public class PostProcessDataUtils {
    * @param windowBuffer - how many data points outside the window should be included
    * @return
    */
-  public static double[][] trimIdleData(double[] v1, double[] v2, double v1Threshold, int windowBuffer) {
+  public static double[][] trimIdleData(double[] v1, double[] v2, double vThreshold, int windowBuffer) {
 
-    double vThresholdAbs = Math.abs(v1Threshold);
+    double vThresholdAbs = Math.abs(vThreshold);
     int startIndex = 0;
     for (int i = 0; i < v1.length; i++) {
       if (Math.abs(v1[i]) > vThresholdAbs) {
@@ -97,11 +97,13 @@ public class PostProcessDataUtils {
     // System.out.println("startIndex = " + startIndex);
     int endIndex = v1.length - 1;
     for (int i = v1.length - 1; i > 0; i--) {
-      if (Math.abs(v1[i]) > vThresholdAbs) {
+      if (Math.abs(v1[i]) > vThresholdAbs || Math.abs(v2[i]) > vThresholdAbs) {
         endIndex = Math.min(endIndex, i + windowBuffer);
         break;
       }
     }
+
+    //add a little extra to the end so we can capture RC effects.
     // System.out.println("endIndex = " + endIndex);
 
     int bufferLength = endIndex - startIndex;

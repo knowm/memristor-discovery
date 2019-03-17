@@ -26,12 +26,18 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.pulse.control;
 import java.text.DecimalFormat;
 import org.knowm.memristor.discovery.core.Util;
 import org.knowm.memristor.discovery.core.driver.Driver;
-import org.knowm.memristor.discovery.core.driver.HalfSine;
-import org.knowm.memristor.discovery.core.driver.QuarterSine;
-import org.knowm.memristor.discovery.core.driver.Sawtooth;
-import org.knowm.memristor.discovery.core.driver.Square;
-import org.knowm.memristor.discovery.core.driver.SquareSmooth;
-import org.knowm.memristor.discovery.core.driver.Triangle;
+import org.knowm.memristor.discovery.core.driver.pulse.HalfSinePulse;
+import org.knowm.memristor.discovery.core.driver.pulse.QuarterSinePulse;
+import org.knowm.memristor.discovery.core.driver.pulse.SquareDecayPulse;
+import org.knowm.memristor.discovery.core.driver.pulse.SquarePulse;
+import org.knowm.memristor.discovery.core.driver.pulse.SquareSmoothPulse;
+import org.knowm.memristor.discovery.core.driver.pulse.TrianglePulse;
+import org.knowm.memristor.discovery.core.driver.waveform.HalfSine;
+import org.knowm.memristor.discovery.core.driver.waveform.QuarterSine;
+import org.knowm.memristor.discovery.core.driver.waveform.Sawtooth;
+import org.knowm.memristor.discovery.core.driver.waveform.Square;
+import org.knowm.memristor.discovery.core.driver.waveform.SquareSmooth;
+import org.knowm.memristor.discovery.core.driver.waveform.Triangle;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferences;
@@ -46,6 +52,9 @@ public class ControlModel extends Model {
   private boolean isMemristorVoltageDropSelected = false;
   private float amplitude;
   private int pulseWidth; // model store pulse width in nanoseconds
+
+  private double dutyCycle;//0 to 1. 
+
   private int pulseNumber;
   private double appliedAmplitude;
   private double appliedCurrent;
@@ -72,6 +81,9 @@ public class ControlModel extends Model {
     pulseWidth = experimentPreferences.getInteger(PulsePreferences.PULSE_WIDTH_INIT_KEY, PulsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
     pulseNumber = experimentPreferences.getInteger(PulsePreferences.NUM_PULSES_INIT_KEY, PulsePreferences.NUM_PULSES_INIT_DEFAULT_VALUE);
     sampleRate = experimentPreferences.getInteger(PulsePreferences.SAMPLE_RATE_INIT_KEY, PulsePreferences.SAMPLE_RATE_INIT_DEFAULT_VALUE);
+
+    dutyCycle = experimentPreferences.getFloat(PulsePreferences.PULSE_DUTY_CYCLE_KEY, PulsePreferences.PULSE_DUTY_CYCLE_DEFAULT_VALUE);
+
     updateWaveformChartData();
   }
 
@@ -84,24 +96,36 @@ public class ControlModel extends Model {
         driver = new Sawtooth("Sawtooth", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
         break;
       case QuarterSine:
-        driver = new QuarterSine("QuarterSine", 0, 0, amplitude, getCalculatedFrequency());
+
+        driver = new QuarterSinePulse("QuarterSine", 0, pulseWidth, dutyCycle, amplitude);
         break;
       case Triangle:
-        driver = new Triangle("Triangle", 0, 0, amplitude, getCalculatedFrequency());
+
+        driver = new TrianglePulse("Triangle", 0, pulseWidth, dutyCycle, amplitude);
         break;
       case Square:
-        driver = new Square("Square", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
+
+        driver = new SquarePulse("Square", 0, pulseWidth, dutyCycle, amplitude);
         break;
       case SquareSmooth:
-        driver = new SquareSmooth("SquareSmooth", 0, 0, amplitude, getCalculatedFrequency());
+
+        driver = new SquareSmoothPulse("SquareSmooth", 0, pulseWidth, dutyCycle, amplitude);
+        break;
+      case SquareDecay:
+
+        driver = new SquareDecayPulse("SquareDecay", 0, pulseWidth, dutyCycle, amplitude);
         break;
       default:
-        driver = new HalfSine("HalfSine", 0, 0, amplitude, getCalculatedFrequency());
+        driver = new HalfSinePulse("HalfSine", 0, pulseWidth, dutyCycle, amplitude);
         break;
     }
 
-    double stopTime = 1 / getCalculatedFrequency() * pulseNumber;
-    double timeStep = 1 / getCalculatedFrequency() / PulsePreferences.CAPTURE_BUFFER_SIZE * pulseNumber;
+    double stopTime = driver.getPeriod() * pulseNumber;
+    double timeStep = driver.getPeriod() / PulsePreferences.CAPTURE_BUFFER_SIZE * pulseNumber;
+
+    //    System.out.println("driver.getPeriod()=" + driver.getPeriod());
+    //    System.out.println("stopTime=" + stopTime);
+    //    System.out.println("timeStep=" + timeStep);
 
     int counter = 0;
     for (double i = 0.0; i < stopTime; i = i + timeStep) {
@@ -140,9 +164,7 @@ public class ControlModel extends Model {
   }
 
   public double getCalculatedFrequency() {
-
-    //System.out.println("pulseWidth = " + pulseWidth);
-    return (1.0 / (2.0 * pulseWidth) * 1_000_000_000); // 50% duty cycle
+    return (1.0 / (pulseWidth / dutyCycle) * 1_000_000_000); // 50% duty cycle
   }
 
   public double[] getWaveformTimeData() {
@@ -274,5 +296,14 @@ public class ControlModel extends Model {
   public void setStartToggled(boolean isStartToggled) {
 
     this.isStartToggled = isStartToggled;
+  }
+
+  public double getDutyCycle() {
+    return dutyCycle;
+  }
+
+  public void setDutyCycle(double dutyCycle) {
+    this.dutyCycle = dutyCycle;
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 }

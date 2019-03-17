@@ -28,7 +28,6 @@ public abstract class Driver {
 
   protected final String id;
   protected final double dcOffset;
-  protected final double phase;
   protected final double amplitude;
   protected final double frequency;
 
@@ -41,11 +40,10 @@ public abstract class Driver {
    * @param amplitude
    * @param frequency
    */
-  public Driver(String id, double dcOffset, double phase, double amplitude, double frequency) {
+  public Driver(String id, double dcOffset, double amplitude, double frequency) {
 
     this.id = id;
     this.dcOffset = dcOffset;
-    this.phase = phase;
     this.amplitude = amplitude;
     this.frequency = frequency;
   }
@@ -60,20 +58,19 @@ public abstract class Driver {
     return dcOffset;
   }
 
-  public double getPhase() {
-
-    return phase;
-  }
-
   public double getAmplitude() {
 
     return amplitude;
   }
 
-  public double getFrequency() {
+  public abstract double getSignal(double time);
 
+  public double getFrequency() {
     return frequency;
   }
 
-  public abstract double getSignal(double time);
+  public double getPeriod() {
+    return 1.0 / frequency;
+  }
+
 }
