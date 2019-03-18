@@ -82,7 +82,7 @@ public class ControlPanel extends ControlView {
     c.insets = new Insets(0, 0, 4, 6);
     add(waveformComboBox, c);
 
-    amplitudeSlider = new JSlider(JSlider.HORIZONTAL, 0, 150, 12);
+    amplitudeSlider = new JSlider(JSlider.HORIZONTAL, 0, 300, 1);
     amplitudeSlider.setBorder(BorderFactory.createTitledBorder("Amplitude [V]"));
     amplitudeSlider.setMajorTickSpacing(50);
     amplitudeSlider.setMinorTickSpacing(10);
@@ -97,13 +97,17 @@ public class ControlPanel extends ControlView {
     labelTable.put(50, new JLabel(".5"));
     labelTable.put(100, new JLabel("1"));
     labelTable.put(150, new JLabel("1.5"));
+    labelTable.put(200, new JLabel("2.0"));
+    labelTable.put(250, new JLabel("2.5"));
+    labelTable.put(300, new JLabel("3.0"));
+
     amplitudeSlider.setLabelTable(labelTable);
     c.gridy++;
     c.insets = new Insets(0, 6, 4, 6);
     amplitudeSlider.setPreferredSize(new Dimension(300, 80));
     add(amplitudeSlider, c);
 
-    pulseWidthSlider = new JSlider(JSlider.HORIZONTAL, 1000, 1000000, 100000);
+    pulseWidthSlider = new JSlider(JSlider.HORIZONTAL, 1000, 500_000, 1_000);
     pulseWidthSlider.setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
     pulseWidthSlider.setMinorTickSpacing(10000);
     pulseWidthSlider.setPaintTicks(true);
@@ -111,8 +115,11 @@ public class ControlPanel extends ControlView {
     pulseWidthSlider.setSnapToTicks(true);
     labelTable = new Hashtable<>();
     labelTable.put(1000, new JLabel("1"));
-    labelTable.put(100000, new JLabel("100"));
-    labelTable.put(1000000, new JLabel("1000"));
+    labelTable.put(100_000, new JLabel("100"));
+    labelTable.put(200_000, new JLabel("200"));
+    labelTable.put(300_000, new JLabel("300"));
+    labelTable.put(400_000, new JLabel("400"));
+    labelTable.put(500_000, new JLabel("500"));
     pulseWidthSlider.setLabelTable(labelTable);
     c.gridy++;
     add(pulseWidthSlider, c);
@@ -180,6 +187,8 @@ public class ControlPanel extends ControlView {
     }
     startStopButton.setEnabled(enabled);
     initSynapseButton.setEnabled(enabled);
+    clearPlotButton.setEnabled(enabled);
+
   }
 
   public JComboBox<Waveform> getWaveformComboBox() {

@@ -87,7 +87,7 @@ public class ControlPanel extends ControlView {
     c.insets = new Insets(0, 0, 4, 6);
     add(waveformComboBox, c);
 
-    amplitudeSlider = new JSlider(JSlider.HORIZONTAL, 0, 150, 12);
+    amplitudeSlider = new JSlider(JSlider.HORIZONTAL, 0, 300, 100);
     amplitudeSlider.setBorder(BorderFactory.createTitledBorder("Amplitude [V]"));
     amplitudeSlider.setMajorTickSpacing(50);
     amplitudeSlider.setMinorTickSpacing(10);
@@ -102,6 +102,9 @@ public class ControlPanel extends ControlView {
     labelTable.put(50, new JLabel(".5"));
     labelTable.put(100, new JLabel("1"));
     labelTable.put(150, new JLabel("1.5"));
+    labelTable.put(200, new JLabel("2.0"));
+    labelTable.put(250, new JLabel("2.5"));
+    labelTable.put(300, new JLabel("3.0"));
     amplitudeSlider.setLabelTable(labelTable);
     c.gridy++;
     c.insets = new Insets(0, 6, 4, 6);
@@ -110,7 +113,7 @@ public class ControlPanel extends ControlView {
 
     pulseWidthSlider = new JSlider(JSlider.HORIZONTAL, 1000, 500000, 100000);
     pulseWidthSlider.setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
-    pulseWidthSlider.setMinorTickSpacing(5000);
+    pulseWidthSlider.setMinorTickSpacing(1000);
     pulseWidthSlider.setPaintTicks(true);
     pulseWidthSlider.setPaintLabels(true);
     pulseWidthSlider.setSnapToTicks(true);
