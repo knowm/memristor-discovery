@@ -25,15 +25,10 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.control;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 import javax.swing.AbstractAction;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
-import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.core.FileUtils;
@@ -75,9 +70,10 @@ public class ControlController extends Controller {
   private void initGUIComponentsFromModel() {
 
     controlPanel.getSaveDirectoryTextField().setText("" + controlModel.getSaveDirectory());
-    //controlPanel.getTimeunitComboBox().setModel(new DefaultComboBoxModel<>(TimeUnit.values()));
+    // controlPanel.getTimeunitComboBox().setModel(new DefaultComboBoxModel<>(TimeUnit.values()));
 
-    //    controlPanel.getTimeunitComboBox().setModel(new DefaultComboBoxModel<>(new TimeUnit[]{TimeUnit.SECONDS, TimeUnit.MINUTES, TimeUnit.DAYS}));
+    //    controlPanel.getTimeunitComboBox().setModel(new DefaultComboBoxModel<>(new
+    // TimeUnit[]{TimeUnit.SECONDS, TimeUnit.MINUTES, TimeUnit.DAYS}));
     //
     //    controlPanel.getTimeunitComboBox().setSelectedItem(controlModel.getTimeUnit());
     //    //controlPanel.getSeriesTextField().setText("" + controlModel.getSeriesResistance());
@@ -88,28 +84,33 @@ public class ControlController extends Controller {
   @Override
   public void doSetUpViewEvents() {
 
-    controlPanel.getSaveDirectoryButton().addActionListener(new ActionListener() {
+    controlPanel
+        .getSaveDirectoryButton()
+        .addActionListener(
+            new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+              @Override
+              public void actionPerformed(ActionEvent e) {
 
-        try {
-          String saveDirectory = FileUtils.showSaveAsDialog(controlPanel, controlModel.getSaveDirectory());
-          controlModel.setSaveDirectory(saveDirectory);
+                try {
+                  String saveDirectory =
+                      FileUtils.showSaveAsDialog(controlPanel, controlModel.getSaveDirectory());
+                  controlModel.setSaveDirectory(saveDirectory);
 
-          controlPanel.getSaveDirectoryTextField().setText(saveDirectory);
+                  controlPanel.getSaveDirectoryTextField().setText(saveDirectory);
 
-        } catch (IOException e1) {
-          e1.printStackTrace();
-        }
-      }
-    });
+                } catch (IOException e1) {
+                  e1.printStackTrace();
+                }
+              }
+            });
 
     //    controlPanel.getTimeunitComboBox().addActionListener(new ActionListener() {
     //      @Override
     //      public void actionPerformed(ActionEvent e) {
     //
-    //        controlModel.setTimeUnit(controlPanel.getTimeunitComboBox().getSelectedItem().toString());
+    //
+    // controlModel.setTimeUnit(controlPanel.getTimeunitComboBox().getSelectedItem().toString());
     //      }
     //    });
     //
@@ -149,20 +150,27 @@ public class ControlController extends Controller {
     //      }
     //    });
 
-    controlView.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("S"), "startstop");
-    controlView.getActionMap().put("startstop", new AbstractAction() {
+    controlView
+        .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+        .put(KeyStroke.getKeyStroke("S"), "startstop");
+    controlView
+        .getActionMap()
+        .put(
+            "startstop",
+            new AbstractAction() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+              @Override
+              public void actionPerformed(ActionEvent e) {
 
-        controlPanel.getStartStopButton().doClick();
-      }
-    });
+                controlPanel.getStartStopButton().doClick();
+              }
+            });
   }
 
   /**
-   * These property change events are triggered in the controlModel in the case where the underlying controlModel is updated. Here, the controller can
-   * respond to those events and make sure the corresponding GUI components get updated.
+   * These property change events are triggered in the controlModel in the case where the underlying
+   * controlModel is updated. Here, the controller can respond to those events and make sure the
+   * corresponding GUI components get updated.
    */
   @Override
   public void propertyChange(PropertyChangeEvent evt) {

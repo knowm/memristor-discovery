@@ -23,8 +23,6 @@
  */
 package org.knowm.memristor.discovery.core.driver.waveform;
 
-import org.knowm.memristor.discovery.core.driver.Driver;
-
 /** @author timmolter */
 public class QuarterSine extends WaveformDriver {
 
@@ -37,7 +35,8 @@ public class QuarterSine extends WaveformDriver {
    * @param amplitude
    * @param frequency
    */
-  public QuarterSine(String name, double dcOffset, double phase, double amplitude, double frequency) {
+  public QuarterSine(
+      String name, double dcOffset, double phase, double amplitude, double frequency) {
 
     super(name, dcOffset, phase, amplitude, frequency);
   }

@@ -64,7 +64,8 @@ public class WaveformUtils {
     return rgdData; // weird name, but that's what Waveforms SDK calls it.
   }
 
-  public static double[] generateCustomPulse(Waveform waveform, double amplitude, double pulseWidthInNS, double dutyCycle) {
+  public static double[] generateCustomPulse(
+      Waveform waveform, double amplitude, double pulseWidthInNS, double dutyCycle) {
 
     System.out.println("generateCustomPulse");
     System.out.println("pulseWidth=" + pulseWidthInNS);
@@ -74,9 +75,9 @@ public class WaveformUtils {
 
     Driver driver;
     switch (waveform) {
-      //      case Sawtooth:
-      //        driver = new Sawtooth("Sawtooth", 0, 0, amplitude, frequency);
-      //        break;
+        //      case Sawtooth:
+        //        driver = new Sawtooth("Sawtooth", 0, 0, amplitude, frequency);
+        //        break;
       case SquareDecay:
         driver = new SquareDecayPulse("SquareDecay", 0, pulseWidthInNS, dutyCycle, amplitude);
         break;
@@ -84,18 +85,17 @@ public class WaveformUtils {
         driver = new SquareLongDecayPulse("SquareLongDecay", 0, pulseWidthInNS, dutyCycle, amplitude);
         break;
       case Triangle:
-
         driver = new TrianglePulse("Triangle", 0, pulseWidthInNS, dutyCycle, amplitude);
         break;
-      //      case TriangleUpDown:
-      //        driver = new TriangleUpDown("TriangleUpDown", 0, 0, amplitude, frequency);
-      //        break;
+        //      case TriangleUpDown:
+        //        driver = new TriangleUpDown("TriangleUpDown", 0, 0, amplitude, frequency);
+        //        break;
       case Square:
         driver = new SquarePulse("Square", 0, pulseWidthInNS, dutyCycle, amplitude);
         break;
-      //      case SquareUpDown:
-      //        driver = new Square("SquareUpDown", 0, 0, amplitude, frequency);
-      //        break;
+        //      case SquareUpDown:
+        //        driver = new Square("SquareUpDown", 0, 0, amplitude, frequency);
+        //        break;
       case QuarterSine:
         driver = new QuarterSinePulse("QuarterSine", 0, pulseWidthInNS, dutyCycle, amplitude);
         break;
@@ -116,14 +116,15 @@ public class WaveformUtils {
 
     do {
       double time = counter * timeInc;
-      customWaveform[counter] = driver.getSignal(time) / 5.0; // / 5.0 to scale between 1 and -1  HUH???
+      customWaveform[counter] =
+          driver.getSignal(time) / 5.0; // / 5.0 to scale between 1 and -1  HUH???
 
     } while (++counter < 4096);
     return customWaveform;
-
   }
 
-  public static double[] generateCustomWaveform(Waveform waveform, double amplitude, double frequency) {
+  public static double[] generateCustomWaveform(
+      Waveform waveform, double amplitude, double frequency) {
 
     Driver driver;
     switch (waveform) {

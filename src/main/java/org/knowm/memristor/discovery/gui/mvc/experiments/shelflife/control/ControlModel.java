@@ -24,10 +24,6 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.control;
 
 import java.util.concurrent.TimeUnit;
-
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.ShelfLifePreferences;
@@ -51,40 +47,67 @@ public class ControlModel extends Model {
   private float minEraseResistance;
 
   /** Constructor */
-  public ControlModel() {
-  }
+  public ControlModel() {}
 
   @Override
   public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {
 
     // load model from prefs
 
-    saveDirectory = experimentPreferences.getString(ShelfLifePreferences.SAVE_DIRECTORY_INIT_KEY,
-        ShelfLifePreferences.SAVE_DIRECTORY_INIT_DEFAULT_VALUE);
+    saveDirectory =
+        experimentPreferences.getString(
+            ShelfLifePreferences.SAVE_DIRECTORY_INIT_KEY,
+            ShelfLifePreferences.SAVE_DIRECTORY_INIT_DEFAULT_VALUE);
 
-    timeUnit = TimeUnit
-        .valueOf(experimentPreferences.getString(ShelfLifePreferences.TIME_UNIT_INIT_KEY, ShelfLifePreferences.TIME_UNIT_DEFAULT_VALUE));
-    repeatInterval = experimentPreferences.getInteger(ShelfLifePreferences.REPEAT_INTERVAL_INIT_KEY,
-        ShelfLifePreferences.REPEAT_INTERVAL_DEFAULT_VALUE);
+    timeUnit =
+        TimeUnit.valueOf(
+            experimentPreferences.getString(
+                ShelfLifePreferences.TIME_UNIT_INIT_KEY,
+                ShelfLifePreferences.TIME_UNIT_DEFAULT_VALUE));
+    repeatInterval =
+        experimentPreferences.getInteger(
+            ShelfLifePreferences.REPEAT_INTERVAL_INIT_KEY,
+            ShelfLifePreferences.REPEAT_INTERVAL_DEFAULT_VALUE);
 
-    seriesResistance = experimentPreferences.getInteger(ShelfLifePreferences.SERIES_R_INIT_KEY, ShelfLifePreferences.SERIES_R_INIT_DEFAULT_VALUE);
+    seriesResistance =
+        experimentPreferences.getInteger(
+            ShelfLifePreferences.SERIES_R_INIT_KEY,
+            ShelfLifePreferences.SERIES_R_INIT_DEFAULT_VALUE);
 
-    readVoltageAmplitude = experimentPreferences.getFloat(ShelfLifePreferences.READ_VOLTS_INIT_KEY, ShelfLifePreferences.READ_VOLTS_DEFAULT_VALUE);
-    writeVoltageAmplitude = experimentPreferences.getFloat(ShelfLifePreferences.WRITE_VOLTS_INIT_KEY, ShelfLifePreferences.WRITE_VOLTS_DEFAULT_VALUE);
-    eraseVoltageAmplitude = experimentPreferences.getFloat(ShelfLifePreferences.ERASE_VOLTS_INIT_KEY, ShelfLifePreferences.ERASE_VOLTS_DEFAULT_VALUE);
+    readVoltageAmplitude =
+        experimentPreferences.getFloat(
+            ShelfLifePreferences.READ_VOLTS_INIT_KEY,
+            ShelfLifePreferences.READ_VOLTS_DEFAULT_VALUE);
+    writeVoltageAmplitude =
+        experimentPreferences.getFloat(
+            ShelfLifePreferences.WRITE_VOLTS_INIT_KEY,
+            ShelfLifePreferences.WRITE_VOLTS_DEFAULT_VALUE);
+    eraseVoltageAmplitude =
+        experimentPreferences.getFloat(
+            ShelfLifePreferences.ERASE_VOLTS_INIT_KEY,
+            ShelfLifePreferences.ERASE_VOLTS_DEFAULT_VALUE);
 
-    readPulseWidthInMicroSeconds = experimentPreferences.getInteger(ShelfLifePreferences.READ_PULSE_WIDTH_INIT_KEY,
-        ShelfLifePreferences.READ_PULSE_WIDTH_DEFAULT_VALUE);
-    writePulseWidthInMicroSeconds = experimentPreferences.getInteger(ShelfLifePreferences.WRITE_PULSE_WIDTH_INIT_KEY,
-        ShelfLifePreferences.WRITE_PULSE_WIDTH_DEFAULT_VALUE);
-    erasePulseWidthInMicroSeconds = experimentPreferences.getInteger(ShelfLifePreferences.ERASE_PULSE_WIDTH_INIT_KEY,
-        ShelfLifePreferences.ERASE_PULSE_WIDTH_DEFAULT_VALUE);
+    readPulseWidthInMicroSeconds =
+        experimentPreferences.getInteger(
+            ShelfLifePreferences.READ_PULSE_WIDTH_INIT_KEY,
+            ShelfLifePreferences.READ_PULSE_WIDTH_DEFAULT_VALUE);
+    writePulseWidthInMicroSeconds =
+        experimentPreferences.getInteger(
+            ShelfLifePreferences.WRITE_PULSE_WIDTH_INIT_KEY,
+            ShelfLifePreferences.WRITE_PULSE_WIDTH_DEFAULT_VALUE);
+    erasePulseWidthInMicroSeconds =
+        experimentPreferences.getInteger(
+            ShelfLifePreferences.ERASE_PULSE_WIDTH_INIT_KEY,
+            ShelfLifePreferences.ERASE_PULSE_WIDTH_DEFAULT_VALUE);
 
-    minEraseResistance = experimentPreferences.getFloat(ShelfLifePreferences.MIN_ERASE_RESISTANCE_INIT_KEY,
-        ShelfLifePreferences.MIN_ERASE_RESISTANCE_DEFAULT_VALUE);
-    maxWriteResistance = experimentPreferences.getFloat(ShelfLifePreferences.MAX_WRITE_RESISTANCE_INIT_KEY,
-        ShelfLifePreferences.MAX_WRITE_RESISTANCE_DEFAULT_VALUE);
-
+    minEraseResistance =
+        experimentPreferences.getFloat(
+            ShelfLifePreferences.MIN_ERASE_RESISTANCE_INIT_KEY,
+            ShelfLifePreferences.MIN_ERASE_RESISTANCE_DEFAULT_VALUE);
+    maxWriteResistance =
+        experimentPreferences.getFloat(
+            ShelfLifePreferences.MAX_WRITE_RESISTANCE_INIT_KEY,
+            ShelfLifePreferences.MAX_WRITE_RESISTANCE_DEFAULT_VALUE);
   }
 
   /////////////////////////////////////////////////////////////
@@ -193,5 +216,4 @@ public class ControlModel extends Model {
   public void setMinEraseResistance(float minEraseResistance) {
     this.minEraseResistance = minEraseResistance;
   }
-
 }

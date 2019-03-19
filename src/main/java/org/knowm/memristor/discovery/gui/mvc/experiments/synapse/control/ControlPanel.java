@@ -188,7 +188,6 @@ public class ControlPanel extends ControlView {
     startStopButton.setEnabled(enabled);
     initSynapseButton.setEnabled(enabled);
     clearPlotButton.setEnabled(enabled);
-
   }
 
   public JComboBox<Waveform> getWaveformComboBox() {

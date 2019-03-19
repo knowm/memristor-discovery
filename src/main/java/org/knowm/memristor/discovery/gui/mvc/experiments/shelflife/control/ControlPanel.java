@@ -27,10 +27,8 @@ import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.util.concurrent.TimeUnit;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
@@ -53,7 +51,7 @@ public class ControlPanel extends ControlView {
   //  private final JTextField intervalTextField;
 
   private final JLabel seriesLabel;
-  //private final JTextField seriesTextField;
+  // private final JTextField seriesTextField;
 
   private final JButton startStopButton;
 
@@ -141,7 +139,7 @@ public class ControlPanel extends ControlView {
     saveDirectoryTextField.setEnabled(enabled);
     //    timeunitComboBox.setEnabled(enabled);
     //    intervalTextField.setEnabled(enabled);
-    //seriesTextField.setEnabled(enabled);
+    // seriesTextField.setEnabled(enabled);
     startStopButton.setEnabled(enabled);
   }
 

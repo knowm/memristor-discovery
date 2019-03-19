@@ -59,20 +59,37 @@ public class ControlModel extends Model {
   /** Constructor */
   public ControlModel() {
 
-    //updateWaveformChartData();
+    // updateWaveformChartData();
   }
 
   @Override
   public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {
 
-    seriesResistance = experimentPreferences.getInteger(SynapsePreferences.SERIES_R_INIT_KEY, SynapsePreferences.SERIES_R_INIT_DEFAULT_VALUE);
-    waveform = SynapsePreferences.Waveform
-        .valueOf(experimentPreferences.getString(SynapsePreferences.WAVEFORM_INIT_STRING_KEY, SynapsePreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
+    seriesResistance =
+        experimentPreferences.getInteger(
+            SynapsePreferences.SERIES_R_INIT_KEY, SynapsePreferences.SERIES_R_INIT_DEFAULT_VALUE);
+    waveform =
+        SynapsePreferences.Waveform.valueOf(
+            experimentPreferences.getString(
+                SynapsePreferences.WAVEFORM_INIT_STRING_KEY,
+                SynapsePreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
 
-    amplitude = experimentPreferences.getFloat(SynapsePreferences.AMPLITUDE_INIT_FLOAT_KEY, SynapsePreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
-    pulseWidth = experimentPreferences.getInteger(SynapsePreferences.PULSE_WIDTH_INIT_KEY, SynapsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
-    pulseNumber = experimentPreferences.getInteger(SynapsePreferences.NUM_PULSES_INIT_KEY, SynapsePreferences.NUM_PULSES_INIT_DEFAULT_VALUE);
-    sampleRate = experimentPreferences.getInteger(SynapsePreferences.SAMPLE_RATE_INIT_KEY, SynapsePreferences.SAMPLE_RATE_INIT_DEFAULT_VALUE);
+    amplitude =
+        experimentPreferences.getFloat(
+            SynapsePreferences.AMPLITUDE_INIT_FLOAT_KEY,
+            SynapsePreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
+    pulseWidth =
+        experimentPreferences.getInteger(
+            SynapsePreferences.PULSE_WIDTH_INIT_KEY,
+            SynapsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
+    pulseNumber =
+        experimentPreferences.getInteger(
+            SynapsePreferences.NUM_PULSES_INIT_KEY,
+            SynapsePreferences.NUM_PULSES_INIT_DEFAULT_VALUE);
+    sampleRate =
+        experimentPreferences.getInteger(
+            SynapsePreferences.SAMPLE_RATE_INIT_KEY,
+            SynapsePreferences.SAMPLE_RATE_INIT_DEFAULT_VALUE);
   }
 
   /** Given the state of the model, update the waveform x and y axis data arrays. */
@@ -81,7 +98,8 @@ public class ControlModel extends Model {
     Driver driver;
     switch (waveform) {
       case Sawtooth:
-        driver = new Sawtooth("Sawtooth", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
+        driver =
+            new Sawtooth("Sawtooth", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
         break;
       case QuarterSine:
         driver = new QuarterSine("QuarterSine", 0, 0, amplitude, getCalculatedFrequency());
@@ -101,7 +119,8 @@ public class ControlModel extends Model {
     }
 
     double stopTime = 1 / getCalculatedFrequency() * pulseNumber;
-    double timeStep = 1 / getCalculatedFrequency() / SynapsePreferences.CAPTURE_BUFFER_SIZE * pulseNumber;
+    double timeStep =
+        1 / getCalculatedFrequency() / SynapsePreferences.CAPTURE_BUFFER_SIZE * pulseNumber;
 
     int counter = 0;
     for (double i = 0.0; i < stopTime; i = i + timeStep) {

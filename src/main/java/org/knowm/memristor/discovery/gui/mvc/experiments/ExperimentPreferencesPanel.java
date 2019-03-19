@@ -24,7 +24,6 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -90,37 +89,45 @@ public abstract class ExperimentPreferencesPanel extends JDialog {
 
     JButton cancelButton = new JButton("Cancel");
     cancelButton.setActionCommand("Cancel");
-    cancelButton.addActionListener(new ActionListener() {
+    cancelButton.addActionListener(
+        new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent arg0) {
+          @Override
+          public void actionPerformed(ActionEvent arg0) {
 
-        exitCode = ID_CANCEL;
-        ExperimentPreferencesPanel.this.setVisible(false);
-        ExperimentPreferencesPanel.this.dispatchEvent(new WindowEvent(ExperimentPreferencesPanel.this, WindowEvent.WINDOW_CLOSING));
-      }
-    });
+            exitCode = ID_CANCEL;
+            ExperimentPreferencesPanel.this.setVisible(false);
+            ExperimentPreferencesPanel.this.dispatchEvent(
+                new WindowEvent(ExperimentPreferencesPanel.this, WindowEvent.WINDOW_CLOSING));
+          }
+        });
     buttonPane.add(cancelButton);
 
     JButton okButton = new JButton("OK");
     okButton.setActionCommand("OK");
-    okButton.addActionListener(new ActionListener() {
+    okButton.addActionListener(
+        new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent arg0) {
+          @Override
+          public void actionPerformed(ActionEvent arg0) {
 
-        // save any changes to preferences
-        try {
-          doSavePreferences();
-        } catch (NumberFormatException e) {
-          JOptionPane.showMessageDialog(null, "Error saving preference! Invalid Number entered.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
+            // save any changes to preferences
+            try {
+              doSavePreferences();
+            } catch (NumberFormatException e) {
+              JOptionPane.showMessageDialog(
+                  null,
+                  "Error saving preference! Invalid Number entered.",
+                  "Error",
+                  JOptionPane.ERROR_MESSAGE);
+            }
 
-        exitCode = ID_OK;
-        ExperimentPreferencesPanel.this.setVisible(false);
-        ExperimentPreferencesPanel.this.dispatchEvent(new WindowEvent(ExperimentPreferencesPanel.this, WindowEvent.WINDOW_CLOSING));
-      }
-    });
+            exitCode = ID_OK;
+            ExperimentPreferencesPanel.this.setVisible(false);
+            ExperimentPreferencesPanel.this.dispatchEvent(
+                new WindowEvent(ExperimentPreferencesPanel.this, WindowEvent.WINDOW_CLOSING));
+          }
+        });
     buttonPane.add(okButton);
     getRootPane().setDefaultButton(okButton);
 

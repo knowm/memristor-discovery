@@ -43,9 +43,11 @@ public class ControlModel extends Model {
   public static final String EVENT_INSTRUCTION_UPDATE = "EVENT_INSTRUCTION_UPDATE";
 
   private final double[] waveformTimeData = new double[ClassifyPreferences.CAPTURE_BUFFER_SIZE];
-  private final double[] waveformAmplitudeData = new double[ClassifyPreferences.CAPTURE_BUFFER_SIZE];
+  private final double[] waveformAmplitudeData =
+      new double[ClassifyPreferences.CAPTURE_BUFFER_SIZE];
   /** Waveform */
   public ClassifyPreferences.Waveform waveform;
+
   private int pulseNumber = 1;
   public DecimalFormat ohmFormatter = new DecimalFormat("#,### Ω");
   public ClassifyPreferences.Datasets dataset = Datasets.Ortho4Pattern;
@@ -57,24 +59,36 @@ public class ControlModel extends Model {
   /** Constructor */
   public ControlModel() {
 
-    //updateWaveformChartData();
+    // updateWaveformChartData();
   }
 
   @Override
   public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {
 
-    waveform = ClassifyPreferences.Waveform.valueOf(
-        experimentPreferences.getString(ClassifyPreferences.WAVEFORM_INIT_STRING_KEY, ClassifyPreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
+    waveform =
+        ClassifyPreferences.Waveform.valueOf(
+            experimentPreferences.getString(
+                ClassifyPreferences.WAVEFORM_INIT_STRING_KEY,
+                ClassifyPreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
 
     System.out.println("waveform = " + waveform);
 
-    seriesResistance = experimentPreferences.getInteger(ClassifyPreferences.SERIES_R_INIT_KEY, ClassifyPreferences.SERIES_R_INIT_DEFAULT_VALUE);
-    amplitude = experimentPreferences.getFloat(ClassifyPreferences.AMPLITUDE_INIT_FLOAT_KEY, ClassifyPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
-    pulseWidth = experimentPreferences.getInteger(ClassifyPreferences.PULSE_WIDTH_INIT_KEY, ClassifyPreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
+    seriesResistance =
+        experimentPreferences.getInteger(
+            ClassifyPreferences.SERIES_R_INIT_KEY, ClassifyPreferences.SERIES_R_INIT_DEFAULT_VALUE);
+    amplitude =
+        experimentPreferences.getFloat(
+            ClassifyPreferences.AMPLITUDE_INIT_FLOAT_KEY,
+            ClassifyPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
+    pulseWidth =
+        experimentPreferences.getInteger(
+            ClassifyPreferences.PULSE_WIDTH_INIT_KEY,
+            ClassifyPreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
 
-    numTrainEpochs = experimentPreferences.getInteger(ClassifyPreferences.NUM_TRAIN_EPOCHS_INIT_KEY,
-        ClassifyPreferences.NUM_TRAIN_EPOCHS_INIT_DEFAULT_VALUE);
-
+    numTrainEpochs =
+        experimentPreferences.getInteger(
+            ClassifyPreferences.NUM_TRAIN_EPOCHS_INIT_KEY,
+            ClassifyPreferences.NUM_TRAIN_EPOCHS_INIT_DEFAULT_VALUE);
   }
 
   /** Given the state of the model, update the waveform x and y axis data arrays. */
@@ -83,7 +97,8 @@ public class ControlModel extends Model {
     Driver driver;
     switch (waveform) {
       case Sawtooth:
-        driver = new Sawtooth("Sawtooth", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
+        driver =
+            new Sawtooth("Sawtooth", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
         break;
       case QuarterSine:
         driver = new QuarterSine("QuarterSine", 0, 0, amplitude, getCalculatedFrequency());
@@ -103,7 +118,8 @@ public class ControlModel extends Model {
     }
 
     double stopTime = 1 / getCalculatedFrequency() * pulseNumber;
-    double timeStep = 1 / getCalculatedFrequency() / ClassifyPreferences.CAPTURE_BUFFER_SIZE * pulseNumber;
+    double timeStep =
+        1 / getCalculatedFrequency() / ClassifyPreferences.CAPTURE_BUFFER_SIZE * pulseNumber;
 
     int counter = 0;
     for (double i = 0.0; i < stopTime; i = i + timeStep) {

@@ -258,10 +258,18 @@ public class ControlPanel extends ControlView {
     startStopButton.setEnabled(enabled);
   }
 
-  public void updateEnergyGUI(double appliedAmplitude, double appliedCurrent, double appliedEnergy, double appliedMemristorEnergy) {
+  public void updateEnergyGUI(
+      double appliedAmplitude,
+      double appliedCurrent,
+      double appliedEnergy,
+      double appliedMemristorEnergy) {
 
     appliedAmplitudeLabel.setText("Applied Amplitude [V]: " + Util.round(appliedAmplitude, 2));
-    currentLabel.setText("Current [" + PulsePreferences.CURRENT_UNIT.getLabel() + "]: " + Util.round(appliedCurrent, 3));
+    currentLabel.setText(
+        "Current ["
+            + PulsePreferences.CURRENT_UNIT.getLabel()
+            + "]: "
+            + Util.round(appliedCurrent, 3));
     energyLabel.setText("Energy M+R [nJ]: " + Util.round(appliedEnergy, 3));
     energyMemRistorOnlyLabel.setText("Energy M [fJ]: " + Util.round(appliedMemristorEnergy, 3));
   }

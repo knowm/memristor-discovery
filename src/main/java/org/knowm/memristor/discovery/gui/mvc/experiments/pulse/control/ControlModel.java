@@ -33,12 +33,7 @@ import org.knowm.memristor.discovery.core.driver.pulse.SquareLongDecayPulse;
 import org.knowm.memristor.discovery.core.driver.pulse.SquarePulse;
 import org.knowm.memristor.discovery.core.driver.pulse.SquareSmoothPulse;
 import org.knowm.memristor.discovery.core.driver.pulse.TrianglePulse;
-import org.knowm.memristor.discovery.core.driver.waveform.HalfSine;
-import org.knowm.memristor.discovery.core.driver.waveform.QuarterSine;
 import org.knowm.memristor.discovery.core.driver.waveform.Sawtooth;
-import org.knowm.memristor.discovery.core.driver.waveform.Square;
-import org.knowm.memristor.discovery.core.driver.waveform.SquareSmooth;
-import org.knowm.memristor.discovery.core.driver.waveform.Triangle;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferences;
@@ -54,7 +49,7 @@ public class ControlModel extends Model {
   private float amplitude;
   private int pulseWidth; // model store pulse width in nanoseconds
 
-  private double dutyCycle;//0 to 1. 
+  private double dutyCycle; // 0 to 1.
 
   private int pulseNumber;
   private double appliedAmplitude;
@@ -67,23 +62,38 @@ public class ControlModel extends Model {
   private boolean isStartToggled = false;
 
   /** Constructor */
-  public ControlModel() {
-  }
+  public ControlModel() {}
 
   @Override
   public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {
 
-    waveform = PulsePreferences.Waveform
-        .valueOf(experimentPreferences.getString(PulsePreferences.WAVEFORM_INIT_STRING_KEY, PulsePreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
-    seriesResistance = experimentPreferences.getInteger(PulsePreferences.SERIES_R_INIT_KEY, PulsePreferences.SERIES_R_INIT_DEFAULT_VALUE);
-    amplitude = experimentPreferences.getFloat(PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY, PulsePreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
+    waveform =
+        PulsePreferences.Waveform.valueOf(
+            experimentPreferences.getString(
+                PulsePreferences.WAVEFORM_INIT_STRING_KEY,
+                PulsePreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
+    seriesResistance =
+        experimentPreferences.getInteger(
+            PulsePreferences.SERIES_R_INIT_KEY, PulsePreferences.SERIES_R_INIT_DEFAULT_VALUE);
+    amplitude =
+        experimentPreferences.getFloat(
+            PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY,
+            PulsePreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
     appliedAmplitude = amplitude;
 
-    pulseWidth = experimentPreferences.getInteger(PulsePreferences.PULSE_WIDTH_INIT_KEY, PulsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
-    pulseNumber = experimentPreferences.getInteger(PulsePreferences.NUM_PULSES_INIT_KEY, PulsePreferences.NUM_PULSES_INIT_DEFAULT_VALUE);
-    sampleRate = experimentPreferences.getInteger(PulsePreferences.SAMPLE_RATE_INIT_KEY, PulsePreferences.SAMPLE_RATE_INIT_DEFAULT_VALUE);
+    pulseWidth =
+        experimentPreferences.getInteger(
+            PulsePreferences.PULSE_WIDTH_INIT_KEY, PulsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
+    pulseNumber =
+        experimentPreferences.getInteger(
+            PulsePreferences.NUM_PULSES_INIT_KEY, PulsePreferences.NUM_PULSES_INIT_DEFAULT_VALUE);
+    sampleRate =
+        experimentPreferences.getInteger(
+            PulsePreferences.SAMPLE_RATE_INIT_KEY, PulsePreferences.SAMPLE_RATE_INIT_DEFAULT_VALUE);
 
-    dutyCycle = experimentPreferences.getFloat(PulsePreferences.PULSE_DUTY_CYCLE_KEY, PulsePreferences.PULSE_DUTY_CYCLE_DEFAULT_VALUE);
+    dutyCycle =
+        experimentPreferences.getFloat(
+            PulsePreferences.PULSE_DUTY_CYCLE_KEY, PulsePreferences.PULSE_DUTY_CYCLE_DEFAULT_VALUE);
 
     updateWaveformChartData();
   }
@@ -94,26 +104,22 @@ public class ControlModel extends Model {
     Driver driver;
     switch (waveform) {
       case Sawtooth:
-        driver = new Sawtooth("Sawtooth", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
+        driver =
+            new Sawtooth("Sawtooth", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
         break;
       case QuarterSine:
-
         driver = new QuarterSinePulse("QuarterSine", 0, pulseWidth, dutyCycle, amplitude);
         break;
       case Triangle:
-
         driver = new TrianglePulse("Triangle", 0, pulseWidth, dutyCycle, amplitude);
         break;
       case Square:
-
         driver = new SquarePulse("Square", 0, pulseWidth, dutyCycle, amplitude);
         break;
       case SquareSmooth:
-
         driver = new SquareSmoothPulse("SquareSmooth", 0, pulseWidth, dutyCycle, amplitude);
         break;
       case SquareDecay:
-
         driver = new SquareDecayPulse("SquareDecay", 0, pulseWidth, dutyCycle, amplitude);
         break;
       case SquareLongDecay:
@@ -274,19 +280,36 @@ public class ControlModel extends Model {
     // calculate applied voltage
     if (lastG > 0.0) {
       if (isMemristorVoltageDropSelected) {
-        this.appliedAmplitude = amplitude / (1 - seriesResistance / (seriesResistance + getLastR() + Util.getSwitchesSeriesResistance()));
+        this.appliedAmplitude =
+            amplitude
+                / (1
+                    - seriesResistance
+                        / (seriesResistance + getLastR() + Util.getSwitchesSeriesResistance()));
       } else {
         this.appliedAmplitude = amplitude;
       }
-      this.appliedCurrent = appliedAmplitude / (getLastR() + seriesResistance + Util.getSwitchesSeriesResistance())
-          * PulsePreferences.CURRENT_UNIT.getDivisor();
-      this.appliedEnergy = appliedAmplitude * appliedAmplitude / (getLastR() + seriesResistance + Util.getSwitchesSeriesResistance()) * pulseNumber
-          * pulseWidth;
+      this.appliedCurrent =
+          appliedAmplitude
+              / (getLastR() + seriesResistance + Util.getSwitchesSeriesResistance())
+              * PulsePreferences.CURRENT_UNIT.getDivisor();
+      this.appliedEnergy =
+          appliedAmplitude
+              * appliedAmplitude
+              / (getLastR() + seriesResistance + Util.getSwitchesSeriesResistance())
+              * pulseNumber
+              * pulseWidth;
 
       // V=IR =
-      double voltageDropOnMemristor = appliedCurrent / PulsePreferences.CURRENT_UNIT.getDivisor() * getLastR();
+      double voltageDropOnMemristor =
+          appliedCurrent / PulsePreferences.CURRENT_UNIT.getDivisor() * getLastR();
       // System.out.println("voltageDropOnMemristor = " + voltageDropOnMemristor);
-      this.appliedMemristorEnergy = voltageDropOnMemristor * voltageDropOnMemristor / getLastR() * pulseNumber * pulseWidth / 1000;
+      this.appliedMemristorEnergy =
+          voltageDropOnMemristor
+              * voltageDropOnMemristor
+              / getLastR()
+              * pulseNumber
+              * pulseWidth
+              / 1000;
       // System.out.println("appliedMemristorEnergy = " + appliedMemristorEnergy);
     } else {
       this.appliedAmplitude = amplitude;
