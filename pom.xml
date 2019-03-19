@@ -5,7 +5,7 @@
 
   <groupId>org.knowm</groupId>
   <artifactId>memristor-discovery</artifactId>
-  <version>0.0.9-SNAPSHOT</version>
+  <version>0.0.9</version>
   <name>Memristor-Discovery</name>
   <packaging>jar</packaging>
   <description>Java Application for automated memristor experiments and data collection based on
