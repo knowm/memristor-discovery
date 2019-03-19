@@ -54,7 +54,8 @@ Open up Waveforms and select from the Menu `Settings ==> Device Manager`. In the
 
     mvn clean package  
     mvn javadoc:javadoc 
-    mvn com.coveo:fmt-maven-plugin:format  
+    mvn com.coveo:fmt-maven-plugin:format 
+    mvn versions:display-dependency-updates 
     
 #### maven-license-plugin
 
