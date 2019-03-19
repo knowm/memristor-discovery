@@ -31,38 +31,41 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.AHaHController_21.Instruction;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.ClassifyPreferences.AHaHRoutine;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.control.ControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.classify.plot.PlotControlModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.classify.plot.PlotController;
-import org.knowm.memristor.discovery.gui.mvc.experiments.classify.plot.PlotPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.classify.result.ResultController;
+import org.knowm.memristor.discovery.gui.mvc.experiments.classify.result.ResultModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.classify.result.ResultPanel;
 
 public class ClassifyExperiment extends Experiment {
 
+  private final double k = .05f;
+
+  // exponential running average for measuring train accuracy.
+  private double trainAccuracy = 0;
+  private ControlPanel controlPanel;
+  private ResultPanel resultPanel;
+
+  // Control and Result MVC
+  private final ControlModel controlModel;
+  private final ResultModel resultModel;
+  private final ResultController resultController;
+
+  // SwingWorkers
   private SwingWorker runTrialWorker;
   private SwingWorker resetWorker;
 
-  private final ControlModel controlModel = new ControlModel();
-  private ControlPanel controlPanel;
-
-  private PlotPanel plotPanel;
-  private final PlotControlModel plotModel = new PlotControlModel();
-  private final PlotController plotController;
-
   private AHaHController_21 aHaHController;
-
-  // exponential running average for measuring train accuracy.
-  double trainAccuracy = 0;
-  double k = .05f;
 
   /**
    * Constructor
@@ -74,17 +77,24 @@ public class ClassifyExperiment extends Experiment {
 
     super(dwfProxy, mainFrameContainer, isV1Board);
 
+    controlModel = new ControlModel();
     controlPanel = new ControlPanel();
-    plotPanel = new PlotPanel();
-    plotController = new PlotController(plotPanel, plotModel);
+    resultModel = new ResultModel();
+    resultPanel = new ResultPanel();
+
+    refreshModelsFromPreferences();
     new ControlController(controlPanel, controlModel, dwfProxy);
+    resultController = new ResultController(resultPanel, resultModel);
 
     aHaHController = new AHaHController_21(controlModel);
     aHaHController.setdWFProxy(dwfProxy);
   }
 
   @Override
-  public void doCreateAndShowGUI() {
+  public void doCreateAndShowGUI() {}
+
+  @Override
+  public void addWorkersToButtonEvents() {
 
     controlPanel.clearPlotButton.addActionListener(
         new ActionListener() {
@@ -92,7 +102,7 @@ public class ClassifyExperiment extends Experiment {
           @Override
           public void actionPerformed(ActionEvent e) {
             System.out.println("should reset chart now");
-            plotController.resetChart();
+            resultController.resetChart();
           }
         });
 
@@ -116,6 +126,92 @@ public class ClassifyExperiment extends Experiment {
             resetWorker.execute();
           }
         });
+  }
+
+  private void learnCombo(SupervisedPattern pattern, double Vy) {
+
+    if (pattern.state) {
+      aHaHController.executeInstruction(Instruction.FF_RH);
+    } else if (Vy > 0) {
+      aHaHController.executeInstruction(Instruction.FF_RL);
+    }
+  }
+
+  private void learnAlways(SupervisedPattern pattern, double Vy) {
+    if (pattern.state) {
+      aHaHController.executeInstruction(Instruction.FF_RH);
+    } else {
+      aHaHController.executeInstruction(Instruction.FF_RL);
+    }
+  }
+
+  private void learnOnMistakes(SupervisedPattern pattern, double Vy) {
+    if (Vy < 0 && pattern.state) {
+      aHaHController.executeInstruction(Instruction.FF_RH);
+    } else if (Vy > 0 && !pattern.state) {
+      aHaHController.executeInstruction(Instruction.FF_RL);
+    }
+  }
+
+  private void readAllSynapses() {
+
+    int pw = controlModel.getPulseWidth();
+
+    controlModel.setPulseWidth(500_000); // for RC effects due to high resistances.
+
+    List<Double> synapticWeights = new ArrayList<Double>();
+    for (int i = 0; i < 8; i++) {
+      List<Integer> spike = Arrays.asList(i);
+      loadSpikePattern(spike);
+      aHaHController.executeInstruction(Instruction.FFLV);
+      synapticWeights.add(aHaHController.getVy());
+    }
+    resultController.addSynapticWeightValuesPoint(synapticWeights);
+
+    controlModel.setPulseWidth(pw);
+  }
+
+  private void loadSpikePattern(List<Integer> spikes) {
+
+    dwfProxy.turnOffAllSwitches();
+    dwfProxy.update2DigitalIOStatesAtOnce(spikes, true); // set spike pattern
+  }
+
+  /**
+   * These property change events are triggered in the controlModel in the case where the underlying
+   * controlModel is updated. Here, the controller can respond to those events and make sure the
+   * corresponding GUI components get updated.
+   */
+  @Override
+  public void propertyChange(PropertyChangeEvent evt) {}
+
+  @Override
+  public Model getControlModel() {
+
+    return controlModel;
+  }
+
+  @Override
+  public ControlView getControlPanel() {
+
+    return controlPanel;
+  }
+
+  @Override
+  public Model getResultModel() {
+    return resultModel;
+  }
+
+  @Override
+  public JPanel getResultPanel() {
+
+    return resultPanel;
+  }
+
+  @Override
+  public ExperimentPreferences initAppPreferences() {
+
+    return new ClassifyPreferences();
   }
 
   private class ResetWorker extends SwingWorker<Boolean, Double> {
@@ -186,7 +282,7 @@ public class ClassifyExperiment extends Experiment {
               learnCombo(pattern, Vy);
             }
 
-            plotController.addTrainAccuracyDataPoint(trainAccuracy);
+            resultController.addTrainAccuracyDataPoint(trainAccuracy);
           }
 
           readAllSynapses();
@@ -198,86 +294,5 @@ public class ClassifyExperiment extends Experiment {
 
       return true;
     }
-  }
-
-  private void learnCombo(SupervisedPattern pattern, double Vy) {
-
-    if (pattern.state) {
-      aHaHController.executeInstruction(Instruction.FF_RH);
-    } else if (Vy > 0) {
-      aHaHController.executeInstruction(Instruction.FF_RL);
-    }
-  }
-
-  private void learnAlways(SupervisedPattern pattern, double Vy) {
-    if (pattern.state) {
-      aHaHController.executeInstruction(Instruction.FF_RH);
-    } else {
-      aHaHController.executeInstruction(Instruction.FF_RL);
-    }
-  }
-
-  private void learnOnMistakes(SupervisedPattern pattern, double Vy) {
-    if (Vy < 0 && pattern.state) {
-      aHaHController.executeInstruction(Instruction.FF_RH);
-    } else if (Vy > 0 && !pattern.state) {
-      aHaHController.executeInstruction(Instruction.FF_RL);
-    }
-  }
-
-  private void readAllSynapses() {
-
-    int pw = controlModel.getPulseWidth();
-
-    controlModel.setPulseWidth(500_000); // for RC effects due to high resistances.
-
-    List<Double> synapticWeights = new ArrayList<Double>();
-    for (int i = 0; i < 8; i++) {
-      List<Integer> spike = Arrays.asList(i);
-      loadSpikePattern(spike);
-      aHaHController.executeInstruction(Instruction.FFLV);
-      synapticWeights.add(aHaHController.getVy());
-    }
-    plotController.addSynapticWeightValuesPoint(synapticWeights);
-
-    controlModel.setPulseWidth(pw);
-  }
-
-  private void loadSpikePattern(List<Integer> spikes) {
-
-    dwfProxy.turnOffAllSwitches();
-    dwfProxy.update2DigitalIOStatesAtOnce(spikes, true); // set spike pattern
-  }
-
-  /**
-   * These property change events are triggered in the controlModel in the case where the underlying
-   * controlModel is updated. Here, the controller can respond to those events and make sure the
-   * corresponding GUI components get updated.
-   */
-  @Override
-  public void propertyChange(PropertyChangeEvent evt) {}
-
-  @Override
-  public ExperimentControlModel getControlModel() {
-
-    return controlModel;
-  }
-
-  @Override
-  public ExperimentControlPanel getControlPanel() {
-
-    return controlPanel;
-  }
-
-  @Override
-  public ExperimentPlotPanel getPlotPanel() {
-
-    return plotPanel;
-  }
-
-  @Override
-  public SwingWorker getCaptureWorker() {
-
-    return null;
   }
 }

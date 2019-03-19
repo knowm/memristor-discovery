@@ -40,34 +40,31 @@ import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.AHaHController_21.Instruction;
-import org.knowm.memristor.discovery.utils.Util;
 
 /**
  * Provides controls for running the control
  *
  * @author timmolter
  */
-public class ControlPanel extends ExperimentControlPanel {
-
-  private JComboBox<Waveform> waveformComboBox;
+public class ControlPanel extends ControlView {
 
   private final JSlider amplitudeSlider;
   private final JSlider pulseWidthSlider;
+  private final ButtonGroup instructionRadioButtonGroup;
   // private final JSlider pulseWidthSliderNs;
 
   // private final JSlider pulseNumberSlider;
-
-  private final ButtonGroup instructionRadioButtonGroup;
-  private final Box instructionRadioButtonBox;;
-
-  private final JLabel sampleRateLabel;
+  private final Box instructionRadioButtonBox;
+  private final JLabel sampleRateLabel;;
   private final JTextField sampleRateTextField;
   public JButton clearPlotButton;
-
   public JButton initSynapseButton;
+  private JComboBox<Waveform> waveformComboBox;
+
+  public final JButton startStopButton;
 
   /** Constructor */
   public ControlPanel() {
@@ -85,7 +82,7 @@ public class ControlPanel extends ExperimentControlPanel {
     c.insets = new Insets(0, 0, 4, 6);
     add(waveformComboBox, c);
 
-    amplitudeSlider = new JSlider(JSlider.HORIZONTAL, 0, 150, 12);
+    amplitudeSlider = new JSlider(JSlider.HORIZONTAL, 0, 300, 1);
     amplitudeSlider.setBorder(BorderFactory.createTitledBorder("Amplitude [V]"));
     amplitudeSlider.setMajorTickSpacing(50);
     amplitudeSlider.setMinorTickSpacing(10);
@@ -100,13 +97,17 @@ public class ControlPanel extends ExperimentControlPanel {
     labelTable.put(50, new JLabel(".5"));
     labelTable.put(100, new JLabel("1"));
     labelTable.put(150, new JLabel("1.5"));
+    labelTable.put(200, new JLabel("2.0"));
+    labelTable.put(250, new JLabel("2.5"));
+    labelTable.put(300, new JLabel("3.0"));
+
     amplitudeSlider.setLabelTable(labelTable);
     c.gridy++;
     c.insets = new Insets(0, 6, 4, 6);
     amplitudeSlider.setPreferredSize(new Dimension(300, 80));
     add(amplitudeSlider, c);
 
-    pulseWidthSlider = new JSlider(JSlider.HORIZONTAL, 1000, 1000000, 100000);
+    pulseWidthSlider = new JSlider(JSlider.HORIZONTAL, 1000, 500_000, 1_000);
     pulseWidthSlider.setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
     pulseWidthSlider.setMinorTickSpacing(10000);
     pulseWidthSlider.setPaintTicks(true);
@@ -114,8 +115,11 @@ public class ControlPanel extends ExperimentControlPanel {
     pulseWidthSlider.setSnapToTicks(true);
     labelTable = new Hashtable<>();
     labelTable.put(1000, new JLabel("1"));
-    labelTable.put(100000, new JLabel("100"));
-    labelTable.put(1000000, new JLabel("1000"));
+    labelTable.put(100_000, new JLabel("100"));
+    labelTable.put(200_000, new JLabel("200"));
+    labelTable.put(300_000, new JLabel("300"));
+    labelTable.put(400_000, new JLabel("400"));
+    labelTable.put(500_000, new JLabel("500"));
     pulseWidthSlider.setLabelTable(labelTable);
     c.gridy++;
     add(pulseWidthSlider, c);
@@ -166,7 +170,6 @@ public class ControlPanel extends ExperimentControlPanel {
     add(startStopButton, c);
 
     c.gridy++;
-    JLabel logoLabel = new JLabel(Util.createImageIcon("img/logo_200.png"));
     add(logoLabel, c);
   }
 
@@ -184,6 +187,7 @@ public class ControlPanel extends ExperimentControlPanel {
     }
     startStopButton.setEnabled(enabled);
     initSynapseButton.setEnabled(enabled);
+    clearPlotButton.setEnabled(enabled);
   }
 
   public JComboBox<Waveform> getWaveformComboBox() {
@@ -214,5 +218,9 @@ public class ControlPanel extends ExperimentControlPanel {
   public ButtonGroup getInstructionRadioButtonGroup() {
 
     return instructionRadioButtonGroup;
+  }
+
+  public JButton getStartStopButton() {
+    return startStopButton;
   }
 }

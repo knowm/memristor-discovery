@@ -51,9 +51,9 @@ public class ClassifyPreferencesPanel extends ExperimentPreferencesPanel {
    *
    * @param owner
    */
-  public ClassifyPreferencesPanel(JFrame owner) {
+  public ClassifyPreferencesPanel(JFrame owner, String experimentName) {
 
-    super(owner);
+    super(owner, experimentName);
   }
 
   @Override
@@ -142,11 +142,5 @@ public class ClassifyPreferencesPanel extends ExperimentPreferencesPanel {
   public ExperimentPreferences initAppPreferences() {
 
     return new ClassifyPreferences();
-  }
-
-  @Override
-  public String getAppName() {
-
-    return "Classify";
   }
 }

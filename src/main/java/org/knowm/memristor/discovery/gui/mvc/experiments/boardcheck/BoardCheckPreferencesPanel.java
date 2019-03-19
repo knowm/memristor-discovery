@@ -37,23 +37,9 @@ public class BoardCheckPreferencesPanel extends ExperimentPreferencesPanel {
   private JLabel seriesResistorLabel;
   private JTextField seriesResistorTextField;
 
-  // private JLabel amplitudeLabel;
-  // private JTextField amplitudeTextField;
-  //
-  // private JLabel pulseWidthLabel;
-  // private JTextField pulseWidthTextField;
-  //
-  // private JLabel sampleRateLabel;
-  // private JTextField sampleRateTextField;
+  public BoardCheckPreferencesPanel(JFrame owner, String experimentName) {
 
-  /**
-   * Constructor
-   *
-   * @param owner
-   */
-  public BoardCheckPreferencesPanel(JFrame owner) {
-
-    super(owner);
+    super(owner, experimentName);
   }
 
   @Override
@@ -92,11 +78,5 @@ public class BoardCheckPreferencesPanel extends ExperimentPreferencesPanel {
   public ExperimentPreferences initAppPreferences() {
 
     return new BoardCheckPreferences();
-  }
-
-  @Override
-  public String getAppName() {
-
-    return "Pulse";
   }
 }

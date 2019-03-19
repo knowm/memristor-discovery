@@ -24,52 +24,55 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.classify.control;
 
 import java.text.DecimalFormat;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
+import org.knowm.memristor.discovery.core.driver.Driver;
+import org.knowm.memristor.discovery.core.driver.waveform.HalfSine;
+import org.knowm.memristor.discovery.core.driver.waveform.QuarterSine;
+import org.knowm.memristor.discovery.core.driver.waveform.Sawtooth;
+import org.knowm.memristor.discovery.core.driver.waveform.Square;
+import org.knowm.memristor.discovery.core.driver.waveform.SquareSmooth;
+import org.knowm.memristor.discovery.core.driver.waveform.Triangle;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.ClassifyPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.ClassifyPreferences.AHaHRoutine;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.ClassifyPreferences.Datasets;
-import org.knowm.memristor.discovery.utils.driver.Driver;
-import org.knowm.memristor.discovery.utils.driver.HalfSine;
-import org.knowm.memristor.discovery.utils.driver.QuarterSine;
-import org.knowm.memristor.discovery.utils.driver.Sawtooth;
-import org.knowm.memristor.discovery.utils.driver.Square;
-import org.knowm.memristor.discovery.utils.driver.SquareSmooth;
-import org.knowm.memristor.discovery.utils.driver.Triangle;
 
-public class ControlModel extends ExperimentControlModel {
-
-  /** Waveform */
-  public ClassifyPreferences.Waveform waveform;
+public class ControlModel extends Model {
 
   /** Events */
   public static final String EVENT_INSTRUCTION_UPDATE = "EVENT_INSTRUCTION_UPDATE";
 
-  private float amplitude;
-  private int pulseWidth; // model store pulse width in nanoseconds
-  // private int pulseNumber = 1;
-  public DecimalFormat ohmFormatter = new DecimalFormat("#,### Ω");
   private final double[] waveformTimeData = new double[ClassifyPreferences.CAPTURE_BUFFER_SIZE];
   private final double[] waveformAmplitudeData =
       new double[ClassifyPreferences.CAPTURE_BUFFER_SIZE];
-  private int numTrainEpochs;
+  /** Waveform */
+  public ClassifyPreferences.Waveform waveform;
+
+  private int pulseNumber = 1;
+  public DecimalFormat ohmFormatter = new DecimalFormat("#,### Ω");
   public ClassifyPreferences.Datasets dataset = Datasets.Ortho4Pattern;
   public AHaHRoutine ahahroutine = AHaHRoutine.LearnAlways;
+  private float amplitude;
+  private int pulseWidth; // model store pulse width in nanoseconds
+  private int numTrainEpochs;
 
   /** Constructor */
   public ControlModel() {
 
-    updateWaveformChartData();
+    // updateWaveformChartData();
   }
 
   @Override
-  public void loadModelFromPrefs() {
+  public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {
 
     waveform =
         ClassifyPreferences.Waveform.valueOf(
             experimentPreferences.getString(
                 ClassifyPreferences.WAVEFORM_INIT_STRING_KEY,
                 ClassifyPreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
+
+    System.out.println("waveform = " + waveform);
+
     seriesResistance =
         experimentPreferences.getInteger(
             ClassifyPreferences.SERIES_R_INIT_KEY, ClassifyPreferences.SERIES_R_INIT_DEFAULT_VALUE);
@@ -86,8 +89,6 @@ public class ControlModel extends ExperimentControlModel {
         experimentPreferences.getInteger(
             ClassifyPreferences.NUM_TRAIN_EPOCHS_INIT_KEY,
             ClassifyPreferences.NUM_TRAIN_EPOCHS_INIT_DEFAULT_VALUE);
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_PREFERENCES_UPDATE, true, false);
   }
 
   /** Given the state of the model, update the waveform x and y axis data arrays. */
@@ -116,18 +117,18 @@ public class ControlModel extends ExperimentControlModel {
         break;
     }
 
-    // double stopTime = 1 / getCalculatedFrequency() * pulseNumber;
-    //    double timeStep = 1 / getCalculatedFrequency() / ClassifyPreferences.CAPTURE_BUFFER_SIZE *
-    // pulseNumber;
+    double stopTime = 1 / getCalculatedFrequency() * pulseNumber;
+    double timeStep =
+        1 / getCalculatedFrequency() / ClassifyPreferences.CAPTURE_BUFFER_SIZE * pulseNumber;
 
-    //    int counter = 0;
-    //    for (double i = 0.0; i < stopTime; i = i + timeStep) {
-    //      if (counter >= ClassifyPreferences.CAPTURE_BUFFER_SIZE) {
-    //        break;
-    //      }
-    //      waveformTimeData[counter] = i * ClassifyPreferences.TIME_UNIT.getDivisor();
-    //      waveformAmplitudeData[counter++] = driver.getSignal(i);
-    //    }
+    int counter = 0;
+    for (double i = 0.0; i < stopTime; i = i + timeStep) {
+      if (counter >= ClassifyPreferences.CAPTURE_BUFFER_SIZE) {
+        break;
+      }
+      waveformTimeData[counter] = i * ClassifyPreferences.TIME_UNIT.getDivisor();
+      waveformAmplitudeData[counter++] = driver.getSignal(i);
+    }
   }
 
   // ///////////////////////////////////////////////////////////
@@ -142,8 +143,7 @@ public class ControlModel extends ExperimentControlModel {
   public void setAmplitude(float amplitude) {
 
     this.amplitude = amplitude;
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public int getPulseWidth() {
@@ -151,17 +151,16 @@ public class ControlModel extends ExperimentControlModel {
     return pulseWidth;
   }
 
+  public void setPulseWidth(int pulseWidth) {
+
+    this.pulseWidth = pulseWidth;
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
+  }
+
   public double getCalculatedFrequency() {
 
     // System.out.println("pulseWidth = " + pulseWidth);
     return (1.0 / (2.0 * pulseWidth) * 1_000_000_000); // 50% duty cycle
-  }
-
-  public void setPulseWidth(int pulseWidth) {
-
-    this.pulseWidth = pulseWidth;
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public double[] getWaveformTimeData() {
@@ -182,7 +181,7 @@ public class ControlModel extends ExperimentControlModel {
   //  public void setPulseNumber(int pulseNumber) {
   //
   //    this.pulseNumber = pulseNumber;
-  //    swingPropertyChangeSupport.firePropertyChange(ExperimentControlModel.EVENT_WAVEFORM_UPDATE,
+  //    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE,
   // true, false);
   //  }
 
@@ -194,15 +193,13 @@ public class ControlModel extends ExperimentControlModel {
   public void setWaveform(ClassifyPreferences.Waveform waveform) {
 
     this.waveform = waveform;
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public void setWaveform(String text) {
 
     this.waveform = Enum.valueOf(ClassifyPreferences.Waveform.class, text);
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public int getNumTrainEpochs() {
@@ -213,12 +210,6 @@ public class ControlModel extends ExperimentControlModel {
   public void setNumTrainEpochs(int epochs) {
 
     this.numTrainEpochs = epochs;
-  }
-
-  @Override
-  public ExperimentPreferences initAppPreferences() {
-
-    return new ClassifyPreferences();
   }
 
   public ClassifyPreferences.Datasets getDataset() {

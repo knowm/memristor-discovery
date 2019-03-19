@@ -29,22 +29,42 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.util.Enumeration;
+import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComponent;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.knowm.memristor.discovery.DWFProxy;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlController;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Controller;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 
-public class ControlController extends ExperimentControlController {
+public class ControlController extends Controller {
 
   private final ControlPanel controlPanel;
   private final ControlModel controlModel;
+
+  ActionListener instructionRadioButtonActionListener =
+      new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+
+          for (Enumeration<AbstractButton> buttons =
+                  controlPanel.getInstructionRadioButtonGroup().getElements();
+              buttons.hasMoreElements(); ) {
+            AbstractButton button = buttons.nextElement();
+            if (button.isSelected()) {
+              controlModel.setInstruction(button.getText());
+            }
+          }
+        }
+      };
 
   /**
    * Constructor
@@ -236,24 +256,22 @@ public class ControlController extends ExperimentControlController {
     // }
     // }
     // });
+    controlView
+        .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+        .put(KeyStroke.getKeyStroke("S"), "startstop");
+    controlView
+        .getActionMap()
+        .put(
+            "startstop",
+            new AbstractAction() {
+
+              @Override
+              public void actionPerformed(ActionEvent e) {
+
+                controlPanel.getStartStopButton().doClick();
+              }
+            });
   }
-
-  ActionListener instructionRadioButtonActionListener =
-      new ActionListener() {
-
-        @Override
-        public void actionPerformed(ActionEvent actionEvent) {
-
-          for (Enumeration<AbstractButton> buttons =
-                  controlPanel.getInstructionRadioButtonGroup().getElements();
-              buttons.hasMoreElements(); ) {
-            AbstractButton button = buttons.nextElement();
-            if (button.isSelected()) {
-              controlModel.setInstruction(button.getText());
-            }
-          }
-        }
-      };
 
   /**
    * These property change events are triggered in the controlModel in the case where the underlying
@@ -269,11 +287,11 @@ public class ControlController extends ExperimentControlController {
 
         break;
 
-      case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
+      case Model.EVENT_PREFERENCES_UPDATE:
         initGUIComponentsFromModel();
         break;
 
-      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
+      case Model.EVENT_WAVEFORM_UPDATE:
         controlModel.updateWaveformChartData();
         break;
 

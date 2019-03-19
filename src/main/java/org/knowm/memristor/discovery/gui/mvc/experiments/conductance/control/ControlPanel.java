@@ -37,15 +37,14 @@ import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
-import org.knowm.memristor.discovery.utils.Util;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 
 /**
  * Provides controls for running the control
  *
  * @author timmolter
  */
-public class ControlPanel extends ExperimentControlPanel {
+public class ControlPanel extends ControlView {
 
   // RESET
   private final Box resetPulseTypeRadioButtonBox;
@@ -64,6 +63,8 @@ public class ControlPanel extends ExperimentControlPanel {
   private final JSlider setPulseWidthSlider;
 
   private final JSlider setConductanceSlider;
+
+  public final JButton startStopButton;
 
   /** Constructor */
   public ControlPanel() {
@@ -194,13 +195,11 @@ public class ControlPanel extends ExperimentControlPanel {
 
     startStopButton = new JButton("Start");
     startStopButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-    // startButton.setSize(128, 28);
     c.gridy++;
     c.insets = new Insets(0, 0, 0, 0);
     add(startStopButton, c);
 
     c.gridy++;
-    JLabel logoLabel = new JLabel(Util.createImageIcon("img/logo_200.png"));
     add(logoLabel, c);
   }
 
@@ -262,5 +261,9 @@ public class ControlPanel extends ExperimentControlPanel {
   public JTextField getSeriesTextField() {
 
     return seriesTextField;
+  }
+
+  public JButton getStartStopButton() {
+    return startStopButton;
   }
 }

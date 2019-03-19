@@ -29,40 +29,54 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.util.Enumeration;
+import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.knowm.memristor.discovery.DWFProxy;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlController;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Controller;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCPreferences;
-import org.knowm.memristor.discovery.gui.mvc.experiments.dc.plot.PlotPanel;
 
-public class ControlController extends ExperimentControlController {
+public class ControlController extends Controller {
 
   private final ControlPanel controlPanel;
   private final ControlModel controlModel;
 
-  private final PlotPanel plotPanel;
+  ActionListener waveformRadioButtonActionListener =
+      new ActionListener() {
+
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+
+          for (Enumeration<AbstractButton> buttons =
+                  controlPanel.getWaveformRadioButtonGroup().getElements();
+              buttons.hasMoreElements(); ) {
+            AbstractButton button = buttons.nextElement();
+            if (button.isSelected()) {
+              controlModel.setWaveform(button.getText());
+            }
+          }
+        }
+      };
 
   /**
    * Constructor
    *
    * @param controlPanel
-   * @param plotPanel
    * @param controlModel
    * @param dwf
    */
-  public ControlController(
-      ControlPanel controlPanel, PlotPanel plotPanel, ControlModel controlModel, DWFProxy dwf) {
+  public ControlController(ControlPanel controlPanel, ControlModel controlModel, DWFProxy dwf) {
 
     super(controlPanel, controlModel);
 
     this.controlPanel = controlPanel;
-    this.plotPanel = plotPanel;
     this.controlModel = controlModel;
     dwf.addListener(this);
 
@@ -71,9 +85,6 @@ public class ControlController extends ExperimentControlController {
 
     // register the controller as the listener of the controlModel
     controlModel.addListener(this);
-
-    // init waveform chart
-    plotPanel.switch2WaveformChart();
   }
 
   private void initGUIComponents() {
@@ -274,35 +285,23 @@ public class ControlController extends ExperimentControlController {
                 }
               }
             });
-    plotPanel
-        .getCaptureButton()
-        .addActionListener(
-            new ActionListener() {
+
+    controlView
+        .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+        .put(KeyStroke.getKeyStroke("S"), "startstop");
+    controlView
+        .getActionMap()
+        .put(
+            "startstop",
+            new AbstractAction() {
 
               @Override
               public void actionPerformed(ActionEvent e) {
 
-                plotPanel.switch2CaptureChart();
+                controlPanel.getStartStopButton().doClick();
               }
             });
   }
-
-  ActionListener waveformRadioButtonActionListener =
-      new ActionListener() {
-
-        @Override
-        public void actionPerformed(ActionEvent actionEvent) {
-
-          for (Enumeration<AbstractButton> buttons =
-                  controlPanel.getWaveformRadioButtonGroup().getElements();
-              buttons.hasMoreElements(); ) {
-            AbstractButton button = buttons.nextElement();
-            if (button.isSelected()) {
-              controlModel.setWaveform(button.getText());
-            }
-          }
-        }
-      };
 
   /**
    * These property change events are triggered in the controlModel in the case where the underlying
@@ -317,11 +316,11 @@ public class ControlController extends ExperimentControlController {
         controlPanel.enableAllChildComponents((Boolean) evt.getNewValue());
         break;
 
-      case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
+      case Model.EVENT_PREFERENCES_UPDATE:
         initGUIComponentsFromModel();
         break;
 
-      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
+      case Model.EVENT_WAVEFORM_UPDATE:
         controlModel.updateWaveformChartData();
         break;
 

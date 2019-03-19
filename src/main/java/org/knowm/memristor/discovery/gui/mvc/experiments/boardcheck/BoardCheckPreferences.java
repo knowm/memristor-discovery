@@ -32,17 +32,14 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
  */
 public class BoardCheckPreferences extends ExperimentPreferences {
 
-  private static final String PREFIX = "BOARDCHECK_";
-
-  public static final String SERIES_R_INIT_KEY = PREFIX + "SERIES_R_INIT_KEY";
-  public static final int SERIES_R_INIT_DEFAULT_VALUE = 1_000;
-
+  public static final int SERIES_R_INIT_DEFAULT_VALUE = 5_000;
   public static final CurrentUnits CURRENT_UNIT = CurrentUnits.MicroAmps;
   public static final ResistanceUnits RESISTANCE_UNIT = ResistanceUnits.KiloOhms;
   public static final ConductanceUnits CONDUCTANCE_UNIT = ConductanceUnits.MilliSiemens;
   public static final TimeUnits TIME_UNIT = TimeUnits.MicroSeconds;
-
   public static final int CAPTURE_BUFFER_SIZE = 8000;
+  private static final String PREFIX = "BOARDCHECK_";
+  public static final String SERIES_R_INIT_KEY = PREFIX + "SERIES_R_INIT_KEY";
 
   /** Constructor */
   public BoardCheckPreferences() {

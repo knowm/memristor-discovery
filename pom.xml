@@ -5,7 +5,7 @@
 
   <groupId>org.knowm</groupId>
   <artifactId>memristor-discovery</artifactId>
-  <version>0.0.8</version>
+  <version>0.0.9</version>
   <name>Memristor-Discovery</name>
   <packaging>jar</packaging>
   <description>Java Application for automated memristor experiments and data collection based on
@@ -49,7 +49,7 @@
     <dependency>
       <groupId>org.knowm</groupId>
       <artifactId>waveforms4j</artifactId>
-      <version>0.0.9</version>
+      <version>0.0.10</version>
     </dependency>
     <dependency>
       <groupId>org.knowm.xchart</groupId>
@@ -59,18 +59,18 @@
     <dependency>
       <groupId>com.vladsch.flexmark</groupId>
       <artifactId>flexmark-all</artifactId>
-      <version>0.40.16</version>
+      <version>0.40.24</version>
     </dependency>
 
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>1.7.25</version>
+      <version>1.7.26</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-      <version>1.7.25</version>
+      <version>1.7.26</version>
     </dependency>
 
   </dependencies>

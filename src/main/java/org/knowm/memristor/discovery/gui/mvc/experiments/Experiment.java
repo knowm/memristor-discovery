@@ -27,12 +27,9 @@ import static javax.swing.BorderFactory.createEmptyBorder;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.rightbar.RightBarController;
 import org.knowm.memristor.discovery.gui.mvc.rightbar.RightBarPanel;
@@ -45,29 +42,31 @@ public abstract class Experiment implements PropertyChangeListener {
 
   private final boolean isV1Board;
 
-  private SwingWorker experimentCaptureWorker;
+  protected ExperimentPreferences experimentPreferences;
 
-  public abstract ExperimentControlModel getControlModel();
-
-  public abstract ExperimentControlPanel getControlPanel();
-
-  public abstract ExperimentPlotPanel getPlotPanel();
-
-  public abstract SwingWorker getCaptureWorker();
-
-  public abstract void doCreateAndShowGUI();
-
-  /**
-   * Constructor
-   *
-   * @param dwfProxy
-   */
+  /** Constructor */
   public Experiment(DWFProxy dwfProxy, Container mainFrameContainer, boolean isV1Board) {
 
     this.dwfProxy = dwfProxy;
     this.mainFrameContainer = mainFrameContainer;
     this.isV1Board = isV1Board;
+
+    this.experimentPreferences = initAppPreferences();
   }
+
+  public abstract ExperimentPreferences initAppPreferences();
+
+  public abstract Model getControlModel();
+
+  public abstract ControlView getControlPanel();
+
+  public abstract Model getResultModel();
+
+  public abstract JPanel getResultPanel();
+
+  public abstract void addWorkersToButtonEvents();
+
+  public abstract void doCreateAndShowGUI();
 
   public void createAndShowGUI() {
 
@@ -83,58 +82,14 @@ public abstract class Experiment implements PropertyChangeListener {
     jScrollPane.setBorder(createEmptyBorder());
     mainFrameContainer.add(jScrollPane, BorderLayout.WEST);
 
-    // trigger plot of waveform
-    PropertyChangeEvent evt =
-        new PropertyChangeEvent(this, ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
-    propertyChange(evt);
-
-    getControlModel().addListener(this);
-
-    try {
-      getControlPanel()
-          .getStartStopButton()
-          .addActionListener(
-              new ActionListener() {
-
-                @Override
-                public void actionPerformed(ActionEvent e) {
-
-                  if (!getControlModel().isStartToggled()) {
-
-                    getControlModel().setStartToggled(true);
-                    getControlPanel().getStartStopButton().setText("Stop");
-
-                    // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
-                    experimentCaptureWorker = getCaptureWorker();
-                    experimentCaptureWorker.execute();
-                  } else {
-
-                    getControlModel().setStartToggled(false);
-                    getControlPanel().getStartStopButton().setText("Start");
-
-                    // stop AD2 waveform 1 and stop AD2 capture on channel 1 and 2
-                    experimentCaptureWorker.cancel(true);
-                  }
-                }
-              });
-    } catch (java.lang.NullPointerException e) {
-
-      // this will occur if the start-stop button has been over-written in an experiment (like
-      // BoardCheck)
-
-    }
-
-    doCreateAndShowGUI(); // after adding the default start/stop action so actions can be
-    // overridden.
-
     // //////////////////////
-    // Plot Panel //////////
+    // RESULTS Panel //////////
     // //////////////////////
 
-    mainFrameContainer.add(getPlotPanel(), BorderLayout.CENTER);
+    mainFrameContainer.add(getResultPanel(), BorderLayout.CENTER);
 
     // //////////////////////
-    // Plot Panel //////////
+    // Right Bar Panel //////////
     // //////////////////////
 
     if (isV1Board) {
@@ -142,10 +97,22 @@ public abstract class Experiment implements PropertyChangeListener {
       RightBarController rightBarController = new RightBarController(rightBarPanel, dwfProxy);
       mainFrameContainer.add(rightBarPanel, BorderLayout.EAST);
     }
+
+    // take care of anything else that may need to ccur after the main GUI structure has been setup
+    doCreateAndShowGUI();
+
+    // Here additional CaptureWorkers are added to addition buttons needed for the experiment
+    addWorkersToButtonEvents(); // after adding the default start/stop action so actions can be
+    // overridden.
   }
 
-  public void refreshModelFromPreferences() {
+  /**
+   * This is called from `MemristorDiscovery` when the Preferences window is closed and by the
+   * Experiments when their models are created
+   */
+  public void refreshModelsFromPreferences() {
 
-    getControlModel().loadModelFromPrefs();
+    getControlModel().loadModelFromPrefs(experimentPreferences);
+    getResultModel().loadModelFromPrefs(experimentPreferences);
   }
 }

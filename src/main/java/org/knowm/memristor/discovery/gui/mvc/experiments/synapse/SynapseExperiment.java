@@ -31,38 +31,42 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.text.DecimalFormat;
 import java.util.List;
+import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
+import org.knowm.memristor.discovery.core.gpio.MuxController;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.AHaHController_21.Instruction;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.control.ControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.plot.PlotControlModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.plot.PlotController;
-import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.plot.PlotPanel;
-import org.knowm.memristor.discovery.utils.gpio.MuxController;
+import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.result.ResultController;
+import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.result.ResultModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.result.ResultPanel;
 
 public class SynapseExperiment extends Experiment {
 
   private static final float INIT_CONDUCTANCE = .0002f;
 
-  private InitSynapseWorker initSynapseWorker;
-
-  private final ControlModel controlModel = new ControlModel();
-  private ControlPanel controlPanel;
-
-  private PlotPanel plotPanel;
-  private final PlotControlModel plotModel = new PlotControlModel();
-  private final PlotController plotController;
-
-  private AHaHController_21 aHaHController;
   private final MuxController muxController;
 
   DecimalFormat df = new DecimalFormat("0.000E0");
+  private AHaHController_21 aHaHController;
+
+  // Control and Result MVC
+  private final ControlModel controlModel;
+  private final ControlPanel controlPanel;
+  private final ResultModel resultModel;
+  private final ResultPanel resultPanel;
+  private final ResultController resultController;
+
+  // SwingWorkers
+  private SwingWorker initSynapseWorker;
+  private SwingWorker experimentCaptureWorker;
+  private SwingWorker clearChartWorker;
 
   /**
    * Constructor
@@ -74,33 +78,65 @@ public class SynapseExperiment extends Experiment {
 
     super(dwfProxy, mainFrameContainer, isV1Board);
 
+    controlModel = new ControlModel();
     controlPanel = new ControlPanel();
-    plotPanel = new PlotPanel();
-    plotController = new PlotController(plotPanel, plotModel);
+    resultModel = new ResultModel();
+    resultPanel = new ResultPanel();
+
+    refreshModelsFromPreferences();
     new ControlController(controlPanel, controlModel, dwfProxy);
-    System.out.println(controlModel.getInstruction());
+    resultController = new ResultController(resultPanel, resultModel);
+
     dwfProxy.setUpper8IOStates(controlModel.getInstruction().getBits());
 
     aHaHController = new AHaHController_21(controlModel);
     aHaHController.setdWFProxy(dwfProxy);
-    // aHaHController.setAmplitude(controlModel.getAmplitude());
-    // aHaHController.setCalculatedFrequency(controlModel.getCalculatedFrequency());
-    // aHaHController.setWaveform(controlModel.getWaveform());
-
     muxController = new MuxController();
   }
 
   @Override
-  public void doCreateAndShowGUI() {
+  public void doCreateAndShowGUI() {}
+
+  @Override
+  public void addWorkersToButtonEvents() {
+
     controlPanel.clearPlotButton.addActionListener(
         new ActionListener() {
 
           @Override
           public void actionPerformed(ActionEvent e) {
 
-            plotController.resetChart();
+            clearChartWorker = new ClearChartWorker();
+            clearChartWorker.execute();
           }
         });
+
+    controlPanel
+        .getStartStopButton()
+        .addActionListener(
+            new ActionListener() {
+
+              @Override
+              public void actionPerformed(ActionEvent e) {
+
+                if (!controlModel.isStartToggled()) {
+
+                  controlModel.setStartToggled(true);
+                  controlPanel.getStartStopButton().setText("Stop");
+
+                  // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
+                  experimentCaptureWorker = new CaptureWorker();
+                  experimentCaptureWorker.execute();
+                } else {
+
+                  controlModel.setStartToggled(false);
+                  controlPanel.getStartStopButton().setText("Start");
+
+                  // cancel the worker
+                  experimentCaptureWorker.cancel(true);
+                }
+              }
+            });
 
     controlPanel.initSynapseButton.addActionListener(
         new ActionListener() {
@@ -112,6 +148,69 @@ public class SynapseExperiment extends Experiment {
             initSynapseWorker.execute();
           }
         });
+  }
+
+  @Override
+  public Model getControlModel() {
+
+    return controlModel;
+  }
+
+  @Override
+  public ControlView getControlPanel() {
+
+    return controlPanel;
+  }
+
+  @Override
+  public Model getResultModel() {
+    return resultModel;
+  }
+
+  @Override
+  public JPanel getResultPanel() {
+
+    return resultPanel;
+  }
+
+  /**
+   * These property change events are triggered in the controlModel in the case where the underlying
+   * controlModel is updated. Here, the controller can respond to those events and make sure the
+   * corresponding GUI components get updated.
+   */
+  @Override
+  public void propertyChange(PropertyChangeEvent evt) {
+
+    String propName = evt.getPropertyName();
+
+    switch (propName) {
+      case EVENT_INSTRUCTION_UPDATE:
+
+        // TODO handle instruction updates here.
+        // System.out.println(controlModel.getInstruction());
+        // dwfProxy.setUpper8IOStates(controlModel.getInstruction().getBits());
+
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  @Override
+  public ExperimentPreferences initAppPreferences() {
+
+    return new SynapsePreferences();
+  }
+
+  private class ClearChartWorker extends SwingWorker<Boolean, Double> {
+
+    @Override
+    protected Boolean doInBackground() throws Exception {
+
+      resultController.resetChart();
+      return true;
+    }
   }
 
   private class CaptureWorker extends SwingWorker<Boolean, Double> {
@@ -144,56 +243,9 @@ public class SynapseExperiment extends Experiment {
     @Override
     protected void process(List<Double> chunks) {
 
-      plotController.updateYChartData(chunks.get(0), chunks.get(1), chunks.get(2));
-      plotController.repaintYChart();
+      resultController.updateYChartData(chunks.get(0), chunks.get(1), chunks.get(2));
+      resultController.repaintYChart();
     }
-  }
-
-  /**
-   * These property change events are triggered in the controlModel in the case where the underlying
-   * controlModel is updated. Here, the controller can respond to those events and make sure the
-   * corresponding GUI components get updated.
-   */
-  @Override
-  public void propertyChange(PropertyChangeEvent evt) {
-
-    String propName = evt.getPropertyName();
-
-    switch (propName) {
-      case EVENT_INSTRUCTION_UPDATE:
-
-        // System.out.println(controlModel.getInstruction());
-        // dwfProxy.setUpper8IOStates(controlModel.getInstruction().getBits());
-
-        break;
-
-      default:
-        break;
-    }
-  }
-
-  @Override
-  public ExperimentControlModel getControlModel() {
-
-    return controlModel;
-  }
-
-  @Override
-  public ExperimentControlPanel getControlPanel() {
-
-    return controlPanel;
-  }
-
-  @Override
-  public ExperimentPlotPanel getPlotPanel() {
-
-    return plotPanel;
-  }
-
-  @Override
-  public SwingWorker getCaptureWorker() {
-
-    return new CaptureWorker();
   }
 
   private class InitSynapseWorker extends SwingWorker<Boolean, Double> {
@@ -242,15 +294,14 @@ public class SynapseExperiment extends Experiment {
 
             getControlModel()
                 .swingPropertyChangeSupport
-                .firePropertyChange(
-                    ExperimentControlModel.EVENT_NEW_CONSOLE_LOG, null, "Step 1 Passed.");
+                .firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null, "Step 1 Passed.");
             break;
           }
 
           getControlModel()
               .swingPropertyChangeSupport
               .firePropertyChange(
-                  ExperimentControlModel.EVENT_NEW_CONSOLE_LOG,
+                  Model.EVENT_NEW_CONSOLE_LOG,
                   null,
                   "  A="
                       + df.format(aHaHController.getGa())
@@ -277,7 +328,7 @@ public class SynapseExperiment extends Experiment {
           getControlModel()
               .swingPropertyChangeSupport
               .firePropertyChange(
-                  ExperimentControlModel.EVENT_NEW_CONSOLE_LOG,
+                  Model.EVENT_NEW_CONSOLE_LOG,
                   null,
                   "Step 1 Failed. Memristor ("
                       + failed
@@ -306,7 +357,7 @@ public class SynapseExperiment extends Experiment {
           getControlModel()
               .swingPropertyChangeSupport
               .firePropertyChange(
-                  ExperimentControlModel.EVENT_NEW_CONSOLE_LOG,
+                  Model.EVENT_NEW_CONSOLE_LOG,
                   null,
                   "Step 2 Failed. State did not change upon application of Anti-Hebbian cycles");
         } else {
@@ -316,24 +367,20 @@ public class SynapseExperiment extends Experiment {
           getControlModel()
               .swingPropertyChangeSupport
               .firePropertyChange(
-                  ExperimentControlModel.EVENT_NEW_CONSOLE_LOG,
-                  null,
-                  "Step 2 Passed. Q=" + df.format(a));
+                  Model.EVENT_NEW_CONSOLE_LOG, null, "Step 2 Passed. Q=" + df.format(a));
         }
 
         if (aGood && bGood && stateChangedCount > 0) {
           getControlModel()
               .swingPropertyChangeSupport
               .firePropertyChange(
-                  ExperimentControlModel.EVENT_NEW_CONSOLE_LOG,
-                  null,
-                  "Synapse Initialized Sucessfully");
+                  Model.EVENT_NEW_CONSOLE_LOG, null, "Synapse Initialized Sucessfully");
         }
 
         getControlModel()
             .swingPropertyChangeSupport
             .firePropertyChange(
-                ExperimentControlModel.EVENT_NEW_CONSOLE_LOG,
+                Model.EVENT_NEW_CONSOLE_LOG,
                 null,
                 "  A="
                     + df.format(aHaHController.getGa())

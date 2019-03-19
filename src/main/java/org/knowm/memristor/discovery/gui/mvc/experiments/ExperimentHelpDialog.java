@@ -34,8 +34,8 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.text.Document;
 import javax.swing.text.html.HTMLEditorKit;
-import org.knowm.memristor.discovery.utils.FileUtils;
-import org.knowm.memristor.discovery.utils.Util;
+import org.knowm.memristor.discovery.core.FileUtils;
+import org.knowm.memristor.discovery.core.Util;
 
 public class ExperimentHelpDialog {
 

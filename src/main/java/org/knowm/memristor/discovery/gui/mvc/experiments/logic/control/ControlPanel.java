@@ -39,44 +39,37 @@ import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
 import org.knowm.memristor.discovery.gui.mvc.experiments.logic.LogicPreferences.DataStructure;
-import org.knowm.memristor.discovery.utils.Util;
 
 /**
  * Provides controls for running the control
  *
  * @author alexnugent
  */
-public class ControlPanel extends ExperimentControlPanel {
-
-  private JComboBox<Waveform> waveformComboBox;
+public class ControlPanel extends ControlView {
 
   private final JSlider amplitudeSlider;
   private final JSlider pulseWidthSlider;
+  private final Box inputAButtonBox;
 
   // private final ButtonGroup routineRadioButtonGroup;
   // private final Box routineRadioButtonBox;
-
-  private JComboBox<DataStructure> dataStructureComboBox;
-
-  private final Box inputAButtonBox;
   private final Box inputBButtonBox;
   private final Box biasButtonBox;
-
-  private List<JRadioButton> inputAMaskRadioButtons;
-  private List<JRadioButton> inputBMaskRadioButtons;
-  private List<JRadioButton> biasMaskRadioButtons;
-
   private final JLabel numExecutionsLabel;
   private final JTextField numExecutionsTextField;
-
   public JButton FFRUButton;
   public JButton FFRAButton;
   public JButton resetAllButton;
   public JButton runTrialsButton;
   public JButton clearPlotButton;
+  private JComboBox<Waveform> waveformComboBox;
+  private JComboBox<DataStructure> dataStructureComboBox;
+  private List<JRadioButton> inputAMaskRadioButtons;
+  private List<JRadioButton> inputBMaskRadioButtons;
+  private List<JRadioButton> biasMaskRadioButtons;
 
   /** Constructor */
   public ControlPanel() {
@@ -94,7 +87,7 @@ public class ControlPanel extends ExperimentControlPanel {
     c.insets = new Insets(0, 0, 4, 6);
     add(waveformComboBox, c);
 
-    amplitudeSlider = new JSlider(JSlider.HORIZONTAL, 0, 150, 12);
+    amplitudeSlider = new JSlider(JSlider.HORIZONTAL, 0, 300, 100);
     amplitudeSlider.setBorder(BorderFactory.createTitledBorder("Amplitude [V]"));
     amplitudeSlider.setMajorTickSpacing(50);
     amplitudeSlider.setMinorTickSpacing(10);
@@ -109,6 +102,9 @@ public class ControlPanel extends ExperimentControlPanel {
     labelTable.put(50, new JLabel(".5"));
     labelTable.put(100, new JLabel("1"));
     labelTable.put(150, new JLabel("1.5"));
+    labelTable.put(200, new JLabel("2.0"));
+    labelTable.put(250, new JLabel("2.5"));
+    labelTable.put(300, new JLabel("3.0"));
     amplitudeSlider.setLabelTable(labelTable);
     c.gridy++;
     c.insets = new Insets(0, 6, 4, 6);
@@ -117,7 +113,7 @@ public class ControlPanel extends ExperimentControlPanel {
 
     pulseWidthSlider = new JSlider(JSlider.HORIZONTAL, 1000, 500000, 100000);
     pulseWidthSlider.setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
-    pulseWidthSlider.setMinorTickSpacing(5000);
+    pulseWidthSlider.setMinorTickSpacing(1000);
     pulseWidthSlider.setPaintTicks(true);
     pulseWidthSlider.setPaintLabels(true);
     pulseWidthSlider.setSnapToTicks(true);
@@ -222,7 +218,6 @@ public class ControlPanel extends ExperimentControlPanel {
     add(clearPlotButton, c);
 
     c.gridy++;
-    JLabel logoLabel = new JLabel(Util.createImageIcon("img/logo_200.png"));
     add(logoLabel, c);
   }
 

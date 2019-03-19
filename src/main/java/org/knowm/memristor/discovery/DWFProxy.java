@@ -38,20 +38,17 @@ public class DWFProxy {
   public static final int DEFAULT_SELECTOR_DIO =
       0b0001_1101_0000_0000; // the top 8 bits control the 4 MUXes
   // public final static int DEFAULT_SELECTOR_DIO = 0b0000_0000_0000_0000;
-
-  private final Logger logger = LoggerFactory.getLogger(DWFProxy.class);
-
   public static final String AD2_STARTUP_CHANGE = "AD2_START_UP";
   public static final String DIGITAL_IO_READ = "DIGITAL_IO_READ";
+  final DWF dwf;
 
   // ///////////////////////////////////////////////////////////
   // State Variables //////////////////////////////////////////
   // ///////////////////////////////////////////////////////////
-
+  private final Logger logger = LoggerFactory.getLogger(DWFProxy.class);
+  private final boolean isV1Board;
   private boolean isAD2Running = false;
   private int digitalIOStates = ALL_DIO_OFF;
-  private final boolean isV1Board;
-  final DWF dwf;
   private SwingPropertyChangeSupport swingPropertyChangeSupport;
 
   /** Constructor */
@@ -118,83 +115,6 @@ public class DWFProxy {
         System.out.println("Bailed!!!");
         return false;
       }
-    }
-  }
-
-  private class AD2StartupWorker extends SwingWorker<Boolean, Void> {
-
-    @Override
-    protected Boolean doInBackground() {
-
-      // ///////////////////////////////////////////////////////////
-      // Device ///////////////////////////////////////////////////
-      // ///////////////////////////////////////////////////////////
-      isAD2Running = dwf.FDwfDeviceOpen();
-
-      if (isAD2Running) {
-
-        // Some device read out stuff
-        // System.out.println("Analog Out Custom Waveform Buffer Size Channel 1:
-        // "+Arrays.toString(dwf.FDwfAnalogOutNodeDataInfo(DWF.WAVEFORM_CHANNEL_1)));
-        // System.out.println("Analog Out Custom Waveform Buffer Size Channel 2:
-        // "+Arrays.toString(dwf.FDwfAnalogOutNodeDataInfo(DWF.WAVEFORM_CHANNEL_2)));
-        // System.out.println("Analog In Trigger Position Info: "+
-        // Arrays.toString(dwf.FDwfAnalogInTriggerPositionInfo()));
-
-        // ///////////////////////////////////////////////////////////
-        // Digital I/O //////////////////////////////////////////////
-        // ///////////////////////////////////////////////////////////
-        dwf.FDwfDigitalIOOutputEnableSet(SWITCHES_MASK);
-        if (isV1Board) {
-          digitalIOStates = DEFAULT_SELECTOR_DIO;
-          // System.out.println(Integer.toBinaryString(digitalIOStates));
-        } else {
-          digitalIOStates = ALL_DIO_OFF;
-        }
-        dwf.FDwfDigitalIOOutputSet(digitalIOStates);
-        dwf.FDwfDigitalIOConfigure();
-        digitalIOStates = dwf.getDigitalIOStatus();
-        swingPropertyChangeSupport.firePropertyChange(DWFProxy.DIGITAL_IO_READ, true, false);
-
-        // ///////////////////////////////////////////////////////////
-        // Analog I/O //////////////////////////////////////////////
-        // ///////////////////////////////////////////////////////////
-        dwf.setPowerSupply(0, 5.0);
-        dwf.setPowerSupply(1, -5.0);
-
-        // ///////////////////////////////////////////////////////////
-        // Analog Out //////////////////////////////////////////////
-        // ///////////////////////////////////////////////////////////
-        // set analog out offset to zero, as it seems like it's not quite there by default
-        dwf.FDwfAnalogOutNodeOffsetSet(DWF.WAVEFORM_CHANNEL_1, 0);
-        dwf.FDwfAnalogOutNodeOffsetSet(DWF.WAVEFORM_CHANNEL_2, 0);
-        // dwf.FDwfAnalogOutConfigure(DWF.WAVEFORM_CHANNEL_1, true);
-
-        // ///////////////////////////////////////////////////////////
-        // Analog In //////////////////////////////////////////////
-        // ///////////////////////////////////////////////////////////
-        dwf.FDwfAnalogInChannelEnableSet(DWF.OSCILLOSCOPE_CHANNEL_1, true);
-        dwf.FDwfAnalogInChannelRangeSet(DWF.OSCILLOSCOPE_CHANNEL_1, 2.5);
-        dwf.FDwfAnalogInChannelEnableSet(DWF.OSCILLOSCOPE_CHANNEL_2, true);
-        dwf.FDwfAnalogInChannelRangeSet(DWF.OSCILLOSCOPE_CHANNEL_2, 2.5);
-
-        // Set this to false (default=true). Need to call FDwfAnalogOutConfigure(true),
-        // FDwfAnalogInConfigure(true) in order for *Set* methods to take effect.
-        dwf.FDwfDeviceAutoConfigureSet(false);
-      } else {
-
-        System.out.println(dwf.FDwfGetLastErrorMsg());
-      }
-      // swingPropertyChangeSupport.firePropertyChange(DWFProxy.AD2_STARTUP_CHANGE, !isAD2Running,
-      // isAD2Running);
-      return isAD2Running;
-    }
-
-    @Override
-    protected void done() {
-
-      swingPropertyChangeSupport.firePropertyChange(
-          DWFProxy.AD2_STARTUP_CHANGE, !isAD2Running, isAD2Running);
     }
   }
 
@@ -380,14 +300,14 @@ public class DWFProxy {
         DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
   }
 
-  // //////////////////////////////////////////////////////////
-  // Getters and Setters //////////////////////////////////////
-  // //////////////////////////////////////////////////////////
-
   public int getDigitalIOStates() {
 
     return digitalIOStates;
   }
+
+  // //////////////////////////////////////////////////////////
+  // Getters and Setters //////////////////////////////////////
+  // //////////////////////////////////////////////////////////
 
   public boolean isAD2Running() {
 
@@ -402,5 +322,82 @@ public class DWFProxy {
   public boolean isV1Board() {
 
     return isV1Board;
+  }
+
+  private class AD2StartupWorker extends SwingWorker<Boolean, Void> {
+
+    @Override
+    protected Boolean doInBackground() {
+
+      // ///////////////////////////////////////////////////////////
+      // Device ///////////////////////////////////////////////////
+      // ///////////////////////////////////////////////////////////
+      isAD2Running = dwf.FDwfDeviceOpen();
+
+      if (isAD2Running) {
+
+        // Some device read out stuff
+        // System.out.println("Analog Out Custom Waveform Buffer Size Channel 1:
+        // "+Arrays.toString(dwf.FDwfAnalogOutNodeDataInfo(DWF.WAVEFORM_CHANNEL_1)));
+        // System.out.println("Analog Out Custom Waveform Buffer Size Channel 2:
+        // "+Arrays.toString(dwf.FDwfAnalogOutNodeDataInfo(DWF.WAVEFORM_CHANNEL_2)));
+        // System.out.println("Analog In Trigger Position Info: "+
+        // Arrays.toString(dwf.FDwfAnalogInTriggerPositionInfo()));
+
+        // ///////////////////////////////////////////////////////////
+        // Digital I/O //////////////////////////////////////////////
+        // ///////////////////////////////////////////////////////////
+        dwf.FDwfDigitalIOOutputEnableSet(SWITCHES_MASK);
+        if (isV1Board) {
+          digitalIOStates = DEFAULT_SELECTOR_DIO;
+          // System.out.println(Integer.toBinaryString(digitalIOStates));
+        } else {
+          digitalIOStates = ALL_DIO_OFF;
+        }
+        dwf.FDwfDigitalIOOutputSet(digitalIOStates);
+        dwf.FDwfDigitalIOConfigure();
+        digitalIOStates = dwf.getDigitalIOStatus();
+        swingPropertyChangeSupport.firePropertyChange(DWFProxy.DIGITAL_IO_READ, true, false);
+
+        // ///////////////////////////////////////////////////////////
+        // Analog I/O //////////////////////////////////////////////
+        // ///////////////////////////////////////////////////////////
+        dwf.setPowerSupply(0, 5.0);
+        dwf.setPowerSupply(1, -5.0);
+
+        // ///////////////////////////////////////////////////////////
+        // Analog Out //////////////////////////////////////////////
+        // ///////////////////////////////////////////////////////////
+        // set analog out offset to zero, as it seems like it's not quite there by default
+        dwf.FDwfAnalogOutNodeOffsetSet(DWF.WAVEFORM_CHANNEL_1, 0);
+        dwf.FDwfAnalogOutNodeOffsetSet(DWF.WAVEFORM_CHANNEL_2, 0);
+        // dwf.FDwfAnalogOutConfigure(DWF.WAVEFORM_CHANNEL_1, true);
+
+        // ///////////////////////////////////////////////////////////
+        // Analog In //////////////////////////////////////////////
+        // ///////////////////////////////////////////////////////////
+        dwf.FDwfAnalogInChannelEnableSet(DWF.OSCILLOSCOPE_CHANNEL_1, true);
+        dwf.FDwfAnalogInChannelRangeSet(DWF.OSCILLOSCOPE_CHANNEL_1, 2.5);
+        dwf.FDwfAnalogInChannelEnableSet(DWF.OSCILLOSCOPE_CHANNEL_2, true);
+        dwf.FDwfAnalogInChannelRangeSet(DWF.OSCILLOSCOPE_CHANNEL_2, 2.5);
+
+        // Set this to false (default=true). Need to call FDwfAnalogOutConfigure(true),
+        // FDwfAnalogInConfigure(true) in order for *Set* methods to take effect.
+        dwf.FDwfDeviceAutoConfigureSet(false);
+      } else {
+
+        System.out.println(dwf.FDwfGetLastErrorMsg());
+      }
+      // swingPropertyChangeSupport.firePropertyChange(DWFProxy.AD2_STARTUP_CHANGE, !isAD2Running,
+      // isAD2Running);
+      return isAD2Running;
+    }
+
+    @Override
+    protected void done() {
+
+      swingPropertyChangeSupport.firePropertyChange(
+          DWFProxy.AD2_STARTUP_CHANGE, !isAD2Running, isAD2Running);
+    }
   }
 }

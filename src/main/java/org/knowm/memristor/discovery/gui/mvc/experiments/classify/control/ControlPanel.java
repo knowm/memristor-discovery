@@ -35,36 +35,30 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.ClassifyPreferences.AHaHRoutine;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.ClassifyPreferences.Datasets;
-import org.knowm.memristor.discovery.utils.Util;
 
 /**
  * Provides controls for running the control
  *
  * @author alexnugent
  */
-public class ControlPanel extends ExperimentControlPanel {
-
-  private JComboBox<Waveform> waveformComboBox;
+public class ControlPanel extends ControlView {
 
   private final JSlider amplitudeSlider;
   private final JSlider pulseWidthSlider;
-
   private final JLabel ahahRoutineLabel;
-  private JComboBox<AHaHRoutine> ahahRoutineComboBox;
-
   private final JLabel datasetLabel;
-  private JComboBox<Datasets> datasetComboBox;
-
   private final JLabel numTrainEpochsLabel;
   private final JTextField numTrainEpochsTextField;
-
   public JButton resetAllButton;
   public JButton runTrialButton;
   public JButton clearPlotButton;
+  private JComboBox<Waveform> waveformComboBox;
+  private JComboBox<AHaHRoutine> ahahRoutineComboBox;
+  private JComboBox<Datasets> datasetComboBox;
 
   /** Constructor */
   public ControlPanel() {
@@ -82,19 +76,24 @@ public class ControlPanel extends ExperimentControlPanel {
     c.insets = new Insets(0, 0, 4, 6);
     add(waveformComboBox, c);
 
-    amplitudeSlider = new JSlider(JSlider.HORIZONTAL, 0, 150, 12);
+    amplitudeSlider = new JSlider(JSlider.HORIZONTAL, 0, 300, 100);
     amplitudeSlider.setBorder(BorderFactory.createTitledBorder("Amplitude [V]"));
     amplitudeSlider.setMajorTickSpacing(50);
-    amplitudeSlider.setMinorTickSpacing(10);
+    amplitudeSlider.setMinorTickSpacing(5);
     amplitudeSlider.setPaintTicks(true);
     amplitudeSlider.setPaintLabels(true);
     amplitudeSlider.setSnapToTicks(true);
     Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
     labelTable.put(0, new JLabel("0"));
     labelTable.put(50, new JLabel(".5"));
-    labelTable.put(100, new JLabel("1"));
+    labelTable.put(100, new JLabel("1.0"));
     labelTable.put(150, new JLabel("1.5"));
+    labelTable.put(200, new JLabel("2.0"));
+    labelTable.put(250, new JLabel("2.5"));
+    labelTable.put(300, new JLabel("3.0"));
+
     amplitudeSlider.setLabelTable(labelTable);
+
     c.gridy++;
     c.insets = new Insets(0, 6, 4, 6);
     amplitudeSlider.setPreferredSize(new Dimension(300, 80));
@@ -102,7 +101,7 @@ public class ControlPanel extends ExperimentControlPanel {
 
     pulseWidthSlider = new JSlider(JSlider.HORIZONTAL, 1000, 500000, 100000);
     pulseWidthSlider.setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
-    pulseWidthSlider.setMinorTickSpacing(5000);
+    pulseWidthSlider.setMinorTickSpacing(1000);
     pulseWidthSlider.setPaintTicks(true);
     pulseWidthSlider.setPaintLabels(true);
     pulseWidthSlider.setSnapToTicks(true);
@@ -113,7 +112,6 @@ public class ControlPanel extends ExperimentControlPanel {
     pulseWidthSlider.setLabelTable(labelTable);
     c.gridy++;
     add(pulseWidthSlider, c);
-    c.gridy++;
 
     // learn method
     ahahRoutineLabel = new JLabel("AHaH Routine");
@@ -174,7 +172,6 @@ public class ControlPanel extends ExperimentControlPanel {
     add(runTrialButton, c);
 
     c.gridy++;
-    JLabel logoLabel = new JLabel(Util.createImageIcon("img/logo_200.png"));
     add(logoLabel, c);
   }
 

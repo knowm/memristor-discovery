@@ -24,35 +24,39 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.conductance;
 
 import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.util.List;
+import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
+import org.knowm.memristor.discovery.core.PostProcessDataUtils;
+import org.knowm.memristor.discovery.core.WaveformUtils;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.control.ControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.plot.PlotControlModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.plot.PlotController;
-import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.plot.PlotPanel;
-import org.knowm.memristor.discovery.utils.PostProcessDataUtils;
-import org.knowm.memristor.discovery.utils.WaveformUtils;
+import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.result.ResultController;
+import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.result.ResultModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.result.ResultPanel;
 import org.knowm.waveforms4j.DWF;
 
 public class ConductanceExperiment extends Experiment {
 
-  private final ControlModel controlModel = new ControlModel();
+  // Control and Result MVC
+  private final ControlModel controlModel;
+  private final ResultModel resultModel;
+  private final ResultController resultController;
   private ControlPanel controlPanel;
+  private ResultPanel resultPanel;
 
-  private PlotPanel plotPanel;
-  private final PlotControlModel plotModel = new PlotControlModel();
-  private final PlotController plotController;
-
-  private ResetCaptureWorker resetCaptureWorker;
+  // SwingWorkers
+  private SwingWorker experimentCaptureWorker;
 
   /**
    * Constructor
@@ -64,14 +68,118 @@ public class ConductanceExperiment extends Experiment {
 
     super(dwfProxy, mainFrameContainer, isV1Board);
 
+    controlModel = new ControlModel();
     controlPanel = new ControlPanel();
-    plotPanel = new PlotPanel();
-    plotController = new PlotController(plotPanel, plotModel);
-    new ControlController(controlPanel, plotPanel, controlModel, dwfProxy);
+    resultModel = new ResultModel();
+    resultPanel = new ResultPanel();
+
+    refreshModelsFromPreferences();
+    new ControlController(controlPanel, controlModel, dwfProxy);
+    resultController = new ResultController(resultPanel, resultModel);
   }
 
   @Override
   public void doCreateAndShowGUI() {}
+
+  @Override
+  public void addWorkersToButtonEvents() {
+    controlPanel
+        .getStartStopButton()
+        .addActionListener(
+            new ActionListener() {
+
+              @Override
+              public void actionPerformed(ActionEvent e) {
+
+                if (!controlModel.isStartToggled()) {
+
+                  controlModel.setStartToggled(true);
+                  controlPanel.getStartStopButton().setText("Stop");
+
+                  // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
+                  experimentCaptureWorker = new SetCaptureWorker();
+                  experimentCaptureWorker.execute();
+                } else {
+
+                  controlModel.setStartToggled(false);
+                  controlPanel.getStartStopButton().setText("Start");
+
+                  // cancel the worker
+                  experimentCaptureWorker.cancel(true);
+                }
+              }
+            });
+  }
+
+  /**
+   * These property change events are triggered in the controlModel in the case where the underlying
+   * controlModel is updated. Here, the controller can respond to those events and make sure the
+   * corresponding GUI components get updated.
+   */
+  @Override
+  public void propertyChange(PropertyChangeEvent evt) {
+
+    switch (evt.getPropertyName()) {
+      case Model.EVENT_WAVEFORM_UPDATE:
+        if (controlModel.isStartToggled()) {
+
+          double[] customWaveform =
+              WaveformUtils.generateCustomWaveform(
+                  Waveform.Square,
+                  controlModel.getSetAmplitude(),
+                  controlModel.getCalculatedFrequency());
+          dwfProxy
+              .getDwf()
+              .startCustomPulseTrain(
+                  DWF.WAVEFORM_CHANNEL_1,
+                  controlModel.getCalculatedFrequency(),
+                  0,
+                  1,
+                  customWaveform);
+        } else {
+
+          resultPanel.switch2WaveformChart();
+          resultController.udpateWaveformChart(
+              controlModel.getWaveformTimeData(),
+              controlModel.getWaveformAmplitudeData(),
+              controlModel.getResetAmplitude(),
+              controlModel.getResetPulseWidth());
+        }
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  @Override
+  public Model getControlModel() {
+
+    return controlModel;
+  }
+
+  @Override
+  public ControlView getControlPanel() {
+
+    return controlPanel;
+  }
+
+  @Override
+  public Model getResultModel() {
+    return resultModel;
+  }
+
+  @Override
+  public JPanel getResultPanel() {
+
+    return resultPanel;
+  }
+
+  @Override
+  public ExperimentPreferences initAppPreferences() {
+
+    return new ConductancePreferences();
+  }
 
   private class ResetCaptureWorker extends SwingWorker<Boolean, double[][]> {
 
@@ -178,32 +286,32 @@ public class ConductanceExperiment extends Experiment {
       double[][] newestChunk = chunks.get(chunks.size() - 1);
       // System.out.println("" + chunks.size());
 
-      plotController.udpateVtChart(
+      resultController.udpateVtChart(
           newestChunk[0],
           newestChunk[1],
           newestChunk[2],
           controlModel.getResetPulseWidth(),
           controlModel.getResetAmplitude());
-      plotController.udpateIVChart(
+      resultController.udpateIVChart(
           newestChunk[1],
           newestChunk[3],
           controlModel.getResetPulseWidth(),
           controlModel.getResetAmplitude());
-      plotController.updateGVChartReset(
+      resultController.updateGVChartReset(
           newestChunk[1],
           newestChunk[4],
           controlModel.getResetPulseWidth(),
           controlModel.getResetAmplitude());
 
-      if (plotPanel.getCaptureButton().isSelected()) {
-        plotController.repaintVtChart();
-        plotPanel.switch2CaptureChart();
-      } else if (plotPanel.getIVButton().isSelected()) {
-        plotController.repaintIVChart();
-        plotPanel.switch2IVChart();
+      if (resultPanel.getCaptureButton().isSelected()) {
+        resultController.repaintVtChart();
+        resultPanel.switch2CaptureChart();
+      } else if (resultPanel.getIVButton().isSelected()) {
+        resultController.repaintIVChart();
+        resultPanel.switch2IVChart();
       } else {
-        plotController.repaintGVChart();
-        plotPanel.switch2GVChart();
+        resultController.repaintGVChart();
+        resultPanel.switch2GVChart();
       }
       controlPanel.getStartStopButton().doClick();
     }
@@ -327,92 +435,27 @@ public class ConductanceExperiment extends Experiment {
 
       // System.out.println("" + chunks.size());
 
-      plotController.udpateVtChart(
+      resultController.udpateVtChart(
           newestChunk[0],
           newestChunk[1],
           newestChunk[2],
           controlModel.getSetPulseWidth(),
           controlModel.getSetAmplitude());
-      plotController.udpateIVChart(
+      resultController.udpateIVChart(
           newestChunk[1],
           newestChunk[3],
           controlModel.getSetPulseWidth(),
           controlModel.getSetAmplitude());
-      plotController.updateGVChart(
+      resultController.updateGVChart(
           newestChunk[4], controlModel.getSetPulseWidth(), controlModel.getSetAmplitude());
 
-      if (plotPanel.getCaptureButton().isSelected()) {
-        plotController.repaintVtChart();
-      } else if (plotPanel.getIVButton().isSelected()) {
-        plotController.repaintIVChart();
+      if (resultPanel.getCaptureButton().isSelected()) {
+        resultController.repaintVtChart();
+      } else if (resultPanel.getIVButton().isSelected()) {
+        resultController.repaintIVChart();
       } else {
-        plotController.repaintGVChart();
+        resultController.repaintGVChart();
       }
     }
-  }
-
-  /**
-   * These property change events are triggered in the controlModel in the case where the underlying
-   * controlModel is updated. Here, the controller can respond to those events and make sure the
-   * corresponding GUI components get updated.
-   */
-  @Override
-  public void propertyChange(PropertyChangeEvent evt) {
-
-    switch (evt.getPropertyName()) {
-      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
-        if (controlModel.isStartToggled()) {
-
-          double[] customWaveform =
-              WaveformUtils.generateCustomWaveform(
-                  Waveform.Square,
-                  controlModel.getSetAmplitude(),
-                  controlModel.getCalculatedFrequency());
-          dwfProxy
-              .getDwf()
-              .startCustomPulseTrain(
-                  DWF.WAVEFORM_CHANNEL_1,
-                  controlModel.getCalculatedFrequency(),
-                  0,
-                  1,
-                  customWaveform);
-        } else {
-
-          plotPanel.switch2WaveformChart();
-          plotController.udpateWaveformChart(
-              controlModel.getWaveformTimeData(),
-              controlModel.getWaveformAmplitudeData(),
-              controlModel.getResetAmplitude(),
-              controlModel.getResetPulseWidth());
-        }
-        break;
-
-      default:
-        break;
-    }
-  }
-
-  @Override
-  public ExperimentControlModel getControlModel() {
-
-    return controlModel;
-  }
-
-  @Override
-  public ExperimentControlPanel getControlPanel() {
-
-    return controlPanel;
-  }
-
-  @Override
-  public ExperimentPlotPanel getPlotPanel() {
-
-    return plotPanel;
-  }
-
-  @Override
-  public SwingWorker getCaptureWorker() {
-
-    return new SetCaptureWorker();
   }
 }

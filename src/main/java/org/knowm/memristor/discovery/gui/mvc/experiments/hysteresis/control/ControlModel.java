@@ -23,49 +23,44 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.control;
 
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
+import org.knowm.memristor.discovery.core.driver.Driver;
+import org.knowm.memristor.discovery.core.driver.waveform.Sine;
+import org.knowm.memristor.discovery.core.driver.waveform.Square;
+import org.knowm.memristor.discovery.core.driver.waveform.Triangle;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.HysteresisPreferences;
-import org.knowm.memristor.discovery.utils.driver.Driver;
-import org.knowm.memristor.discovery.utils.driver.Sine;
-import org.knowm.memristor.discovery.utils.driver.Square;
-import org.knowm.memristor.discovery.utils.driver.Triangle;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class ControlModel extends ExperimentControlModel {
+public class ControlModel extends Model {
 
-  private final Logger logger = LoggerFactory.getLogger(ControlModel.class);
-
-  /** Waveform */
-  public HysteresisPreferences.Waveform waveform;
-
-  float offset;
-  private float amplitude;
-  private int frequency;
   private final double[] waveformTimeData = new double[HysteresisPreferences.CAPTURE_BUFFER_SIZE];
   private final double[] waveformAmplitudeData =
       new double[HysteresisPreferences.CAPTURE_BUFFER_SIZE];
 
-  /** Constructor */
-  public ControlModel() {
+  public HysteresisPreferences.Waveform waveform;
+  float offset;
+  private float amplitude;
+  private int frequency;
 
-    updateWaveformChartData();
-  }
+  private boolean isStartToggled = false;
+
+  /** Constructor */
+  public ControlModel() {}
 
   @Override
-  public void loadModelFromPrefs() {
+  public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {
 
     // load model from prefs
+    seriesResistance =
+        experimentPreferences.getInteger(
+            HysteresisPreferences.SERIES_R_INIT_KEY,
+            HysteresisPreferences.SERIES_R_INIT_DEFAULT_VALUE);
     waveform =
         HysteresisPreferences.Waveform.valueOf(
             experimentPreferences.getString(
                 HysteresisPreferences.WAVEFORM_INIT_STRING_KEY,
                 HysteresisPreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
-    seriesResistance =
-        experimentPreferences.getInteger(
-            HysteresisPreferences.SERIES_R_INIT_KEY,
-            HysteresisPreferences.SERIES_R_INIT_DEFAULT_VALUE);
+
     offset =
         experimentPreferences.getFloat(
             HysteresisPreferences.OFFSET_INIT_FLOAT_KEY,
@@ -78,8 +73,8 @@ public class ControlModel extends ExperimentControlModel {
         experimentPreferences.getInteger(
             HysteresisPreferences.FREQUENCY_INIT_KEY,
             HysteresisPreferences.FREQUENCY_INIT_DEFAULT_VALUE);
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_PREFERENCES_UPDATE, true, false);
+
+    updateWaveformChartData();
   }
 
   /** Given the state of the model, update the waveform x and y axis data arrays. */
@@ -130,15 +125,13 @@ public class ControlModel extends ExperimentControlModel {
   public void setWaveform(HysteresisPreferences.Waveform waveform) {
 
     this.waveform = waveform;
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public void setWaveform(String text) {
 
     waveform = Enum.valueOf(HysteresisPreferences.Waveform.class, text);
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public float getOffset() {
@@ -149,8 +142,7 @@ public class ControlModel extends ExperimentControlModel {
   public void setOffset(float offset) {
 
     this.offset = offset;
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public float getAmplitude() {
@@ -161,8 +153,7 @@ public class ControlModel extends ExperimentControlModel {
   public void setAmplitude(float amplitude) {
 
     this.amplitude = amplitude;
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public int getFrequency() {
@@ -175,10 +166,8 @@ public class ControlModel extends ExperimentControlModel {
     int oldFreq = this.frequency;
 
     this.frequency = frequency;
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_FREQUENCY_UPDATE, oldFreq, frequency);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_FREQUENCY_UPDATE, oldFreq, frequency);
   }
 
   public double[] getWaveformTimeData() {
@@ -191,9 +180,13 @@ public class ControlModel extends ExperimentControlModel {
     return waveformAmplitudeData;
   }
 
-  @Override
-  public ExperimentPreferences initAppPreferences() {
+  public boolean isStartToggled() {
 
-    return new HysteresisPreferences();
+    return isStartToggled;
+  }
+
+  public void setStartToggled(boolean isStartToggled) {
+
+    this.isStartToggled = isStartToggled;
   }
 }

@@ -28,19 +28,22 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
+import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComponent;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.knowm.memristor.discovery.DWFProxy;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlController;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Controller;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 
-public class ControlController extends ExperimentControlController {
+public class ControlController extends Controller {
 
   private final ControlPanel controlPanel;
   private final ControlModel controlModel;
@@ -80,10 +83,11 @@ public class ControlController extends ExperimentControlController {
         .setModel(
             new DefaultComboBoxModel<>(
                 new Waveform[] {
-                  Waveform.QuarterSine,
-                  Waveform.SquareSmooth,
                   Waveform.Square,
+                  Waveform.SquareSmooth,
+                  Waveform.SquareDecay,
                   Waveform.Triangle,
+                  Waveform.QuarterSine,
                   Waveform.HalfSine
                 }));
 
@@ -120,6 +124,11 @@ public class ControlController extends ExperimentControlController {
         .setBorder(
             BorderFactory.createTitledBorder("Pulse Number = " + controlModel.getPulseNumber()));
     controlPanel.getPulseNumberSlider().setValue(controlModel.getPulseNumber());
+
+    controlPanel
+        .getDutyCycleSlider()
+        .setBorder(BorderFactory.createTitledBorder("Duty Cycle = " + controlModel.getDutyCycle()));
+    controlPanel.getDutyCycleSlider().setValue((int) (100 * controlModel.getDutyCycle()));
 
     controlPanel.getSeriesTextField().setText("" + controlModel.getSeriesResistance());
     controlPanel.getSampleRateTextField().setText("" + controlModel.getSampleRate());
@@ -229,6 +238,27 @@ public class ControlController extends ExperimentControlController {
             });
 
     controlPanel
+        .getDutyCycleSlider()
+        .addChangeListener(
+            new ChangeListener() {
+
+              @Override
+              public void stateChanged(ChangeEvent e) {
+
+                JSlider source = (JSlider) e.getSource();
+                if (!(source.getValueIsAdjusting())) {
+
+                  controlModel.setDutyCycle((double) source.getValue() / 100.0);
+                  controlPanel
+                      .getDutyCycleSlider()
+                      .setBorder(
+                          BorderFactory.createTitledBorder(
+                              "Duty Cycle = " + controlModel.getDutyCycle()));
+                }
+              }
+            });
+
+    controlPanel
         .getSeriesTextField()
         .addKeyListener(
             new KeyAdapter() {
@@ -284,6 +314,22 @@ public class ControlController extends ExperimentControlController {
                 controlModel.setMemristorVoltageDropSelected(selected);
               }
             });
+
+    controlView
+        .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+        .put(KeyStroke.getKeyStroke("S"), "startstop");
+    controlView
+        .getActionMap()
+        .put(
+            "startstop",
+            new AbstractAction() {
+
+              @Override
+              public void actionPerformed(ActionEvent e) {
+
+                controlPanel.getStartStopButton().doClick();
+              }
+            });
   }
 
   /**
@@ -299,11 +345,11 @@ public class ControlController extends ExperimentControlController {
         controlPanel.enableAllChildComponents((Boolean) evt.getNewValue());
         break;
 
-      case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
+      case Model.EVENT_PREFERENCES_UPDATE:
         initGUIComponentsFromModel();
         break;
 
-      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
+      case Model.EVENT_WAVEFORM_UPDATE:
         controlModel.updateWaveformChartData();
         controlModel.updateEnergyData();
         controlPanel.updateEnergyGUI(

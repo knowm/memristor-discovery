@@ -66,9 +66,9 @@ public class ConductancePreferencesPanel extends ExperimentPreferencesPanel {
    *
    * @param owner
    */
-  public ConductancePreferencesPanel(JFrame owner) {
+  public ConductancePreferencesPanel(JFrame owner, String experimentName) {
 
-    super(owner);
+    super(owner, experimentName);
   }
 
   @Override
@@ -212,11 +212,5 @@ public class ConductancePreferencesPanel extends ExperimentPreferencesPanel {
   public ExperimentPreferences initAppPreferences() {
 
     return new ConductancePreferences();
-  }
-
-  @Override
-  public String getAppName() {
-
-    return "Conductance";
   }
 }

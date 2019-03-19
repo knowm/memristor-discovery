@@ -23,29 +23,20 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.control;
 
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.BoardCheckPreferences;
 
-public class ControlModel extends ExperimentControlModel {
+public class ControlModel extends Model {
 
-  /** Constructor */
   public ControlModel() {}
 
   @Override
-  public void loadModelFromPrefs() {
+  public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {
 
     seriesResistance =
         experimentPreferences.getInteger(
             BoardCheckPreferences.SERIES_R_INIT_KEY,
             BoardCheckPreferences.SERIES_R_INIT_DEFAULT_VALUE);
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_PREFERENCES_UPDATE, true, false);
-  }
-
-  @Override
-  public ExperimentPreferences initAppPreferences() {
-
-    return new BoardCheckPreferences();
   }
 }

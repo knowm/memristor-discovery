@@ -24,7 +24,6 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -44,36 +43,35 @@ import javax.swing.border.EmptyBorder;
  */
 public abstract class ExperimentPreferencesPanel extends JDialog {
 
-  public abstract void doCreateAndShowGUI(JPanel preferencesPanel);
-
-  public abstract void doSavePreferences();
-
-  public abstract ExperimentPreferences initAppPreferences();
-
-  public abstract String getAppName();
-
   public static final int ID_OK = 1;
   public static final int ID_CANCEL = 0;
-  private int exitCode = ID_CANCEL;
-
+  public final String experimentName;
   protected ExperimentPreferences experimentPreferences;
+  private int exitCode = ID_CANCEL;
 
   /**
    * Constructor
    *
    * @param owner
    */
-  public ExperimentPreferencesPanel(JFrame owner) {
+  public ExperimentPreferencesPanel(JFrame owner, String experimentName) {
 
     super(owner);
+    this.experimentName = experimentName;
     this.experimentPreferences = initAppPreferences();
     createAndShowGUI();
   }
 
+  public abstract void doCreateAndShowGUI(JPanel preferencesPanel);
+
+  public abstract void doSavePreferences();
+
+  public abstract ExperimentPreferences initAppPreferences();
+
   private void createAndShowGUI() {
 
-    setPreferredSize(new Dimension(600, 400));
-    setTitle("Preferences - " + getAppName());
+    //    setPreferredSize(new Dimension(600, 400));
+    setTitle("Preferences - " + experimentName);
 
     getContentPane().setLayout(new BorderLayout());
 
@@ -132,6 +130,8 @@ public abstract class ExperimentPreferencesPanel extends JDialog {
         });
     buttonPane.add(okButton);
     getRootPane().setDefaultButton(okButton);
+
+    setPreferredSize(getPreferredSize());
 
     pack();
     setLocationRelativeTo(getParent());

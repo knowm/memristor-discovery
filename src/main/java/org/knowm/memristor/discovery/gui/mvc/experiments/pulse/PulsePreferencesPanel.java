@@ -49,14 +49,9 @@ public class PulsePreferencesPanel extends ExperimentPreferencesPanel {
   private JLabel numPulsesLabel;
   private JTextField numPulsesTextField;
 
-  /**
-   * Constructor
-   *
-   * @param owner
-   */
-  public PulsePreferencesPanel(JFrame owner) {
+  public PulsePreferencesPanel(JFrame owner, String experimentName) {
 
-    super(owner);
+    super(owner, experimentName);
   }
 
   @Override
@@ -157,11 +152,5 @@ public class PulsePreferencesPanel extends ExperimentPreferencesPanel {
   public ExperimentPreferences initAppPreferences() {
 
     return new PulsePreferences();
-  }
-
-  @Override
-  public String getAppName() {
-
-    return "Pulse";
   }
 }

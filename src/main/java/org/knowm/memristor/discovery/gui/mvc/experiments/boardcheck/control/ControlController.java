@@ -25,10 +25,10 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.control;
 
 import java.beans.PropertyChangeEvent;
 import org.knowm.memristor.discovery.DWFProxy;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlController;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Controller;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 
-public class ControlController extends ExperimentControlController {
+public class ControlController extends Controller {
 
   private final ControlPanel controlPanel;
 
@@ -67,7 +67,8 @@ public class ControlController extends ExperimentControlController {
   public void doSetUpViewEvents() {
 
     // Is this really true? They appear to be set up in the experiment.
-
+    // triggering SwingWorkers are setup in the Experiment. Everything else is setup here.
+    // Boardcheck doesn't have any gui com[ponents like sliders or radio buttons
   }
 
   /**
@@ -84,7 +85,7 @@ public class ControlController extends ExperimentControlController {
 
         break;
 
-      case ExperimentControlModel.EVENT_PREFERENCES_UPDATE:
+      case Model.EVENT_PREFERENCES_UPDATE:
         initGUIComponentsFromModel();
         break;
 

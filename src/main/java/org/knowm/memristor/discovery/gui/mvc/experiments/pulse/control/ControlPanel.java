@@ -36,38 +36,37 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
+import org.knowm.memristor.discovery.core.Util;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferences;
-import org.knowm.memristor.discovery.utils.Util;
 
 /**
  * Provides controls for running the control
  *
  * @author timmolter
  */
-public class ControlPanel extends ExperimentControlPanel {
+public class ControlPanel extends ControlView {
 
   private final JLabel appliedAmplitudeLabel;
   private final JLabel currentLabel;
   private final JLabel energyLabel;
   private final JLabel energyMemRistorOnlyLabel;
-
-  private JComboBox<Waveform> waveformComboBox;
-
   private final JCheckBox memristorVoltageCheckBox;
-
   private final JSlider amplitudeSlider;
   private final JSlider pulseWidthSlider;
   private final JSlider pulseWidthSliderNs;
-
   private final JSlider pulseNumberSlider;
+
+  private final JSlider dutyCycleSlider;
 
   private final JLabel seriesLabel;
   private final JTextField seriesTextField;
-
   private final JLabel sampleRateLabel;
   private final JTextField sampleRateTextField;
+  private JComboBox<Waveform> waveformComboBox;
+
+  public final JButton startStopButton;
 
   /** Constructor */
   public ControlPanel() {
@@ -114,21 +113,32 @@ public class ControlPanel extends ExperimentControlPanel {
     memristorVoltageCheckBox = new JCheckBox("Memristor Voltage Drop");
     add(memristorVoltageCheckBox, c);
 
-    amplitudeSlider = new JSlider(JSlider.HORIZONTAL, -250, 200, 0);
+    //  int amplitude=
+    // experimentPreferences.getInteger(PulsePreferences.MAX_SLIDER_VOLTAGE_INIT_KEY,
+    // PulsePreferences.MAX_SLIDER_VOLTAGE_INIT_DEFAULT_VALUE)
+
+    amplitudeSlider = new JSlider(JSlider.HORIZONTAL, -500, 500, 0);
     amplitudeSlider.setBorder(BorderFactory.createTitledBorder("Amplitude [V]"));
-    amplitudeSlider.setMajorTickSpacing(50);
-    amplitudeSlider.setMinorTickSpacing(10);
+    amplitudeSlider.setMajorTickSpacing(100);
+    amplitudeSlider.setMinorTickSpacing(5);
     amplitudeSlider.setPaintTicks(true);
     amplitudeSlider.setPaintLabels(true);
     amplitudeSlider.setSnapToTicks(true);
     Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
-    labelTable.put(-250, new JLabel("-2.5"));
+
+    labelTable.put(-500, new JLabel("-5"));
+    labelTable.put(-400, new JLabel("-4"));
+    labelTable.put(-300, new JLabel("-3"));
     labelTable.put(-200, new JLabel("-2"));
     labelTable.put(-100, new JLabel("-1"));
     labelTable.put(0, new JLabel("0"));
     labelTable.put(100, new JLabel("1"));
     labelTable.put(200, new JLabel("2"));
+    labelTable.put(300, new JLabel("3"));
+    labelTable.put(400, new JLabel("4"));
+    labelTable.put(500, new JLabel("5"));
     amplitudeSlider.setLabelTable(labelTable);
+
     c.gridy++;
     c.insets = new Insets(0, 6, 4, 6);
     amplitudeSlider.setPreferredSize(new Dimension(300, 80));
@@ -148,13 +158,14 @@ public class ControlPanel extends ExperimentControlPanel {
     c.gridy++;
     add(pulseWidthSlider, c);
 
-    pulseWidthSliderNs = new JSlider(JSlider.HORIZONTAL, 500, 5000, 5000);
+    pulseWidthSliderNs = new JSlider(JSlider.HORIZONTAL, 100, 5000, 5000);
     pulseWidthSliderNs.setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
-    pulseWidthSliderNs.setMinorTickSpacing(500);
+    pulseWidthSliderNs.setMinorTickSpacing(100);
     pulseWidthSliderNs.setPaintTicks(true);
     pulseWidthSliderNs.setPaintLabels(true);
     pulseWidthSliderNs.setSnapToTicks(true);
     labelTable = new Hashtable<>();
+    labelTable.put(100, new JLabel(".1"));
     labelTable.put(500, new JLabel(".5"));
     labelTable.put(1000, new JLabel("1"));
     labelTable.put(2000, new JLabel("2"));
@@ -165,19 +176,39 @@ public class ControlPanel extends ExperimentControlPanel {
     c.gridy++;
     add(pulseWidthSliderNs, c);
 
-    pulseNumberSlider = new JSlider(JSlider.HORIZONTAL, 1, 10, 1);
+    pulseNumberSlider = new JSlider(JSlider.HORIZONTAL, 1, 100, 1);
     pulseNumberSlider.setBorder(BorderFactory.createTitledBorder("Pulse Number"));
+    pulseNumberSlider.setMajorTickSpacing(25);
     pulseNumberSlider.setMinorTickSpacing(1);
     pulseNumberSlider.setPaintTicks(true);
     pulseNumberSlider.setPaintLabels(true);
     pulseNumberSlider.setSnapToTicks(true);
     labelTable = new Hashtable<>();
     labelTable.put(1, new JLabel("1"));
-    labelTable.put(5, new JLabel("5"));
-    labelTable.put(10, new JLabel("10"));
+    labelTable.put(25, new JLabel("25"));
+    labelTable.put(50, new JLabel("50"));
+    labelTable.put(75, new JLabel("75"));
+    labelTable.put(100, new JLabel("100"));
     pulseNumberSlider.setLabelTable(labelTable);
     c.gridy++;
     add(pulseNumberSlider, c);
+
+    dutyCycleSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 1);
+    dutyCycleSlider.setBorder(BorderFactory.createTitledBorder("Duty Cycle"));
+    dutyCycleSlider.setMajorTickSpacing(25);
+    dutyCycleSlider.setMinorTickSpacing(1);
+    dutyCycleSlider.setPaintTicks(true);
+    dutyCycleSlider.setPaintLabels(true);
+    dutyCycleSlider.setSnapToTicks(true);
+    labelTable = new Hashtable<>();
+    labelTable.put(0, new JLabel("0"));
+    labelTable.put(25, new JLabel(".25"));
+    labelTable.put(50, new JLabel(".5"));
+    labelTable.put(75, new JLabel(".75"));
+    labelTable.put(100, new JLabel("1"));
+    dutyCycleSlider.setLabelTable(labelTable);
+    c.gridy++;
+    add(dutyCycleSlider, c);
 
     seriesLabel = new JLabel("Series R [Ohm]");
     seriesLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -210,7 +241,6 @@ public class ControlPanel extends ExperimentControlPanel {
     add(startStopButton, c);
 
     c.gridy++;
-    JLabel logoLabel = new JLabel(Util.createImageIcon("img/logo_200.png"));
     add(logoLabel, c);
   }
 
@@ -222,6 +252,7 @@ public class ControlPanel extends ExperimentControlPanel {
     pulseWidthSlider.setEnabled(enabled);
     pulseWidthSliderNs.setEnabled(enabled);
     pulseNumberSlider.setEnabled(enabled);
+    dutyCycleSlider.setEnabled(enabled);
     seriesTextField.setEnabled(enabled);
     sampleRateTextField.setEnabled(enabled);
     startStopButton.setEnabled(enabled);
@@ -268,6 +299,11 @@ public class ControlPanel extends ExperimentControlPanel {
     return pulseNumberSlider;
   }
 
+  public JSlider getDutyCycleSlider() {
+
+    return dutyCycleSlider;
+  }
+
   public JTextField getSeriesTextField() {
 
     return seriesTextField;
@@ -280,5 +316,9 @@ public class ControlPanel extends ExperimentControlPanel {
   public JCheckBox getMemristorVoltageCheckBox() {
 
     return memristorVoltageCheckBox;
+  }
+
+  public JButton getStartStopButton() {
+    return startStopButton;
   }
 }

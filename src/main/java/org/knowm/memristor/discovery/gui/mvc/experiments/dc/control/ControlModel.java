@@ -23,33 +23,30 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.dc.control;
 
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
+import org.knowm.memristor.discovery.core.driver.Driver;
+import org.knowm.memristor.discovery.core.driver.waveform.Sawtooth;
+import org.knowm.memristor.discovery.core.driver.waveform.SawtoothUpDown;
+import org.knowm.memristor.discovery.core.driver.waveform.Triangle;
+import org.knowm.memristor.discovery.core.driver.waveform.TriangleUpDown;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCPreferences;
-import org.knowm.memristor.discovery.utils.driver.Driver;
-import org.knowm.memristor.discovery.utils.driver.Sawtooth;
-import org.knowm.memristor.discovery.utils.driver.SawtoothUpDown;
-import org.knowm.memristor.discovery.utils.driver.Triangle;
-import org.knowm.memristor.discovery.utils.driver.TriangleUpDown;
 
-public class ControlModel extends ExperimentControlModel {
+public class ControlModel extends Model {
 
+  private final double[] waveformTimeData = new double[1000];
+  private final double[] waveformAmplitudeData = new double[1000];
   public DCPreferences.Waveform waveform;
   private float amplitude;
   private int period; // model store period
   private int pulseNumber;
-
-  private final double[] waveformTimeData = new double[1000];
-  private final double[] waveformAmplitudeData = new double[1000];
+  private boolean isStartToggled = false;
 
   /** Constructor */
-  public ControlModel() {
-
-    updateWaveformChartData();
-  }
+  public ControlModel() {}
 
   @Override
-  public void loadModelFromPrefs() {
+  public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {
 
     waveform =
         DCPreferences.Waveform.valueOf(
@@ -69,8 +66,7 @@ public class ControlModel extends ExperimentControlModel {
     pulseNumber =
         experimentPreferences.getInteger(
             DCPreferences.NUM_PULSES_INIT_KEY, DCPreferences.NUM_PULSES_INIT_DEFAULT_VALUE);
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_PREFERENCES_UPDATE, true, false);
+    updateWaveformChartData();
   }
 
   void updateWaveformChartData() {
@@ -116,15 +112,13 @@ public class ControlModel extends ExperimentControlModel {
   public void setWaveform(DCPreferences.Waveform waveform) {
 
     this.waveform = waveform;
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public void setWaveform(String text) {
 
     waveform = Enum.valueOf(DCPreferences.Waveform.class, text);
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public float getAmplitude() {
@@ -135,8 +129,7 @@ public class ControlModel extends ExperimentControlModel {
   public void setAmplitude(float amplitude) {
 
     this.amplitude = amplitude;
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public int getPeriod() {
@@ -144,17 +137,16 @@ public class ControlModel extends ExperimentControlModel {
     return period;
   }
 
+  public void setPeriod(int period) {
+
+    this.period = period;
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
+  }
+
   public double getCalculatedFrequency() {
 
     // System.out.println("period = " + period);
     return 1.0 / ((double) period) * DCPreferences.TIME_UNIT.getDivisor(); // 50% duty cycle
-  }
-
-  public void setPeriod(int period) {
-
-    this.period = period;
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public double[] getWaveformTimeData() {
@@ -175,13 +167,16 @@ public class ControlModel extends ExperimentControlModel {
   public void setPulseNumber(int pulseNumber) {
 
     this.pulseNumber = pulseNumber;
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
-  @Override
-  public ExperimentPreferences initAppPreferences() {
+  public boolean isStartToggled() {
 
-    return new DCPreferences();
+    return isStartToggled;
+  }
+
+  public void setStartToggled(boolean isStartToggled) {
+
+    this.isStartToggled = isStartToggled;
   }
 }

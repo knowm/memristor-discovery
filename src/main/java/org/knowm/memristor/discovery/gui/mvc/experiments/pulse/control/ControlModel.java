@@ -24,48 +24,47 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.pulse.control;
 
 import java.text.DecimalFormat;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
+import org.knowm.memristor.discovery.core.Util;
+import org.knowm.memristor.discovery.core.driver.Driver;
+import org.knowm.memristor.discovery.core.driver.pulse.HalfSinePulse;
+import org.knowm.memristor.discovery.core.driver.pulse.QuarterSinePulse;
+import org.knowm.memristor.discovery.core.driver.pulse.SquareDecayPulse;
+import org.knowm.memristor.discovery.core.driver.pulse.SquarePulse;
+import org.knowm.memristor.discovery.core.driver.pulse.SquareSmoothPulse;
+import org.knowm.memristor.discovery.core.driver.pulse.TrianglePulse;
+import org.knowm.memristor.discovery.core.driver.waveform.Sawtooth;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferences;
-import org.knowm.memristor.discovery.utils.Util;
-import org.knowm.memristor.discovery.utils.driver.Driver;
-import org.knowm.memristor.discovery.utils.driver.HalfSine;
-import org.knowm.memristor.discovery.utils.driver.QuarterSine;
-import org.knowm.memristor.discovery.utils.driver.Sawtooth;
-import org.knowm.memristor.discovery.utils.driver.Square;
-import org.knowm.memristor.discovery.utils.driver.SquareSmooth;
-import org.knowm.memristor.discovery.utils.driver.Triangle;
 
-public class ControlModel extends ExperimentControlModel {
+public class ControlModel extends Model {
 
-  /** Waveform */
+  private final DecimalFormat ohmFormatter = new DecimalFormat("#,### Ω");
+  private final double[] waveformTimeData = new double[PulsePreferences.CAPTURE_BUFFER_SIZE];
+  private final double[] waveformAmplitudeData = new double[PulsePreferences.CAPTURE_BUFFER_SIZE];
+
   public PulsePreferences.Waveform waveform;
-
   private boolean isMemristorVoltageDropSelected = false;
   private float amplitude;
   private int pulseWidth; // model store pulse width in nanoseconds
+
+  private double dutyCycle; // 0 to 1.
+
   private int pulseNumber;
   private double appliedAmplitude;
   private double appliedCurrent;
   private double appliedEnergy;
   private double appliedMemristorEnergy;
-
   private double lastG;
-  public DecimalFormat ohmFormatter = new DecimalFormat("#,### Ω");
-
-  private final double[] waveformTimeData = new double[PulsePreferences.CAPTURE_BUFFER_SIZE];
-  private final double[] waveformAmplitudeData = new double[PulsePreferences.CAPTURE_BUFFER_SIZE];
-
   private int sampleRate;
 
-  /** Constructor */
-  public ControlModel() {
+  private boolean isStartToggled = false;
 
-    updateWaveformChartData();
-  }
+  /** Constructor */
+  public ControlModel() {}
 
   @Override
-  public void loadModelFromPrefs() {
+  public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {
 
     waveform =
         PulsePreferences.Waveform.valueOf(
@@ -80,6 +79,7 @@ public class ControlModel extends ExperimentControlModel {
             PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY,
             PulsePreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
     appliedAmplitude = amplitude;
+
     pulseWidth =
         experimentPreferences.getInteger(
             PulsePreferences.PULSE_WIDTH_INIT_KEY, PulsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
@@ -89,8 +89,12 @@ public class ControlModel extends ExperimentControlModel {
     sampleRate =
         experimentPreferences.getInteger(
             PulsePreferences.SAMPLE_RATE_INIT_KEY, PulsePreferences.SAMPLE_RATE_INIT_DEFAULT_VALUE);
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_PREFERENCES_UPDATE, true, false);
+
+    dutyCycle =
+        experimentPreferences.getFloat(
+            PulsePreferences.PULSE_DUTY_CYCLE_KEY, PulsePreferences.PULSE_DUTY_CYCLE_DEFAULT_VALUE);
+
+    updateWaveformChartData();
   }
 
   /** Given the state of the model, update the waveform x and y axis data arrays. */
@@ -103,25 +107,31 @@ public class ControlModel extends ExperimentControlModel {
             new Sawtooth("Sawtooth", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
         break;
       case QuarterSine:
-        driver = new QuarterSine("QuarterSine", 0, 0, amplitude, getCalculatedFrequency());
+        driver = new QuarterSinePulse("QuarterSine", 0, pulseWidth, dutyCycle, amplitude);
         break;
       case Triangle:
-        driver = new Triangle("Triangle", 0, 0, amplitude, getCalculatedFrequency());
+        driver = new TrianglePulse("Triangle", 0, pulseWidth, dutyCycle, amplitude);
         break;
       case Square:
-        driver = new Square("Square", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
+        driver = new SquarePulse("Square", 0, pulseWidth, dutyCycle, amplitude);
         break;
       case SquareSmooth:
-        driver = new SquareSmooth("SquareSmooth", 0, 0, amplitude, getCalculatedFrequency());
+        driver = new SquareSmoothPulse("SquareSmooth", 0, pulseWidth, dutyCycle, amplitude);
+        break;
+      case SquareDecay:
+        driver = new SquareDecayPulse("SquareDecay", 0, pulseWidth, dutyCycle, amplitude);
         break;
       default:
-        driver = new HalfSine("HalfSine", 0, 0, amplitude, getCalculatedFrequency());
+        driver = new HalfSinePulse("HalfSine", 0, pulseWidth, dutyCycle, amplitude);
         break;
     }
 
-    double stopTime = 1 / getCalculatedFrequency() * pulseNumber;
-    double timeStep =
-        1 / getCalculatedFrequency() / PulsePreferences.CAPTURE_BUFFER_SIZE * pulseNumber;
+    double stopTime = driver.getPeriod() * pulseNumber;
+    double timeStep = driver.getPeriod() / PulsePreferences.CAPTURE_BUFFER_SIZE * pulseNumber;
+
+    //    System.out.println("driver.getPeriod()=" + driver.getPeriod());
+    //    System.out.println("stopTime=" + stopTime);
+    //    System.out.println("timeStep=" + timeStep);
 
     int counter = 0;
     for (double i = 0.0; i < stopTime; i = i + timeStep) {
@@ -145,8 +155,7 @@ public class ControlModel extends ExperimentControlModel {
   public void setAmplitude(float amplitude) {
 
     this.amplitude = amplitude;
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public int getPulseWidth() {
@@ -154,17 +163,14 @@ public class ControlModel extends ExperimentControlModel {
     return pulseWidth;
   }
 
-  public double getCalculatedFrequency() {
-
-    // System.out.println("pulseWidth = " + pulseWidth);
-    return (1.0 / (2.0 * pulseWidth) * 1_000_000_000); // 50% duty cycle
-  }
-
   public void setPulseWidth(int pulseWidth) {
 
     this.pulseWidth = pulseWidth;
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
+  }
+
+  public double getCalculatedFrequency() {
+    return (1.0 / (pulseWidth / dutyCycle) * 1_000_000_000); // 50% duty cycle
   }
 
   public double[] getWaveformTimeData() {
@@ -185,8 +191,7 @@ public class ControlModel extends ExperimentControlModel {
   public void setPulseNumber(int pulseNumber) {
 
     this.pulseNumber = pulseNumber;
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public boolean isMemristorVoltageDropSelected() {
@@ -197,8 +202,7 @@ public class ControlModel extends ExperimentControlModel {
   public void setMemristorVoltageDropSelected(boolean memristorVoltageDropSelected) {
 
     isMemristorVoltageDropSelected = memristorVoltageDropSelected;
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public double getAppliedAmplitude() {
@@ -214,15 +218,13 @@ public class ControlModel extends ExperimentControlModel {
   public void setWaveform(PulsePreferences.Waveform waveform) {
 
     this.waveform = waveform;
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public void setWaveform(String text) {
 
     waveform = Enum.valueOf(PulsePreferences.Waveform.class, text);
-    swingPropertyChangeSupport.firePropertyChange(
-        ExperimentControlModel.EVENT_WAVEFORM_UPDATE, true, false);
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
   public int getSampleRate() {
@@ -268,12 +270,6 @@ public class ControlModel extends ExperimentControlModel {
     return ohmFormatter.format(getLastR());
   }
 
-  @Override
-  public ExperimentPreferences initAppPreferences() {
-
-    return new PulsePreferences();
-  }
-
   public void updateEnergyData() {
 
     // calculate applied voltage
@@ -313,5 +309,24 @@ public class ControlModel extends ExperimentControlModel {
     } else {
       this.appliedAmplitude = amplitude;
     }
+  }
+
+  public boolean isStartToggled() {
+
+    return isStartToggled;
+  }
+
+  public void setStartToggled(boolean isStartToggled) {
+
+    this.isStartToggled = isStartToggled;
+  }
+
+  public double getDutyCycle() {
+    return dutyCycle;
+  }
+
+  public void setDutyCycle(double dutyCycle) {
+    this.dutyCycle = dutyCycle;
+    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 }

@@ -33,41 +33,30 @@ import org.knowm.waveforms4j.DWF;
  */
 public class ConductancePreferences extends ExperimentPreferences {
 
-  private static final String PREFIX = "CONDUCTANCE_";
-
-  public static final String RESET_PULSE_TYPE_INIT_STRING_KEY =
-      PREFIX + "RESET_PULSE_TYPE_INIT_STRING_KEY";
   public static final String RESET_PULSE_TYPE_INIT_STRING_DEFAULT_VALUE = "Sawtooth";
-
-  public static final String SERIES_R_INIT_KEY = PREFIX + "SERIES_R_INIT_KEY";
   public static final int SERIES_R_INIT_DEFAULT_VALUE = 1_000;
-
-  public static final String RESET_AMPLITUDE_INIT_FLOAT_KEY =
-      PREFIX + "RESET_AMPLITUDE_INIT_FLOAT_KEY";
   public static final float RESET_AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE = -1.0f;
-
-  public static final String RESET_PULSE_WIDTH_INIT_KEY = PREFIX + "RESET_PULSE_WIDTH_INIT_KEY";
   public static final int RESET_PERIOD_INIT_DEFAULT_VALUE = 5000;
-
-  // SET
-
-  public static final String SET_CONDUCTANCE_INIT_KEY = PREFIX + "SET_CONDUCTANCE_INIT_KEY";
   public static final float SET_CONDUCTANCE_INIT_DEFAULT_VALUE = 1.0f;
-
-  public static final String SET_AMPLITUDE_INIT_FLOAT_KEY = PREFIX + "SET_AMPLITUDE_INIT_FLOAT_KEY";
   public static final float SET_AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE = 1.0f;
-
-  public static final String SET_PULSE_WIDTH_INIT_KEY = PREFIX + "SET_PULSE_WIDTH_INIT_KEY";
   public static final int SET_PERIOD_INIT_DEFAULT_VALUE = 5000;
-
-  ///////////////////////////////////////////////////////////////////////////////////////
-
   public static final CurrentUnits CURRENT_UNIT = CurrentUnits.MicroAmps;
   public static final ResistanceUnits RESISTANCE_UNIT = ResistanceUnits.KiloOhms;
   public static final ConductanceUnits CONDUCTANCE_UNIT = ConductanceUnits.MilliSiemens;
   public static final TimeUnits TIME_UNIT = TimeUnits.MicroSeconds;
-
   public static final int CAPTURE_BUFFER_SIZE = DWF.AD2_MAX_BUFFER_SIZE;
+  private static final String PREFIX = "CONDUCTANCE_";
+  public static final String RESET_PULSE_TYPE_INIT_STRING_KEY =
+      PREFIX + "RESET_PULSE_TYPE_INIT_STRING_KEY";
+  public static final String SERIES_R_INIT_KEY = PREFIX + "SERIES_R_INIT_KEY";
+
+  ///////////////////////////////////////////////////////////////////////////////////////
+  public static final String RESET_AMPLITUDE_INIT_FLOAT_KEY =
+      PREFIX + "RESET_AMPLITUDE_INIT_FLOAT_KEY";
+  public static final String RESET_PULSE_WIDTH_INIT_KEY = PREFIX + "RESET_PULSE_WIDTH_INIT_KEY";
+  public static final String SET_CONDUCTANCE_INIT_KEY = PREFIX + "SET_CONDUCTANCE_INIT_KEY";
+  public static final String SET_AMPLITUDE_INIT_FLOAT_KEY = PREFIX + "SET_AMPLITUDE_INIT_FLOAT_KEY";
+  public static final String SET_PULSE_WIDTH_INIT_KEY = PREFIX + "SET_PULSE_WIDTH_INIT_KEY";
 
   /** Constructor */
   public ConductancePreferences() {

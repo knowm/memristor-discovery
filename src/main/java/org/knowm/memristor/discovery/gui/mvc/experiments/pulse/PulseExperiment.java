@@ -24,34 +24,41 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.pulse;
 
 import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.util.List;
+import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
+import org.knowm.memristor.discovery.core.PostProcessDataUtils;
+import org.knowm.memristor.discovery.core.WaveformUtils;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPlotPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.ConductancePreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.control.ControlPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.plot.PlotControlModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.plot.PlotController;
-import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.plot.PlotPanel;
-import org.knowm.memristor.discovery.utils.PostProcessDataUtils;
-import org.knowm.memristor.discovery.utils.WaveformUtils;
+import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.result.ResultController;
+import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.result.ResultModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.result.ResultPanel;
 import org.knowm.waveforms4j.DWF;
 
 public class PulseExperiment extends Experiment {
 
-  private final ControlModel controlModel = new ControlModel();
+  // Control and Result MVC
+  private final ControlModel controlModel;
+  private final ResultModel resultModel;
+  private final ResultController resultController;
+  private boolean initialPulseTrainCaptured = false;
   private ControlPanel controlPanel;
+  private ResultPanel resultPanel;
 
-  private PlotPanel plotPanel;
-  private final PlotControlModel plotModel = new PlotControlModel();
-  private final PlotController plotController;
+  // SwingWorkers
+  private SwingWorker experimentCaptureWorker;
 
   /**
    * Constructor
@@ -63,16 +70,109 @@ public class PulseExperiment extends Experiment {
 
     super(dwfProxy, mainFrameContainer, isV1Board);
 
+    controlModel = new ControlModel();
     controlPanel = new ControlPanel();
-    plotPanel = new PlotPanel();
-    plotController = new PlotController(plotPanel, plotModel);
+    resultModel = new ResultModel();
+    resultPanel = new ResultPanel();
+
+    refreshModelsFromPreferences();
     new ControlController(controlPanel, controlModel, dwfProxy);
+    resultController = new ResultController(resultPanel, resultModel);
   }
 
   @Override
-  public void doCreateAndShowGUI() {}
+  public void doCreateAndShowGUI() {
 
-  boolean initialPulseTrainCaptured = false;
+    //     trigger waveform update event
+    PropertyChangeEvent evt =
+        new PropertyChangeEvent(this, Model.EVENT_WAVEFORM_UPDATE, true, false);
+    propertyChange(evt);
+
+    // when the control panel is manipulated, we need to communicate the changes to the results
+    // panel
+    getControlModel().addListener(this);
+  }
+
+  @Override
+  public void addWorkersToButtonEvents() {
+
+    controlPanel
+        .getStartStopButton()
+        .addActionListener(
+            new ActionListener() {
+
+              @Override
+              public void actionPerformed(ActionEvent e) {
+
+                if (!controlModel.isStartToggled()) {
+
+                  controlModel.setStartToggled(true);
+                  controlPanel.getStartStopButton().setText("Stop");
+
+                  // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
+                  experimentCaptureWorker = new CaptureWorker();
+                  experimentCaptureWorker.execute();
+                } else {
+
+                  controlModel.setStartToggled(false);
+                  controlPanel.getStartStopButton().setText("Start");
+
+                  // cancel the worker
+                  experimentCaptureWorker.cancel(true);
+                }
+              }
+            });
+  }
+
+  @Override
+  public Model getControlModel() {
+
+    return controlModel;
+  }
+
+  @Override
+  public ControlView getControlPanel() {
+
+    return controlPanel;
+  }
+
+  @Override
+  public Model getResultModel() {
+    return resultModel;
+  }
+
+  @Override
+  public JPanel getResultPanel() {
+
+    return resultPanel;
+  }
+
+  @Override
+  public void propertyChange(PropertyChangeEvent evt) {
+
+    String propName = evt.getPropertyName();
+
+    switch (propName) {
+      case Model.EVENT_WAVEFORM_UPDATE:
+        resultPanel.switch2WaveformChart();
+        resultController.updateWaveformChart(
+            controlModel.getWaveformTimeData(),
+            controlModel.getWaveformAmplitudeData(),
+            controlModel.getAmplitude(),
+            controlModel.getPulseWidth());
+
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  @Override
+  public ExperimentPreferences initAppPreferences() {
+
+    return new PulsePreferences();
+  }
 
   private class CaptureWorker extends SwingWorker<Boolean, double[][]> {
 
@@ -83,18 +183,20 @@ public class PulseExperiment extends Experiment {
       // Analog In /////////////////
       // ////////////////////////////////
 
-      int samplesPerPulse = 100;
+      int samplesPerPulse = 200;
       double sampleFrequency = controlModel.getCalculatedFrequency() * samplesPerPulse;
       // dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02 *
       // (controlModel.getAmplitude() > 0 ? 1 : -1), samplesPerPulse *
       // controlModel.getPulseNumber());
 
+      boolean isScale2V = Math.abs(controlModel.getAppliedAmplitude()) <= 2.5;
+
+      int bufferSize = samplesPerPulse * controlModel.getPulseNumber() + samplesPerPulse;
+
       dwfProxy
           .getDwf()
           .startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(
-              DWF.WAVEFORM_CHANNEL_1,
-              sampleFrequency,
-              samplesPerPulse * controlModel.getPulseNumber());
+              DWF.WAVEFORM_CHANNEL_1, sampleFrequency, bufferSize, isScale2V);
 
       dwfProxy.waitUntilArmed();
 
@@ -102,11 +204,18 @@ public class PulseExperiment extends Experiment {
       // Pulse Out /////////////////
       // ////////////////////////////////
 
+      //      double[] customWaveform =
+      // WaveformUtils.generateCustomWaveform(controlModel.getWaveform(),
+      // controlModel.getAppliedAmplitude(),
+      //          controlModel.getCalculatedFrequency());
+
       double[] customWaveform =
-          WaveformUtils.generateCustomWaveform(
+          WaveformUtils.generateCustomPulse(
               controlModel.getWaveform(),
               controlModel.getAppliedAmplitude(),
-              controlModel.getCalculatedFrequency());
+              controlModel.getPulseWidth(),
+              controlModel.getDutyCycle());
+
       dwfProxy
           .getDwf()
           .startCustomPulseTrain(
@@ -209,14 +318,17 @@ public class PulseExperiment extends Experiment {
 
         // trigger on 20% the rising .1 V read pulse
         samplesPerPulse = 300;
-        sampleFrequency = 100_000 * samplesPerPulse;
+
+        double f = 10_000;
+
+        sampleFrequency = f * samplesPerPulse;
         // dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02,
         // samplesPerPulse * 1);
 
         dwfProxy
             .getDwf()
             .startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(
-                DWF.WAVEFORM_CHANNEL_1, sampleFrequency, samplesPerPulse);
+                DWF.WAVEFORM_CHANNEL_1, sampleFrequency, samplesPerPulse, true);
 
         dwfProxy.waitUntilArmed();
 
@@ -225,13 +337,11 @@ public class PulseExperiment extends Experiment {
         // ////////////////////////////////
 
         // read pulse: 0.1 V, 5 us pulse width
-        customWaveform = WaveformUtils.generateCustomWaveform(Waveform.SquareSmooth, 0.1, 100_000);
-        dwfProxy
-            .getDwf()
-            .startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, 100_000, 0, 1, customWaveform);
+        customWaveform = WaveformUtils.generateCustomWaveform(Waveform.SquareSmooth, 0.1, f);
+        dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, f, 0, 1, customWaveform);
 
         // Read In Data
-        success = dwfProxy.capturePulseData(100_000, 1);
+        success = dwfProxy.capturePulseData(f, 1);
         if (!success) {
           // Stop Analog In and Out
           dwfProxy.getDwf().stopWave(DWF.WAVEFORM_CHANNEL_1);
@@ -287,40 +397,40 @@ public class PulseExperiment extends Experiment {
       if (newestChunk[6] == null) {
         initialPulseTrainCaptured = true;
 
-        plotController.updateCaptureChartData(
+        resultController.updateCaptureChartData(
             newestChunk[0],
             newestChunk[1],
             newestChunk[2],
             newestChunk[3],
             controlModel.getPulseWidth(),
             controlModel.getAmplitude());
-        plotController.updateIVChartData(
+        resultController.updateIVChartData(
             newestChunk[0],
             newestChunk[4],
             controlModel.getPulseWidth(),
             controlModel.getAmplitude());
-        plotController.updateGVChartData(
+        resultController.updateGVChartData(
             newestChunk[0],
             newestChunk[5],
             controlModel.getPulseWidth(),
             controlModel.getAmplitude());
 
-        if (plotPanel.getCaptureButton().isSelected()) {
-          plotPanel.switch2CaptureChart();
-          plotController.repaintVtChart();
-        } else if (plotPanel.getIVButton().isSelected()) {
-          plotPanel.switch2IVChart();
-          plotController.repaintItChart();
+        if (resultPanel.getCaptureButton().isSelected()) {
+          resultPanel.switch2CaptureChart();
+          resultController.repaintVtChart();
+        } else if (resultPanel.getIVButton().isSelected()) {
+          resultPanel.switch2IVChart();
+          resultController.repaintItChart();
         } else {
-          plotPanel.switch2GVChart();
-          plotController.repaintGVChart();
+          resultPanel.switch2GVChart();
+          resultController.repaintGVChart();
         }
       } else {
 
         // update G chart
         controlModel.setLastG(newestChunk[6][0]);
-        plotController.updateGChartData(controlModel.getLastG(), controlModel.getLastRAsString());
-        plotController.repaintGChart();
+        resultController.updateGChartData(controlModel.getLastG(), controlModel.getLastRAsString());
+        resultController.repaintGChart();
 
         controlModel.updateEnergyData();
         controlPanel.updateEnergyGUI(
@@ -330,55 +440,5 @@ public class PulseExperiment extends Experiment {
             controlModel.getAppliedMemristorEnergy());
       }
     }
-  }
-
-  /**
-   * These property change events are triggered in the controlModel in the case where the underlying
-   * controlModel is updated. Here, the controller can respond to those events and make sure the
-   * corresponding GUI components get updated.
-   */
-  @Override
-  public void propertyChange(PropertyChangeEvent evt) {
-
-    String propName = evt.getPropertyName();
-
-    switch (propName) {
-      case ExperimentControlModel.EVENT_WAVEFORM_UPDATE:
-        plotPanel.switch2WaveformChart();
-        plotController.updateWaveformChart(
-            controlModel.getWaveformTimeData(),
-            controlModel.getWaveformAmplitudeData(),
-            controlModel.getAmplitude(),
-            controlModel.getPulseWidth());
-
-        break;
-
-      default:
-        break;
-    }
-  }
-
-  @Override
-  public ExperimentControlModel getControlModel() {
-
-    return controlModel;
-  }
-
-  @Override
-  public ExperimentControlPanel getControlPanel() {
-
-    return controlPanel;
-  }
-
-  @Override
-  public ExperimentPlotPanel getPlotPanel() {
-
-    return plotPanel;
-  }
-
-  @Override
-  public SwingWorker getCaptureWorker() {
-
-    return new CaptureWorker();
   }
 }

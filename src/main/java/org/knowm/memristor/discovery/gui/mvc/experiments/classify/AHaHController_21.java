@@ -24,18 +24,17 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.classify;
 
 import org.knowm.memristor.discovery.DWFProxy;
+import org.knowm.memristor.discovery.core.Util;
+import org.knowm.memristor.discovery.core.WaveformUtils;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify.control.ControlModel;
-import org.knowm.memristor.discovery.utils.Util;
-import org.knowm.memristor.discovery.utils.WaveformUtils;
 import org.knowm.waveforms4j.DWF;
 
 public class AHaHController_21 {
 
+  private final double MIN_V_RESOLUTION = .0025;
   private DWFProxy dWFProxy;
   private ControlModel controlModel;
-  private final double MIN_V_RESOLUTION = .0025;
-
   private double vy; // last read value
   private double ga;
   private double gb;
@@ -114,7 +113,7 @@ public class AHaHController_21 {
       dWFProxy
           .getDwf()
           .startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(
-              DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency() * 300, 300 * 1);
+              DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency() * 300, 300 * 1, true);
       dWFProxy.waitUntilArmed();
       dWFProxy
           .getDwf()
@@ -153,6 +152,17 @@ public class AHaHController_21 {
     } catch (InterruptedException e) {
 
     }
+  }
+
+  public double getVy() {
+
+    if (vy > 1) {
+      return 1;
+    } else if (vy < -1) {
+      return -1;
+    }
+
+    return vy;
   }
 
   private void setVy(double W1Amplitude) {
@@ -204,6 +214,46 @@ public class AHaHController_21 {
       this.ga = Double.NaN;
       this.gb = Double.NaN;
     }
+  }
+
+  public DWFProxy getdWFProxy() {
+
+    return dWFProxy;
+  }
+
+  public void setdWFProxy(DWFProxy dWFProxy) {
+
+    this.dWFProxy = dWFProxy;
+  }
+
+  /** @return the controlModel */
+  public ControlModel getControlModel() {
+
+    return controlModel;
+  }
+
+  /** @return the ga */
+  public double getGa() {
+
+    return ga;
+  }
+
+  /** @param ga the ga to set */
+  public void setGa(double ga) {
+
+    this.ga = ga;
+  }
+
+  /** @return the gb */
+  public double getGb() {
+
+    return gb;
+  }
+
+  /** @param gb the gb to set */
+  public void setGb(double gb) {
+
+    this.gb = gb;
   }
 
   public enum AHaHLogicRoutine {
@@ -260,57 +310,6 @@ public class AHaHController_21 {
 
       return pulseAmplitudeMultiplier;
     }
-  }
-
-  public double getVy() {
-
-    if (vy > 1) {
-      return 1;
-    } else if (vy < -1) {
-      return -1;
-    }
-
-    return vy;
-  }
-
-  public DWFProxy getdWFProxy() {
-
-    return dWFProxy;
-  }
-
-  public void setdWFProxy(DWFProxy dWFProxy) {
-
-    this.dWFProxy = dWFProxy;
-  }
-
-  /** @return the controlModel */
-  public ControlModel getControlModel() {
-
-    return controlModel;
-  }
-
-  /** @return the ga */
-  public double getGa() {
-
-    return ga;
-  }
-
-  /** @param ga the ga to set */
-  public void setGa(double ga) {
-
-    this.ga = ga;
-  }
-
-  /** @return the gb */
-  public double getGb() {
-
-    return gb;
-  }
-
-  /** @param gb the gb to set */
-  public void setGb(double gb) {
-
-    this.gb = gb;
   }
 
   // public double getAmplitude() {

@@ -51,9 +51,9 @@ public class SynapsePreferencesPanel extends ExperimentPreferencesPanel {
    *
    * @param owner
    */
-  public SynapsePreferencesPanel(JFrame owner) {
+  public SynapsePreferencesPanel(JFrame owner, String experimentName) {
 
-    super(owner);
+    super(owner, experimentName);
   }
 
   @Override
@@ -126,9 +126,6 @@ public class SynapsePreferencesPanel extends ExperimentPreferencesPanel {
   @Override
   public void doSavePreferences() {
 
-    // TODO add num pulses prefs.
-    // experimentPreferences.setInteger(SynapsePreferences.NUM_PULSES_INIT_KEY,
-    // Integer.parseInt(seriesResistorTextField.getText()));
     experimentPreferences.setInteger(
         SynapsePreferences.SERIES_R_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
     experimentPreferences.setFloat(
@@ -144,11 +141,5 @@ public class SynapsePreferencesPanel extends ExperimentPreferencesPanel {
   public ExperimentPreferences initAppPreferences() {
 
     return new SynapsePreferences();
-  }
-
-  @Override
-  public String getAppName() {
-
-    return "Synapse";
   }
 }

@@ -23,8 +23,8 @@
  */
 package org.knowm.memristor.discovery;
 
+import org.knowm.memristor.discovery.core.WaveformUtils;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
-import org.knowm.memristor.discovery.utils.WaveformUtils;
 import org.knowm.waveforms4j.DWF;
 import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.XYChart;
@@ -33,14 +33,14 @@ import org.knowm.xchart.XYChartBuilder;
 public class PulseTriggerCapture {
   DWF dwf;
 
+  public PulseTriggerCapture() {
+    dwf = new DWF();
+  }
+
   public static void main(String[] args) {
 
     PulseTriggerCapture pulseTriggerCapture = new PulseTriggerCapture();
     pulseTriggerCapture.go();
-  }
-
-  public PulseTriggerCapture() {
-    dwf = new DWF();
   }
 
   public void go() {
