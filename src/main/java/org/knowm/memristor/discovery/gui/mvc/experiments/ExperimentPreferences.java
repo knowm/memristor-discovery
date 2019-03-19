@@ -102,7 +102,7 @@ public abstract class ExperimentPreferences {
   }
 
   public enum Waveform {
-    Sine, Triangle, TriangleUpDown, Square, SquareUpDown, SquareDecay, SawtoothUpDown, Sawtooth, QuarterSine, HalfSine, SquareSmooth;
+    Sine, Triangle, TriangleUpDown, Square, SquareUpDown, SquareDecay, SquareLongDecay, SawtoothUpDown, Sawtooth, QuarterSine, HalfSine, SquareSmooth;
   }
 
   public enum CurrentUnits {

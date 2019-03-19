@@ -27,6 +27,7 @@ import org.knowm.memristor.discovery.core.driver.Driver;
 import org.knowm.memristor.discovery.core.driver.pulse.HalfSinePulse;
 import org.knowm.memristor.discovery.core.driver.pulse.QuarterSinePulse;
 import org.knowm.memristor.discovery.core.driver.pulse.SquareDecayPulse;
+import org.knowm.memristor.discovery.core.driver.pulse.SquareLongDecayPulse;
 import org.knowm.memristor.discovery.core.driver.pulse.SquarePulse;
 import org.knowm.memristor.discovery.core.driver.pulse.SquareSmoothPulse;
 import org.knowm.memristor.discovery.core.driver.pulse.TrianglePulse;
@@ -78,6 +79,9 @@ public class WaveformUtils {
       //        break;
       case SquareDecay:
         driver = new SquareDecayPulse("SquareDecay", 0, pulseWidthInNS, dutyCycle, amplitude);
+        break;
+      case SquareLongDecay:
+        driver = new SquareLongDecayPulse("SquareLongDecay", 0, pulseWidthInNS, dutyCycle, amplitude);
         break;
       case Triangle:
 

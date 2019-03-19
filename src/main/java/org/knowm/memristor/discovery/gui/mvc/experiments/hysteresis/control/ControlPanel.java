@@ -94,7 +94,7 @@ public class ControlPanel extends ControlView {
     offsetSlider = new JSlider(JSlider.HORIZONTAL, -200, 100, 0);
     offsetSlider.setBorder(BorderFactory.createTitledBorder("Offset [V]"));
     offsetSlider.setMajorTickSpacing(25);
-    offsetSlider.setMinorTickSpacing(5);
+    offsetSlider.setMinorTickSpacing(1);
     offsetSlider.setPaintTicks(true);
     offsetSlider.setPaintLabels(true);
     offsetSlider.setSnapToTicks(true);
@@ -114,7 +114,7 @@ public class ControlPanel extends ControlView {
     amplitudeSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
     amplitudeSlider.setBorder(BorderFactory.createTitledBorder("Amplitude [V]"));
     amplitudeSlider.setMajorTickSpacing(10);
-    amplitudeSlider.setMinorTickSpacing(2);
+    amplitudeSlider.setMinorTickSpacing(1);
     amplitudeSlider.setPaintTicks(true);
     amplitudeSlider.setPaintLabels(true);
     amplitudeSlider.setSnapToTicks(true);

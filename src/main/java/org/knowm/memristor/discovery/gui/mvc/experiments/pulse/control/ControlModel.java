@@ -29,6 +29,7 @@ import org.knowm.memristor.discovery.core.driver.Driver;
 import org.knowm.memristor.discovery.core.driver.pulse.HalfSinePulse;
 import org.knowm.memristor.discovery.core.driver.pulse.QuarterSinePulse;
 import org.knowm.memristor.discovery.core.driver.pulse.SquareDecayPulse;
+import org.knowm.memristor.discovery.core.driver.pulse.SquareLongDecayPulse;
 import org.knowm.memristor.discovery.core.driver.pulse.SquarePulse;
 import org.knowm.memristor.discovery.core.driver.pulse.SquareSmoothPulse;
 import org.knowm.memristor.discovery.core.driver.pulse.TrianglePulse;
@@ -114,6 +115,10 @@ public class ControlModel extends Model {
       case SquareDecay:
 
         driver = new SquareDecayPulse("SquareDecay", 0, pulseWidth, dutyCycle, amplitude);
+        break;
+      case SquareLongDecay:
+
+        driver = new SquareLongDecayPulse("SquareLongDecay", 0, pulseWidth, dutyCycle, amplitude);
         break;
       default:
         driver = new HalfSinePulse("HalfSine", 0, pulseWidth, dutyCycle, amplitude);

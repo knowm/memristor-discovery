@@ -78,8 +78,8 @@ public class ControlController extends Controller {
   private void initGUIComponentsFromModel() {
 
     controlPanel.getWaveformComboBox().setSelectedItem(controlModel.getWaveform());
-    controlPanel.getWaveformComboBox().setModel(new DefaultComboBoxModel<>(
-        new Waveform[]{Waveform.Square, Waveform.SquareSmooth, Waveform.SquareDecay, Waveform.Triangle, Waveform.QuarterSine, Waveform.HalfSine}));
+    controlPanel.getWaveformComboBox().setModel(new DefaultComboBoxModel<>(new Waveform[]{Waveform.Square, Waveform.SquareSmooth,
+        Waveform.SquareDecay, Waveform.SquareLongDecay, Waveform.Triangle, Waveform.QuarterSine, Waveform.HalfSine}));
 
     controlPanel.getAmplitudeSlider().setValue((int) (controlModel.getAmplitude() * 100));
     controlPanel.getAmplitudeSlider().setBorder(BorderFactory.createTitledBorder("Amplitude [V] = " + controlModel.getAmplitude()));
