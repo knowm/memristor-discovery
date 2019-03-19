@@ -23,8 +23,6 @@
  */
 package org.knowm.memristor.discovery.core.driver.waveform;
 
-import org.knowm.memristor.discovery.core.driver.Driver;
-
 /** @author timmolter */
 public class Arbitrary extends WaveformDriver {
 
@@ -40,7 +38,13 @@ public class Arbitrary extends WaveformDriver {
    * @param frequency
    * @param activePhases
    */
-  public Arbitrary(String matchingSourceId, double dcOffset, double phase, double amplitude, double frequency, double[] activePhases) {
+  public Arbitrary(
+      String matchingSourceId,
+      double dcOffset,
+      double phase,
+      double amplitude,
+      double frequency,
+      double[] activePhases) {
 
     super(matchingSourceId, dcOffset, phase, amplitude, frequency);
     this.activePhases = activePhases;

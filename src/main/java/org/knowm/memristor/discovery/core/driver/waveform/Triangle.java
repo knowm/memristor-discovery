@@ -23,8 +23,6 @@
  */
 package org.knowm.memristor.discovery.core.driver.waveform;
 
-import org.knowm.memristor.discovery.core.driver.Driver;
-
 /** @author timmolter */
 public class Triangle extends WaveformDriver {
 

@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +48,9 @@ public class FileUtils {
 
     //    System.out.println("fileName=" + fileName);
 
-    BufferedReader reader = new BufferedReader(new InputStreamReader(FileUtils.class.getClassLoader().getResourceAsStream(fileName)));
+    BufferedReader reader =
+        new BufferedReader(
+            new InputStreamReader(FileUtils.class.getClassLoader().getResourceAsStream(fileName)));
     String result = readerToString(reader);
 
     // show file contents here
@@ -98,7 +99,8 @@ public class FileUtils {
     }
   }
 
-  public static String showSaveAsDialog(Component parent, String currentDirectory) throws IOException {
+  public static String showSaveAsDialog(Component parent, String currentDirectory)
+      throws IOException {
 
     String directoryPath = "";
 
@@ -107,26 +109,26 @@ public class FileUtils {
     fileChooser.setDialogTitle("Save Directory");
     fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
-    fileChooser.setFileFilter(new FileFilter() {
+    fileChooser.setFileFilter(
+        new FileFilter() {
 
-      @Override
-      public boolean accept(File f) {
-        return f.isDirectory();
-      }
+          @Override
+          public boolean accept(File f) {
+            return f.isDirectory();
+          }
 
-      @Override
-      public String getDescription() {
-        return "Directories only";
-      }
+          @Override
+          public String getDescription() {
+            return "Directories only";
+          }
+        });
 
-    });
-
-    //    
-    //    
+    //
+    //
     fileChooser.setAcceptAllFileFilterUsed(false);
     //
-    //    
-    //    
+    //
+    //
 
     if (fileChooser.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
       //            System.out.println("getCurrentDirectory(): " +

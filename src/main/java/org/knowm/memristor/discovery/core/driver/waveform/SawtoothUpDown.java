@@ -23,8 +23,6 @@
  */
 package org.knowm.memristor.discovery.core.driver.waveform;
 
-import org.knowm.memristor.discovery.core.driver.Driver;
-
 /** Created by timmolter on 2/17/17. */
 public class SawtoothUpDown extends WaveformDriver {
 
@@ -37,7 +35,8 @@ public class SawtoothUpDown extends WaveformDriver {
    * @param amplitude
    * @param frequency
    */
-  public SawtoothUpDown(String name, double dcOffset, double phase, double amplitude, double frequency) {
+  public SawtoothUpDown(
+      String name, double dcOffset, double phase, double amplitude, double frequency) {
 
     super(name, dcOffset, phase, amplitude, frequency);
   }

@@ -72,5 +72,4 @@ public abstract class Driver {
   public double getPeriod() {
     return 1.0 / frequency;
   }
-
 }

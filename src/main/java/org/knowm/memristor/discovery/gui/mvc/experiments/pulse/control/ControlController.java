@@ -78,26 +78,56 @@ public class ControlController extends Controller {
   private void initGUIComponentsFromModel() {
 
     controlPanel.getWaveformComboBox().setSelectedItem(controlModel.getWaveform());
-    controlPanel.getWaveformComboBox().setModel(new DefaultComboBoxModel<>(
-        new Waveform[]{Waveform.Square, Waveform.SquareSmooth, Waveform.SquareDecay, Waveform.Triangle, Waveform.QuarterSine, Waveform.HalfSine}));
+    controlPanel
+        .getWaveformComboBox()
+        .setModel(
+            new DefaultComboBoxModel<>(
+                new Waveform[] {
+                  Waveform.Square,
+                  Waveform.SquareSmooth,
+                  Waveform.SquareDecay,
+                  Waveform.Triangle,
+                  Waveform.QuarterSine,
+                  Waveform.HalfSine
+                }));
 
     controlPanel.getAmplitudeSlider().setValue((int) (controlModel.getAmplitude() * 100));
-    controlPanel.getAmplitudeSlider().setBorder(BorderFactory.createTitledBorder("Amplitude [V] = " + controlModel.getAmplitude()));
+    controlPanel
+        .getAmplitudeSlider()
+        .setBorder(
+            BorderFactory.createTitledBorder("Amplitude [V] = " + controlModel.getAmplitude()));
     if (controlModel.getPulseWidth() >= 5000) {
       controlPanel.getPulseWidthSlider().setValue((int) (controlModel.getPulseWidth()));
       controlPanel.getPulseWidthSliderNs().setValue(0);
-      controlPanel.getPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + controlModel.getPulseWidth() / 1000));
-      controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
+      controlPanel
+          .getPulseWidthSlider()
+          .setBorder(
+              BorderFactory.createTitledBorder(
+                  "Pulse Width [µs] = " + controlModel.getPulseWidth() / 1000));
+      controlPanel
+          .getPulseWidthSliderNs()
+          .setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
     } else {
       controlPanel.getPulseWidthSlider().setValue(0);
       controlPanel.getPulseWidthSliderNs().setValue(controlModel.getPulseWidth());
-      controlPanel.getPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
-      controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + controlModel.getPulseWidth() / 1000));
+      controlPanel
+          .getPulseWidthSlider()
+          .setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
+      controlPanel
+          .getPulseWidthSliderNs()
+          .setBorder(
+              BorderFactory.createTitledBorder(
+                  "Pulse Width [µs] = " + controlModel.getPulseWidth() / 1000));
     }
-    controlPanel.getPulseNumberSlider().setBorder(BorderFactory.createTitledBorder("Pulse Number = " + controlModel.getPulseNumber()));
+    controlPanel
+        .getPulseNumberSlider()
+        .setBorder(
+            BorderFactory.createTitledBorder("Pulse Number = " + controlModel.getPulseNumber()));
     controlPanel.getPulseNumberSlider().setValue(controlModel.getPulseNumber());
 
-    controlPanel.getDutyCycleSlider().setBorder(BorderFactory.createTitledBorder("Duty Cycle = " + controlModel.getDutyCycle()));
+    controlPanel
+        .getDutyCycleSlider()
+        .setBorder(BorderFactory.createTitledBorder("Duty Cycle = " + controlModel.getDutyCycle()));
     controlPanel.getDutyCycleSlider().setValue((int) (100 * controlModel.getDutyCycle()));
 
     controlPanel.getSeriesTextField().setText("" + controlModel.getSeriesResistance());
@@ -107,146 +137,205 @@ public class ControlController extends Controller {
   /** Here, all the action listeners are attached to the GUI components */
   public void doSetUpViewEvents() {
 
-    controlPanel.getWaveformComboBox().addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
+    controlPanel
+        .getWaveformComboBox()
+        .addActionListener(
+            new ActionListener() {
+              @Override
+              public void actionPerformed(ActionEvent e) {
 
-        controlModel.setWaveform(controlPanel.getWaveformComboBox().getSelectedItem().toString());
-      }
-    });
+                controlModel.setWaveform(
+                    controlPanel.getWaveformComboBox().getSelectedItem().toString());
+              }
+            });
 
-    controlPanel.getAmplitudeSlider().addChangeListener(new ChangeListener() {
+    controlPanel
+        .getAmplitudeSlider()
+        .addChangeListener(
+            new ChangeListener() {
 
-      @Override
-      public void stateChanged(ChangeEvent e) {
+              @Override
+              public void stateChanged(ChangeEvent e) {
 
-        JSlider source = (JSlider) e.getSource();
-        if (!(source.getValueIsAdjusting())) {
-          controlModel.setAmplitude(source.getValue() / (float) 100);
-          controlPanel.getAmplitudeSlider().setBorder(BorderFactory.createTitledBorder("Amplitude [V] = " + controlModel.getAmplitude()));
-        }
-      }
-    });
+                JSlider source = (JSlider) e.getSource();
+                if (!(source.getValueIsAdjusting())) {
+                  controlModel.setAmplitude(source.getValue() / (float) 100);
+                  controlPanel
+                      .getAmplitudeSlider()
+                      .setBorder(
+                          BorderFactory.createTitledBorder(
+                              "Amplitude [V] = " + controlModel.getAmplitude()));
+                }
+              }
+            });
 
-    controlPanel.getPulseWidthSlider().addChangeListener(new ChangeListener() {
+    controlPanel
+        .getPulseWidthSlider()
+        .addChangeListener(
+            new ChangeListener() {
 
-      @Override
-      public void stateChanged(ChangeEvent e) {
+              @Override
+              public void stateChanged(ChangeEvent e) {
 
-        JSlider source = (JSlider) e.getSource();
-        if (!(source.getValueIsAdjusting())) {
-          controlModel.setPulseWidth(source.getValue());
-          controlPanel.getPulseWidthSlider()
-              .setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + (double) controlModel.getPulseWidth() / 1000));
-          controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
-        }
-      }
-    });
+                JSlider source = (JSlider) e.getSource();
+                if (!(source.getValueIsAdjusting())) {
+                  controlModel.setPulseWidth(source.getValue());
+                  controlPanel
+                      .getPulseWidthSlider()
+                      .setBorder(
+                          BorderFactory.createTitledBorder(
+                              "Pulse Width [µs] = "
+                                  + (double) controlModel.getPulseWidth() / 1000));
+                  controlPanel
+                      .getPulseWidthSliderNs()
+                      .setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
+                }
+              }
+            });
 
-    controlPanel.getPulseWidthSliderNs().addChangeListener(new ChangeListener() {
+    controlPanel
+        .getPulseWidthSliderNs()
+        .addChangeListener(
+            new ChangeListener() {
 
-      @Override
-      public void stateChanged(ChangeEvent e) {
+              @Override
+              public void stateChanged(ChangeEvent e) {
 
-        JSlider source = (JSlider) e.getSource();
-        if (!(source.getValueIsAdjusting())) {
-          controlModel.setPulseWidth(source.getValue());
-          controlPanel.getPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
-          controlPanel.getPulseWidthSliderNs()
-              .setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + (double) controlModel.getPulseWidth() / 1000));
-        }
-      }
-    });
+                JSlider source = (JSlider) e.getSource();
+                if (!(source.getValueIsAdjusting())) {
+                  controlModel.setPulseWidth(source.getValue());
+                  controlPanel
+                      .getPulseWidthSlider()
+                      .setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
+                  controlPanel
+                      .getPulseWidthSliderNs()
+                      .setBorder(
+                          BorderFactory.createTitledBorder(
+                              "Pulse Width [µs] = "
+                                  + (double) controlModel.getPulseWidth() / 1000));
+                }
+              }
+            });
 
-    controlPanel.getPulseNumberSlider().addChangeListener(new ChangeListener() {
+    controlPanel
+        .getPulseNumberSlider()
+        .addChangeListener(
+            new ChangeListener() {
 
-      @Override
-      public void stateChanged(ChangeEvent e) {
+              @Override
+              public void stateChanged(ChangeEvent e) {
 
-        JSlider source = (JSlider) e.getSource();
-        if (!(source.getValueIsAdjusting())) {
-          controlModel.setPulseNumber(source.getValue());
-          controlPanel.getPulseNumberSlider().setBorder(BorderFactory.createTitledBorder("Pulse Number = " + controlModel.getPulseNumber()));
-        }
-      }
-    });
+                JSlider source = (JSlider) e.getSource();
+                if (!(source.getValueIsAdjusting())) {
+                  controlModel.setPulseNumber(source.getValue());
+                  controlPanel
+                      .getPulseNumberSlider()
+                      .setBorder(
+                          BorderFactory.createTitledBorder(
+                              "Pulse Number = " + controlModel.getPulseNumber()));
+                }
+              }
+            });
 
-    controlPanel.getDutyCycleSlider().addChangeListener(new ChangeListener() {
+    controlPanel
+        .getDutyCycleSlider()
+        .addChangeListener(
+            new ChangeListener() {
 
-      @Override
-      public void stateChanged(ChangeEvent e) {
+              @Override
+              public void stateChanged(ChangeEvent e) {
 
-        JSlider source = (JSlider) e.getSource();
-        if (!(source.getValueIsAdjusting())) {
+                JSlider source = (JSlider) e.getSource();
+                if (!(source.getValueIsAdjusting())) {
 
-          controlModel.setDutyCycle((double) source.getValue() / 100.0);
-          controlPanel.getDutyCycleSlider().setBorder(BorderFactory.createTitledBorder("Duty Cycle = " + controlModel.getDutyCycle()));
-        }
-      }
-    });
+                  controlModel.setDutyCycle((double) source.getValue() / 100.0);
+                  controlPanel
+                      .getDutyCycleSlider()
+                      .setBorder(
+                          BorderFactory.createTitledBorder(
+                              "Duty Cycle = " + controlModel.getDutyCycle()));
+                }
+              }
+            });
 
-    controlPanel.getSeriesTextField().addKeyListener(new KeyAdapter() {
+    controlPanel
+        .getSeriesTextField()
+        .addKeyListener(
+            new KeyAdapter() {
 
-      @Override
-      public void keyReleased(KeyEvent e) {
+              @Override
+              public void keyReleased(KeyEvent e) {
 
-        JTextField textField = (JTextField) e.getSource();
-        String text = textField.getText();
+                JTextField textField = (JTextField) e.getSource();
+                String text = textField.getText();
 
-        try {
-          int newSeriesValue = Integer.parseInt(text);
-          controlModel.setSeriesResistance(newSeriesValue);
-        } catch (Exception ex) {
-          // parsing error, default back to previous value
-          textField.setText(Integer.toString(controlModel.getSeriesResistance()));
-        }
-      }
-    });
+                try {
+                  int newSeriesValue = Integer.parseInt(text);
+                  controlModel.setSeriesResistance(newSeriesValue);
+                } catch (Exception ex) {
+                  // parsing error, default back to previous value
+                  textField.setText(Integer.toString(controlModel.getSeriesResistance()));
+                }
+              }
+            });
 
-    controlPanel.getSampleRateTextField().addKeyListener(new KeyAdapter() {
+    controlPanel
+        .getSampleRateTextField()
+        .addKeyListener(
+            new KeyAdapter() {
 
-      @Override
-      public void keyReleased(KeyEvent e) {
+              @Override
+              public void keyReleased(KeyEvent e) {
 
-        JTextField textField = (JTextField) e.getSource();
-        String text = textField.getText();
+                JTextField textField = (JTextField) e.getSource();
+                String text = textField.getText();
 
-        try {
-          int newValue = Integer.parseInt(text);
-          controlModel.setSampleRate(newValue);
-        } catch (Exception ex) {
-          // parsing error, default back to previous value
-          textField.setText(Integer.toString(controlModel.getSampleRate()));
-        }
-      }
-    });
+                try {
+                  int newValue = Integer.parseInt(text);
+                  controlModel.setSampleRate(newValue);
+                } catch (Exception ex) {
+                  // parsing error, default back to previous value
+                  textField.setText(Integer.toString(controlModel.getSampleRate()));
+                }
+              }
+            });
 
-    controlPanel.getMemristorVoltageCheckBox().addActionListener(new ActionListener() {
+    controlPanel
+        .getMemristorVoltageCheckBox()
+        .addActionListener(
+            new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent actionEvent) {
+              @Override
+              public void actionPerformed(ActionEvent actionEvent) {
 
-        AbstractButton abstractButton = (AbstractButton) actionEvent.getSource();
-        boolean selected = abstractButton.getModel().isSelected();
-        // System.out.println("selected = " + selected);
-        controlModel.setMemristorVoltageDropSelected(selected);
-      }
-    });
+                AbstractButton abstractButton = (AbstractButton) actionEvent.getSource();
+                boolean selected = abstractButton.getModel().isSelected();
+                // System.out.println("selected = " + selected);
+                controlModel.setMemristorVoltageDropSelected(selected);
+              }
+            });
 
-    controlView.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("S"), "startstop");
-    controlView.getActionMap().put("startstop", new AbstractAction() {
+    controlView
+        .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+        .put(KeyStroke.getKeyStroke("S"), "startstop");
+    controlView
+        .getActionMap()
+        .put(
+            "startstop",
+            new AbstractAction() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+              @Override
+              public void actionPerformed(ActionEvent e) {
 
-        controlPanel.getStartStopButton().doClick();
-      }
-    });
+                controlPanel.getStartStopButton().doClick();
+              }
+            });
   }
 
   /**
-   * These property change events are triggered in the controlModel in the case where the underlying controlModel is updated. Here, the controller can
-   * respond to those events and make sure the corresponding GUI components get updated.
+   * These property change events are triggered in the controlModel in the case where the underlying
+   * controlModel is updated. Here, the controller can respond to those events and make sure the
+   * corresponding GUI components get updated.
    */
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
@@ -263,7 +352,10 @@ public class ControlController extends Controller {
       case Model.EVENT_WAVEFORM_UPDATE:
         controlModel.updateWaveformChartData();
         controlModel.updateEnergyData();
-        controlPanel.updateEnergyGUI(controlModel.getAppliedAmplitude(), controlModel.getAppliedCurrent(), controlModel.getAppliedEnergy(),
+        controlPanel.updateEnergyGUI(
+            controlModel.getAppliedAmplitude(),
+            controlModel.getAppliedCurrent(),
+            controlModel.getAppliedEnergy(),
             controlModel.getAppliedMemristorEnergy());
         break;
 

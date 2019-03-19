@@ -33,32 +33,32 @@ import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.core.PostProcessDataUtils;
-import org.knowm.memristor.discovery.core.Util;
 import org.knowm.memristor.discovery.core.PostProcessDataUtils.MemristorTestResult;
+import org.knowm.memristor.discovery.core.Util;
 import org.knowm.memristor.discovery.core.experiment_common.PulseUtility;
 import org.knowm.memristor.discovery.core.gpio.MuxController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
-import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
+import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.control.ControlPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.result.ResultController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.result.ResultModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.result.ResultPanel;
-import java.util.concurrent.TimeUnit;
 
 public class ShelfLifeExperiment extends Experiment {
 
-  private static final DateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+  private static final DateFormat dateTimeFormat =
+      new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
   private String cSVFileName;
 
   // Control and Result MVC
@@ -74,7 +74,9 @@ public class ShelfLifeExperiment extends Experiment {
   private MuxController muxController;
   private PulseUtility pulseUtility;
 
-  private static final float VOLTAGE_READ_NOISE_FLOOR = .001f;//if the measured voltage across series resistor is less than this, you are getting noisy. 
+  private static final float VOLTAGE_READ_NOISE_FLOOR =
+      .001f; // if the measured voltage across series resistor is less than this, you are getting
+  // noisy.
 
   private DecimalFormat kOhmFormat = new DecimalFormat("0.0");
 
@@ -93,13 +95,12 @@ public class ShelfLifeExperiment extends Experiment {
     resultController = new ResultController(resultPanel, resultModel);
 
     muxController = new MuxController();
-    pulseUtility = new PulseUtility(controlModel, dwfProxy, muxController, VOLTAGE_READ_NOISE_FLOOR);
-
+    pulseUtility =
+        new PulseUtility(controlModel, dwfProxy, muxController, VOLTAGE_READ_NOISE_FLOOR);
   }
 
   @Override
-  public void doCreateAndShowGUI() {
-  }
+  public void doCreateAndShowGUI() {}
 
   /*
    * Here action listeners are attached to the widgets in the control panel and mapped to a worker, also defined here in the experiment.
@@ -107,41 +108,44 @@ public class ShelfLifeExperiment extends Experiment {
   @Override
   public void addWorkersToButtonEvents() {
 
-    controlPanel.getStartStopButton().addActionListener(new ActionListener() {
+    controlPanel
+        .getStartStopButton()
+        .addActionListener(
+            new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+              @Override
+              public void actionPerformed(ActionEvent e) {
 
-        if (!controlModel.isStartToggled()) {
+                if (!controlModel.isStartToggled()) {
 
-          controlModel.setStartToggled(true);
-          controlPanel.getStartStopButton().setText("Stop");
+                  controlModel.setStartToggled(true);
+                  controlPanel.getStartStopButton().setText("Stop");
 
-          // clear the console
-          resultController.clear();
+                  // clear the console
+                  resultController.clear();
 
-          // start capture
-          experimentCaptureWorker = new CaptureWorker();
-          experimentCaptureWorker.execute();
-        } else {
+                  // start capture
+                  experimentCaptureWorker = new CaptureWorker();
+                  experimentCaptureWorker.execute();
+                } else {
 
-          controlModel.setStartToggled(false);
-          controlPanel.getStartStopButton().setText("Start");
+                  controlModel.setStartToggled(false);
+                  controlPanel.getStartStopButton().setText("Start");
 
-          // cancel the worker
-          experimentCaptureWorker.cancel(true);
-        }
-      }
-    });
+                  // cancel the worker
+                  experimentCaptureWorker.cancel(true);
+                }
+              }
+            });
   }
 
   /**
-   * These property change events are triggered in the controlModel in the case where the underlying controlModel is updated. Here, the controller can
-   * respond to those events and make sure the corresponding GUI components get updated.
+   * These property change events are triggered in the controlModel in the case where the underlying
+   * controlModel is updated. Here, the controller can respond to those events and make sure the
+   * corresponding GUI components get updated.
    */
   @Override
-  public void propertyChange(PropertyChangeEvent evt) {
-  }
+  public void propertyChange(PropertyChangeEvent evt) {}
 
   @Override
   public Model getControlModel() {
@@ -183,7 +187,7 @@ public class ShelfLifeExperiment extends Experiment {
       String dataFileName = "MD_Shelf_Life_Data_" + timeString + ".csv";
       String infoFileName = "MD_Shelf_Life_Info_" + timeString + ".csv";
 
-      //cycle devices in case they have not yet been formed
+      // cycle devices in case they have not yet been formed
       float V_READ = controlModel.getReadVoltageAmplitude();
       float V_WRITE = controlModel.getWriteVoltageAmplitude();
       float V_ERASE = controlModel.getEraseVoltageAmplitude();
@@ -197,10 +201,11 @@ public class ShelfLifeExperiment extends Experiment {
       float maxWriteResistance = controlModel.getMaxWriteResistance();
       float minEraseResistance = controlModel.getMinEraseResistance();
 
-      //information file-->
+      // information file-->
 
       String saveInfoFilePath = controlModel.getSaveDirectory() + "/" + infoFileName;
-      try (PrintWriter printWriter = new PrintWriter(new BufferedWriter(new FileWriter(saveInfoFilePath, true)))) {
+      try (PrintWriter printWriter =
+          new PrintWriter(new BufferedWriter(new FileWriter(saveInfoFilePath, true)))) {
         printWriter.println("Memristor Discovery Shelf Life Experiment");
         printWriter.println("");
         printWriter.println("Memristor Discovery Version: " + Util.getVersionNumber());
@@ -238,11 +243,12 @@ public class ShelfLifeExperiment extends Experiment {
       resultController.addNewLine("");
       resultController.addNewLine("");
 
-      try (PrintWriter printWriter = new PrintWriter(new BufferedWriter(new FileWriter(saveDataFilePath, true)))) {
+      try (PrintWriter printWriter =
+          new PrintWriter(new BufferedWriter(new FileWriter(saveDataFilePath, true)))) {
 
         dateFormat = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss z");
 
-        //CVS FILE HEADERS--->
+        // CVS FILE HEADERS--->
         StringBuilder csvBuilder = new StringBuilder();
         csvBuilder.append("Time");
         csvBuilder.append(",");
@@ -265,9 +271,18 @@ public class ShelfLifeExperiment extends Experiment {
 
         while (!isCancelled()) {
 
-          float[][] reads = pulseUtility.testMeminline(Waveform.HalfSine, V_WRITE, V_ERASE, V_READ, PULSE_WIDTH_READ, PULSE_WIDTH_WRITE,
-              PULSE_WIDTH_ERASE);
-          MemristorTestResult[] result = PostProcessDataUtils.categorizeMemristorTestReads(reads, minEraseResistance, maxWriteResistance, 1000f);
+          float[][] reads =
+              pulseUtility.testMeminline(
+                  Waveform.HalfSine,
+                  V_WRITE,
+                  V_ERASE,
+                  V_READ,
+                  PULSE_WIDTH_READ,
+                  PULSE_WIDTH_WRITE,
+                  PULSE_WIDTH_ERASE);
+          MemristorTestResult[] result =
+              PostProcessDataUtils.categorizeMemristorTestReads(
+                  reads, minEraseResistance, maxWriteResistance, 1000f);
 
           csvBuilder = new StringBuilder();
           csvBuilder.append(dateFormat.format(new Date()));
@@ -290,7 +305,8 @@ public class ShelfLifeExperiment extends Experiment {
           // CSV to console
           resultController.addNewLine(csvString);
 
-          // MemristorTestResult[] result = PostProcessDataUtils.categorizeMemristorTestReads(reads, minEraseResistance, maxWriteResistance, 1000f);
+          // MemristorTestResult[] result = PostProcessDataUtils.categorizeMemristorTestReads(reads,
+          // minEraseResistance, maxWriteResistance, 1000f);
 
           // resultController.addNewLine(Arrays.toString(result));
 
@@ -312,7 +328,6 @@ public class ShelfLifeExperiment extends Experiment {
     } else {
       return kOhmFormat.format(resistanceInKiloOhms);
     }
-
   }
 
   private String getDateTimeString(Date value) {

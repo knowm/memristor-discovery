@@ -27,7 +27,6 @@ import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
-import java.util.Arrays;
 import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
@@ -85,7 +84,8 @@ public class PulseExperiment extends Experiment {
   public void doCreateAndShowGUI() {
 
     //     trigger waveform update event
-    PropertyChangeEvent evt = new PropertyChangeEvent(this, Model.EVENT_WAVEFORM_UPDATE, true, false);
+    PropertyChangeEvent evt =
+        new PropertyChangeEvent(this, Model.EVENT_WAVEFORM_UPDATE, true, false);
     propertyChange(evt);
 
     // when the control panel is manipulated, we need to communicate the changes to the results
@@ -96,29 +96,32 @@ public class PulseExperiment extends Experiment {
   @Override
   public void addWorkersToButtonEvents() {
 
-    controlPanel.getStartStopButton().addActionListener(new ActionListener() {
+    controlPanel
+        .getStartStopButton()
+        .addActionListener(
+            new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+              @Override
+              public void actionPerformed(ActionEvent e) {
 
-        if (!controlModel.isStartToggled()) {
+                if (!controlModel.isStartToggled()) {
 
-          controlModel.setStartToggled(true);
-          controlPanel.getStartStopButton().setText("Stop");
+                  controlModel.setStartToggled(true);
+                  controlPanel.getStartStopButton().setText("Stop");
 
-          // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
-          experimentCaptureWorker = new CaptureWorker();
-          experimentCaptureWorker.execute();
-        } else {
+                  // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
+                  experimentCaptureWorker = new CaptureWorker();
+                  experimentCaptureWorker.execute();
+                } else {
 
-          controlModel.setStartToggled(false);
-          controlPanel.getStartStopButton().setText("Start");
+                  controlModel.setStartToggled(false);
+                  controlPanel.getStartStopButton().setText("Start");
 
-          // cancel the worker
-          experimentCaptureWorker.cancel(true);
-        }
-      }
-    });
+                  // cancel the worker
+                  experimentCaptureWorker.cancel(true);
+                }
+              }
+            });
   }
 
   @Override
@@ -152,7 +155,10 @@ public class PulseExperiment extends Experiment {
     switch (propName) {
       case Model.EVENT_WAVEFORM_UPDATE:
         resultPanel.switch2WaveformChart();
-        resultController.updateWaveformChart(controlModel.getWaveformTimeData(), controlModel.getWaveformAmplitudeData(), controlModel.getAmplitude(),
+        resultController.updateWaveformChart(
+            controlModel.getWaveformTimeData(),
+            controlModel.getWaveformAmplitudeData(),
+            controlModel.getAmplitude(),
             controlModel.getPulseWidth());
 
         break;
@@ -187,7 +193,10 @@ public class PulseExperiment extends Experiment {
 
       int bufferSize = samplesPerPulse * controlModel.getPulseNumber() + samplesPerPulse;
 
-      dwfProxy.getDwf().startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(DWF.WAVEFORM_CHANNEL_1, sampleFrequency, bufferSize, isScale2V);
+      dwfProxy
+          .getDwf()
+          .startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(
+              DWF.WAVEFORM_CHANNEL_1, sampleFrequency, bufferSize, isScale2V);
 
       dwfProxy.waitUntilArmed();
 
@@ -195,20 +204,34 @@ public class PulseExperiment extends Experiment {
       // Pulse Out /////////////////
       // ////////////////////////////////
 
-      //      double[] customWaveform = WaveformUtils.generateCustomWaveform(controlModel.getWaveform(), controlModel.getAppliedAmplitude(),
+      //      double[] customWaveform =
+      // WaveformUtils.generateCustomWaveform(controlModel.getWaveform(),
+      // controlModel.getAppliedAmplitude(),
       //          controlModel.getCalculatedFrequency());
 
-      double[] customWaveform = WaveformUtils.generateCustomPulse(controlModel.getWaveform(), controlModel.getAppliedAmplitude(),
-          controlModel.getPulseWidth(), controlModel.getDutyCycle());
+      double[] customWaveform =
+          WaveformUtils.generateCustomPulse(
+              controlModel.getWaveform(),
+              controlModel.getAppliedAmplitude(),
+              controlModel.getPulseWidth(),
+              controlModel.getDutyCycle());
 
-      dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, controlModel.getPulseNumber(),
-          customWaveform);
+      dwfProxy
+          .getDwf()
+          .startCustomPulseTrain(
+              DWF.WAVEFORM_CHANNEL_1,
+              controlModel.getCalculatedFrequency(),
+              0,
+              controlModel.getPulseNumber(),
+              customWaveform);
 
       // ////////////////////////////////
       // ////////////////////////////////
 
       // Read In Data
-      boolean success = dwfProxy.capturePulseData(controlModel.getCalculatedFrequency(), controlModel.getPulseNumber());
+      boolean success =
+          dwfProxy.capturePulseData(
+              controlModel.getCalculatedFrequency(), controlModel.getPulseNumber());
       if (!success) {
         // Stop Analog In and Out
         dwfProxy.getDwf().stopWave(DWF.WAVEFORM_CHANNEL_1);
@@ -219,8 +242,10 @@ public class PulseExperiment extends Experiment {
 
       // Get Raw Data from Oscilloscope
       int validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
-      double[] v1 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
-      double[] v2 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
+      double[] v1 =
+          dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
+      double[] v2 =
+          dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
       // System.out.println("validSamples: " + validSamples);
 
       // Stop Analog In and Out
@@ -248,7 +273,10 @@ public class PulseExperiment extends Experiment {
       // create current data
       double[] current = new double[bufferLength];
       for (int i = 0; i < bufferLength; i++) {
-        current[i] = V2Trimmed[i] / controlModel.getSeriesResistance() * PulsePreferences.CURRENT_UNIT.getDivisor();
+        current[i] =
+            V2Trimmed[i]
+                / controlModel.getSeriesResistance()
+                * PulsePreferences.CURRENT_UNIT.getDivisor();
       }
 
       // create conductance data
@@ -256,12 +284,14 @@ public class PulseExperiment extends Experiment {
       for (int i = 0; i < bufferLength; i++) {
 
         double I = V2Trimmed[i] / controlModel.getSeriesResistance();
-        double G = I / (V1Trimmed[i] - V2Trimmed[i]) * PulsePreferences.CONDUCTANCE_UNIT.getDivisor();
+        double G =
+            I / (V1Trimmed[i] - V2Trimmed[i]) * PulsePreferences.CONDUCTANCE_UNIT.getDivisor();
         G = G < 0 ? 0 : G;
         conductance[i] = G;
       }
 
-      publish(new double[][]{timeData, V1Trimmed, V2Trimmed, V2MinusV1, current, conductance, null});
+      publish(
+          new double[][] {timeData, V1Trimmed, V2Trimmed, V2MinusV1, current, conductance, null});
 
       while (!initialPulseTrainCaptured) {
         // System.out.println("Waiting...");
@@ -295,7 +325,10 @@ public class PulseExperiment extends Experiment {
         // dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02,
         // samplesPerPulse * 1);
 
-        dwfProxy.getDwf().startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(DWF.WAVEFORM_CHANNEL_1, sampleFrequency, samplesPerPulse, true);
+        dwfProxy
+            .getDwf()
+            .startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(
+                DWF.WAVEFORM_CHANNEL_1, sampleFrequency, samplesPerPulse, true);
 
         dwfProxy.waitUntilArmed();
 
@@ -340,9 +373,14 @@ public class PulseExperiment extends Experiment {
             G = G < 0 ? 0 : G;
             runningTotal += G;
           }
-          double[] conductanceAve = new double[]{runningTotal / (bufferLength - 6) * ConductancePreferences.CONDUCTANCE_UNIT.getDivisor()};
+          double[] conductanceAve =
+              new double[] {
+                runningTotal
+                    / (bufferLength - 6)
+                    * ConductancePreferences.CONDUCTANCE_UNIT.getDivisor()
+              };
 
-          publish(new double[][]{null, null, null, null, null, null, conductanceAve});
+          publish(new double[][] {null, null, null, null, null, null, conductanceAve});
         }
         // Stop Analog In and Out
         dwfProxy.getDwf().stopWave(DWF.WAVEFORM_CHANNEL_1);
@@ -359,10 +397,23 @@ public class PulseExperiment extends Experiment {
       if (newestChunk[6] == null) {
         initialPulseTrainCaptured = true;
 
-        resultController.updateCaptureChartData(newestChunk[0], newestChunk[1], newestChunk[2], newestChunk[3], controlModel.getPulseWidth(),
+        resultController.updateCaptureChartData(
+            newestChunk[0],
+            newestChunk[1],
+            newestChunk[2],
+            newestChunk[3],
+            controlModel.getPulseWidth(),
             controlModel.getAmplitude());
-        resultController.updateIVChartData(newestChunk[0], newestChunk[4], controlModel.getPulseWidth(), controlModel.getAmplitude());
-        resultController.updateGVChartData(newestChunk[0], newestChunk[5], controlModel.getPulseWidth(), controlModel.getAmplitude());
+        resultController.updateIVChartData(
+            newestChunk[0],
+            newestChunk[4],
+            controlModel.getPulseWidth(),
+            controlModel.getAmplitude());
+        resultController.updateGVChartData(
+            newestChunk[0],
+            newestChunk[5],
+            controlModel.getPulseWidth(),
+            controlModel.getAmplitude());
 
         if (resultPanel.getCaptureButton().isSelected()) {
           resultPanel.switch2CaptureChart();
@@ -382,7 +433,10 @@ public class PulseExperiment extends Experiment {
         resultController.repaintGChart();
 
         controlModel.updateEnergyData();
-        controlPanel.updateEnergyGUI(controlModel.getAppliedAmplitude(), controlModel.getAppliedCurrent(), controlModel.getAppliedEnergy(),
+        controlPanel.updateEnergyGUI(
+            controlModel.getAppliedAmplitude(),
+            controlModel.getAppliedCurrent(),
+            controlModel.getAppliedEnergy(),
             controlModel.getAppliedMemristorEnergy());
       }
     }

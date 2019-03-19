@@ -27,7 +27,8 @@ import java.util.prefs.Preferences;
 
 public abstract class ExperimentPreferences {
 
-  public static final float R_SWITCH = 73F; // Resistance of one of the DG445 switches. Old AD Switches are ~50.
+  public static final float R_SWITCH =
+      73F; // Resistance of one of the DG445 switches. Old AD Switches are ~50.
 
   protected Preferences preferences;
 
@@ -102,11 +103,23 @@ public abstract class ExperimentPreferences {
   }
 
   public enum Waveform {
-    Sine, Triangle, TriangleUpDown, Square, SquareUpDown, SquareDecay, SawtoothUpDown, Sawtooth, QuarterSine, HalfSine, SquareSmooth;
+    Sine,
+    Triangle,
+    TriangleUpDown,
+    Square,
+    SquareUpDown,
+    SquareDecay,
+    SawtoothUpDown,
+    Sawtooth,
+    QuarterSine,
+    HalfSine,
+    SquareSmooth;
   }
 
   public enum CurrentUnits {
-    Amps(1, "A"), Milliamps(1000, "mA"), MicroAmps(1_000_000, "µA");
+    Amps(1, "A"),
+    Milliamps(1000, "mA"),
+    MicroAmps(1_000_000, "µA");
 
     private final double divisor;
     private final String label;
@@ -129,7 +142,9 @@ public abstract class ExperimentPreferences {
   }
 
   public enum ResistanceUnits {
-    Ohms(1, "Ω"), KiloOhms(1000, "kΩ"), MegaOhms(1_000_000, "mΩ");
+    Ohms(1, "Ω"),
+    KiloOhms(1000, "kΩ"),
+    MegaOhms(1_000_000, "mΩ");
 
     private final double divisor;
     private final String label;
@@ -152,7 +167,9 @@ public abstract class ExperimentPreferences {
   }
 
   public enum ConductanceUnits {
-    Siemens(1, "S"), MilliSiemens(1000, "mS"), MicroSiemens(1_000_000, "µS");
+    Siemens(1, "S"),
+    MilliSiemens(1000, "mS"),
+    MicroSiemens(1_000_000, "µS");
 
     private final double divisor;
     private final String label;
@@ -175,7 +192,9 @@ public abstract class ExperimentPreferences {
   }
 
   public enum TimeUnits {
-    Seconds(1, "s"), MilliSeconds(1000, "ms"), MicroSeconds(1_000_000, "µs");
+    Seconds(1, "s"),
+    MilliSeconds(1000, "ms"),
+    MicroSeconds(1_000_000, "µs");
 
     private final double divisor;
     private final String label;

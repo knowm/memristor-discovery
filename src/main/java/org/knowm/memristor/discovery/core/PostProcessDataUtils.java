@@ -27,20 +27,20 @@ package org.knowm.memristor.discovery.core;
 public class PostProcessDataUtils {
 
   public enum MemristorTestResult {
-    S_BAD, //resistance of open switches is less than minMaxR
-    S_GOOD, //switches are good.
-    PASS, //all good!
-    STK_HI, //resistance is stuck above minMaxR 
-    STK_LO, //resistance is stuck below maxMinR
-    W_FAIL, //resistance decrease is less than minRChange 
-    E_FAIL; //resistance increase is less than minRChange 
+    S_BAD, // resistance of open switches is less than minMaxR
+    S_GOOD, // switches are good.
+    PASS, // all good!
+    STK_HI, // resistance is stuck above minMaxR
+    STK_LO, // resistance is stuck below maxMinR
+    W_FAIL, // resistance decrease is less than minRChange
+    E_FAIL; // resistance increase is less than minRChange
   }
 
   /*
    * given a 3XN array of resistance values corrosponding to erase-read-write-read-erase-read read values for memristors, categorize code:
    */
-  public static MemristorTestResult[] categorizeMemristorTestReads(float[][] reads, float minEraseResistance, float maxWriteResistance,
-      float minOpenSwitchR) {
+  public static MemristorTestResult[] categorizeMemristorTestReads(
+      float[][] reads, float minEraseResistance, float maxWriteResistance, float minOpenSwitchR) {
 
     MemristorTestResult[] results = new MemristorTestResult[reads[0].length];
 
@@ -55,9 +55,13 @@ public class PostProcessDataUtils {
         }
       } else { // memristor
 
-        if (reads[0][i] < maxWriteResistance && reads[1][i] < maxWriteResistance && reads[2][i] < maxWriteResistance) {
+        if (reads[0][i] < maxWriteResistance
+            && reads[1][i] < maxWriteResistance
+            && reads[2][i] < maxWriteResistance) {
           results[i] = MemristorTestResult.STK_LO;
-        } else if (reads[0][i] > minEraseResistance && reads[1][i] > minEraseResistance && reads[2][i] > minEraseResistance) {
+        } else if (reads[0][i] > minEraseResistance
+            && reads[1][i] > minEraseResistance
+            && reads[2][i] > minEraseResistance) {
           results[i] = MemristorTestResult.STK_HI;
         } else if (reads[1][i] > maxWriteResistance) {
           results[i] = MemristorTestResult.W_FAIL;
@@ -66,17 +70,15 @@ public class PostProcessDataUtils {
         } else {
           results[i] = MemristorTestResult.PASS;
         }
-
       }
-
     }
 
     return results;
-
   }
 
   /**
-   * The data is a bit weird, as what's captured is a long window of "idle" voltage before and after the pulses. We clean that now...
+   * The data is a bit weird, as what's captured is a long window of "idle" voltage before and after
+   * the pulses. We clean that now...
    *
    * @param v1
    * @param v2
@@ -84,7 +86,8 @@ public class PostProcessDataUtils {
    * @param windowBuffer - how many data points outside the window should be included
    * @return
    */
-  public static double[][] trimIdleData(double[] v1, double[] v2, double vThreshold, int windowBuffer) {
+  public static double[][] trimIdleData(
+      double[] v1, double[] v2, double vThreshold, int windowBuffer) {
 
     double vThresholdAbs = Math.abs(vThreshold);
     int startIndex = 0;
@@ -103,7 +106,7 @@ public class PostProcessDataUtils {
       }
     }
 
-    //add a little extra to the end so we can capture RC effects.
+    // add a little extra to the end so we can capture RC effects.
     // System.out.println("endIndex = " + endIndex);
 
     int bufferLength = endIndex - startIndex;
@@ -114,7 +117,7 @@ public class PostProcessDataUtils {
       V1Cleaned[i] = v1[i + startIndex];
       V2Cleaned[i] = v2[i + startIndex];
     }
-    return new double[][]{V1Cleaned, V2Cleaned};
+    return new double[][] {V1Cleaned, V2Cleaned};
   }
 
   /**

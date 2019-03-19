@@ -107,26 +107,31 @@ public class ShelfLifePreferencesPanel extends ExperimentPreferencesPanel {
     saveDirectoryButton.setAlignmentX(Component.CENTER_ALIGNMENT);
     gc.gridx = 1;
     preferencesPanel.add(saveDirectoryButton, gc);
-    saveDirectoryButton.addActionListener(new ActionListener() {
+    saveDirectoryButton.addActionListener(
+        new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+          @Override
+          public void actionPerformed(ActionEvent e) {
 
-        try {
-          saveDirectory = FileUtils.showSaveAsDialog(preferencesPanel, saveDirectoryLabel.getText());
-          saveDirectoryTextField.setText(saveDirectory);
-        } catch (IOException e1) {
-          e1.printStackTrace();
-        }
-      }
-    });
+            try {
+              saveDirectory =
+                  FileUtils.showSaveAsDialog(preferencesPanel, saveDirectoryLabel.getText());
+              saveDirectoryTextField.setText(saveDirectory);
+            } catch (IOException e1) {
+              e1.printStackTrace();
+            }
+          }
+        });
     gc.gridy++;
     gc.gridx = 0;
     gc.gridwidth = 2;
     this.saveDirectoryTextField = new JTextField(24);
 
-    this.saveDirectoryTextField.setText(String.valueOf(
-        experimentPreferences.getString(ShelfLifePreferences.SAVE_DIRECTORY_INIT_KEY, ShelfLifePreferences.SAVE_DIRECTORY_INIT_DEFAULT_VALUE)));
+    this.saveDirectoryTextField.setText(
+        String.valueOf(
+            experimentPreferences.getString(
+                ShelfLifePreferences.SAVE_DIRECTORY_INIT_KEY,
+                ShelfLifePreferences.SAVE_DIRECTORY_INIT_DEFAULT_VALUE)));
 
     preferencesPanel.add(saveDirectoryTextField, gc);
 
@@ -139,8 +144,11 @@ public class ShelfLifePreferencesPanel extends ExperimentPreferencesPanel {
     gc.gridx = 1;
     this.timeUnitComboBox = new JComboBox<>();
     this.timeUnitComboBox.setModel(new DefaultComboBoxModel<>(TimeUnit.values()));
-    TimeUnit timeUnit = TimeUnit
-        .valueOf(experimentPreferences.getString(ShelfLifePreferences.TIME_UNIT_INIT_KEY, ShelfLifePreferences.TIME_UNIT_DEFAULT_VALUE));
+    TimeUnit timeUnit =
+        TimeUnit.valueOf(
+            experimentPreferences.getString(
+                ShelfLifePreferences.TIME_UNIT_INIT_KEY,
+                ShelfLifePreferences.TIME_UNIT_DEFAULT_VALUE));
     this.timeUnitComboBox.setSelectedItem(timeUnit);
     preferencesPanel.add(timeUnitComboBox, gc);
 
@@ -153,8 +161,11 @@ public class ShelfLifePreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.repeatIntervalTextField = new JTextField(12);
-    this.repeatIntervalTextField.setText(String.valueOf(
-        experimentPreferences.getInteger(ShelfLifePreferences.REPEAT_INTERVAL_INIT_KEY, ShelfLifePreferences.REPEAT_INTERVAL_DEFAULT_VALUE)));
+    this.repeatIntervalTextField.setText(
+        String.valueOf(
+            experimentPreferences.getInteger(
+                ShelfLifePreferences.REPEAT_INTERVAL_INIT_KEY,
+                ShelfLifePreferences.REPEAT_INTERVAL_DEFAULT_VALUE)));
     preferencesPanel.add(repeatIntervalTextField, gc);
 
     /////////////////////////////////////////////////////////
@@ -167,7 +178,10 @@ public class ShelfLifePreferencesPanel extends ExperimentPreferencesPanel {
     gc.gridx = 1;
     this.seriesResistorTextField = new JTextField(12);
     this.seriesResistorTextField.setText(
-        String.valueOf(experimentPreferences.getInteger(ShelfLifePreferences.SERIES_R_INIT_KEY, ShelfLifePreferences.SERIES_R_INIT_DEFAULT_VALUE)));
+        String.valueOf(
+            experimentPreferences.getInteger(
+                ShelfLifePreferences.SERIES_R_INIT_KEY,
+                ShelfLifePreferences.SERIES_R_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(seriesResistorTextField, gc);
 
     /////////////////////////////////////////////////////////
@@ -180,7 +194,10 @@ public class ShelfLifePreferencesPanel extends ExperimentPreferencesPanel {
     gc.gridx = 1;
     this.readVoltageAmplitudeTextField = new JTextField(12);
     this.readVoltageAmplitudeTextField.setText(
-        String.valueOf(experimentPreferences.getFloat(ShelfLifePreferences.READ_VOLTS_INIT_KEY, ShelfLifePreferences.READ_VOLTS_DEFAULT_VALUE)));
+        String.valueOf(
+            experimentPreferences.getFloat(
+                ShelfLifePreferences.READ_VOLTS_INIT_KEY,
+                ShelfLifePreferences.READ_VOLTS_DEFAULT_VALUE)));
     preferencesPanel.add(readVoltageAmplitudeTextField, gc);
 
     /////////////////////////////////////////////////////////
@@ -192,8 +209,11 @@ public class ShelfLifePreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.readPulseWidthInMicroSecondsTextField = new JTextField(12);
-    this.readPulseWidthInMicroSecondsTextField.setText(String.valueOf(
-        experimentPreferences.getInteger(ShelfLifePreferences.READ_PULSE_WIDTH_INIT_KEY, ShelfLifePreferences.READ_PULSE_WIDTH_DEFAULT_VALUE)));
+    this.readPulseWidthInMicroSecondsTextField.setText(
+        String.valueOf(
+            experimentPreferences.getInteger(
+                ShelfLifePreferences.READ_PULSE_WIDTH_INIT_KEY,
+                ShelfLifePreferences.READ_PULSE_WIDTH_DEFAULT_VALUE)));
     preferencesPanel.add(readPulseWidthInMicroSecondsTextField, gc);
 
     /////////////////////////////////////////////////////////
@@ -206,7 +226,10 @@ public class ShelfLifePreferencesPanel extends ExperimentPreferencesPanel {
     gc.gridx = 1;
     this.writeVoltageAmplitudeTextField = new JTextField(12);
     this.writeVoltageAmplitudeTextField.setText(
-        String.valueOf(experimentPreferences.getFloat(ShelfLifePreferences.WRITE_VOLTS_INIT_KEY, ShelfLifePreferences.WRITE_VOLTS_DEFAULT_VALUE)));
+        String.valueOf(
+            experimentPreferences.getFloat(
+                ShelfLifePreferences.WRITE_VOLTS_INIT_KEY,
+                ShelfLifePreferences.WRITE_VOLTS_DEFAULT_VALUE)));
     preferencesPanel.add(writeVoltageAmplitudeTextField, gc);
 
     /////////////////////////////////////////////////////////
@@ -218,8 +241,11 @@ public class ShelfLifePreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.writePulseWidthInMicroSecondsTextField = new JTextField(12);
-    this.writePulseWidthInMicroSecondsTextField.setText(String.valueOf(
-        experimentPreferences.getInteger(ShelfLifePreferences.WRITE_PULSE_WIDTH_INIT_KEY, ShelfLifePreferences.WRITE_PULSE_WIDTH_DEFAULT_VALUE)));
+    this.writePulseWidthInMicroSecondsTextField.setText(
+        String.valueOf(
+            experimentPreferences.getInteger(
+                ShelfLifePreferences.WRITE_PULSE_WIDTH_INIT_KEY,
+                ShelfLifePreferences.WRITE_PULSE_WIDTH_DEFAULT_VALUE)));
     preferencesPanel.add(writePulseWidthInMicroSecondsTextField, gc);
 
     /////////////////////////////////////////////////////////
@@ -232,7 +258,10 @@ public class ShelfLifePreferencesPanel extends ExperimentPreferencesPanel {
     gc.gridx = 1;
     this.eraseVoltageAmplitudeTextField = new JTextField(12);
     this.eraseVoltageAmplitudeTextField.setText(
-        String.valueOf(experimentPreferences.getFloat(ShelfLifePreferences.ERASE_VOLTS_INIT_KEY, ShelfLifePreferences.ERASE_VOLTS_DEFAULT_VALUE)));
+        String.valueOf(
+            experimentPreferences.getFloat(
+                ShelfLifePreferences.ERASE_VOLTS_INIT_KEY,
+                ShelfLifePreferences.ERASE_VOLTS_DEFAULT_VALUE)));
     preferencesPanel.add(eraseVoltageAmplitudeTextField, gc);
 
     /////////////////////////////////////////////////////////
@@ -244,8 +273,11 @@ public class ShelfLifePreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.erasePulseWidthInMicroSecondsTextField = new JTextField(12);
-    this.erasePulseWidthInMicroSecondsTextField.setText(String.valueOf(
-        experimentPreferences.getInteger(ShelfLifePreferences.ERASE_PULSE_WIDTH_INIT_KEY, ShelfLifePreferences.ERASE_PULSE_WIDTH_DEFAULT_VALUE)));
+    this.erasePulseWidthInMicroSecondsTextField.setText(
+        String.valueOf(
+            experimentPreferences.getInteger(
+                ShelfLifePreferences.ERASE_PULSE_WIDTH_INIT_KEY,
+                ShelfLifePreferences.ERASE_PULSE_WIDTH_DEFAULT_VALUE)));
     preferencesPanel.add(erasePulseWidthInMicroSecondsTextField, gc);
 
     /////////////////////////////////////////////////////////
@@ -257,8 +289,11 @@ public class ShelfLifePreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.maxWriteResistanceTextField = new JTextField(12);
-    this.maxWriteResistanceTextField.setText(String.valueOf(
-        experimentPreferences.getFloat(ShelfLifePreferences.MAX_WRITE_RESISTANCE_INIT_KEY, ShelfLifePreferences.MAX_WRITE_RESISTANCE_DEFAULT_VALUE)));
+    this.maxWriteResistanceTextField.setText(
+        String.valueOf(
+            experimentPreferences.getFloat(
+                ShelfLifePreferences.MAX_WRITE_RESISTANCE_INIT_KEY,
+                ShelfLifePreferences.MAX_WRITE_RESISTANCE_DEFAULT_VALUE)));
     preferencesPanel.add(maxWriteResistanceTextField, gc);
 
     /////////////////////////////////////////////////////////
@@ -270,8 +305,11 @@ public class ShelfLifePreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.minEraseResistanceTextField = new JTextField(12);
-    this.minEraseResistanceTextField.setText(String.valueOf(
-        experimentPreferences.getFloat(ShelfLifePreferences.MIN_ERASE_RESISTANCE_INIT_KEY, ShelfLifePreferences.MIN_ERASE_RESISTANCE_DEFAULT_VALUE)));
+    this.minEraseResistanceTextField.setText(
+        String.valueOf(
+            experimentPreferences.getFloat(
+                ShelfLifePreferences.MIN_ERASE_RESISTANCE_INIT_KEY,
+                ShelfLifePreferences.MIN_ERASE_RESISTANCE_DEFAULT_VALUE)));
     preferencesPanel.add(minEraseResistanceTextField, gc);
 
     /////////////////////////////////////////////////////////
@@ -281,25 +319,44 @@ public class ShelfLifePreferencesPanel extends ExperimentPreferencesPanel {
   @Override
   public void doSavePreferences() {
 
-    experimentPreferences.setString(ShelfLifePreferences.SAVE_DIRECTORY_INIT_KEY, saveDirectoryTextField.getText().trim());
-    experimentPreferences.setString(ShelfLifePreferences.TIME_UNIT_INIT_KEY, timeUnitComboBox.getSelectedItem().toString().trim());
-    experimentPreferences.setInteger(ShelfLifePreferences.REPEAT_INTERVAL_INIT_KEY, Integer.parseInt(repeatIntervalTextField.getText()));
-    experimentPreferences.setInteger(ShelfLifePreferences.SERIES_R_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
+    experimentPreferences.setString(
+        ShelfLifePreferences.SAVE_DIRECTORY_INIT_KEY, saveDirectoryTextField.getText().trim());
+    experimentPreferences.setString(
+        ShelfLifePreferences.TIME_UNIT_INIT_KEY,
+        timeUnitComboBox.getSelectedItem().toString().trim());
+    experimentPreferences.setInteger(
+        ShelfLifePreferences.REPEAT_INTERVAL_INIT_KEY,
+        Integer.parseInt(repeatIntervalTextField.getText()));
+    experimentPreferences.setInteger(
+        ShelfLifePreferences.SERIES_R_INIT_KEY,
+        Integer.parseInt(seriesResistorTextField.getText()));
 
-    experimentPreferences.setFloat(ShelfLifePreferences.READ_VOLTS_INIT_KEY, Float.parseFloat(readVoltageAmplitudeTextField.getText()));
-    experimentPreferences.setFloat(ShelfLifePreferences.WRITE_VOLTS_INIT_KEY, Float.parseFloat(writeVoltageAmplitudeTextField.getText()));
-    experimentPreferences.setFloat(ShelfLifePreferences.ERASE_VOLTS_INIT_KEY, Float.parseFloat(eraseVoltageAmplitudeTextField.getText()));
+    experimentPreferences.setFloat(
+        ShelfLifePreferences.READ_VOLTS_INIT_KEY,
+        Float.parseFloat(readVoltageAmplitudeTextField.getText()));
+    experimentPreferences.setFloat(
+        ShelfLifePreferences.WRITE_VOLTS_INIT_KEY,
+        Float.parseFloat(writeVoltageAmplitudeTextField.getText()));
+    experimentPreferences.setFloat(
+        ShelfLifePreferences.ERASE_VOLTS_INIT_KEY,
+        Float.parseFloat(eraseVoltageAmplitudeTextField.getText()));
 
-    experimentPreferences.setInteger(ShelfLifePreferences.READ_PULSE_WIDTH_INIT_KEY,
+    experimentPreferences.setInteger(
+        ShelfLifePreferences.READ_PULSE_WIDTH_INIT_KEY,
         Integer.parseInt(readPulseWidthInMicroSecondsTextField.getText()));
-    experimentPreferences.setInteger(ShelfLifePreferences.WRITE_PULSE_WIDTH_INIT_KEY,
+    experimentPreferences.setInteger(
+        ShelfLifePreferences.WRITE_PULSE_WIDTH_INIT_KEY,
         Integer.parseInt(writePulseWidthInMicroSecondsTextField.getText()));
-    experimentPreferences.setInteger(ShelfLifePreferences.ERASE_PULSE_WIDTH_INIT_KEY,
+    experimentPreferences.setInteger(
+        ShelfLifePreferences.ERASE_PULSE_WIDTH_INIT_KEY,
         Integer.parseInt(erasePulseWidthInMicroSecondsTextField.getText()));
 
-    experimentPreferences.setFloat(ShelfLifePreferences.MAX_WRITE_RESISTANCE_INIT_KEY, Float.parseFloat(maxWriteResistanceTextField.getText()));
-    experimentPreferences.setFloat(ShelfLifePreferences.MIN_ERASE_RESISTANCE_INIT_KEY, Float.parseFloat(minEraseResistanceTextField.getText()));
-
+    experimentPreferences.setFloat(
+        ShelfLifePreferences.MAX_WRITE_RESISTANCE_INIT_KEY,
+        Float.parseFloat(maxWriteResistanceTextField.getText()));
+    experimentPreferences.setFloat(
+        ShelfLifePreferences.MIN_ERASE_RESISTANCE_INIT_KEY,
+        Float.parseFloat(minEraseResistanceTextField.getText()));
   }
 
   @Override

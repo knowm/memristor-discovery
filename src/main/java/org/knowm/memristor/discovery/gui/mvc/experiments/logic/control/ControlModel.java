@@ -69,16 +69,31 @@ public class ControlModel extends Model {
   @Override
   public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {
 
-    waveform = LogicPreferences.Waveform
-        .valueOf(experimentPreferences.getString(LogicPreferences.WAVEFORM_INIT_STRING_KEY, LogicPreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
+    waveform =
+        LogicPreferences.Waveform.valueOf(
+            experimentPreferences.getString(
+                LogicPreferences.WAVEFORM_INIT_STRING_KEY,
+                LogicPreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
 
     System.out.println("waveform: " + waveform);
 
-    seriesResistance = experimentPreferences.getInteger(LogicPreferences.SERIES_R_INIT_KEY, LogicPreferences.SERIES_R_INIT_DEFAULT_VALUE);
-    amplitude = experimentPreferences.getFloat(LogicPreferences.AMPLITUDE_INIT_FLOAT_KEY, LogicPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
-    pulseWidth = experimentPreferences.getInteger(LogicPreferences.PULSE_WIDTH_INIT_KEY, LogicPreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
-    pulseNumber = experimentPreferences.getInteger(LogicPreferences.NUM_PULSES_INIT_KEY, LogicPreferences.NUM_PULSES_INIT_DEFAULT_VALUE);
-    numExecutions = experimentPreferences.getInteger(LogicPreferences.NUM_EXECUTIONS_INIT_KEY, LogicPreferences.NUM_EXECUTIONS_INIT_DEFAULT_VALUE);
+    seriesResistance =
+        experimentPreferences.getInteger(
+            LogicPreferences.SERIES_R_INIT_KEY, LogicPreferences.SERIES_R_INIT_DEFAULT_VALUE);
+    amplitude =
+        experimentPreferences.getFloat(
+            LogicPreferences.AMPLITUDE_INIT_FLOAT_KEY,
+            LogicPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
+    pulseWidth =
+        experimentPreferences.getInteger(
+            LogicPreferences.PULSE_WIDTH_INIT_KEY, LogicPreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
+    pulseNumber =
+        experimentPreferences.getInteger(
+            LogicPreferences.NUM_PULSES_INIT_KEY, LogicPreferences.NUM_PULSES_INIT_DEFAULT_VALUE);
+    numExecutions =
+        experimentPreferences.getInteger(
+            LogicPreferences.NUM_EXECUTIONS_INIT_KEY,
+            LogicPreferences.NUM_EXECUTIONS_INIT_DEFAULT_VALUE);
   }
 
   /** Given the state of the model, update the waveform x and y axis data arrays. */
@@ -87,7 +102,8 @@ public class ControlModel extends Model {
     Driver driver;
     switch (waveform) {
       case Sawtooth:
-        driver = new Sawtooth("Sawtooth", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
+        driver =
+            new Sawtooth("Sawtooth", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
         break;
       case QuarterSine:
         driver = new QuarterSine("QuarterSine", 0, 0, amplitude, getCalculatedFrequency());
@@ -107,7 +123,8 @@ public class ControlModel extends Model {
     }
 
     double stopTime = 1 / getCalculatedFrequency() * pulseNumber;
-    double timeStep = 1 / getCalculatedFrequency() / LogicPreferences.CAPTURE_BUFFER_SIZE * pulseNumber;
+    double timeStep =
+        1 / getCalculatedFrequency() / LogicPreferences.CAPTURE_BUFFER_SIZE * pulseNumber;
 
     int counter = 0;
     for (double i = 0.0; i < stopTime; i = i + timeStep) {
