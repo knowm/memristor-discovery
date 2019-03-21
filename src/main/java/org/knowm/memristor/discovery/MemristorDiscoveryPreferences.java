@@ -41,8 +41,7 @@ public class MemristorDiscoveryPreferences {
 
     preferences = Preferences.userNodeForPackage(MemristorDiscoveryPreferences.class);
     boardVersion = this.preferences.get(BOARD_INIT_STRING_KEY, BOARD_INIT_STRING_DEFAULT_VALUE);
-    experiment =
-        this.preferences.get(EXPERIMENT_INIT_STRING_KEY, EXPERIMENT_INIT_STRING_DEFAULT_VALUE);
+    experiment = this.preferences.get(EXPERIMENT_INIT_STRING_KEY, EXPERIMENT_INIT_STRING_DEFAULT_VALUE);
   }
 
   public void updateBoardVersion(String boardVersion) {

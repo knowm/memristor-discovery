@@ -73,6 +73,14 @@
       <version>1.7.26</version>
     </dependency>
 
+ <dependency>
+      <groupId>org.knowm</groupId>
+      <artifactId>jspice</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+
+
+
   </dependencies>
 
   <build>

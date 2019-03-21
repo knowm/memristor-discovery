@@ -44,20 +44,28 @@ public class ResultPanel extends JPanel {
   private final ButtonGroup radioButtonGroup;
   private final JRadioButton captureButton;
   private final JRadioButton ivButton;
-  private final JRadioButton gvButton;
+  private final JRadioButton readPulseCaptureButton;
 
   private final JPanel chartsPanel;
-  private final JCheckBox freezeYAxisCheckBoxIV;
-  private final JPanel gvChartControlPanel;
-  private final JCheckBox freezeYAxisCheckBoxGV;
+
+  //private final JCheckBox freezeYAxisCheckBoxIV;
+
+  // private final JPanel gvChartControlPanel;
+
+  // private final JCheckBox freezeYAxisCheckBoxGV;
+
   XYChart waveformChart;
   XChartPanel<XYChart> waveformChartPanel;
+
   XYChart captureChart;
   XChartPanel<XYChart> captureChartPanel;
+
   XYChart ivChart;
   XChartPanel<XYChart> ivChartPanel;
-  XYChart gvChart;
-  XChartPanel<XYChart> gvChartPanel;
+
+  XYChart readCaptureChart;
+  XChartPanel<XYChart> readCaptureChartPanel;
+
   XYChart gChart;
   XChartPanel<XYChart> gChartPanel;
 
@@ -71,39 +79,23 @@ public class ResultPanel extends JPanel {
     // Waveform Chart ///////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    waveformChart =
-        new XYChartBuilder()
-            .width(400)
-            .height(400)
-            .title("Waveform")
-            .yAxisTitle("Voltage [V]")
-            .xAxisTitle("Time [µs]")
-            .build();
+    waveformChart = new XYChartBuilder().width(400).height(400).title("Waveform").yAxisTitle("Voltage [V]").xAxisTitle("Time [µs]").build();
     waveformChart.getStyler().setLegendVisible(false);
-    XYSeries series = waveformChart.addSeries("waveform", new double[] {0}, new double[] {0});
-    series.setMarker(
-        SeriesMarkers
-            .NONE); // waveformChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
+    XYSeries series = waveformChart.addSeries("waveform", new double[]{0}, new double[]{0});
+    series.setMarker(SeriesMarkers.NONE); // waveformChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
     waveformChartPanel = new XChartPanel<>(waveformChart);
 
     // ///////////////////////////////////////////////////////////
     // Capture Chart ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    captureChart =
-        new XYChartBuilder()
-            .width(600)
-            .title("Capture")
-            .height(400)
-            .yAxisTitle("Voltage [V]")
-            .xAxisTitle("Time [µs]")
-            .build();
+    captureChart = new XYChartBuilder().width(600).title("Capture").height(400).yAxisTitle("Voltage [V]").xAxisTitle("Time [µs]").build();
     captureChart.getStyler().setLegendPosition(LegendPosition.InsideNE);
-    series = captureChart.addSeries("V1", new double[] {0}, new double[] {0});
+    series = captureChart.addSeries("V1", new double[]{0}, new double[]{0});
     series.setMarker(SeriesMarkers.NONE);
-    series = captureChart.addSeries("V2", new double[] {0}, new double[] {0});
+    series = captureChart.addSeries("V2", new double[]{0}, new double[]{0});
     series.setMarker(SeriesMarkers.NONE);
-    series = captureChart.addSeries("V1-V2", new double[] {0}, new double[] {0});
+    series = captureChart.addSeries("V1-V2", new double[]{0}, new double[]{0});
     series.setMarker(SeriesMarkers.NONE);
     captureChartPanel = new XChartPanel<>(captureChart);
 
@@ -111,57 +103,46 @@ public class ResultPanel extends JPanel {
     // I-T Chart ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    ivChart =
-        new XYChartBuilder()
-            .width(600)
-            .title("I-T")
-            .height(400)
-            .yAxisTitle("Current [" + PulsePreferences.CURRENT_UNIT.getLabel() + "]")
-            .xAxisTitle("Time [µs]")
-            .build();
+    ivChart = new XYChartBuilder().width(600).title("I-T").height(400).yAxisTitle("Current [" + PulsePreferences.CURRENT_UNIT.getLabel() + "]")
+        .xAxisTitle("Time [µs]").build();
     ivChart.getStyler().setLegendVisible(false);
     ivChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);
-    ivChart.addSeries("iv", new double[] {0}, new double[] {0});
+    ivChart.addSeries("iv", new double[]{0}, new double[]{0});
     ivChartPanel = new XChartPanel<>(ivChart);
 
-    // ///////////////////////////////////////////////////////////
-    // G-T Chart ////////////////////////////////////////////
-    // ///////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////
+    // ReadCaptureChart  ////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////
 
-    gvChart =
-        new XYChartBuilder()
-            .width(100)
-            .title("G-T")
-            .height(100)
-            .yAxisTitle("Conductance [" + PulsePreferences.CONDUCTANCE_UNIT.getLabel() + "]")
-            .xAxisTitle("Time [µs]")
-            .build();
-    gvChart.getStyler().setLegendVisible(false);
-    gvChart.getStyler().setYAxisMin(0.0);
-    gvChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);
-    gvChart.addSeries("gv", new double[] {0}, new double[] {0});
-    gvChartPanel = new XChartPanel<>(gvChart);
+    readCaptureChart = new XYChartBuilder().width(100).title("Read Pulse Capture").height(100).yAxisTitle("Voltage [V]").xAxisTitle("Time [µs]")
+        .build();
+    readCaptureChart.getStyler().setLegendPosition(LegendPosition.InsideNE);
+    //readCaptureChart.getStyler().setYAxisMin(0.0);
+    readCaptureChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
+
+    series = readCaptureChart.addSeries("V1", new double[]{0}, new double[]{0});
+    series.setMarker(SeriesMarkers.NONE);
+    series = readCaptureChart.addSeries("V2", new double[]{0}, new double[]{0});
+    series.setMarker(SeriesMarkers.NONE);
+    series = readCaptureChart.addSeries("V1-V2", new double[]{0}, new double[]{0});
+    series.setMarker(SeriesMarkers.NONE);
+
+    readCaptureChartPanel = new XChartPanel<>(readCaptureChart);
 
     // ///////////////////////////////////////////////////////////
     // G Chart ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    gChart =
-        new XYChartBuilder()
-            .width(100)
-            .title("G")
-            .height(250)
-            .xAxisTitle("Pulse Number")
-            .yAxisTitle("Conductance [" + PulsePreferences.CONDUCTANCE_UNIT.getLabel() + "]")
-            .build();
+    gChart = new XYChartBuilder().width(100).title("G").height(250).xAxisTitle("Pulse Number")
+        .yAxisTitle("Conductance [" + PulsePreferences.CONDUCTANCE_UNIT.getLabel() + "]").build();
     gChart.getStyler().setLegendVisible(false);
-    gChart.getStyler().setYAxisMin(0.0);
+    //gChart.getStyler().setYAxisMin(0.0);
 
-    // gChart.getStyler().setYAxisLogarithmic(true);
+    gChart.getStyler().setYAxisLogarithmic(true);
 
-    series = gChart.addSeries("g", new double[] {0}, new double[] {0});
+    series = gChart.addSeries("g", new double[]{0}, new double[]{1E-10});
     series.setMarker(SeriesMarkers.NONE);
-    series = gChart.addSeries("glast", new double[] {0}, new double[] {0});
+    series = gChart.addSeries("glast", new double[]{0}, new double[]{1E-10});
     series.setMarker(SeriesMarkers.NONE);
     gChartPanel = new XChartPanel<>(gChart);
 
@@ -178,9 +159,9 @@ public class ResultPanel extends JPanel {
     // ///////////////////////////////////////////////////////////
 
     radioPanel = new JPanel();
-    captureButton = new JRadioButton("Capture");
+    captureButton = new JRadioButton("Write-Erase Pulse Capture");
     ivButton = new JRadioButton("I-T");
-    gvButton = new JRadioButton("G-T");
+    readPulseCaptureButton = new JRadioButton("Read Pulse Capture");
     radioButtonGroup = new ButtonGroup();
     addRadioButtons();
 
@@ -188,34 +169,36 @@ public class ResultPanel extends JPanel {
     // Check Box ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    freezeYAxisCheckBoxIV = new JCheckBox("Freeze Y-Axis");
+    // freezeYAxisCheckBoxIV = new JCheckBox("Freeze Y-Axis");
 
-    gvChartControlPanel = new JPanel();
-    freezeYAxisCheckBoxGV = new JCheckBox("Freeze Y-Axis");
+    // gvChartControlPanel = new JPanel();
+    //freezeYAxisCheckBoxGV = new JCheckBox("Freeze Y-Axis");
 
-    gvChartControlPanel.add(freezeYAxisCheckBoxGV);
+    // gvChartControlPanel.add(freezeYAxisCheckBoxGV);
   }
 
   private void addRadioButtons() {
 
     radioButtonGroup.add(captureButton);
+    radioButtonGroup.add(readPulseCaptureButton);
     radioButtonGroup.add(ivButton);
-    radioButtonGroup.add(gvButton);
+
     radioPanel.add(captureButton);
+    radioPanel.add(readPulseCaptureButton);
     radioPanel.add(ivButton);
-    radioPanel.add(gvButton);
+
     add(radioPanel, BorderLayout.SOUTH);
   }
 
-  private void addYAxisFreezeCheckBoxIV() {
+  //  private void addYAxisFreezeCheckBoxIV() {
+  //
+  //    add(freezeYAxisCheckBoxIV, BorderLayout.NORTH);
+  //  }
 
-    add(freezeYAxisCheckBoxIV, BorderLayout.NORTH);
-  }
-
-  private void addChartControlGV() {
-
-    add(gvChartControlPanel, BorderLayout.NORTH);
-  }
+  //  private void addChartControlGV() {
+  //
+  //    add(gvChartControlPanel, BorderLayout.NORTH);
+  //  }
 
   public void switch2WaveformChart() {
 
@@ -259,23 +242,23 @@ public class ResultPanel extends JPanel {
       chartsPanel.add(gChartPanel, BorderLayout.SOUTH);
       add(chartsPanel, BorderLayout.CENTER);
       addRadioButtons();
-      addYAxisFreezeCheckBoxIV();
+      // addYAxisFreezeCheckBoxIV();
       revalidate();
       repaint();
     }
   }
 
-  public void switch2GVChart() {
+  public void switchReadPulseCaptureChart() {
 
-    if (!gvChartPanel.isShowing()) {
+    if (!readCaptureChartPanel.isShowing()) {
       // System.out.println("switch2GVChart");
       removeAll();
       chartsPanel.removeAll();
-      chartsPanel.add(gvChartPanel, BorderLayout.CENTER);
+      chartsPanel.add(readCaptureChartPanel, BorderLayout.CENTER);
       chartsPanel.add(gChartPanel, BorderLayout.SOUTH);
       add(chartsPanel, BorderLayout.CENTER);
       addRadioButtons();
-      addChartControlGV();
+      // addChartControlGV();
       revalidate();
       repaint();
     }
@@ -293,18 +276,18 @@ public class ResultPanel extends JPanel {
 
   public JRadioButton getGVButton() {
 
-    return gvButton;
+    return readPulseCaptureButton;
   }
 
-  public JCheckBox getFreezeYAxisCheckBoxIV() {
-
-    return freezeYAxisCheckBoxIV;
-  }
-
-  public JCheckBox getFreezeYAxisCheckBoxGV() {
-
-    return freezeYAxisCheckBoxGV;
-  }
+  //  public JCheckBox getFreezeYAxisCheckBoxIV() {
+  //
+  //    return freezeYAxisCheckBoxIV;
+  //  }
+  //
+  //  public JCheckBox getFreezeYAxisCheckBoxGV() {
+  //
+  //    return freezeYAxisCheckBoxGV;
+  //  }
 
   public double getIVChartMax() {
 
@@ -316,15 +299,15 @@ public class ResultPanel extends JPanel {
     return ivChart.getSeriesMap().get("iv").getYMin();
   }
 
-  public double getGVChartMax() {
-
-    return gvChart.getSeriesMap().get("gv").getYMax();
-  }
-
-  public double getGVChartMin() {
-
-    return gvChart.getSeriesMap().get("gv").getYMin();
-  }
+  //  public double getGVChartMax() {
+  //
+  //    return readCaptureChart.getSeriesMap().get("gv").getYMax();
+  //  }
+  //
+  //  public double getGVChartMin() {
+  //
+  //    return readCaptureChart.getSeriesMap().get("gv").getYMin();
+  //  }
 
   public JPanel getRadioPanel() {
 
@@ -361,14 +344,14 @@ public class ResultPanel extends JPanel {
     return ivChartPanel;
   }
 
-  public XYChart getGvChart() {
+  public XYChart getReadPulseCaptureChart() {
 
-    return gvChart;
+    return readCaptureChart;
   }
 
-  public XChartPanel<XYChart> getGvChartPanel() {
+  public XChartPanel<XYChart> getReadPulseCaptureChartPanel() {
 
-    return gvChartPanel;
+    return readCaptureChartPanel;
   }
 
   public XYChart getGChart() {

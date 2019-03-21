@@ -27,8 +27,8 @@ import java.util.prefs.Preferences;
 
 public abstract class ExperimentPreferences {
 
-  public static final float R_SWITCH = 73F; // Resistance of one of the DG445 switches. Old AD Switches are ~50.
-
+  public static final double TOTAL_PARASITIC_RESISTANCE = 160;//Total average voltage drop across closed switches and board line traces between A and B nodes.
+  public static final double R_SWITCH = 75;
   protected Preferences preferences;
 
   /**
