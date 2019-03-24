@@ -29,7 +29,12 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JTextField;
+
+import org.knowm.memristor.discovery.MemristorDiscoveryPreferences;
 import org.knowm.memristor.discovery.core.Util;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.HysteresisPreferences;
@@ -75,127 +80,93 @@ public class ResultController implements PropertyChangeListener {
 
   private void setUpViewEvents() {
 
-    resultPanel
-        .getCaptureButton()
-        .addActionListener(
-            new ActionListener() {
+    resultPanel.getCaptureButton().addActionListener(new ActionListener() {
 
-              @Override
-              public void actionPerformed(ActionEvent e) {
+      @Override
+      public void actionPerformed(ActionEvent e) {
 
-                resultPanel.switch2CaptureChart();
-              }
-            });
-    resultPanel
-        .getIVButton()
-        .addActionListener(
-            new ActionListener() {
+        resultPanel.switch2CaptureChart();
+      }
+    });
+    resultPanel.getIVButton().addActionListener(new ActionListener() {
 
-              @Override
-              public void actionPerformed(ActionEvent e) {
+      @Override
+      public void actionPerformed(ActionEvent e) {
 
-                resultPanel.switch2IVChart();
-              }
-            });
-    resultPanel
-        .getGVButton()
-        .addActionListener(
-            new ActionListener() {
+        resultPanel.switch2IVChart();
+      }
+    });
+    resultPanel.getGVButton().addActionListener(new ActionListener() {
 
-              @Override
-              public void actionPerformed(ActionEvent e) {
+      @Override
+      public void actionPerformed(ActionEvent e) {
 
-                resultPanel.switch2GVChart();
-              }
-            });
-    resultPanel
-        .getFreezeYAxisCheckBoxIV()
-        .addActionListener(
-            new ActionListener() {
+        resultPanel.switch2GVChart();
+      }
+    });
+    resultPanel.getFreezeYAxisCheckBoxIV().addActionListener(new ActionListener() {
 
-              @Override
-              public void actionPerformed(ActionEvent e) {
+      @Override
+      public void actionPerformed(ActionEvent e) {
 
-                if (resultPanel.getFreezeYAxisCheckBoxIV().isSelected()) {
-                  resultModel.setyMaxIV(resultPanel.getIVChartMax());
-                  resultModel.setyMinIV(resultPanel.getIVChartMin());
-                } else {
-                  resultModel.setyMaxIV(null);
-                  resultModel.setyMinIV(null);
-                }
-              }
-            });
-    resultPanel
-        .getFreezeYAxisCheckBoxGV()
-        .addActionListener(
-            new ActionListener() {
+        if (resultPanel.getFreezeYAxisCheckBoxIV().isSelected()) {
+          resultModel.setyMaxIV(resultPanel.getIVChartMax());
+          resultModel.setyMinIV(resultPanel.getIVChartMin());
+        } else {
+          resultModel.setyMaxIV(null);
+          resultModel.setyMinIV(null);
+        }
+      }
+    });
+    resultPanel.getFreezeYAxisCheckBoxGV().addActionListener(new ActionListener() {
 
-              @Override
-              public void actionPerformed(ActionEvent e) {
+      @Override
+      public void actionPerformed(ActionEvent e) {
 
-                if (resultPanel.getFreezeYAxisCheckBoxGV().isSelected()) {
-                  resultModel.setyMaxGV(resultPanel.getGVChartMax());
-                  resultModel.setyMinGV(resultPanel.getGVChartMin());
-                } else {
-                  resultModel.setyMaxGV(null);
-                  resultModel.setyMinGV(null);
-                }
-              }
-            });
+        if (resultPanel.getFreezeYAxisCheckBoxGV().isSelected()) {
+          resultModel.setyMaxGV(resultPanel.getGVChartMax());
+          resultModel.setyMinGV(resultPanel.getGVChartMin());
+        } else {
+          resultModel.setyMaxGV(null);
+          resultModel.setyMinGV(null);
+        }
+      }
+    });
 
-    resultPanel
-        .getkTextFieldGV()
-        .addKeyListener(
-            new KeyAdapter() {
+    resultPanel.getkTextFieldGV().addKeyListener(new KeyAdapter() {
 
-              @Override
-              public void keyReleased(KeyEvent e) {
+      @Override
+      public void keyReleased(KeyEvent e) {
 
-                JTextField textField = (JTextField) e.getSource();
-                String text = textField.getText();
+        JTextField textField = (JTextField) e.getSource();
+        String text = textField.getText();
 
-                if (text.equalsIgnoreCase(".")) {
-                  // do nothing
-                } else {
-                  try {
-                    double newKValue = Double.parseDouble(text);
+        if (text.equalsIgnoreCase(".")) {
+          // do nothing
+        } else {
+          try {
+            double newKValue = Double.parseDouble(text);
 
-                    resultModel.setK(newKValue);
-                    resultPanel
-                        .getkTextFieldGV()
-                        .setText(
-                            Double.toString(
-                                resultModel.getK())); // this reverts back to acceptable range (0-1)
-                  } catch (Exception ex) {
-                    // parsing error, default back to previous value
-                    resultPanel.getkTextFieldGV().setText(Double.toString(resultModel.getK()));
-                  }
-                }
-              }
-            });
+            resultModel.setK(newKValue);
+            resultPanel.getkTextFieldGV().setText(Double.toString(resultModel.getK())); // this reverts back to acceptable range (0-1)
+          } catch (Exception ex) {
+            // parsing error, default back to previous value
+            resultPanel.getkTextFieldGV().setText(Double.toString(resultModel.getK()));
+          }
+        }
+      }
+    });
   }
 
-  public void udpateWaveformChart(
-      double[] waveformTimeData,
-      double[] waveformAmplitudeData,
-      double amplitude,
-      int frequency,
-      double offset) {
+  public void udpateWaveformChart(double[] waveformTimeData, double[] waveformAmplitudeData, double amplitude, int frequency, double offset) {
 
     resultPanel.getWaveformChart().setTitle(getWaveformChartTitle(amplitude, frequency, offset));
-    resultPanel
-        .getWaveformChart()
-        .updateXYSeries("waveform", waveformTimeData, waveformAmplitudeData, null);
+    resultPanel.getWaveformChart().updateXYSeries("waveform", waveformTimeData, waveformAmplitudeData, null);
     resultPanel.getWaveformChartPanel().revalidate();
     resultPanel.getWaveformChartPanel().repaint();
   }
 
-  public void udpateVtChartData(
-      double[] captureAmplitudeData1,
-      double[] captureAmplitudeData2,
-      double[] timeData,
-      int frequency,
-      double amplitude,
+  public void udpateVtChartData(double[] captureAmplitudeData1, double[] captureAmplitudeData2, double[] timeData, int frequency, double amplitude,
       double offset) {
 
     resultPanel.getCaptureChart().setTitle(getVtChartTitle(amplitude, frequency, offset));
@@ -205,12 +176,7 @@ public class ResultController implements PropertyChangeListener {
     resultPanel.getCaptureChartPanel().repaint();
   }
 
-  public void udpateIVChartData(
-      double[] captureAmplitudeData1,
-      double[] vMemristor,
-      double[] current,
-      int frequency,
-      double amplitude,
+  public void udpateIVChartData(double[] captureAmplitudeData1, double[] vMemristor, double[] current, int frequency, double amplitude,
       double offset) {
 
     resultPanel.getIvChart().getStyler().setYAxisMax(resultModel.getyMaxIV());
@@ -226,18 +192,25 @@ public class ResultController implements PropertyChangeListener {
     resultPanel.getIvChartPanel().repaint();
   }
 
-  public void updateGVChartData(
-      double[] captureAmplitudeData1,
-      double[] vMemristor,
-      double[] conductance,
-      int frequency,
-      double amplitude,
-      double offset) {
+  public void updateGVChartData(double[] v1, double[] vMemristor, double[] conductance, int frequency, double amplitude, double offset) {
 
     resultPanel.getGvChart().getStyler().setYAxisMax(resultModel.getyMaxGV());
     resultPanel.getGvChart().setTitle(getGVChartTitle(amplitude, frequency, offset));
-    resultPanel.getGvChart().updateXYSeries("V1", captureAmplitudeData1, conductance, null);
-    resultPanel.getGvChart().updateXYSeries("Memristor", vMemristor, conductance, null);
+    resultPanel.getGvChart().updateXYSeries("V1", v1, conductance, null);
+
+    //filter out all conductance measurments less than .02V.
+    List<Number> v = new ArrayList<>();
+    List<Number> g = new ArrayList<>();
+
+    for (int i = 0; i < conductance.length; i++) {
+      if (Math.abs(vMemristor[i]) > MemristorDiscoveryPreferences.MIN_VOLTAGE_MEASURE_AMPLITUDE) {
+        v.add(vMemristor[i]);
+        g.add(conductance[i]);
+      }
+    }
+
+    resultPanel.getGvChart().updateXYSeries("Memristor", v, g, null);
+
     resultPanel.getGvChartPanel().revalidate();
     resultPanel.getGvChartPanel().repaint();
   }
@@ -264,12 +237,7 @@ public class ResultController implements PropertyChangeListener {
 
   private String getWaveform(double amplitude, int frequency, double offset) {
 
-    return "Amplitude = "
-        + getFormattedAmplitude(amplitude)
-        + " V, Frequency = "
-        + frequency
-        + " Hz, Offset = "
-        + getFormattedAmplitude(offset)
+    return "Amplitude = " + getFormattedAmplitude(amplitude) + " V, Frequency = " + frequency + " Hz, Offset = " + getFormattedAmplitude(offset)
         + " V";
   }
 
@@ -279,9 +247,8 @@ public class ResultController implements PropertyChangeListener {
   }
 
   /**
-   * These property change events are triggered in the model in the case where the underlying model
-   * is updated. Here, the controller can respond to those events and make sure the corresponding
-   * GUI components get updated.
+   * These property change events are triggered in the model in the case where the underlying model is updated. Here, the controller can respond to
+   * those events and make sure the corresponding GUI components get updated.
    */
   @Override
   public void propertyChange(PropertyChangeEvent evt) {

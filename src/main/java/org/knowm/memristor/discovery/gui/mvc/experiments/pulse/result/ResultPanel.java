@@ -79,7 +79,7 @@ public class ResultPanel extends JPanel {
     // Waveform Chart ///////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    waveformChart = new XYChartBuilder().width(400).height(400).title("Waveform").yAxisTitle("Voltage [V]").xAxisTitle("Time [µs]").build();
+    waveformChart = new XYChartBuilder().width(400).height(300).title("Waveform").yAxisTitle("Voltage [V]").xAxisTitle("Time [µs]").build();
     waveformChart.getStyler().setLegendVisible(false);
     XYSeries series = waveformChart.addSeries("waveform", new double[]{0}, new double[]{0});
     series.setMarker(SeriesMarkers.NONE); // waveformChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
@@ -89,7 +89,7 @@ public class ResultPanel extends JPanel {
     // Capture Chart ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    captureChart = new XYChartBuilder().width(600).title("Capture").height(400).yAxisTitle("Voltage [V]").xAxisTitle("Time [µs]").build();
+    captureChart = new XYChartBuilder().width(600).title("Capture").height(300).yAxisTitle("Voltage [V]").xAxisTitle("Time [µs]").build();
     captureChart.getStyler().setLegendPosition(LegendPosition.InsideNE);
     series = captureChart.addSeries("V1", new double[]{0}, new double[]{0});
     series.setMarker(SeriesMarkers.NONE);
@@ -103,7 +103,7 @@ public class ResultPanel extends JPanel {
     // I-T Chart ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    ivChart = new XYChartBuilder().width(600).title("I-T").height(400).yAxisTitle("Current [" + PulsePreferences.CURRENT_UNIT.getLabel() + "]")
+    ivChart = new XYChartBuilder().width(600).title("I-T").height(300).yAxisTitle("Current [" + PulsePreferences.CURRENT_UNIT.getLabel() + "]")
         .xAxisTitle("Time [µs]").build();
     ivChart.getStyler().setLegendVisible(false);
     ivChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);
@@ -114,7 +114,7 @@ public class ResultPanel extends JPanel {
     // ReadCaptureChart  ////////////////////////////////////////////
     /////////////////////////////////////////////////////////////
 
-    readCaptureChart = new XYChartBuilder().width(100).title("Read Pulse Capture").height(100).yAxisTitle("Voltage [V]").xAxisTitle("Time [µs]")
+    readCaptureChart = new XYChartBuilder().width(600).title("Read Pulse Capture").height(300).yAxisTitle("Voltage [V]").xAxisTitle("Time [µs]")
         .build();
     readCaptureChart.getStyler().setLegendPosition(LegendPosition.InsideNE);
     //readCaptureChart.getStyler().setYAxisMin(0.0);
@@ -133,7 +133,7 @@ public class ResultPanel extends JPanel {
     // G Chart ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    gChart = new XYChartBuilder().width(100).title("G").height(250).xAxisTitle("Pulse Number")
+    gChart = new XYChartBuilder().width(600).height(300).title("G").xAxisTitle("Pulse Number")
         .yAxisTitle("Conductance [" + PulsePreferences.CONDUCTANCE_UNIT.getLabel() + "]").build();
     gChart.getStyler().setLegendVisible(false);
     //gChart.getStyler().setYAxisMin(0.0);

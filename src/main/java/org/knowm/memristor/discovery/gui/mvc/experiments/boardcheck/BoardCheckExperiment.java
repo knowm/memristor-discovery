@@ -33,6 +33,7 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
+import org.knowm.memristor.discovery.MemristorDiscoveryPreferences;
 import org.knowm.memristor.discovery.core.experiment_common.PulseUtility;
 import org.knowm.memristor.discovery.core.gpio.MuxController;
 import org.knowm.memristor.discovery.core.gpio.MuxController.Destination;
@@ -51,8 +52,8 @@ import org.knowm.waveforms4j.DWF;
 
 public class BoardCheckExperiment extends Experiment {
 
-  private static final float V_MUX_TEST = 1.2345f; // the voltage used to test the waveform generators/muxes
-  private static final float V_SWITCH_RESISTANCE = 1; // the voltage used to test the switch resistance
+  private static final float V_MUX_TEST = 1.5f; // the voltage used to test the waveform generators/muxes
+  // private static final float V_SWITCH_RESISTANCE = .1f; // the voltage used to test the switch resistance
 
   private static final float V_READ = .1f;
   private static final float V_WRITE = 2.0f;
@@ -60,12 +61,12 @@ public class BoardCheckExperiment extends Experiment {
   private static final float V_RESET = -2f;
   // private static final float V_MEMINLINE_HARD_RESET = -3f;
 
-  private static final float MIN_DEVIATION = .02F; // Line trace resistance, AD2 Calibration.
+  private static final float MIN_DEVIATION = .03F; // Line trace resistance, AD2 Calibration.
   private final MuxController muxController;
 
   private static final int PULSE_WIDTH_IN_MICRO_SECONDS = 10_000;
 
-  private static final float VOLTAGE_READ_NOISE_FLOOR = .001f; // if the measured voltage across series resistor is less than this, you are getting
+  //private static final float VOLTAGE_READ_NOISE_FLOOR = .001f; // if the measured voltage across series resistor is less than this, you are getting
   // noisy.
 
   private float MIN_Q = 2; // minimum ratio between erase/write resistance
@@ -117,7 +118,7 @@ public class BoardCheckExperiment extends Experiment {
 
     muxController = new MuxController();
 
-    pulseUtility = new PulseUtility(controlModel, dwfProxy, muxController, VOLTAGE_READ_NOISE_FLOOR);
+    pulseUtility = new PulseUtility(controlModel, dwfProxy, muxController, MemristorDiscoveryPreferences.MIN_VOLTAGE_MEASURE_AMPLITUDE);
   }
 
   @Override

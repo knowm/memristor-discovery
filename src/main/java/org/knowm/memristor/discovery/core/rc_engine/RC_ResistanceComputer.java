@@ -76,7 +76,7 @@ public class RC_ResistanceComputer {
   public void loadTrace() {
 
     double Rinit = 1E2;
-    double Rfinal = 1E10;
+    double Rfinal = 1E8;
 
     List<Number> voltage = new ArrayList<>();
     List<Number> resistance = new ArrayList<>();
