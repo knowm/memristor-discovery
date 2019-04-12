@@ -30,16 +30,21 @@ Download Waveforms from here: <https://reference.digilentinc.com/reference/softw
 
 ## Install DWF Framework on Ubuntu
 
+
+Download Adept 2 .deb file from here: https://reference.digilentinc.com/reference/software/adept/start
 Download Waveforms .deb file from here: <https://reference.digilentinc.com/reference/software/waveforms/waveforms-3/start>
 
+Run the following commands in the terminal:
+
 ```
+sudo mv ~/Downloads/digilent.adept.runtime_2.19.2-amd64.deb /var/cache/apt/archives
+cd /var/cache/apt/archives
+sudo dpkg -i digilent.adept.runtime_2.19.2-amd64.deb
+
 sudo mv ~/Downloads/digilent.waveforms_3.9.1_amd64.deb /var/cache/apt/archives
 cd /var/cache/apt/archives
 sudo dpkg -i digilent.waveforms_3.9.1_amd64.deb
     
-sudo mv ~/Downloads/digilent.adept.runtime_2.19.2-amd64.deb /var/cache/apt/archives
-cd /var/cache/apt/archives
-sudo dpkg -i digilent.adept.runtime_2.19.2-amd64.deb
 ```
 
 ## Calibrate the AD2 Device
