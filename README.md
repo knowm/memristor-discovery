@@ -32,6 +32,7 @@ Download Waveforms from here: <https://reference.digilentinc.com/reference/softw
 
 
 Download Adept 2 .deb file from here: https://reference.digilentinc.com/reference/software/adept/start
+
 Download Waveforms .deb file from here: <https://reference.digilentinc.com/reference/software/waveforms/waveforms-3/start>
 
 Run the following commands in the terminal:
