@@ -35,5 +35,7 @@ public class MDV1Board extends Netlist {
     addNetListComponent(new NetlistCapacitor("C_B2Gnd", C_B2Gnd, 0, "2", "0"));
     addNetListComponent(new NetlistResistor("Rs", Rs, "2", "0"));
 
+    addNetListComponent(new NetlistResistor("R_1XScope", 1_000_000, "2", "0"));
+
   }
 }

@@ -39,7 +39,7 @@ public class MemristorDiscoveryPreferences {
   /*
    * will not compute measured values like conductance if source voltage is less than this.
    */
-  public static final float MIN_VOLTAGE_MEASURE_AMPLITUDE = .008f;
+  public static final float MIN_VOLTAGE_MEASURE_AMPLITUDE = .005f;
 
   /** Constructor */
   public MemristorDiscoveryPreferences() {

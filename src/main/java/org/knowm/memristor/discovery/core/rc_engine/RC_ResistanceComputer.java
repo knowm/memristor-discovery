@@ -83,7 +83,7 @@ public class RC_ResistanceComputer {
 
     double simStepSize = readPulseWidth / 20;
     TransientConfig transientConfig = new TransientConfig("" + readPulseWidth, "" + simStepSize, new DC("V1", readPulseAmplitude));
-    for (double Rm = Rinit; Rm < Rfinal; Rm *= 1.05) {
+    for (double Rm = Rinit; Rm < Rfinal; Rm *= 1.025) {
       Netlist netlist = new MDV1Board(Rm, seriesResistor, parasiticCapacitance);
       netlist.setSimulationConfig(transientConfig);
       SimulationResult simulationResult = JSpice.simulate(netlist);

@@ -192,27 +192,44 @@ public class ResultController implements PropertyChangeListener {
     resultPanel.getIvChartPanel().repaint();
   }
 
-  public void updateGVChartData(double[] v1, double[] vMemristor, double[] conductance, int frequency, double amplitude, double offset) {
+  public boolean updateGVChartData(double[] v1, double[] vMemristor, double[] conductance, int frequency, double amplitude, double offset) {
 
     resultPanel.getGvChart().getStyler().setYAxisMax(resultModel.getyMaxGV());
     resultPanel.getGvChart().setTitle(getGVChartTitle(amplitude, frequency, offset));
     resultPanel.getGvChart().updateXYSeries("V1", v1, conductance, null);
 
     //filter out all conductance measurments less than .02V.
-    List<Number> v = new ArrayList<>();
+    List<Number> vm = new ArrayList<>();
     List<Number> g = new ArrayList<>();
 
     for (int i = 0; i < conductance.length; i++) {
       if (Math.abs(vMemristor[i]) > MemristorDiscoveryPreferences.MIN_VOLTAGE_MEASURE_AMPLITUDE) {
-        v.add(vMemristor[i]);
+        vm.add(vMemristor[i]);
         g.add(conductance[i]);
       }
     }
 
-    resultPanel.getGvChart().updateXYSeries("Memristor", v, g, null);
+    boolean result = true;
+
+    if (vm.size() > 0) {
+      resultPanel.getGvChart().updateXYSeries("Memristor", vm, g, null);
+    }
+
+    else {
+      result = false;
+      //      resultModel.swingPropertyChangeSupport.firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null,
+      //          "WARNING: voltage drop across memristor is less than " + MemristorDiscoveryPreferences.MIN_VOLTAGE_MEASURE_AMPLITUDE
+      //              + ". Conductance will not be computed and chart will not display.");
+
+      //      System.out.println("WARNING: voltage drop across memristor is less than " + MemristorDiscoveryPreferences.MIN_VOLTAGE_MEASURE_AMPLITUDE
+      //          + ". Conductance will not be computed and chart will not display.");
+
+    }
 
     resultPanel.getGvChartPanel().revalidate();
     resultPanel.getGvChartPanel().repaint();
+
+    return result;
   }
 
   private String getWaveformChartTitle(double amplitude, int frequency, double offset) {

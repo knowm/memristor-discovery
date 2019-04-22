@@ -315,6 +315,7 @@ public class BoardCheckExperiment extends Experiment {
       float[] r = pulseUtility.measureAllSwitchResistances(Waveform.Square, V_READ, PULSE_WIDTH_IN_MICRO_SECONDS);
 
       boolean pass = true;
+      boolean switchesFailed = false;
       for (int i = 0; i < r.length; i++) {
 
         StringBuilder b = new StringBuilder();
@@ -339,6 +340,7 @@ public class BoardCheckExperiment extends Experiment {
           if (r[i] < 1000) {
             b.append("  FAILED!");
             pass = false;
+            switchesFailed = true;
           }
         }
 
@@ -354,6 +356,11 @@ public class BoardCheckExperiment extends Experiment {
         resultController.addNewLine("PASS");
       } else {
         resultController.addNewLine("FAIL!");
+
+        if (switchesFailed && controlModel.seriesResistance <= 10000) {
+          resultController.addNewLine("Note: Please increase series resistor to 10k or higher, update preferences and run test again. ");
+        }
+
       }
 
       return true;
@@ -1126,7 +1133,7 @@ public class BoardCheckExperiment extends Experiment {
 
       if (meminline_numFailed == 0) {
         resultController.addNewLine("TIER 1");
-      } else if (meminline_numFailed == 1) {
+      } else if (meminline_numFailed <= 2) {
         resultController.addNewLine("TIER 2");
       } else if (meminline_numFailed <= 4) {
         resultController.addNewLine("BURN AND LEARN");
