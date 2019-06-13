@@ -27,7 +27,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -48,7 +47,12 @@ public class ConsoleDialog extends JDialog {
     getContentPane().setLayout(new BorderLayout());
 
     textArea = new JTextArea(15, 30);
-    add(new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER);
+    add(
+        new JScrollPane(
+            textArea,
+            JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+            JScrollPane.HORIZONTAL_SCROLLBAR_NEVER),
+        BorderLayout.CENTER);
 
     pack();
     setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -58,13 +62,14 @@ public class ConsoleDialog extends JDialog {
 
     // System.out.println("addConsoleMessage(" + text + ")");
 
-    SwingUtilities.invokeLater(new Runnable() {
+    SwingUtilities.invokeLater(
+        new Runnable() {
 
-      @Override
-      public void run() {
+          @Override
+          public void run() {
 
-        textArea.append(dateFormat.format(new Date()) + " : " + text + "\n");
-      }
-    });
+            textArea.append(dateFormat.format(new Date()) + " : " + text + "\n");
+          }
+        });
   }
 }

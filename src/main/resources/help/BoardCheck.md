@@ -1,17 +1,18 @@
 # BoardCheck Experiment
 
-This app allows you to self-test the functionality of your board and memristor chips. Paramount to accurate measurement is validated equipment. This app enables you to check the functionality of:
+This app allows you to self-test the functionality of your board and memristor chips. Paramount to measurement is validated equipment. This app enables you to check the functionality of:
 
 1. Bilateral Switches via **Switch Board Test** Button 
 2. 1-4 Muxes  via **1-4 Mux Board Test** Button 
 3. Knowm Discrete Memristor chips. via **Mem-Inline Chip** Button 
 
+All boards and chips shipped by Knowm Inc have passed these tests. 
 
 ## Switch Board Test
 
-This test activates each switch in order and applies a pulse across the chip and a series resistor. The voltage drop across the series resistor, V(B), is used to calculate the resistance across the A B circuit nodes. Higher series resistors (1-40kΩ or higher) should be used. 5kΩ precision resistors should be placed across each of the terminals of the DIP socket, otherwise the test will always fail.
+This test activates each switch in order and applies a pulse across the chip and a series resistor. The voltage drop across the series resistor is used to calculate the resistance in the memristor sockets. 
 
-The test is passed if resistance for each switch selection is withen 2% tolerance of 5kΩ, and the resistance when all switches are closed is above 1MΩ.
+The test is passed if the displayed resistance for each switch selection matches reality to within 2%. 
 
 ## 1-4 Mux Board Test
 
@@ -32,8 +33,8 @@ This test applies a sequence of pulses across each memristor, using the voltage 
 Default Constants:
 
 V_READ = .1f;
-V_WRITE = 1.5f;
-V_RESET = -1.5f;
+V_WRITE = 1.0f;
+V_RESET = -2f;
 
 MEMINLINE_MIN_Q = 2;
 MEMINLINE_MIN_R = 10;//kΩ
@@ -57,22 +58,6 @@ q1 < MEMINLINE_MIN_Q
           
 q2 < MEMINLINE_MIN_Q
 
-
-# 1-2 X 7 AHaH Node Chip Test
-
-This test applies a sequence of pulses one the 'Y' node and measures the response at nodes 'A' and 'B' to determine if the memristors in the chip are functional, just like the Mem-Inline Chip.
-
-Board must be configured as follows:
-
-![](BoardCheck12X7AHaHConfig.png)
-
-# 1-2 & 1-2i Synapase Chip Test
-
-This test applies a sequence of pulses one the 'Y' node and measures the response at nodes 'A' and 'B' to determine if the memristors in the chip are functional, just like the Mem-Inline Chip.
-
-Board must be configured as follows:
-
-![](BoardCheck12SynapseConfig.png)
 
 ## Preferences
 

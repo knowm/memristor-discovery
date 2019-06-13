@@ -127,28 +127,27 @@ public class ResultController {
   public void updateCaptureChartData(double[] timeData, double[] v1, double[] v2, double[] v1Minusv2, int pulseWidth, double amplitude) {
 
     resultPanel.getCaptureChart().setTitle(getVtChartTitle(amplitude, pulseWidth));
-    resultPanel.getCaptureChart().updateXYSeries("V1", timeData, v1, null);
-    resultPanel.getCaptureChart().updateXYSeries("V2", timeData, v2, null);
-    resultPanel.getCaptureChart().updateXYSeries("V1-V2", timeData, v1Minusv2, null);
+    resultPanel.getCaptureChart().updateXYSeries("V1(1+)", timeData, v1, null);
+    resultPanel.getCaptureChart().updateXYSeries("V2(2+)", timeData, v2, null);
+    resultPanel.getCaptureChart().updateXYSeries("V_Memristor", timeData, v1Minusv2, null);
   }
 
   public void updateIVChartData(double[] timeData, double[] current, int pulseWidth, double amplitude) {
 
-    resultPanel.getIvChart().getStyler().setYAxisMax(resultModel.getyMaxIV());
-    resultPanel.getIvChart().getStyler().setYAxisMin(resultModel.getyMinIV());
+    resultPanel.getITChart().getStyler().setYAxisMax(resultModel.getyMaxIV());
+    resultPanel.getITChart().getStyler().setYAxisMin(resultModel.getyMinIV());
 
-    resultPanel.getIvChart().setTitle(getIVChartTitle(amplitude, pulseWidth));
-    resultPanel.getIvChart().updateXYSeries("iv", timeData, current, null);
+    resultPanel.getITChart().setTitle(getIVChartTitle(amplitude, pulseWidth));
+    resultPanel.getITChart().updateXYSeries("it", timeData, current, null);
   }
 
-  public void updateReadPulseCaptureChartData(double[] timeData, double[] v1, double[] v2, double[] v1Minusv2, int pulseWidth, double amplitude) {
+  public void updateReadPulseCaptureChartData(double[] timeData, double[] v1, double[] v2, double[] vMemristor, int pulseWidth, double amplitude) {
 
     //  System.out.println("ResultController().updateReadPulseCaptureChartData()");
 
-    resultPanel.getReadPulseCaptureChart().updateXYSeries("V1", timeData, v1, null);
-    resultPanel.getReadPulseCaptureChart().updateXYSeries("V2", timeData, v2, null);
-    resultPanel.getReadPulseCaptureChart().updateXYSeries("V1-V2", timeData, v1Minusv2, null);
-
+    resultPanel.getReadPulseCaptureChart().updateXYSeries("V1(1+)", timeData, v1, null);
+    resultPanel.getReadPulseCaptureChart().updateXYSeries("V2(2+)", timeData, v2, null);
+    resultPanel.getReadPulseCaptureChart().updateXYSeries("V_Memristor", timeData, vMemristor, null);
   }
 
   public void updateGChartData(double conductance, String resistance) {
@@ -156,21 +155,19 @@ public class ResultController {
     // System.out.println("conductance=" + conductance);
 
     if (conductance <= 0) {
-      return;//
-
+      return; //
     }
 
     //  System.out.println("resistance=" + resistance);
     resultModel.getGData().add(conductance);
     resultPanel.getGChart().getStyler().setYAxisMax(resultModel.getyMaxGV());
-    //resultPanel.getGChart().getStyler().setYAxisMin(0.0);
+    // resultPanel.getGChart().getStyler().setYAxisMin(0.0);
 
     // System.out.println("g: " + resultModel.getGData());
 
     resultPanel.getGChart().setTitle("G (R = " + resistance + ")");
     resultPanel.getGChart().updateXYSeries("g", null, resultModel.getGData(), null);
     resultPanel.getGChart().updateXYSeries("glast", new double[]{1, resultModel.getGData().size()}, new double[]{conductance, conductance}, null);
-
   }
 
   public void repaintVtChart() {
@@ -181,8 +178,8 @@ public class ResultController {
 
   public void repaintItChart() {
 
-    resultPanel.getIvChartPanel().revalidate();
-    resultPanel.getIvChartPanel().repaint();
+    resultPanel.getITChartPanel().revalidate();
+    resultPanel.getITChartPanel().repaint();
   }
 
   public void repaintReadPulseCaptureChart() {

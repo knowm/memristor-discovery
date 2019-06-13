@@ -60,10 +60,10 @@ public class ShelfLifePreferences extends ExperimentPreferences {
   public static final int READ_PULSE_WIDTH_DEFAULT_VALUE = 1000;
 
   public static final String WRITE_PULSE_WIDTH_INIT_KEY = PREFIX + "WRITE_PULSE_WIDTH_INIT_KEY";
-  public static final int WRITE_PULSE_WIDTH_DEFAULT_VALUE = 10000;
+  public static final int WRITE_PULSE_WIDTH_DEFAULT_VALUE = 1000;
 
   public static final String ERASE_PULSE_WIDTH_INIT_KEY = PREFIX + "ERASE_PULSE_WIDTH_INIT_KEY";
-  public static final int ERASE_PULSE_WIDTH_DEFAULT_VALUE = 10000;
+  public static final int ERASE_PULSE_WIDTH_DEFAULT_VALUE = 1000;
 
   public static final String MAX_WRITE_RESISTANCE_INIT_KEY =
       PREFIX + "MAX_WRITE_RESISTANCE_INIT_KEY";

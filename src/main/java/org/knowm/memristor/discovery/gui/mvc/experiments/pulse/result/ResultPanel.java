@@ -26,7 +26,6 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.pulse.result;
 import java.awt.BorderLayout;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
-import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferences;
@@ -48,7 +47,7 @@ public class ResultPanel extends JPanel {
 
   private final JPanel chartsPanel;
 
-  //private final JCheckBox freezeYAxisCheckBoxIV;
+  // private final JCheckBox freezeYAxisCheckBoxIV;
 
   // private final JPanel gvChartControlPanel;
 
@@ -60,8 +59,8 @@ public class ResultPanel extends JPanel {
   XYChart captureChart;
   XChartPanel<XYChart> captureChartPanel;
 
-  XYChart ivChart;
-  XChartPanel<XYChart> ivChartPanel;
+  XYChart iTChart;
+  XChartPanel<XYChart> iTChartPanel;
 
   XYChart readCaptureChart;
   XChartPanel<XYChart> readCaptureChartPanel;
@@ -91,11 +90,12 @@ public class ResultPanel extends JPanel {
 
     captureChart = new XYChartBuilder().width(600).title("Capture").height(300).yAxisTitle("Voltage [V]").xAxisTitle("Time [µs]").build();
     captureChart.getStyler().setLegendPosition(LegendPosition.InsideNE);
-    series = captureChart.addSeries("V1", new double[]{0}, new double[]{0});
+
+    series = captureChart.addSeries("V1(1+)", new double[]{0}, new double[]{0});
     series.setMarker(SeriesMarkers.NONE);
-    series = captureChart.addSeries("V2", new double[]{0}, new double[]{0});
+    series = captureChart.addSeries("V2(2+)", new double[]{0}, new double[]{0});
     series.setMarker(SeriesMarkers.NONE);
-    series = captureChart.addSeries("V1-V2", new double[]{0}, new double[]{0});
+    series = captureChart.addSeries("V_Memristor", new double[]{0}, new double[]{0});
     series.setMarker(SeriesMarkers.NONE);
     captureChartPanel = new XChartPanel<>(captureChart);
 
@@ -103,12 +103,12 @@ public class ResultPanel extends JPanel {
     // I-T Chart ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    ivChart = new XYChartBuilder().width(600).title("I-T").height(300).yAxisTitle("Current [" + PulsePreferences.CURRENT_UNIT.getLabel() + "]")
+    iTChart = new XYChartBuilder().width(600).title("I-T").height(300).yAxisTitle("Current [" + PulsePreferences.CURRENT_UNIT.getLabel() + "]")
         .xAxisTitle("Time [µs]").build();
-    ivChart.getStyler().setLegendVisible(false);
-    ivChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);
-    ivChart.addSeries("iv", new double[]{0}, new double[]{0});
-    ivChartPanel = new XChartPanel<>(ivChart);
+    iTChart.getStyler().setLegendVisible(false);
+    iTChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);
+    iTChart.addSeries("it", new double[]{0}, new double[]{0});
+    iTChartPanel = new XChartPanel<>(iTChart);
 
     /////////////////////////////////////////////////////////////
     // ReadCaptureChart  ////////////////////////////////////////////
@@ -117,14 +117,14 @@ public class ResultPanel extends JPanel {
     readCaptureChart = new XYChartBuilder().width(600).title("Read Pulse Capture").height(300).yAxisTitle("Voltage [V]").xAxisTitle("Time [µs]")
         .build();
     readCaptureChart.getStyler().setLegendPosition(LegendPosition.InsideNE);
-    //readCaptureChart.getStyler().setYAxisMin(0.0);
+    // readCaptureChart.getStyler().setYAxisMin(0.0);
     readCaptureChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
 
-    series = readCaptureChart.addSeries("V1", new double[]{0}, new double[]{0});
+    series = readCaptureChart.addSeries("V1(1+)", new double[]{0}, new double[]{0});
     series.setMarker(SeriesMarkers.NONE);
-    series = readCaptureChart.addSeries("V2", new double[]{0}, new double[]{0});
+    series = readCaptureChart.addSeries("V2(2+)", new double[]{0}, new double[]{0});
     series.setMarker(SeriesMarkers.NONE);
-    series = readCaptureChart.addSeries("V1-V2", new double[]{0}, new double[]{0});
+    series = readCaptureChart.addSeries("V_Memristor", new double[]{0}, new double[]{0});
     series.setMarker(SeriesMarkers.NONE);
 
     readCaptureChartPanel = new XChartPanel<>(readCaptureChart);
@@ -136,7 +136,7 @@ public class ResultPanel extends JPanel {
     gChart = new XYChartBuilder().width(600).height(300).title("G").xAxisTitle("Pulse Number")
         .yAxisTitle("Conductance [" + PulsePreferences.CONDUCTANCE_UNIT.getLabel() + "]").build();
     gChart.getStyler().setLegendVisible(false);
-    //gChart.getStyler().setYAxisMin(0.0);
+    // gChart.getStyler().setYAxisMin(0.0);
 
     gChart.getStyler().setYAxisLogarithmic(true);
 
@@ -172,7 +172,7 @@ public class ResultPanel extends JPanel {
     // freezeYAxisCheckBoxIV = new JCheckBox("Freeze Y-Axis");
 
     // gvChartControlPanel = new JPanel();
-    //freezeYAxisCheckBoxGV = new JCheckBox("Freeze Y-Axis");
+    // freezeYAxisCheckBoxGV = new JCheckBox("Freeze Y-Axis");
 
     // gvChartControlPanel.add(freezeYAxisCheckBoxGV);
   }
@@ -233,12 +233,12 @@ public class ResultPanel extends JPanel {
 
   public void switch2IVChart() {
 
-    if (!ivChartPanel.isShowing()) {
+    if (!iTChartPanel.isShowing()) {
       // System.out.println("switch2IVChart");
       removeAll();
       chartsPanel.removeAll();
 
-      chartsPanel.add(ivChartPanel, BorderLayout.CENTER);
+      chartsPanel.add(iTChartPanel, BorderLayout.CENTER);
       chartsPanel.add(gChartPanel, BorderLayout.SOUTH);
       add(chartsPanel, BorderLayout.CENTER);
       addRadioButtons();
@@ -289,14 +289,14 @@ public class ResultPanel extends JPanel {
   //    return freezeYAxisCheckBoxGV;
   //  }
 
-  public double getIVChartMax() {
+  public double getITChartMax() {
 
-    return ivChart.getSeriesMap().get("iv").getYMax();
+    return iTChart.getSeriesMap().get("it").getYMax();
   }
 
-  public double getIVChartMin() {
+  public double getITChartMin() {
 
-    return ivChart.getSeriesMap().get("iv").getYMin();
+    return iTChart.getSeriesMap().get("it").getYMin();
   }
 
   //  public double getGVChartMax() {
@@ -334,14 +334,14 @@ public class ResultPanel extends JPanel {
     return captureChartPanel;
   }
 
-  public XYChart getIvChart() {
+  public XYChart getITChart() {
 
-    return ivChart;
+    return iTChart;
   }
 
-  public XChartPanel<XYChart> getIvChartPanel() {
+  public XChartPanel<XYChart> getITChartPanel() {
 
-    return ivChartPanel;
+    return iTChartPanel;
   }
 
   public XYChart getReadPulseCaptureChart() {

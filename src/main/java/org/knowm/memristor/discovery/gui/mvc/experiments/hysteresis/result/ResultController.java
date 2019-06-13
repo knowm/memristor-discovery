@@ -31,9 +31,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.JTextField;
-
 import org.knowm.memristor.discovery.MemristorDiscoveryPreferences;
 import org.knowm.memristor.discovery.core.Util;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
@@ -170,8 +168,8 @@ public class ResultController implements PropertyChangeListener {
       double offset) {
 
     resultPanel.getCaptureChart().setTitle(getVtChartTitle(amplitude, frequency, offset));
-    resultPanel.getCaptureChart().updateXYSeries("V1", timeData, captureAmplitudeData1, null);
-    resultPanel.getCaptureChart().updateXYSeries("V2", timeData, captureAmplitudeData2, null);
+    resultPanel.getCaptureChart().updateXYSeries("V1(1+)", timeData, captureAmplitudeData1, null);
+    resultPanel.getCaptureChart().updateXYSeries("V2(2+)", timeData, captureAmplitudeData2, null);
     resultPanel.getCaptureChartPanel().revalidate();
     resultPanel.getCaptureChartPanel().repaint();
   }
@@ -183,11 +181,15 @@ public class ResultController implements PropertyChangeListener {
     resultPanel.getIvChart().getStyler().setYAxisMin(resultModel.getyMinIV());
 
     resultPanel.getIvChart().setTitle(getIVChartTitle(amplitude, frequency, offset));
-    if (!HysteresisPreferences.IS_VIN) {
-      resultPanel.getIvChart().updateXYSeries("iv", vMemristor, current, null);
-    } else {
-      resultPanel.getIvChart().updateXYSeries("iv", captureAmplitudeData1, current, null);
-    }
+
+    resultPanel.getIvChart().updateXYSeries("Memristor", vMemristor, current, null);
+    //    if (!HysteresisPreferences.IS_VIN) {
+    //      resultPanel.getIvChart().updateXYSeries("iv", vMemristor, current, null);
+    //    } else {
+    //      resultPanel.getIvChart().updateXYSeries("iv", captureAmplitudeData1, current, null);
+    //    }
+    resultPanel.getIvChart().updateXYSeries("Resistor+Memristor", captureAmplitudeData1, current, null);
+
     resultPanel.getIvChartPanel().revalidate();
     resultPanel.getIvChartPanel().repaint();
   }
@@ -196,9 +198,9 @@ public class ResultController implements PropertyChangeListener {
 
     resultPanel.getGvChart().getStyler().setYAxisMax(resultModel.getyMaxGV());
     resultPanel.getGvChart().setTitle(getGVChartTitle(amplitude, frequency, offset));
-    resultPanel.getGvChart().updateXYSeries("V1", v1, conductance, null);
+    resultPanel.getGvChart().updateXYSeries("Resistor+Memristor", v1, conductance, null);
 
-    //filter out all conductance measurments less than .02V.
+    // filter out all conductance measurments less than .02V.
     List<Number> vm = new ArrayList<>();
     List<Number> g = new ArrayList<>();
 
@@ -213,15 +215,16 @@ public class ResultController implements PropertyChangeListener {
 
     if (vm.size() > 0) {
       resultPanel.getGvChart().updateXYSeries("Memristor", vm, g, null);
-    }
-
-    else {
+    } else {
       result = false;
-      //      resultModel.swingPropertyChangeSupport.firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null,
-      //          "WARNING: voltage drop across memristor is less than " + MemristorDiscoveryPreferences.MIN_VOLTAGE_MEASURE_AMPLITUDE
+      //      resultModel.swingPropertyChangeSupport.firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG,
+      // null,
+      //          "WARNING: voltage drop across memristor is less than " +
+      // MemristorDiscoveryPreferences.MIN_VOLTAGE_MEASURE_AMPLITUDE
       //              + ". Conductance will not be computed and chart will not display.");
 
-      //      System.out.println("WARNING: voltage drop across memristor is less than " + MemristorDiscoveryPreferences.MIN_VOLTAGE_MEASURE_AMPLITUDE
+      //      System.out.println("WARNING: voltage drop across memristor is less than " +
+      // MemristorDiscoveryPreferences.MIN_VOLTAGE_MEASURE_AMPLITUDE
       //          + ". Conductance will not be computed and chart will not display.");
 
     }

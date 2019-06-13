@@ -41,11 +41,15 @@ public class ControlModel extends Model {
   float offset;
   private float amplitude;
   private int frequency;
-
   private boolean isStartToggled = false;
 
+  private int boardVersion;
+
   /** Constructor */
-  public ControlModel() {}
+  public ControlModel(int boardVersion) {
+
+    this.boardVersion = boardVersion;
+  }
 
   @Override
   public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {
@@ -141,7 +145,14 @@ public class ControlModel extends Model {
 
   public void setOffset(float offset) {
 
+    //	if(boardVersion==2) {
+    //		  this.offset = -offset;
+    //	}else {
+    //		  this.offset = offset;
+    //	}
+
     this.offset = offset;
+
     swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 

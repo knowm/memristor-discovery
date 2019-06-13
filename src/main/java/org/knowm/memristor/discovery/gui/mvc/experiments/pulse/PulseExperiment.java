@@ -31,8 +31,6 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
-import org.knowm.memristor.discovery.MemristorDiscoveryPreferences;
-import org.knowm.memristor.discovery.core.AveMaxMinVar;
 import org.knowm.memristor.discovery.core.PostProcessDataUtils;
 import org.knowm.memristor.discovery.core.WaveformUtils;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
@@ -70,11 +68,11 @@ public class PulseExperiment extends Experiment {
    * @param dwfProxy
    * @param mainFrameContainer
    */
-  public PulseExperiment(DWFProxy dwfProxy, Container mainFrameContainer, boolean isV1Board) {
+  public PulseExperiment(DWFProxy dwfProxy, Container mainFrameContainer, int boardVersion) {
 
-    super(dwfProxy, mainFrameContainer, isV1Board);
+    super(dwfProxy, mainFrameContainer, boardVersion);
 
-    controlModel = new ControlModel();
+    controlModel = new ControlModel(boardVersion);
     controlPanel = new ControlPanel();
     resultModel = new ResultModel();
     resultPanel = new ResultPanel();
@@ -182,12 +180,7 @@ public class PulseExperiment extends Experiment {
 
       int samplesPerPulse = 200;
       double sampleFrequency = controlModel.getCalculatedFrequency() * samplesPerPulse;
-      // dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02 *
-      // (controlModel.getAmplitude() > 0 ? 1 : -1), samplesPerPulse *
-      // controlModel.getPulseNumber());
-
-      boolean isScale2V = Math.abs(controlModel.getAppliedAmplitude()) <= 2.5;
-
+      boolean isScale2V = Math.abs(controlModel.getAmplitude()) <= 2.5;
       int bufferSize = samplesPerPulse * controlModel.getPulseNumber() + samplesPerPulse;
 
       dwfProxy.getDwf().startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(DWF.WAVEFORM_CHANNEL_1, sampleFrequency, bufferSize, isScale2V);
@@ -198,18 +191,18 @@ public class PulseExperiment extends Experiment {
       // Pulse Out /////////////////
       // ////////////////////////////////
 
-      //      double[] customWaveform =
-      // WaveformUtils.generateCustomWaveform(controlModel.getWaveform(),
-      // controlModel.getAppliedAmplitude(),
-      //          controlModel.getCalculatedFrequency());
-
-      double[] customWaveform = WaveformUtils.generateCustomPulse(controlModel.getWaveform(), controlModel.getAppliedAmplitude(),
-          controlModel.getPulseWidth(), controlModel.getDutyCycle());
+      double[] customWaveform;
+      if (boardVersion == 2) {
+        customWaveform = WaveformUtils.generateCustomPulse(controlModel.getWaveform(), -controlModel.getAmplitude(), controlModel.getPulseWidth(),
+            controlModel.getDutyCycle());
+      } else {
+        customWaveform = WaveformUtils.generateCustomPulse(controlModel.getWaveform(), controlModel.getAmplitude(), controlModel.getPulseWidth(),
+            controlModel.getDutyCycle());
+      }
 
       dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, controlModel.getPulseNumber(),
           customWaveform);
 
-      // ////////////////////////////////
       // ////////////////////////////////
 
       // Read In Data
@@ -226,7 +219,6 @@ public class PulseExperiment extends Experiment {
       int validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
       double[] v1 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
       double[] v2 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
-      // System.out.println("validSamples: " + validSamples);
 
       // Stop Analog In and Out
       dwfProxy.getDwf().stopWave(DWF.WAVEFORM_CHANNEL_1);
@@ -239,34 +231,66 @@ public class PulseExperiment extends Experiment {
       double[][] trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, 0.05, 10);
       double[] V1Trimmed = trimmedRawData[0];
       double[] V2Trimmed = trimmedRawData[1];
-      double[] V2MinusV1 = PostProcessDataUtils.getV1MinusV2(V1Trimmed, V2Trimmed);
+      double[] VMemristor = PostProcessDataUtils.getV1MinusV2(V1Trimmed, V2Trimmed);
+      double[] timeData;
+      int bufferLength;
+      double timeStep;
 
-      int bufferLength = V1Trimmed.length;
+      if (boardVersion == 2) {
+        bufferLength = V1Trimmed.length;
 
-      // create time data
-      double[] timeData = new double[bufferLength];
-      double timeStep = 1.0 / sampleFrequency * PulsePreferences.TIME_UNIT.getDivisor();
-      for (int i = 0; i < bufferLength; i++) {
-        timeData[i] = i * timeStep;
+        VMemristor = PostProcessDataUtils.invert(V1Trimmed);
+
+        // create time data
+        timeData = new double[bufferLength];
+        timeStep = 1.0 / sampleFrequency * PulsePreferences.TIME_UNIT.getDivisor();
+        for (int i = 0; i < bufferLength; i++) {
+          timeData[i] = i * timeStep;
+        }
+
+        // create current data
+        double[] current = new double[bufferLength];
+        for (int i = 0; i < bufferLength; i++) {
+          current[i] = (V1Trimmed[i] - V2Trimmed[i]) / controlModel.getSeriesResistance() * PulsePreferences.CURRENT_UNIT.getDivisor();
+        }
+
+        // create conductance data
+        double[] conductance = new double[bufferLength];
+        for (int i = 0; i < bufferLength; i++) {
+
+          double I = (V1Trimmed[i] - V2Trimmed[i]) / controlModel.getSeriesResistance();
+          double G = I / VMemristor[i] * PulsePreferences.CONDUCTANCE_UNIT.getDivisor();
+          G = G < 0 ? 0 : G;
+          conductance[i] = G;
+        }
+        publish(new double[][]{timeData, V1Trimmed, V2Trimmed, VMemristor, current, conductance, null});
+      } else {
+        bufferLength = V1Trimmed.length;
+
+        // create time data
+        timeData = new double[bufferLength];
+        timeStep = 1.0 / sampleFrequency * PulsePreferences.TIME_UNIT.getDivisor();
+        for (int i = 0; i < bufferLength; i++) {
+          timeData[i] = i * timeStep;
+        }
+
+        // create current data
+        double[] current = new double[bufferLength];
+        for (int i = 0; i < bufferLength; i++) {
+          current[i] = V2Trimmed[i] / controlModel.getSeriesResistance() * PulsePreferences.CURRENT_UNIT.getDivisor();
+        }
+
+        // create conductance data
+        double[] conductance = new double[bufferLength];
+        for (int i = 0; i < bufferLength; i++) {
+
+          double I = V2Trimmed[i] / controlModel.getSeriesResistance();
+          double G = I / (V1Trimmed[i] - V2Trimmed[i]) * PulsePreferences.CONDUCTANCE_UNIT.getDivisor();
+          G = G < 0 ? 0 : G;
+          conductance[i] = G;
+        }
+        publish(new double[][]{timeData, V1Trimmed, V2Trimmed, VMemristor, current, conductance, null});
       }
-
-      // create current data
-      double[] current = new double[bufferLength];
-      for (int i = 0; i < bufferLength; i++) {
-        current[i] = V2Trimmed[i] / controlModel.getSeriesResistance() * PulsePreferences.CURRENT_UNIT.getDivisor();
-      }
-
-      // create conductance data
-      double[] conductance = new double[bufferLength];
-      for (int i = 0; i < bufferLength; i++) {
-
-        double I = V2Trimmed[i] / controlModel.getSeriesResistance();
-        double G = I / (V1Trimmed[i] - V2Trimmed[i]) * PulsePreferences.CONDUCTANCE_UNIT.getDivisor();
-        G = G < 0 ? 0 : G;
-        conductance[i] = G;
-      }
-
-      publish(new double[][]{timeData, V1Trimmed, V2Trimmed, V2MinusV1, current, conductance, null});
 
       while (!initialPulseTrainCaptured) {
         // System.out.println("Waiting...");
@@ -293,25 +317,19 @@ public class PulseExperiment extends Experiment {
 
         // trigger on 20% the rising .1 V read pulse
         samplesPerPulse = 300;
-
         double f = 1 / (controlModel.getReadPulseWidth() * 2);
-
-        // double f = 20_000;
-
         sampleFrequency = f * samplesPerPulse;
-        // dwfProxy.getDwf().startAnalogCaptureBothChannelsLevelTrigger(sampleFrequency, 0.02,
-        // samplesPerPulse * 1);
-
         dwfProxy.getDwf().startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(DWF.WAVEFORM_CHANNEL_1, sampleFrequency, samplesPerPulse, true);
-
         dwfProxy.waitUntilArmed();
 
-        // ////////////////////////////////
+        //////////////////////////////////
         // Pulse Out /////////////////
-        // ////////////////////////////////
+        //////////////////////////////////
 
         // read pulse: 0.1 V, 5 us pulse width
+
         customWaveform = WaveformUtils.generateCustomWaveform(Waveform.Square, controlModel.getReadPulseAmplitude(), f);
+
         dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, f, 0, 1, customWaveform);
 
         // Read In Data
@@ -336,7 +354,12 @@ public class PulseExperiment extends Experiment {
           trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, 0, 10);
           V1Trimmed = trimmedRawData[0];
           V2Trimmed = trimmedRawData[1];
-          V2MinusV1 = PostProcessDataUtils.getV1MinusV2(V1Trimmed, V2Trimmed);
+
+          if (boardVersion == 2) {
+            VMemristor = PostProcessDataUtils.invert(V1Trimmed);
+          } else {
+            VMemristor = PostProcessDataUtils.getV1MinusV2(V1Trimmed, V2Trimmed);
+          }
 
           bufferLength = V1Trimmed.length;
 
@@ -347,29 +370,47 @@ public class PulseExperiment extends Experiment {
             timeData[i] = i * timeStep;
           }
 
-          // create conductance data - a single number equal to the average of all points in the
-          // trimmed data
-
           /*
-           * get the voltage of V2 right before pulse falling edge. This is given to the RC Computer to get the resistance.
+           * get the voltage of V2 right before pulse falling/rising edge. This is given to the RC Computer to get the resistance.
            */
 
-          double vRead = V2Trimmed[V2Trimmed.length / 3];//best guess
-          for (int i = 50; i < V1Trimmed.length; i++) {
-            double pD = (V1Trimmed[i] - V1Trimmed[i - 1]) / V1Trimmed[i];
-            if (pD < -.05) {
-              vRead = V2Trimmed[i - 1];
-              break;
+          double resistance;
+
+          if (boardVersion == 2) {
+
+            double vRead = V1Trimmed[V1Trimmed.length / 3]; // best guess
+            for (int i = 50; i < V1Trimmed.length; i++) {
+              double pD = (V2Trimmed[i] - V2Trimmed[i - 1]) / V2Trimmed[i];
+
+              if (pD > .05) {
+                vRead = V1Trimmed[i - 5];
+                //                System.out.println("vRead=" + vRead);
+                //                System.out.println(" time=" + timeData[i - 5]);
+                break;
+              }
             }
+
+            resistance = controlModel.getRcComputer().getRFromV(vRead);
+
+          } else {
+            double vRead = V2Trimmed[V2Trimmed.length / 3]; // best guess
+            for (int i = 50; i < V1Trimmed.length; i++) {
+              double pD = (V1Trimmed[i] - V1Trimmed[i - 1]) / V1Trimmed[i];
+              if (pD < -.05) {
+                vRead = V2Trimmed[i - 5];
+                break;
+              }
+            }
+            resistance = controlModel.getRcComputer().getRFromV(vRead);
           }
-          double resistance = controlModel.getRcComputer().getRFromV(vRead);
+
           double[] conductanceAve = new double[]{(1 / resistance) * ConductancePreferences.CONDUCTANCE_UNIT.getDivisor()};
 
-          publish(new double[][]{timeData, V1Trimmed, V2Trimmed, V2MinusV1, null, null, conductanceAve});
-
-          //  
-          //   publish(new double[][]{timeData, V1Trimmed, V2Trimmed, V2MinusV1, current, conductance, null});
-
+          if (boardVersion == 2) {
+            publish(new double[][]{timeData, V1Trimmed, V2Trimmed, VMemristor, null, null, conductanceAve});
+          } else {
+            publish(new double[][]{timeData, V1Trimmed, V2Trimmed, VMemristor, null, null, conductanceAve});
+          }
         }
         // Stop Analog In and Out
         dwfProxy.getDwf().stopWave(DWF.WAVEFORM_CHANNEL_1);
@@ -400,9 +441,10 @@ public class PulseExperiment extends Experiment {
           resultPanel.switchReadPulseCaptureChart();
           resultController.repaintReadPulseCaptureChart();
         }
+
       } else {
 
-        //update read pulse capture chart....
+        // update read pulse capture chart....
 
         resultController.updateReadPulseCaptureChartData(newestChunk[0], newestChunk[1], newestChunk[2], newestChunk[3], controlModel.getPulseWidth(),
             controlModel.getAmplitude());
@@ -414,9 +456,7 @@ public class PulseExperiment extends Experiment {
         resultController.repaintGChart();
 
         controlModel.updateEnergyData();
-        controlPanel.updateEnergyGUI(controlModel.getAppliedAmplitude(), controlModel.getAppliedCurrent(), controlModel.getAppliedEnergy(),
-            controlModel.getAppliedMemristorEnergy());
-
+        controlPanel.updateEnergyGUI(controlModel.getAmplitude(), controlModel.getAppliedCurrent(), controlModel.getAppliedEnergy());
       }
     }
   }

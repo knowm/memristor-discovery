@@ -16,7 +16,7 @@ public class CapChargeTest {
 
     double Rm = 382E3;
     // double Rm = 38.7E3;
-    double C = .160E-9;//350pF
+    double C = .160E-9; // 350pF
     double rc = Rm * C;
 
     double Vmax = .07 - .07 * (Rm / (Rs + Rm));
@@ -32,7 +32,5 @@ public class CapChargeTest {
 
     // Show it
     new SwingWrapper(chart).displayChart();
-
   }
-
 }

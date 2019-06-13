@@ -7,12 +7,12 @@ public class SquareLongDecayPulse extends PulseDriver {
   private double d;
   private double halfPulseWidth;
 
-  public SquareLongDecayPulse(String id, double dcOffset, double pulseWidthInNS, double dutyCycle, double amplitude) {
+  public SquareLongDecayPulse(
+      String id, double dcOffset, double pulseWidthInNS, double dutyCycle, double amplitude) {
     super(id, dcOffset, pulseWidthInNS, dutyCycle, amplitude);
 
     halfPulseWidth = this.pulseWidth / 2;
     d = 4.605 / (10 * pulseWidth);
-
   }
 
   @Override
@@ -23,12 +23,8 @@ public class SquareLongDecayPulse extends PulseDriver {
     } else if (t > halfPulseWidth) {
 
       return amplitude * Math.exp(-d * (t - halfPulseWidth));
-    }
-
-    else {
+    } else {
       return dcOffset;
     }
-
   }
-
 }

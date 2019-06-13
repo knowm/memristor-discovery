@@ -146,6 +146,15 @@ public class PostProcessDataUtils {
     return V2Zeroed;
   }
 
+  public static double[] invert(double[] v) {
+
+    double[] vminus = new double[v.length];
+    for (int i = 0; i < v.length; i++) {
+      vminus[i] = -v[i];
+    }
+    return vminus;
+  }
+
   public static double[] getV1MinusV2(double[] v1, double[] v2) {
 
     double[] V2MinusV1 = new double[v1.length];

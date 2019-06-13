@@ -53,10 +53,10 @@ public class ControlModel extends Model {
   private double dutyCycle; // 0 to 1.
 
   private int pulseNumber;
-  private double appliedAmplitude;
+  // private double appliedAmplitude;
   private double appliedCurrent;
   private double appliedEnergy;
-  private double appliedMemristorEnergy;
+  //  private double appliedMemristorEnergy;
   private double lastG;
   private int sampleRate;
 
@@ -66,11 +66,18 @@ public class ControlModel extends Model {
   private double readPulseAmplitude = .1;
   private double parasiticReadCapacitance = 140E-12;
 
-  //used to compute resistance give read pulse voltage and takes into account parasitic capacitance by using a board circuit model
+  // used to compute resistance give read pulse voltage and takes into account parasitic capacitance
+  // by using a board circuit model
   private RC_ResistanceComputer rcComputer;
 
+  private int boardVersion;
+
   /** Constructor */
-  public ControlModel() {
+  public ControlModel(int boardVersion) {
+    this.boardVersion = boardVersion;
+    if (boardVersion == 2) {
+      readPulseAmplitude = -readPulseAmplitude;
+    }
   }
 
   @Override
@@ -80,7 +87,7 @@ public class ControlModel extends Model {
         .valueOf(experimentPreferences.getString(PulsePreferences.WAVEFORM_INIT_STRING_KEY, PulsePreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
     seriesResistance = experimentPreferences.getInteger(PulsePreferences.SERIES_R_INIT_KEY, PulsePreferences.SERIES_R_INIT_DEFAULT_VALUE);
     amplitude = experimentPreferences.getFloat(PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY, PulsePreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
-    appliedAmplitude = amplitude;
+    //appliedAmplitude = amplitude;
 
     pulseWidth = experimentPreferences.getInteger(PulsePreferences.PULSE_WIDTH_INIT_KEY, PulsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
     pulseNumber = experimentPreferences.getInteger(PulsePreferences.NUM_PULSES_INIT_KEY, PulsePreferences.NUM_PULSES_INIT_DEFAULT_VALUE);
@@ -90,8 +97,7 @@ public class ControlModel extends Model {
 
     updateWaveformChartData();
 
-    rcComputer = new RC_ResistanceComputer(readPulseAmplitude, readPulseWidth, seriesResistance, parasiticReadCapacitance);
-
+    rcComputer = new RC_ResistanceComputer(boardVersion, readPulseAmplitude, readPulseWidth, seriesResistance, parasiticReadCapacitance);
   }
 
   /** Given the state of the model, update the waveform x and y axis data arrays. */
@@ -118,7 +124,6 @@ public class ControlModel extends Model {
         driver = new SquareDecayPulse("SquareDecay", 0, pulseWidth, dutyCycle, amplitude);
         break;
       case SquareLongDecay:
-
         driver = new SquareLongDecayPulse("SquareLongDecay", 0, pulseWidth, dutyCycle, amplitude);
         break;
       default:
@@ -150,8 +155,7 @@ public class ControlModel extends Model {
   public void setSeriesResistance(int seriesResistance) {
 
     this.seriesResistance = seriesResistance;
-    rcComputer = new RC_ResistanceComputer(readPulseAmplitude, readPulseWidth, seriesResistance, parasiticReadCapacitance);
-
+    rcComputer = new RC_ResistanceComputer(boardVersion, readPulseAmplitude, readPulseWidth, seriesResistance, parasiticReadCapacitance);
   }
 
   public float getAmplitude() {
@@ -212,10 +216,10 @@ public class ControlModel extends Model {
     swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
-  public double getAppliedAmplitude() {
-
-    return appliedAmplitude;
-  }
+  //  public double getAppliedAmplitude() {
+  //
+  //    return appliedAmplitude;
+  //  }
 
   public PulsePreferences.Waveform getWaveform() {
 
@@ -267,10 +271,10 @@ public class ControlModel extends Model {
     return appliedEnergy;
   }
 
-  public double getAppliedMemristorEnergy() {
-
-    return appliedMemristorEnergy;
-  }
+  //  public double getAppliedMemristorEnergy() {
+  //
+  //    return appliedMemristorEnergy;
+  //  }
 
   public String getLastRAsString() {
 
@@ -280,25 +284,30 @@ public class ControlModel extends Model {
   public void updateEnergyData() {
 
     // calculate applied voltage
-    if (lastG > 0.0) {
-      if (isMemristorVoltageDropSelected) {
-        this.appliedAmplitude = amplitude / (1 - seriesResistance / (seriesResistance + getLastR() + Util.getSwitchesSeriesResistance()));
-      } else {
-        this.appliedAmplitude = amplitude;
-      }
-      this.appliedCurrent = appliedAmplitude / (getLastR() + seriesResistance + Util.getSwitchesSeriesResistance())
-          * PulsePreferences.CURRENT_UNIT.getDivisor();
-      this.appliedEnergy = appliedAmplitude * appliedAmplitude / (getLastR() + seriesResistance + Util.getSwitchesSeriesResistance()) * pulseNumber
-          * pulseWidth;
+    // if (lastG > 0.0) {
+    // this.appliedAmplitude = amplitude;
 
-      // V=IR =
-      double voltageDropOnMemristor = appliedCurrent / PulsePreferences.CURRENT_UNIT.getDivisor() * getLastR();
-      // System.out.println("voltageDropOnMemristor = " + voltageDropOnMemristor);
-      this.appliedMemristorEnergy = voltageDropOnMemristor * voltageDropOnMemristor / getLastR() * pulseNumber * pulseWidth / 1000;
-      // System.out.println("appliedMemristorEnergy = " + appliedMemristorEnergy);
-    } else {
-      this.appliedAmplitude = amplitude;
-    }
+    this.appliedCurrent = amplitude / (getLastR() + seriesResistance + Util.getSwitchesSeriesResistance())
+        * PulsePreferences.CURRENT_UNIT.getDivisor();
+    this.appliedEnergy = amplitude * amplitude / (getLastR() + seriesResistance + Util.getSwitchesSeriesResistance()) * pulseNumber * pulseWidth
+        / 1E9;
+
+    // V=IR =
+    //      double voltageDropOnMemristor =
+    //          appliedCurrent / PulsePreferences.CURRENT_UNIT.getDivisor() * getLastR();
+    // System.out.println("voltageDropOnMemristor = " + voltageDropOnMemristor);
+    //this.appliedMemristorEnergy = (appliedAmplitude * appliedAmplitude / getLastR()) * pulseNumber * pulseWidth / 1E9;
+
+    System.out.println("amplitude=" + amplitude);
+    System.out.println("pulseNumber=" + pulseNumber);
+    System.out.println("pulseWidth=" + pulseWidth);
+    System.out.println("getLastR()=" + getLastR());
+    System.out.println("appliedEnergy=" + appliedEnergy);
+
+    //System.out.println("appliedMemristorEnergy=" + appliedMemristorEnergy);
+
+    // System.out.println("appliedMemristorEnergy = " + appliedMemristorEnergy);
+
   }
 
   public boolean isStartToggled() {

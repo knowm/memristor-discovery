@@ -40,12 +40,19 @@ public class PulseUtility {
   private MuxController muxController;
   private float voltageReadNoiseFloor;
   private static int sleep = 5;
+  private int boardVersion = 2;
 
-  public PulseUtility(Model controlModel, DWFProxy dwfProxy, MuxController muxController, float voltageReadNoiseFloor) {
+  public PulseUtility(
+      int boardVersion,
+      Model controlModel,
+      DWFProxy dwfProxy,
+      MuxController muxController,
+      float voltageReadNoiseFloor) {
     this.model = controlModel;
     this.dwfProxy = dwfProxy;
     this.muxController = muxController;
     this.voltageReadNoiseFloor = voltageReadNoiseFloor;
+    this.boardVersion = boardVersion;
   }
 
   /*
@@ -53,35 +60,53 @@ public class PulseUtility {
    * for each device (in kOhms): start, write, erase
    */
 
-  public float[][] testMeminline(Waveform writeEraseWaveform, float V_WRITE, float V_ERASE, float V_READ, int READ_PULSE_WIDTH_IN_MICRO_SECONDS,
-      int WRITE_PULSE_WIDTH_IN_MICRO_SECONDS, int ERASE_PULSE_WIDTH_IN_MICRO_SECONDS) {
+  public float[][] testMeminline(
+      Waveform writeEraseWaveform,
+      float V_WRITE,
+      float V_ERASE,
+      float V_READ,
+      int READ_PULSE_WIDTH_IN_MICRO_SECONDS,
+      int WRITE_PULSE_WIDTH_IN_MICRO_SECONDS,
+      int ERASE_PULSE_WIDTH_IN_MICRO_SECONDS) {
 
     try {
 
-      // initialize in erased state
+      //  initialize in erased state
       measureAllSwitchResistances(writeEraseWaveform, V_ERASE, ERASE_PULSE_WIDTH_IN_MICRO_SECONDS);
       Thread.sleep(25);
+
       float[][] reads = new float[3][9];
-      reads[0] = measureAllSwitchResistances(Waveform.Square, V_READ, READ_PULSE_WIDTH_IN_MICRO_SECONDS);
+
+      if (boardVersion == 2) {
+        reads = new float[3][17];
+      }
+
+      reads[0] =
+          measureAllSwitchResistances(Waveform.Square, V_READ, READ_PULSE_WIDTH_IN_MICRO_SECONDS);
+
       Thread.sleep(25);
       measureAllSwitchResistances(writeEraseWaveform, V_WRITE, WRITE_PULSE_WIDTH_IN_MICRO_SECONDS);
       Thread.sleep(25);
-      reads[1] = measureAllSwitchResistances(Waveform.Square, V_READ, READ_PULSE_WIDTH_IN_MICRO_SECONDS);
+      reads[1] =
+          measureAllSwitchResistances(Waveform.Square, V_READ, READ_PULSE_WIDTH_IN_MICRO_SECONDS);
       Thread.sleep(25);
       measureAllSwitchResistances(writeEraseWaveform, V_ERASE, ERASE_PULSE_WIDTH_IN_MICRO_SECONDS);
       Thread.sleep(25);
-      reads[2] = measureAllSwitchResistances(Waveform.Square, V_READ, READ_PULSE_WIDTH_IN_MICRO_SECONDS);
+      reads[2] =
+          measureAllSwitchResistances(Waveform.Square, V_READ, READ_PULSE_WIDTH_IN_MICRO_SECONDS);
       return reads;
     } catch (InterruptedException e) {
 
-      model.swingPropertyChangeSupport.firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null, e.getMessage());
+      model.swingPropertyChangeSupport.firePropertyChange(
+          Model.EVENT_NEW_CONSOLE_LOG, null, e.getMessage());
       return null;
     }
   }
 
-  public float[] measureAllSwitchResistances(Waveform waveform, float readVoltage, int pulseWidthInMicroSeconds) {
+  public float[] measureAllSwitchResistances(
+      Waveform waveform, float readVoltage, int pulseWidthInMicroSeconds) {
 
-    if (muxController != null) {
+    if (boardVersion == 1) {
       muxController.setW1(Destination.A);
       muxController.setW2(Destination.OUT);
       muxController.setScope1(Destination.A);
@@ -91,9 +116,18 @@ public class PulseUtility {
 
     float[] r_array = new float[9];
 
-    r_array[0] = getSwitchResistancekOhm(waveform, readVoltage, pulseWidthInMicroSeconds, DWF.WAVEFORM_CHANNEL_1); // all switches off
+    if (boardVersion == 2) {
+      r_array = new float[17];
+    }
 
-    for (int i = 0; i < 8; i++) {
+    r_array[0] =
+        getSwitchResistancekOhm(
+            waveform,
+            readVoltage,
+            pulseWidthInMicroSeconds,
+            DWF.WAVEFORM_CHANNEL_1); // all switches off
+
+    for (int i = 0; i < (boardVersion == 2 ? 16 : 8); i++) {
 
       dwfProxy.update2DigitalIOStatesAtOnce(i, true);
 
@@ -103,45 +137,90 @@ public class PulseUtility {
 
       }
 
-      r_array[i + 1] = getSwitchResistancekOhm(waveform, readVoltage, pulseWidthInMicroSeconds, DWF.WAVEFORM_CHANNEL_1);
+      r_array[i + 1] =
+          getSwitchResistancekOhm(
+              waveform, readVoltage, pulseWidthInMicroSeconds, DWF.WAVEFORM_CHANNEL_1);
 
       dwfProxy.update2DigitalIOStatesAtOnce(i, false);
     }
 
+    System.out.println("resistance array: " + Arrays.toString(r_array));
+
     return r_array;
   }
 
-  public float getSwitchResistancekOhm(Waveform waveform, float readVoltage, int pulseWidthInMicroSeconds, int dWFWaveformChannel) {
+  public float getSwitchResistancekOhm(
+      Waveform waveform, float readVoltage, int pulseWidthInMicroSeconds, int dWFWaveformChannel) {
 
-    float[] vMeasure = getScopesAverageVoltage(waveform, readVoltage, pulseWidthInMicroSeconds, dWFWaveformChannel);
+    float[] vMeasure =
+        getScopesAverageVoltage(
+            waveform, readVoltage, pulseWidthInMicroSeconds, dWFWaveformChannel);
 
-    model.swingPropertyChangeSupport.firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null,
+    //    System.out.println("readVoltage=" + readVoltage);
+    //    System.out.println("vMeasure=" + Arrays.toString(vMeasure));
+
+    model.swingPropertyChangeSupport.firePropertyChange(
+        Model.EVENT_NEW_CONSOLE_LOG,
+        null,
         "Measuring switch resistance. [V1,V2]=" + Arrays.toString(vMeasure));
 
     if (vMeasure == null) {
 
-      model.swingPropertyChangeSupport.firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null,
+      model.swingPropertyChangeSupport.firePropertyChange(
+          Model.EVENT_NEW_CONSOLE_LOG,
+          null,
           "WARNING: getScopesAverageVoltage() returned null. This is likely a pulse catpure failure.");
       return Float.NaN;
     }
 
-    if (vMeasure[1] <= voltageReadNoiseFloor) {
-      model.swingPropertyChangeSupport.firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null,
-          "WARNING: Voltage drop across series resistor (" + vMeasure[1] + ") is at or below noise threshold.");
-      return Float.POSITIVE_INFINITY;
+    if (boardVersion < 2) {
+      if (vMeasure[1] <= voltageReadNoiseFloor) {
+        model.swingPropertyChangeSupport.firePropertyChange(
+            Model.EVENT_NEW_CONSOLE_LOG,
+            null,
+            "WARNING: Voltage drop across series resistor ("
+                + vMeasure[1]
+                + ") is at or below noise threshold.");
+        return Float.POSITIVE_INFINITY;
+      }
+
+      /*
+       * Vy/Rseries=I Vdrop/I=Rswitch (Vin-Vy)/I=Rswitch
+       */
+
+      float I = Math.abs(vMeasure[1] / model.seriesResistance);
+      float rSwitch =
+          (Math.abs(vMeasure[0] - vMeasure[1]) / I)
+              - (float) ExperimentPreferences.TOTAL_PARASITIC_RESISTANCE;
+
+      return rSwitch / 1000; // to kilohms
+
+    } else {
+
+      if (Math.abs(vMeasure[1] - vMeasure[0]) <= voltageReadNoiseFloor) {
+        model.swingPropertyChangeSupport.firePropertyChange(
+            Model.EVENT_NEW_CONSOLE_LOG,
+            null,
+            "WARNING: Voltage drop across series resistor ("
+                + vMeasure[1]
+                + ") is at or below noise threshold.");
+        return Float.POSITIVE_INFINITY;
+      }
+
+      float I = (vMeasure[1] - vMeasure[0]) / model.seriesResistance;
+
+      // System.out.println("I=" + I);
+
+      float rSwitch = Math.abs(vMeasure[0] / I);
+
+      // System.out.println("rSwitch=" + rSwitch);
+
+      return rSwitch / 1000; // to kilohms
     }
-
-    /*
-     * Vy/Rseries=I Vdrop/I=Rswitch (Vin-Vy)/I=Rswitch
-     */
-
-    float I = Math.abs(vMeasure[1] / model.seriesResistance);
-    float rSwitch = (Math.abs(vMeasure[0] - vMeasure[1]) / I) - (float) ExperimentPreferences.TOTAL_PARASITIC_RESISTANCE;
-
-    return rSwitch / 1000; // to kilohms
   }
 
-  public float[] getScopesAverageVoltage(Waveform waveform, float readVoltage, int pulseWidthInMicroSeconds, int dWFWaveformChannel) {
+  public float[] getScopesAverageVoltage(
+      Waveform waveform, float readVoltage, int pulseWidthInMicroSeconds, int dWFWaveformChannel) {
 
     int samplesPerPulse = 300;
 
@@ -149,15 +228,20 @@ public class PulseUtility {
 
     int samples = sampleFrequency * samplesPerPulse;
 
-    dwfProxy.getDwf().startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(dWFWaveformChannel, samples, samplesPerPulse, true);
+    dwfProxy
+        .getDwf()
+        .startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(
+            dWFWaveformChannel, samples, samplesPerPulse, true);
     dwfProxy.waitUntilArmed();
     double[] pulse = WaveformUtils.generateCustomWaveform(waveform, readVoltage, sampleFrequency);
     dwfProxy.getDwf().startCustomPulseTrain(dWFWaveformChannel, sampleFrequency, 0, 1, pulse);
     boolean success = dwfProxy.capturePulseData(samples, 1);
     if (success) {
       int validSamples = dwfProxy.getDwf().FDwfAnalogInStatusSamplesValid();
-      double[] v1 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
-      double[] v2 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
+      double[] v1 =
+          dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
+      double[] v2 =
+          dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
 
       /*
        * Note from Alex: The output is a pulse with the last half of the measurement data at ground. Taking the first 50% insures we get the pulse
@@ -175,7 +259,7 @@ public class PulseUtility {
       aveScope1 /= v1.length / 2;
       aveScope2 /= v2.length / 2;
 
-      return new float[]{(float) aveScope1, (float) aveScope2};
+      return new float[] {(float) aveScope1, (float) aveScope2};
 
     } else {
       return null;

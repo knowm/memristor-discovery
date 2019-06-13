@@ -221,17 +221,20 @@ public class ControlController extends Controller {
       }
     });
 
-    controlPanel.getMemristorVoltageCheckBox().addActionListener(new ActionListener() {
-
-      @Override
-      public void actionPerformed(ActionEvent actionEvent) {
-
-        AbstractButton abstractButton = (AbstractButton) actionEvent.getSource();
-        boolean selected = abstractButton.getModel().isSelected();
-        // System.out.println("selected = " + selected);
-        controlModel.setMemristorVoltageDropSelected(selected);
-      }
-    });
+    //    controlPanel
+    //        .getMemristorVoltageCheckBox()
+    //        .addActionListener(
+    //            new ActionListener() {
+    //
+    //              @Override
+    //              public void actionPerformed(ActionEvent actionEvent) {
+    //
+    //                AbstractButton abstractButton = (AbstractButton) actionEvent.getSource();
+    //                boolean selected = abstractButton.getModel().isSelected();
+    //                // System.out.println("selected = " + selected);
+    //                controlModel.setMemristorVoltageDropSelected(selected);
+    //              }
+    //            });
 
     controlView.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("S"), "startstop");
     controlView.getActionMap().put("startstop", new AbstractAction() {
@@ -263,8 +266,7 @@ public class ControlController extends Controller {
       case Model.EVENT_WAVEFORM_UPDATE:
         controlModel.updateWaveformChartData();
         controlModel.updateEnergyData();
-        controlPanel.updateEnergyGUI(controlModel.getAppliedAmplitude(), controlModel.getAppliedCurrent(), controlModel.getAppliedEnergy(),
-            controlModel.getAppliedMemristorEnergy());
+        controlPanel.updateEnergyGUI(controlModel.getAmplitude(), controlModel.getAppliedCurrent(), controlModel.getAppliedEnergy());
         break;
 
       default:

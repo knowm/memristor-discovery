@@ -131,7 +131,7 @@ public abstract class ExperimentPreferencesPanel extends JDialog {
     buttonPane.add(okButton);
     getRootPane().setDefaultButton(okButton);
 
-    setPreferredSize(getPreferredSize());
+    // setPreferredSize(getPreferredSize());
 
     pack();
     setLocationRelativeTo(getParent());

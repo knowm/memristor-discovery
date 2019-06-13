@@ -1,33 +1,41 @@
 # DC Experiment
 
-The DC app allows you to drive a memristor in series with a resistor with various ramping functions including sawtooth, sawtoothupdown, triangle and triangleupdown at time scale from 10 to 1000ms. The number of applied ramping signals can be selected and the response can be observed as either a time series (V1+ vs T and V2+ vs T), I vs V or G vs V plot, revealing the behavior of the memristor at slow timescales.
+The DC app allows you to drive a memristor in series with a resistor with various ramping functions including sawtooth, sawtoothupdown, triangle and triangleupdown at time scale from 10 to 1000ms. The number of applied ramping signals can be selected and the response can be observed as either a time series (V1+ vs T and V2+ vs T), I vs V or G vs V plot, revealing the behavior of the memristor at slow timescales. The circuit configuration depends on your board version:
 
-![](DC.png)
+![](BasicCircuit.png)
 
-## Connections
+W1: Arbitrary Waveform Generator W1 on the AD2.
+1+: Oscilloscope Probe 1+ on the AD2.
+2+: Oscilloscope Probe 2+ on the AD2.
 
-1.  Arbitrary Waveform Generator W1 (Analog Discovery 2's "W1" and "gnd" connectors) is connected across the memristor (M) and series resistor (R).
-2.  Oscilloscope Probe V1+ (Analog Discovery 2's "1+" and "1-" connectors) is connected across the memristor (M) and series resistor (Rs).
-3.  Oscilloscope Probe V2+ (Analog Discovery 2's "2+" and "2-" connectors) is connected across the series resistor (R).
+notes: 
+
+AD2 = Analog Discovery 2
+1- and 2- are connected to ground.
+
+## V2.0 Mode 1 Selection
+
+Memristor Discovery V2.0 boards must be set to "Mode 1" by moving selection switch on board to the '1' position. 
+
+## V1.X Jumper Connections
+
+![](HysteresisV1Board.png)
 
 ## Memristor Selection
 
-Use the toggle switches near the top of the app window to connect one or more individual memristors into the circuit.
+Use the toggle switches near the top of the app window to connect one or more individual memristors into the circuit. 
 
 ## Series Resistor
 
-The series resistor provide two important functions:
+The series resistor provides two important functions:
 
 1.  Limits the maximum current through the memristor to prevent device damage (see memristor datasheet).
-2.  Allows for a current measurement to be made with the oscilloscope (I = V2+/R).
+2.  Allows for a current measurement to be made with the oscilloscope.
 
-## Controls
+### V2.0 Series Resistors
 
-The control panel can be used to adjust the driver waveform of W1. The series resistor value control should correspond to the actual series resistance value used in the experimental setup in order to calculate an accurate current value.
+Version 2.0 Memristor Discovery boards have two series resistors, A and B. These resistors are connected in parallel when the board is in Mode 1. The series resistance of the circuit is thus half of the value of the resistors in the socket, which needs to be reflected in the preferences menu. Alternately, you may remove either resistor A or B. Whatever you do, the value of the series resistor in the preferences must match the actual series resistance for measurements to be accurate.
 
-## Conductance Plot
-
-The conductance plot (G-V) uses a running average value, k, to smooth the data. A k value of 0 will eliminate all averaging. The larger k is, the more averaging will occur. If k is too big you may unknowingly hide important memristor behavior so it is best to keep k as low as possible.
 
 ## Exporting Data
 

@@ -65,11 +65,11 @@ public class HysteresisExperiment extends Experiment {
    * @param dwfProxy
    * @param mainFrameContainer
    */
-  public HysteresisExperiment(DWFProxy dwfProxy, Container mainFrameContainer, boolean isV1Board) {
+  public HysteresisExperiment(DWFProxy dwfProxy, Container mainFrameContainer, int boardVersion) {
 
-    super(dwfProxy, mainFrameContainer, isV1Board);
+    super(dwfProxy, mainFrameContainer, boardVersion);
 
-    controlModel = new ControlModel();
+    controlModel = new ControlModel(boardVersion);
     controlPanel = new ControlPanel();
     resultModel = new ResultModel();
     resultPanel = new ResultPanel();
@@ -156,9 +156,24 @@ public class HysteresisExperiment extends Experiment {
       case Model.EVENT_WAVEFORM_UPDATE:
         if (controlModel.isStartToggled()) {
           // AnalogOut
-          DWF.Waveform dwfWaveform = WaveformUtils.getDWFWaveform(controlModel.getWaveform());
-          dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, controlModel.getFrequency(), controlModel.getAmplitude(),
-              controlModel.getOffset(), 50);
+          //          DWF.Waveform dwfWaveform =
+          // WaveformUtils.getDWFWaveform(controlModel.getWaveform());
+          //          dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform,
+          // controlModel.getFrequency(), controlModel.getAmplitude(),
+          //              controlModel.getOffset(), 50);
+          //
+          //
+
+          if (boardVersion == 2) {
+            DWF.Waveform dwfWaveform = WaveformUtils.getDWFWaveform(controlModel.getWaveform());
+            dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, controlModel.getFrequency(), -controlModel.getAmplitude(),
+                -controlModel.getOffset(), 50);
+          } else {
+            DWF.Waveform dwfWaveform = WaveformUtils.getDWFWaveform(controlModel.getWaveform());
+            dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, controlModel.getFrequency(), controlModel.getAmplitude(),
+                controlModel.getOffset(), 50);
+          }
+
         } else {
           resultPanel.switch2WaveformChart();
           resultController.udpateWaveformChart(controlModel.getWaveformTimeData(), controlModel.getWaveformAmplitudeData(),
@@ -196,9 +211,16 @@ public class HysteresisExperiment extends Experiment {
     protected Boolean doInBackground() throws Exception {
 
       // AnalogOut
-      DWF.Waveform dwfWaveform = WaveformUtils.getDWFWaveform(controlModel.getWaveform());
-      dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, controlModel.getFrequency(), controlModel.getAmplitude(),
-          controlModel.getOffset(), 50);
+
+      if (boardVersion == 2) {
+        DWF.Waveform dwfWaveform = WaveformUtils.getDWFWaveform(controlModel.getWaveform());
+        dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, controlModel.getFrequency(), -controlModel.getAmplitude(),
+            -controlModel.getOffset(), 50);
+      } else {
+        DWF.Waveform dwfWaveform = WaveformUtils.getDWFWaveform(controlModel.getWaveform());
+        dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, controlModel.getFrequency(), controlModel.getAmplitude(),
+            controlModel.getOffset(), 50);
+      }
 
       // Analog In
       double sampleFrequency = (double) controlModel.getFrequency() * HysteresisPreferences.CAPTURE_BUFFER_SIZE
@@ -225,57 +247,119 @@ public class HysteresisExperiment extends Experiment {
 
         if (validSamples > 0) {
 
-          double[] rawdata1 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
-          double[] rawdata2 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
+          double[] rawV1 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
+          double[] rawV2 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
 
-          if (resultPanel.getCaptureButton().isSelected()) { // Capture
+          /*
+           * board version 2 configuration is 'upside down and backwards' from other versions. Resistor-Memristor node is X1 not X2. Source voltage is
+           * V2 not V1 and due to inverted memristor polarity is reversesed.
+           */
 
-            // Calculate time data
-            double[] timeData = new double[rawdata1.length];
-            double timeStep = 1 / (double) controlModel.getFrequency() * HysteresisPreferences.CAPTURE_PERIOD_COUNT
-                / HysteresisPreferences.CAPTURE_BUFFER_SIZE;
-            for (int i = 0; i < timeData.length; i++) {
-              timeData[i] = i * timeStep;
-            }
-            publish(new double[][]{rawdata1, rawdata2, timeData});
-          } else if (resultPanel.getIVButton().isSelected()) { // IV
+          if (boardVersion == 2) {
+            if (resultPanel.getCaptureButton().isSelected()) { // Capture
+              // Calculate time data
+              double[] timeData = new double[rawV1.length];
+              double[] V1 = new double[rawV1.length];
+              double[] V2 = new double[rawV1.length];
 
-            // create current data
-            double[] current = new double[rawdata2.length];
-            double[] voltage = new double[rawdata1.length];
-            for (int i = 0; i < current.length; i++) {
-              current[i] = rawdata2[i] / controlModel.getSeriesResistance() * HysteresisPreferences.CURRENT_UNIT.getDivisor();
-            }
-            if (!HysteresisPreferences.IS_VIN) {
-              for (int i = 0; i < current.length; i++) {
-                voltage[i] = rawdata1[i] - rawdata2[i];
+              double timeStep = 1 / (double) controlModel.getFrequency() * HysteresisPreferences.CAPTURE_PERIOD_COUNT
+                  / HysteresisPreferences.CAPTURE_BUFFER_SIZE;
+
+              for (int i = 0; i < timeData.length; i++) {
+                timeData[i] = i * timeStep;
+
+                V1[i] = -rawV2[i];
+                V2[i] = -rawV1[i];
               }
+
+              publish(new double[][]{V1, V2, timeData});
+            } else if (resultPanel.getIVButton().isSelected()) { // IV
+
+              // create current data
+              double[] current = new double[rawV1.length];
+              double[] voltage = new double[rawV2.length];
+              double[] V1 = new double[rawV1.length];
+              for (int i = 0; i < current.length; i++) {
+
+                double dv = rawV2[i] - rawV1[i];
+                V1[i] = -rawV2[i];
+
+                current[i] = -dv / controlModel.getSeriesResistance() * HysteresisPreferences.CURRENT_UNIT.getDivisor();
+              }
+
+              // if (!HysteresisPreferences.IS_VIN) {
+              for (int i = 0; i < current.length; i++) {
+                voltage[i] = -rawV1[i];
+              }
+              //  }
+
+              publish(new double[][]{V1, voltage, current});
+
+            } else { // GV
+              double[] conductance = new double[rawV1.length];
+              double[] voltage = new double[rawV2.length];
+              double[] V1 = new double[rawV1.length];
+
+              for (int i = 0; i < conductance.length; i++) {
+
+                double dv = rawV2[i] - rawV1[i];
+                double I = dv / controlModel.getSeriesResistance();
+                V1[i] = -rawV2[i];
+
+                double G = I / (rawV1[i]) * HysteresisPreferences.CONDUCTANCE_UNIT.getDivisor();
+                G = G < 0 ? 0 : G;
+                double ave = (1 - resultModel.getK()) * (resultModel.getAve()) + resultModel.getK() * (G);
+                resultModel.setAve(ave);
+                conductance[i] = ave;
+                voltage[i] = -rawV1[i];
+              }
+
+              publish(new double[][]{V1, voltage, conductance});
             }
-            publish(new double[][]{rawdata1, voltage, current});
 
-          } else { // GV
+          } else {
+            if (resultPanel.getCaptureButton().isSelected()) { // Capture
+              // Calculate time data
+              double[] timeData = new double[rawV1.length];
+              double timeStep = 1 / (double) controlModel.getFrequency() * HysteresisPreferences.CAPTURE_PERIOD_COUNT
+                  / HysteresisPreferences.CAPTURE_BUFFER_SIZE;
+              for (int i = 0; i < timeData.length; i++) {
+                timeData[i] = i * timeStep;
+              }
+              publish(new double[][]{rawV1, rawV2, timeData});
+            } else if (resultPanel.getIVButton().isSelected()) { // IV
+              // create current data
+              double[] current = new double[rawV2.length];
+              double[] voltage = new double[rawV1.length];
+              for (int i = 0; i < current.length; i++) {
+                current[i] = rawV2[i] / controlModel.getSeriesResistance() * HysteresisPreferences.CURRENT_UNIT.getDivisor();
+              }
 
-            double[] conductance = new double[rawdata2.length];
-            double[] voltage = new double[rawdata1.length];
+              //if (!HysteresisPreferences.IS_VIN) {
+              for (int i = 0; i < current.length; i++) {
+                voltage[i] = rawV1[i] - rawV2[i];
+              }
+              // }
 
-            for (int i = 0; i < conductance.length; i++) {
-              double I = rawdata2[i] / controlModel.getSeriesResistance();
-              double G = I / (rawdata1[i] - rawdata2[i]) * HysteresisPreferences.CONDUCTANCE_UNIT.getDivisor();
-              G = G < 0 ? 0 : G;
-              double ave = (1 - resultModel.getK()) * (resultModel.getAve()) + resultModel.getK() * (G);
-              resultModel.setAve(ave);
-              conductance[i] = ave;
-              voltage[i] = rawdata1[i] - rawdata2[i];
+              publish(new double[][]{rawV1, voltage, current});
+
+            } else { // GV
+              double[] conductance = new double[rawV2.length];
+              double[] voltage = new double[rawV1.length];
+              for (int i = 0; i < conductance.length; i++) {
+                double I = rawV2[i] / controlModel.getSeriesResistance();
+                double G = I / (rawV1[i] - rawV2[i]) * HysteresisPreferences.CONDUCTANCE_UNIT.getDivisor();
+                G = G < 0 ? 0 : G;
+                double ave = (1 - resultModel.getK()) * (resultModel.getAve()) + resultModel.getK() * (G);
+                resultModel.setAve(ave);
+                conductance[i] = ave;
+                voltage[i] = rawV1[i] - rawV2[i];
+              }
+
+              publish(new double[][]{rawV1, voltage, conductance});
             }
-
-            publish(new double[][]{rawdata1, voltage, conductance});
           }
         }
-        // testing the result
-        //        if (Math.random() < 0.01) {
-        //
-        // getControlModel().swingPropertyChangeSupport.firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, "Hi", "Blah");
-        //        }
       }
 
       return true;
@@ -308,7 +392,6 @@ public class HysteresisExperiment extends Experiment {
                 "WARNING: voltage drop across memristor is less than " + MemristorDiscoveryPreferences.MIN_VOLTAGE_MEASURE_AMPLITUDE
                     + ". Conductance will not be computed and chart will not display.");
           }
-
         }
       }
 

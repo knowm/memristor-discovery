@@ -27,7 +27,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.knowm.memristor.discovery.MemristorDiscoveryPreferences;
 import org.knowm.memristor.discovery.core.Util;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCPreferences;
@@ -58,8 +57,8 @@ public class ResultController {
   public void initGUIComponents() {
 
     resultPanel.getCaptureButton().setSelected(true);
-    resultPanel.getFreezeYAxisCheckBoxIV().setSelected(false);
-    resultPanel.getFreezeYAxisCheckBoxGV().setSelected(false);
+    //    resultPanel.getFreezeYAxisCheckBoxIV().setSelected(false);
+    //    resultPanel.getFreezeYAxisCheckBoxGV().setSelected(false);
   }
 
   private void setUpViewEvents() {
@@ -88,34 +87,34 @@ public class ResultController {
         resultPanel.switch2GVChart();
       }
     });
-    resultPanel.getFreezeYAxisCheckBoxIV().addActionListener(new ActionListener() {
-
-      @Override
-      public void actionPerformed(ActionEvent e) {
-
-        if (resultPanel.getFreezeYAxisCheckBoxIV().isSelected()) {
-          resultModel.setyMaxIV(resultPanel.getIVChartMax());
-          resultModel.setyMinIV(resultPanel.getIVChartMin());
-        } else {
-          resultModel.setyMaxIV(null);
-          resultModel.setyMinIV(null);
-        }
-      }
-    });
-    resultPanel.getFreezeYAxisCheckBoxGV().addActionListener(new ActionListener() {
-
-      @Override
-      public void actionPerformed(ActionEvent e) {
-
-        if (resultPanel.getFreezeYAxisCheckBoxGV().isSelected()) {
-          resultModel.setyMaxGV(resultPanel.getGVChartMax());
-          resultModel.setyMinGV(resultPanel.getGVChartMin());
-        } else {
-          resultModel.setyMaxGV(null);
-          resultModel.setyMinGV(null);
-        }
-      }
-    });
+    //    resultPanel.getFreezeYAxisCheckBoxIV().addActionListener(new ActionListener() {
+    //
+    //      @Override
+    //      public void actionPerformed(ActionEvent e) {
+    //
+    //        if (resultPanel.getFreezeYAxisCheckBoxIV().isSelected()) {
+    //          resultModel.setyMaxIV(resultPanel.getIVChartMax());
+    //          resultModel.setyMinIV(resultPanel.getIVChartMin());
+    //        } else {
+    //          resultModel.setyMaxIV(null);
+    //          resultModel.setyMinIV(null);
+    //        }
+    //      }
+    //    });
+    //    resultPanel.getFreezeYAxisCheckBoxGV().addActionListener(new ActionListener() {
+    //
+    //      @Override
+    //      public void actionPerformed(ActionEvent e) {
+    //
+    //        if (resultPanel.getFreezeYAxisCheckBoxGV().isSelected()) {
+    //          resultModel.setyMaxGV(resultPanel.getGVChartMax());
+    //          resultModel.setyMinGV(resultPanel.getGVChartMin());
+    //        } else {
+    //          resultModel.setyMaxGV(null);
+    //          resultModel.setyMinGV(null);
+    //        }
+    //      }
+    //    });
     resultPanel.getCaptureButton().addActionListener(new ActionListener() {
 
       @Override
@@ -137,39 +136,43 @@ public class ResultController {
   public void updateCaptureChartData(double[] timeData, double[] v1, double[] v2, double[] v1Minusv2, int pulseWidth, double amplitude) {
 
     resultPanel.getCaptureChart().setTitle(getVtChartTitle(amplitude, pulseWidth));
-    resultPanel.getCaptureChart().updateXYSeries("V1", timeData, v1, null);
-    resultPanel.getCaptureChart().updateXYSeries("V2", timeData, v2, null);
+    resultPanel.getCaptureChart().updateXYSeries("V1(1+)", timeData, v1, null);
+    resultPanel.getCaptureChart().updateXYSeries("V2(2+)", timeData, v2, null);
     resultPanel.getCaptureChart().updateXYSeries("V1-V2", timeData, v1Minusv2, null);
   }
 
-  public void updateIVChartData(double[] v1, double[] current, int pulseWidth, double amplitude) {
+  public void updateIVChartData(double[] vRM, double[] vM, double[] current, int pulseWidth, double amplitude) {
 
     resultPanel.getIvChart().getStyler().setYAxisMax(resultModel.getyMaxIV());
     resultPanel.getIvChart().getStyler().setYAxisMin(resultModel.getyMinIV());
 
     resultPanel.getIvChart().setTitle(getIVChartTitle(amplitude, pulseWidth));
-    resultPanel.getIvChart().updateXYSeries("iv", v1, current, null);
+    resultPanel.getIvChart().updateXYSeries("Resistor+Memristor", vRM, current, null);
+    resultPanel.getIvChart().updateXYSeries("Memristor", vM, current, null);
   }
 
-  public void updateGVChartData(double[] v1, double[] conductance, int pulseWidth, double amplitude) {
+  public void updateGVChartData(double[] vRM, double[] vM, double[] conductance, int pulseWidth, double amplitude) {
 
     resultPanel.getGvChart().getStyler().setYAxisMax(resultModel.getyMaxGV());
     resultPanel.getGvChart().getStyler().setYAxisMin(0.0);
     resultPanel.getGvChart().setTitle(getGVChartTitle(amplitude, pulseWidth));
 
-    //filter out all conductance measurments less than .02V.
-    List<Number> v = new ArrayList<>();
+    // filter out all conductance measurments less than .02V.
+    List<Number> v_rm = new ArrayList<>();
+    List<Number> v_m = new ArrayList<>();
     List<Number> g = new ArrayList<>();
 
     for (int i = 0; i < conductance.length; i++) {
-      if (Math.abs(v1[i]) > MemristorDiscoveryPreferences.MIN_VOLTAGE_MEASURE_AMPLITUDE) {
-        v.add(v1[i]);
+      if (Math.abs(vRM[i]) > MemristorDiscoveryPreferences.MIN_VOLTAGE_MEASURE_AMPLITUDE) {
+        v_rm.add(vRM[i]);
+        v_m.add(vM[i]);
         g.add(conductance[i]);
       }
     }
 
-    //resultPanel.getGvChart().updateXYSeries("gv", v1, conductance, null);
-    resultPanel.getGvChart().updateXYSeries("gv", v, g, null);
+    // resultPanel.getGvChart().updateXYSeries("gv", v1, conductance, null);
+    resultPanel.getGvChart().updateXYSeries("Resistor+Memristor", v_rm, g, null);
+    resultPanel.getGvChart().updateXYSeries("Memristor", v_m, g, null);
   }
 
   public void repaintCaptureChart() {
@@ -178,13 +181,13 @@ public class ResultController {
     resultPanel.getCaptureChartPanel().repaint();
   }
 
-  public void repaintItChart() {
+  public void repaintIVChart() {
 
     resultPanel.getIvChartPanel().revalidate();
     resultPanel.getIvChartPanel().repaint();
   }
 
-  public void repaintRtChart() {
+  public void repaintGVChart() {
 
     resultPanel.getGvChartPanel().revalidate();
     resultPanel.getGvChartPanel().repaint();

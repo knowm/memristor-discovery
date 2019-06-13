@@ -99,7 +99,7 @@ public class ControlPanel extends ControlView {
     offsetSlider.setPaintLabels(true);
     offsetSlider.setSnapToTicks(true);
     Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
-    //labelTable.put(-200, new JLabel("-2"));
+    // labelTable.put(-200, new JLabel("-2"));
     labelTable.put(-150, new JLabel("-1.5"));
     labelTable.put(-100, new JLabel("-1"));
     labelTable.put(-50, new JLabel("-.5"));

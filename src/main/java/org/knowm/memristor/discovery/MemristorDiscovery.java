@@ -50,21 +50,23 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferencesPa
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.BoardCheckExperiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck.BoardCheckPreferencesPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.classify.ClassifyExperiment;
-import org.knowm.memristor.discovery.gui.mvc.experiments.classify.ClassifyPreferencesPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.classify12.Classify12Experiment;
+import org.knowm.memristor.discovery.gui.mvc.experiments.classify12.Classify12PreferencesPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.classify21.Classify21Experiment;
+import org.knowm.memristor.discovery.gui.mvc.experiments.classify21.Classify21PreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.conductance.ConductancePreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCExperiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCPreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.HysteresisExperiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis.HysteresisPreferencesPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.logic.LogicExperiment;
-import org.knowm.memristor.discovery.gui.mvc.experiments.logic.LogicPreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulseExperiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.ShelfLifeExperiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.shelflife.ShelfLifePreferencesPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.SynapseExperiment;
-import org.knowm.memristor.discovery.gui.mvc.experiments.synapse.SynapsePreferencesPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.synapse12.Synapse12Experiment;
+import org.knowm.memristor.discovery.gui.mvc.experiments.synapse12.Synapse12PreferencesPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.synapse21.Synapse21Experiment;
+import org.knowm.memristor.discovery.gui.mvc.experiments.synapse21.Synapse21PreferencesPanel;
 import org.knowm.memristor.discovery.gui.mvc.footer.FooterController;
 import org.knowm.memristor.discovery.gui.mvc.footer.FooterPanel;
 import org.knowm.memristor.discovery.gui.mvc.header.HeaderController;
@@ -91,8 +93,11 @@ public class MemristorDiscovery
   private static final String FRAME_TITLE_BASE = "Knowm Memristor Discovery - ";
   private final String[] appsV0;
   private final String[] appsV1;
+  private final String[] appsV2;
   private MemristorDiscoveryPreferences memristorDiscoveryPreferences;
-  private boolean isV1Board;
+
+  private int boardVersion;
+
   private DWFProxy dwf;
   private Experiment experiment;
   private String experimentName;
@@ -106,9 +111,12 @@ public class MemristorDiscovery
   public MemristorDiscovery() {
 
     memristorDiscoveryPreferences = new MemristorDiscoveryPreferences();
-    isV1Board = memristorDiscoveryPreferences.getBoardVersion().equalsIgnoreCase("v1");
+    boardVersion = memristorDiscoveryPreferences.getBoardVersionNumber();
+
     experimentName = memristorDiscoveryPreferences.getExperiment();
-    this.appsV1 = new String[] {"Synapse", "Classify"};
+
+    this.appsV2 = new String[] {"Synapse12", "Classify12"};
+    this.appsV1 = new String[] {"Synapse21", "Classify21"};
     this.appsV0 =
         new String[] {
           "BoardCheck", "Hysteresis", "DC", "Pulse", "ShelfLife",
@@ -154,7 +162,7 @@ public class MemristorDiscovery
       mainFrame.dispose(); // Destroy the JFrame object
       shutdownDWF();
     }
-    this.dwf = new DWFProxy(isV1Board);
+    this.dwf = new DWFProxy(boardVersion);
 
     GenericApplicationSpecification specification = new GenericApplicationSpecification();
     specification.getQuitEventListeners().add(this);
@@ -203,6 +211,7 @@ public class MemristorDiscovery
     ButtonGroup group = new ButtonGroup();
     group.clearSelection();
 
+    //	BOARD 0 MENU OPTION
     JRadioButtonMenuItem boardMenuItem =
         new JRadioButtonMenuItem(
             new AbstractAction("V0") {
@@ -214,12 +223,14 @@ public class MemristorDiscovery
               }
             });
     boardMenuItem.setActionCommand(boardMenuItem.getName());
-    if (!isV1Board) {
+
+    if (boardVersion == 0) {
       boardMenuItem.setSelected(true);
     }
+
+    //	BOARD 1 MENU OPTION
     group.add(boardMenuItem);
     menu.add(boardMenuItem);
-
     boardMenuItem =
         new JRadioButtonMenuItem(
             new AbstractAction("V1") {
@@ -231,9 +242,29 @@ public class MemristorDiscovery
               }
             });
     boardMenuItem.setActionCommand(boardMenuItem.getName());
-    if (isV1Board) {
+    if (boardVersion == 1) {
       boardMenuItem.setSelected(true);
     }
+
+    //	BOARD 2 MENU OPTION
+    group.add(boardMenuItem);
+    menu.add(boardMenuItem);
+    boardMenuItem =
+        new JRadioButtonMenuItem(
+            new AbstractAction("V2") {
+
+              @Override
+              public void actionPerformed(ActionEvent e) {
+
+                updateBoardPreferences("V2");
+              }
+            });
+    boardMenuItem.setActionCommand(boardMenuItem.getName());
+
+    if (boardVersion == 2) {
+      boardMenuItem.setSelected(true);
+    }
+
     group.add(boardMenuItem);
     menu.add(boardMenuItem);
 
@@ -242,6 +273,8 @@ public class MemristorDiscovery
     menu.setMnemonic(KeyEvent.VK_E);
     menuBar.add(menu);
     group = new ButtonGroup();
+
+    // V0---------->>>>
     for (int i = 0; i < appsV0.length; i++) {
 
       JRadioButtonMenuItem appMenuItem =
@@ -271,21 +304,22 @@ public class MemristorDiscovery
                   switch (e.getActionCommand()) {
                     case "Hysteresis":
                       experiment =
-                          new HysteresisExperiment(dwf, mainFrame.getContentPane(), isV1Board);
+                          new HysteresisExperiment(dwf, mainFrame.getContentPane(), boardVersion);
                       break;
                     case "Pulse":
-                      experiment = new PulseExperiment(dwf, mainFrame.getContentPane(), isV1Board);
+                      experiment =
+                          new PulseExperiment(dwf, mainFrame.getContentPane(), boardVersion);
                       break;
                     case "DC":
-                      experiment = new DCExperiment(dwf, mainFrame.getContentPane(), isV1Board);
+                      experiment = new DCExperiment(dwf, mainFrame.getContentPane(), boardVersion);
                       break;
                     case "BoardCheck":
                       experiment =
-                          new BoardCheckExperiment(dwf, mainFrame.getContentPane(), isV1Board);
+                          new BoardCheckExperiment(dwf, mainFrame.getContentPane(), boardVersion);
                       break;
                     case "ShelfLife":
                       experiment =
-                          new ShelfLifeExperiment(dwf, mainFrame.getContentPane(), isV1Board);
+                          new ShelfLifeExperiment(dwf, mainFrame.getContentPane(), boardVersion);
                       break;
 
                     default:
@@ -309,7 +343,8 @@ public class MemristorDiscovery
       menu.add(appMenuItem);
     }
 
-    if (isV1Board) {
+    // V1---------->>>>
+    if (boardVersion == 1) {
       for (int i = 0; i < appsV1.length; i++) {
 
         JRadioButtonMenuItem appMenuItem =
@@ -337,21 +372,73 @@ public class MemristorDiscovery
                     memristorDiscoveryPreferences.updateExperiment(experimentName);
 
                     switch (e.getActionCommand()) {
-                      case "Synapse":
+                      case "Synapse21":
                         experiment =
-                            new SynapseExperiment(dwf, mainFrame.getContentPane(), isV1Board);
+                            new Synapse21Experiment(dwf, mainFrame.getContentPane(), boardVersion);
                         break;
-                        //                      case "Logic":
-                        //                        experiment =
-                        //                            new LogicExperiment(dwf,
-                        // mainFrame.getContentPane(), isV1Board);
-                        //                        break;
-                      case "Classify":
+                      case "Classify21":
                         experiment =
-                            new ClassifyExperiment(dwf, mainFrame.getContentPane(), isV1Board);
+                            new Classify21Experiment(dwf, mainFrame.getContentPane(), boardVersion);
                         break;
-                      case "BoardCheck":
-                        experiment = new BoardCheckExperiment(dwf, mainFrameContainer, isV1Board);
+                      default:
+                        break;
+                    }
+                    experiment.createAndShowGUI();
+                    // for result message from experiments
+                    experiment.getControlModel().addListener(MemristorDiscovery.this);
+
+                    dwf.startupAD2();
+
+                    mainFrame.setTitle(FRAME_TITLE_BASE + e.getActionCommand());
+                  }
+                });
+        appMenuItem.setActionCommand(appMenuItem.getName());
+        if (appsV1[i].equalsIgnoreCase(experimentName)) {
+          appMenuItem.setSelected(true);
+        }
+        group.add(appMenuItem);
+        menu.add(appMenuItem);
+      }
+    }
+
+    System.out.println("boardVersion=" + boardVersion);
+
+    // V2---------->>>>
+    if (boardVersion == 2) {
+      for (int i = 0; i < appsV2.length; i++) {
+
+        JRadioButtonMenuItem appMenuItem =
+            new JRadioButtonMenuItem(
+                new AbstractAction(appsV2[i]) {
+
+                  @Override
+                  public void actionPerformed(ActionEvent e) {
+
+                    try {
+                      dwf.shutdownAD2();
+                    } catch (DWFException e1) {
+                      e1.printStackTrace();
+                    }
+                    Container mainFrameContainer = mainFrame.getContentPane();
+                    mainFrameContainer.removeAll();
+                    mainFrameContainer.revalidate();
+                    mainFrameContainer.repaint();
+                    mainFrameContainer.add(headerPanel, BorderLayout.NORTH);
+                    mainFrameContainer.add(footerPanel, BorderLayout.SOUTH);
+
+                    experiment = null;
+                    experimentName = e.getActionCommand();
+                    // System.out.println(experimentName);
+                    memristorDiscoveryPreferences.updateExperiment(experimentName);
+
+                    switch (e.getActionCommand()) {
+                      case "Synapse12":
+                        experiment =
+                            new Synapse12Experiment(dwf, mainFrame.getContentPane(), boardVersion);
+                        break;
+                      case "Classify12":
+                        experiment =
+                            new Classify12Experiment(dwf, mainFrame.getContentPane(), boardVersion);
                         break;
 
                       default:
@@ -367,7 +454,7 @@ public class MemristorDiscovery
                   }
                 });
         appMenuItem.setActionCommand(appMenuItem.getName());
-        if (appsV1[i].equalsIgnoreCase(experimentName)) {
+        if (appsV2[i].equalsIgnoreCase(experimentName)) {
           appMenuItem.setSelected(true);
         }
         group.add(appMenuItem);
@@ -426,7 +513,7 @@ public class MemristorDiscovery
     mainFrame.setJMenuBar(menuBar);
 
     // panels
-    headerPanel = new HeaderPanel();
+    headerPanel = new HeaderPanel(boardVersion);
     mainFrameContainer.add(headerPanel, BorderLayout.NORTH);
 
     footerPanel = new FooterPanel();
@@ -439,35 +526,39 @@ public class MemristorDiscovery
 
     switch (memristorDiscoveryPreferences.getExperiment()) {
       case "ShelfLife":
-        experiment = new ShelfLifeExperiment(dwf, mainFrameContainer, isV1Board);
+        experiment = new ShelfLifeExperiment(dwf, mainFrameContainer, boardVersion);
         experimentName = "ShelfLife";
         break;
       case "BoardCheck":
-        experiment = new BoardCheckExperiment(dwf, mainFrameContainer, isV1Board);
+        experiment = new BoardCheckExperiment(dwf, mainFrameContainer, boardVersion);
         experimentName = "BoardCheck";
         break;
       case "DC":
-        experiment = new DCExperiment(dwf, mainFrameContainer, isV1Board);
+        experiment = new DCExperiment(dwf, mainFrameContainer, boardVersion);
         experimentName = "DC";
         break;
       case "Pulse":
-        experiment = new PulseExperiment(dwf, mainFrameContainer, isV1Board);
+        experiment = new PulseExperiment(dwf, mainFrameContainer, boardVersion);
         experimentName = "Pulse";
         break;
-      case "Synapse":
-        experiment = new SynapseExperiment(dwf, mainFrameContainer, isV1Board);
-        experimentName = "Synapse";
+      case "Synapse21":
+        experiment = new Synapse21Experiment(dwf, mainFrameContainer, boardVersion);
+        experimentName = "Synapse21";
         break;
-      case "Logic":
-        experiment = new LogicExperiment(dwf, mainFrameContainer, isV1Board);
-        experimentName = "Logic";
+      case "Synapse12":
+        experiment = new Synapse12Experiment(dwf, mainFrameContainer, boardVersion);
+        experimentName = "Synapse12";
         break;
-      case "Classify":
-        experiment = new ClassifyExperiment(dwf, mainFrameContainer, isV1Board);
-        experimentName = "Classify";
+      case "Classify21":
+        experiment = new Classify21Experiment(dwf, mainFrameContainer, boardVersion);
+        experimentName = "Classify21";
+        break;
+      case "Classify12":
+        experiment = new Classify12Experiment(dwf, mainFrameContainer, boardVersion);
+        experimentName = "Classify12";
         break;
       default:
-        experiment = new HysteresisExperiment(dwf, mainFrameContainer, isV1Board);
+        experiment = new HysteresisExperiment(dwf, mainFrameContainer, boardVersion);
         experimentName = "Hysteresis";
     }
     experiment.createAndShowGUI();
@@ -496,7 +587,14 @@ public class MemristorDiscovery
 
   private void updateBoardPreferences(String boardVersion) {
 
-    isV1Board = boardVersion.equalsIgnoreCase("v1");
+    if (boardVersion.equalsIgnoreCase("v0")) {
+      this.boardVersion = 0;
+    } else if (boardVersion.equalsIgnoreCase("v1")) {
+      this.boardVersion = 1;
+    } else if (boardVersion.equalsIgnoreCase("v2")) {
+      this.boardVersion = 2;
+    }
+
     memristorDiscoveryPreferences.updateBoardVersion(boardVersion);
     createAndShowGUI();
   }
@@ -554,14 +652,17 @@ public class MemristorDiscovery
       case "Conductance":
         result = new ConductancePreferencesPanel(mainFrame, experimentName).doModal();
         break;
-      case "Synapse":
-        result = new SynapsePreferencesPanel(mainFrame, experimentName).doModal();
+      case "Synapse21":
+        result = new Synapse21PreferencesPanel(mainFrame, experimentName).doModal();
         break;
-      case "Logic":
-        result = new LogicPreferencesPanel(mainFrame, experimentName).doModal();
+      case "Synapse12":
+        result = new Synapse12PreferencesPanel(mainFrame, experimentName).doModal();
         break;
-      case "Classify":
-        result = new ClassifyPreferencesPanel(mainFrame, experimentName).doModal();
+      case "Classify21":
+        result = new Classify21PreferencesPanel(mainFrame, experimentName).doModal();
+        break;
+      case "Classify12":
+        result = new Classify12PreferencesPanel(mainFrame, experimentName).doModal();
         break;
       case "BoardCheck":
         result = new BoardCheckPreferencesPanel(mainFrame, experimentName).doModal();
