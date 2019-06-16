@@ -42,7 +42,7 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
-import org.knowm.memristor.discovery.gui.mvc.experiments.synapse21.AHaHController_21.Instruction21;
+import org.knowm.memristor.discovery.gui.mvc.experiments.synapse21.KTRAM_Controller_21.Instruction21;
 
 /**
  * Provides controls for running the control
@@ -127,7 +127,7 @@ public class ControlPanel extends ControlView {
     c.gridy++;
     instructionRadioButtonGroup = new ButtonGroup();
     instructionRadioButtonBox = Box.createVerticalBox();
-    instructionRadioButtonBox.setBorder(BorderFactory.createTitledBorder("Instruction"));
+    instructionRadioButtonBox.setBorder(BorderFactory.createTitledBorder("kT-RAM Instruction"));
     for (Instruction21 instr : Instruction21.values()) {
 
       JRadioButton radioButton = new JRadioButton(instr.name());

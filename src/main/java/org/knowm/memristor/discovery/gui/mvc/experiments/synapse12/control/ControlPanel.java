@@ -42,7 +42,7 @@ import javax.swing.JSlider;
 import javax.swing.JTextField;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
-import org.knowm.memristor.discovery.gui.mvc.experiments.synapse12.AHaHController_12.Instruction12;
+import org.knowm.memristor.discovery.gui.mvc.experiments.synapse12.KTRAM_Controller_12.Instruction12;
 
 /**
  * Provides controls for running the control
@@ -79,6 +79,9 @@ public class ControlPanel extends ControlView {
     setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
 
     c.gridx = 0;
+    c.insets = new Insets(0, 0, 30, 6);
+    add(new JLabel("REMINDER: SWITCH BOARD TO MODE 2"), c);
+    c.gridy++;
 
     this.waveformComboBox = new JComboBox<>();
     waveformComboBox.setFocusable(false);
@@ -152,7 +155,7 @@ public class ControlPanel extends ControlView {
     c.gridy++;
     instructionRadioButtonGroup = new ButtonGroup();
     instructionRadioButtonBox = Box.createVerticalBox();
-    instructionRadioButtonBox.setBorder(BorderFactory.createTitledBorder("Instruction"));
+    instructionRadioButtonBox.setBorder(BorderFactory.createTitledBorder("kT-RAM Instruction"));
     for (Instruction12 instr : Instruction12.values()) {
 
       JRadioButton radioButton = new JRadioButton(instr.name());

@@ -63,30 +63,39 @@ public class ResultController {
 
   private void setUpViewEvents() {
 
-    resultPanel.getCaptureButton().addActionListener(new ActionListener() {
+    resultPanel
+        .getCaptureButton()
+        .addActionListener(
+            new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+              @Override
+              public void actionPerformed(ActionEvent e) {
 
-        resultPanel.switch2CaptureChart();
-      }
-    });
-    resultPanel.getIVButton().addActionListener(new ActionListener() {
+                resultPanel.switch2CaptureChart();
+              }
+            });
+    resultPanel
+        .getIVButton()
+        .addActionListener(
+            new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+              @Override
+              public void actionPerformed(ActionEvent e) {
 
-        resultPanel.switch2IVChart();
-      }
-    });
-    resultPanel.getGVButton().addActionListener(new ActionListener() {
+                resultPanel.switch2IVChart();
+              }
+            });
+    resultPanel
+        .getGVButton()
+        .addActionListener(
+            new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+              @Override
+              public void actionPerformed(ActionEvent e) {
 
-        resultPanel.switch2GVChart();
-      }
-    });
+                resultPanel.switch2GVChart();
+              }
+            });
     //    resultPanel.getFreezeYAxisCheckBoxIV().addActionListener(new ActionListener() {
     //
     //      @Override
@@ -115,25 +124,37 @@ public class ResultController {
     //        }
     //      }
     //    });
-    resultPanel.getCaptureButton().addActionListener(new ActionListener() {
+    resultPanel
+        .getCaptureButton()
+        .addActionListener(
+            new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+              @Override
+              public void actionPerformed(ActionEvent e) {
 
-        resultPanel.switch2CaptureChart();
-      }
-    });
+                resultPanel.switch2CaptureChart();
+              }
+            });
   }
 
-  public void updateWaveformChart(double[] timeData, double[] waveformAmplitudeData, double amplitude, int pulseWidth) {
+  public void updateWaveformChart(
+      double[] timeData, double[] waveformAmplitudeData, double amplitude, int pulseWidth) {
 
     resultPanel.getWaveformChart().setTitle(getWaveformChartTitle(amplitude, pulseWidth));
-    resultPanel.getWaveformChart().updateXYSeries("waveform", timeData, waveformAmplitudeData, null);
+    resultPanel
+        .getWaveformChart()
+        .updateXYSeries("waveform", timeData, waveformAmplitudeData, null);
     resultPanel.getWaveformChartPanel().revalidate();
     resultPanel.getWaveformChartPanel().repaint();
   }
 
-  public void updateCaptureChartData(double[] timeData, double[] v1, double[] v2, double[] v1Minusv2, int pulseWidth, double amplitude) {
+  public void updateCaptureChartData(
+      double[] timeData,
+      double[] v1,
+      double[] v2,
+      double[] v1Minusv2,
+      int pulseWidth,
+      double amplitude) {
 
     resultPanel.getCaptureChart().setTitle(getVtChartTitle(amplitude, pulseWidth));
     resultPanel.getCaptureChart().updateXYSeries("V1(1+)", timeData, v1, null);
@@ -141,7 +162,8 @@ public class ResultController {
     resultPanel.getCaptureChart().updateXYSeries("V1-V2", timeData, v1Minusv2, null);
   }
 
-  public void updateIVChartData(double[] vRM, double[] vM, double[] current, int pulseWidth, double amplitude) {
+  public void updateIVChartData(
+      double[] vRM, double[] vM, double[] current, int pulseWidth, double amplitude) {
 
     resultPanel.getIvChart().getStyler().setYAxisMax(resultModel.getyMaxIV());
     resultPanel.getIvChart().getStyler().setYAxisMin(resultModel.getyMinIV());
@@ -151,7 +173,8 @@ public class ResultController {
     resultPanel.getIvChart().updateXYSeries("Memristor", vM, current, null);
   }
 
-  public void updateGVChartData(double[] vRM, double[] vM, double[] conductance, int pulseWidth, double amplitude) {
+  public void updateGVChartData(
+      double[] vRM, double[] vM, double[] conductance, int pulseWidth, double amplitude) {
 
     resultPanel.getGvChart().getStyler().setYAxisMax(resultModel.getyMaxGV());
     resultPanel.getGvChart().getStyler().setYAxisMin(0.0);
@@ -215,7 +238,12 @@ public class ResultController {
 
   private String getWaveform(double amplitude, int period) {
 
-    return "Amplitude = " + getFormattedAmplitude(amplitude) + " V, Period = " + (double) period + " " + DCPreferences.TIME_UNIT.getLabel();
+    return "Amplitude = "
+        + getFormattedAmplitude(amplitude)
+        + " V, Period = "
+        + (double) period
+        + " "
+        + DCPreferences.TIME_UNIT.getLabel();
   }
 
   private double getFormattedAmplitude(double amplitude) {

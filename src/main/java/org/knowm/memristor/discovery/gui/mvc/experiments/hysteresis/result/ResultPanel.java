@@ -70,10 +70,19 @@ public class ResultPanel extends JPanel {
     // Waveform Chart ///////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    waveformChart = new XYChartBuilder().width(400).height(400).title("Waveform").yAxisTitle("Voltage [V]").xAxisTitle("Time [s]").build();
+    waveformChart =
+        new XYChartBuilder()
+            .width(400)
+            .height(400)
+            .title("Waveform")
+            .yAxisTitle("Voltage [V]")
+            .xAxisTitle("Time [s]")
+            .build();
     waveformChart.getStyler().setLegendVisible(false);
-    XYSeries series = waveformChart.addSeries("waveform", new double[]{0}, new double[]{0});
-    series.setMarker(SeriesMarkers.NONE); // waveformChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
+    XYSeries series = waveformChart.addSeries("waveform", new double[] {0}, new double[] {0});
+    series.setMarker(
+        SeriesMarkers
+            .NONE); // waveformChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
     waveformChartPanel = new XChartPanel<>(waveformChart);
     add(waveformChartPanel, BorderLayout.CENTER);
 
@@ -81,13 +90,20 @@ public class ResultPanel extends JPanel {
     // Capture Chart ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    captureChart = new XYChartBuilder().width(600).title("Capture").height(400).yAxisTitle("Voltage [V]").xAxisTitle("Time [s]").build();
+    captureChart =
+        new XYChartBuilder()
+            .width(600)
+            .title("Capture")
+            .height(400)
+            .yAxisTitle("Voltage [V]")
+            .xAxisTitle("Time [s]")
+            .build();
     captureChart.getStyler().setLegendPosition(LegendPosition.InsideNE);
 
-    series = captureChart.addSeries("V1(1+)", new double[]{0}, new double[]{0});
+    series = captureChart.addSeries("V1(1+)", new double[] {0}, new double[] {0});
     series.setMarker(SeriesMarkers.NONE);
 
-    series = captureChart.addSeries("V2(2+)", new double[]{0}, new double[]{0});
+    series = captureChart.addSeries("V2(2+)", new double[] {0}, new double[] {0});
     series.setMarker(SeriesMarkers.NONE);
 
     captureChartPanel = new XChartPanel<>(captureChart);
@@ -96,14 +112,20 @@ public class ResultPanel extends JPanel {
     // I-V Chart ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    ivChart = new XYChartBuilder().width(600).title("I-V").height(400).xAxisTitle("Voltage [V]")
-        .yAxisTitle("Current [" + HysteresisPreferences.CURRENT_UNIT.getLabel() + "]").build();
+    ivChart =
+        new XYChartBuilder()
+            .width(600)
+            .title("I-V")
+            .height(400)
+            .xAxisTitle("Voltage [V]")
+            .yAxisTitle("Current [" + HysteresisPreferences.CURRENT_UNIT.getLabel() + "]")
+            .build();
     ivChart.getStyler().setLegendVisible(true);
     ivChart.getStyler().setLegendPosition(LegendPosition.InsideNW);
 
-    series = ivChart.addSeries("Resistor+Memristor", new double[]{0}, new double[]{0});
+    series = ivChart.addSeries("Resistor+Memristor", new double[] {0}, new double[] {0});
     series.setMarker(SeriesMarkers.NONE);
-    series = ivChart.addSeries("Memristor", new double[]{0}, new double[]{0});
+    series = ivChart.addSeries("Memristor", new double[] {0}, new double[] {0});
     series.setMarker(SeriesMarkers.NONE);
 
     ivChartPanel = new XChartPanel<>(ivChart);
@@ -112,15 +134,21 @@ public class ResultPanel extends JPanel {
     // G-V Chart ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    gvChart = new XYChartBuilder().width(100).title("G-V").height(100).xAxisTitle("Voltage [V]")
-        .yAxisTitle("Conductance [" + HysteresisPreferences.CONDUCTANCE_UNIT.getLabel() + "]").build();
+    gvChart =
+        new XYChartBuilder()
+            .width(100)
+            .title("G-V")
+            .height(100)
+            .xAxisTitle("Voltage [V]")
+            .yAxisTitle("Conductance [" + HysteresisPreferences.CONDUCTANCE_UNIT.getLabel() + "]")
+            .build();
     gvChart.getStyler().setLegendVisible(true);
     gvChart.getStyler().setLegendPosition(LegendPosition.InsideNW);
     gvChart.getStyler().setYAxisMin(0.0);
     // gvChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);
-    series = gvChart.addSeries("Resistor+Memristor", new double[]{0}, new double[]{0});
+    series = gvChart.addSeries("Resistor+Memristor", new double[] {0}, new double[] {0});
     series.setMarker(SeriesMarkers.NONE);
-    series = gvChart.addSeries("Memristor", new double[]{0}, new double[]{0});
+    series = gvChart.addSeries("Memristor", new double[] {0}, new double[] {0});
     series.setMarker(SeriesMarkers.NONE);
     gvChart.getStyler().setYAxisMin(0.0);
     gvChart.getStyler().setXAxisMin(-1.0);

@@ -33,7 +33,7 @@ import org.knowm.memristor.discovery.core.driver.waveform.SquareSmooth;
 import org.knowm.memristor.discovery.core.driver.waveform.Triangle;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
-import org.knowm.memristor.discovery.gui.mvc.experiments.synapse21.AHaHController_21.Instruction21;
+import org.knowm.memristor.discovery.gui.mvc.experiments.synapse21.KTRAM_Controller_21.Instruction21;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse21.Synapse21Preferences;
 
 public class ControlModel extends Model {

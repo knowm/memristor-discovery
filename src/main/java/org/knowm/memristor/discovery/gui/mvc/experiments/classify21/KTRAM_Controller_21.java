@@ -30,7 +30,7 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify21.control.ControlModel;
 import org.knowm.waveforms4j.DWF;
 
-public class AHaHController_21 {
+public class KTRAM_Controller_21 {
 
   private final double MIN_V_RESOLUTION = .0025;
   private DWFProxy dWFProxy;
@@ -39,7 +39,7 @@ public class AHaHController_21 {
   private double ga;
   private double gb;
 
-  public AHaHController_21(ControlModel controlModel) {
+  public KTRAM_Controller_21(ControlModel controlModel) {
 
     this.controlModel = controlModel;
   }

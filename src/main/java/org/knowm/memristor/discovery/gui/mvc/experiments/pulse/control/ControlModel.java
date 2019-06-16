@@ -87,7 +87,7 @@ public class ControlModel extends Model {
         .valueOf(experimentPreferences.getString(PulsePreferences.WAVEFORM_INIT_STRING_KEY, PulsePreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
     seriesResistance = experimentPreferences.getInteger(PulsePreferences.SERIES_R_INIT_KEY, PulsePreferences.SERIES_R_INIT_DEFAULT_VALUE);
     amplitude = experimentPreferences.getFloat(PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY, PulsePreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
-    //appliedAmplitude = amplitude;
+    // appliedAmplitude = amplitude;
 
     pulseWidth = experimentPreferences.getInteger(PulsePreferences.PULSE_WIDTH_INIT_KEY, PulsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
     pulseNumber = experimentPreferences.getInteger(PulsePreferences.NUM_PULSES_INIT_KEY, PulsePreferences.NUM_PULSES_INIT_DEFAULT_VALUE);
@@ -291,22 +291,6 @@ public class ControlModel extends Model {
         * PulsePreferences.CURRENT_UNIT.getDivisor();
     this.appliedEnergy = amplitude * amplitude / (getLastR() + seriesResistance + Util.getSwitchesSeriesResistance()) * pulseNumber * pulseWidth
         / 1E9;
-
-    // V=IR =
-    //      double voltageDropOnMemristor =
-    //          appliedCurrent / PulsePreferences.CURRENT_UNIT.getDivisor() * getLastR();
-    // System.out.println("voltageDropOnMemristor = " + voltageDropOnMemristor);
-    //this.appliedMemristorEnergy = (appliedAmplitude * appliedAmplitude / getLastR()) * pulseNumber * pulseWidth / 1E9;
-
-    System.out.println("amplitude=" + amplitude);
-    System.out.println("pulseNumber=" + pulseNumber);
-    System.out.println("pulseWidth=" + pulseWidth);
-    System.out.println("getLastR()=" + getLastR());
-    System.out.println("appliedEnergy=" + appliedEnergy);
-
-    //System.out.println("appliedMemristorEnergy=" + appliedMemristorEnergy);
-
-    // System.out.println("appliedMemristorEnergy = " + appliedMemristorEnergy);
 
   }
 

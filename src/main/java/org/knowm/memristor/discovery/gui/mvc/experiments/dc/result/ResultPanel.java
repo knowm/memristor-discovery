@@ -26,7 +26,6 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.dc.result;
 import java.awt.BorderLayout;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
-import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCPreferences;
@@ -46,11 +45,11 @@ public class ResultPanel extends JPanel {
   private final JRadioButton ivButton;
   private final JRadioButton gvButton;
 
-  //private final JCheckBox freezeYAxisCheckBoxIV;
+  // private final JCheckBox freezeYAxisCheckBoxIV;
 
   private final JPanel gvChartControlPanel;
 
-  //private final JCheckBox freezeYAxisCheckBoxGV;
+  // private final JCheckBox freezeYAxisCheckBoxGV;
 
   XYChart waveformChart;
   XChartPanel<XYChart> waveformChartPanel;
@@ -71,11 +70,19 @@ public class ResultPanel extends JPanel {
     // Waveform Chart ///////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    waveformChart = new XYChartBuilder().width(400).height(400).title("Waveform").yAxisTitle("Voltage [V]")
-        .xAxisTitle("Time  [" + DCPreferences.TIME_UNIT.getLabel() + "]").build();
+    waveformChart =
+        new XYChartBuilder()
+            .width(400)
+            .height(400)
+            .title("Waveform")
+            .yAxisTitle("Voltage [V]")
+            .xAxisTitle("Time  [" + DCPreferences.TIME_UNIT.getLabel() + "]")
+            .build();
     waveformChart.getStyler().setLegendVisible(false);
-    XYSeries series = waveformChart.addSeries("waveform", new double[]{0}, new double[]{0});
-    series.setMarker(SeriesMarkers.NONE); // waveformChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
+    XYSeries series = waveformChart.addSeries("waveform", new double[] {0}, new double[] {0});
+    series.setMarker(
+        SeriesMarkers
+            .NONE); // waveformChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
     waveformChartPanel = new XChartPanel<>(waveformChart);
     add(waveformChartPanel, BorderLayout.CENTER);
 
@@ -83,15 +90,21 @@ public class ResultPanel extends JPanel {
     // Capture Chart ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    captureChart = new XYChartBuilder().width(600).title("Capture").height(400).yAxisTitle("Voltage [V]")
-        .xAxisTitle("Time [" + DCPreferences.TIME_UNIT.getLabel() + "]").build();
+    captureChart =
+        new XYChartBuilder()
+            .width(600)
+            .title("Capture")
+            .height(400)
+            .yAxisTitle("Voltage [V]")
+            .xAxisTitle("Time [" + DCPreferences.TIME_UNIT.getLabel() + "]")
+            .build();
     captureChart.getStyler().setLegendPosition(LegendPosition.InsideNE);
 
-    series = captureChart.addSeries("V1(1+)", new double[]{0}, new double[]{0});
+    series = captureChart.addSeries("V1(1+)", new double[] {0}, new double[] {0});
     series.setMarker(SeriesMarkers.NONE);
-    series = captureChart.addSeries("V2(2+)", new double[]{0}, new double[]{0});
+    series = captureChart.addSeries("V2(2+)", new double[] {0}, new double[] {0});
     series.setMarker(SeriesMarkers.NONE);
-    series = captureChart.addSeries("V1-V2", new double[]{0}, new double[]{0});
+    series = captureChart.addSeries("V1-V2", new double[] {0}, new double[] {0});
     series.setMarker(SeriesMarkers.NONE);
 
     captureChartPanel = new XChartPanel<>(captureChart);
@@ -100,16 +113,22 @@ public class ResultPanel extends JPanel {
     // I-V Chart ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    ivChart = new XYChartBuilder().width(600).title("I-T").height(400).yAxisTitle("Current [" + DCPreferences.CURRENT_UNIT.getLabel() + "]")
-        .xAxisTitle("Voltage [V]").build();
+    ivChart =
+        new XYChartBuilder()
+            .width(600)
+            .title("I-T")
+            .height(400)
+            .yAxisTitle("Current [" + DCPreferences.CURRENT_UNIT.getLabel() + "]")
+            .xAxisTitle("Voltage [V]")
+            .build();
     ivChart.getStyler().setLegendVisible(true);
     ivChart.getStyler().setLegendPosition(LegendPosition.InsideNW);
 
     ivChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
-    series = ivChart.addSeries("Resistor+Memristor", new double[]{0}, new double[]{0});
+    series = ivChart.addSeries("Resistor+Memristor", new double[] {0}, new double[] {0});
     series.setMarker(SeriesMarkers.NONE);
 
-    series = ivChart.addSeries("Memristor", new double[]{0}, new double[]{0});
+    series = ivChart.addSeries("Memristor", new double[] {0}, new double[] {0});
     series.setMarker(SeriesMarkers.NONE);
 
     ivChartPanel = new XChartPanel<>(ivChart);
@@ -118,17 +137,23 @@ public class ResultPanel extends JPanel {
     // G-V Chart ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    gvChart = new XYChartBuilder().width(100).title("G-T").height(100).yAxisTitle("Conductance [" + DCPreferences.CONDUCTANCE_UNIT.getLabel() + "]")
-        .xAxisTitle("Voltage [V]").build();
+    gvChart =
+        new XYChartBuilder()
+            .width(100)
+            .title("G-T")
+            .height(100)
+            .yAxisTitle("Conductance [" + DCPreferences.CONDUCTANCE_UNIT.getLabel() + "]")
+            .xAxisTitle("Voltage [V]")
+            .build();
     gvChart.getStyler().setLegendVisible(true);
     gvChart.getStyler().setLegendPosition(LegendPosition.InsideNW);
     gvChart.getStyler().setYAxisMin(0.0);
 
     gvChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
-    series = gvChart.addSeries("Resistor+Memristor", new double[]{0}, new double[]{0});
+    series = gvChart.addSeries("Resistor+Memristor", new double[] {0}, new double[] {0});
     series.setMarker(SeriesMarkers.NONE);
 
-    series = gvChart.addSeries("Memristor", new double[]{0}, new double[]{0});
+    series = gvChart.addSeries("Memristor", new double[] {0}, new double[] {0});
     series.setMarker(SeriesMarkers.NONE);
 
     gvChartPanel = new XChartPanel<>(gvChart);
@@ -208,7 +233,7 @@ public class ResultPanel extends JPanel {
       removeAll();
       add(ivChartPanel, BorderLayout.CENTER);
       addRadioButtons();
-      //addYAxisFreezeCheckBoxIV();
+      // addYAxisFreezeCheckBoxIV();
       revalidate();
       repaint();
     }

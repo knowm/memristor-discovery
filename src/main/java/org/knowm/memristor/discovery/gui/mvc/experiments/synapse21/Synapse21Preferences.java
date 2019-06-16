@@ -34,7 +34,7 @@ public class Synapse21Preferences extends ExperimentPreferences {
 
   public static final String WAVEFORM_INIT_STRING_DEFAULT_VALUE = "SquareSmooth";
   public static final int NUM_PULSES_INIT_DEFAULT_VALUE = 2;
-  public static final int SERIES_R_INIT_DEFAULT_VALUE = 1_000;
+  public static final int SERIES_R_INIT_DEFAULT_VALUE = 20_000;
   public static final float AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE = 1f;
   public static final int PULSE_WIDTH_INIT_DEFAULT_VALUE = 50_000;
   public static final int SAMPLE_RATE_INIT_DEFAULT_VALUE = 1;

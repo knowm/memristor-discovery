@@ -10,8 +10,9 @@ import org.knowm.jspice.simulate.transientanalysis.TransientConfig;
 import org.knowm.jspice.simulate.transientanalysis.driver.DC;
 
 /**
- * used to measure memristor resistance at low currents, when pulse capture results in capacitive charge/discharge instead of steady-state voltage
- * divider. Given board series resistor and parasitic capacitance, will return the estimated resistance given the read square pulse trace.
+ * used to measure memristor resistance at low currents, when pulse capture results in capacitive
+ * charge/discharge instead of steady-state voltage divider. Given board series resistor and
+ * parasitic capacitance, will return the estimated resistance given the read square pulse trace.
  *
  * @author alexnugent
  */
@@ -38,7 +39,11 @@ public class RC_ResistanceComputer {
   //
   //  }
 
-  public RC_ResistanceComputer(int boardVersion, double readPulseAmplitude, double readPulseWidth, double seriesResistance,
+  public RC_ResistanceComputer(
+      int boardVersion,
+      double readPulseAmplitude,
+      double readPulseWidth,
+      double seriesResistance,
       double parasiticCapacitance) {
 
     this.parasiticCapacitance = parasiticCapacitance;
@@ -100,7 +105,9 @@ public class RC_ResistanceComputer {
     List<Number> resistance = new ArrayList<>();
 
     double simStepSize = readPulseWidth / 20;
-    TransientConfig transientConfig = new TransientConfig("" + readPulseWidth, "" + simStepSize, new DC("V1", readPulseAmplitude));
+    TransientConfig transientConfig =
+        new TransientConfig(
+            "" + readPulseWidth, "" + simStepSize, new DC("V1", readPulseAmplitude));
     for (double Rm = Rinit; Rm < Rfinal; Rm *= 1.025) {
 
       Netlist netlist;

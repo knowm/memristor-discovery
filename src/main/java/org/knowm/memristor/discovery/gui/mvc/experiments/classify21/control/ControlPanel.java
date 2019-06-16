@@ -114,7 +114,7 @@ public class ControlPanel extends ControlView {
     add(pulseWidthSlider, c);
 
     // learn method
-    ahahRoutineLabel = new JLabel("AHaH Routine");
+    ahahRoutineLabel = new JLabel("kT-RAM Routine");
     ahahRoutineLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.gridy++;
     c.insets = new Insets(0, 10, 4, 0);

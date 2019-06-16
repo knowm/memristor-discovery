@@ -88,18 +88,33 @@ The follow code is used to determine the category (C) of each memristor.
 
 1. Let R1, R2 and R3 be the measured resistance on the first, second and third read pulse.
 2. Let *maxWriteResistance* be the maximum allowed resistance after application of the WRITE pulse, which should decrease resistance of the memristor. 
-3. Let * minEraseResistance* be the minimum allowed resistance after application of the ERASE pulse, which should increase resistance of the memristor. 
+3. Let *minEraseResistance* be the minimum allowed resistance after application of the ERASE pulse, which should increase resistance of the memristor. 
 
 if (R1 < maxWriteResistance && R2 < maxWriteResistance && R3 < maxWriteResistance) {
+
      C = STK_LO;
-} else if (R1 > minEraseResistance && R2 > minEraseResistance && R3 > minEraseResistance) {
+     
+} 
+else if (R1 > minEraseResistance && R2 > minEraseResistance && R3 > minEraseResistance) {
+
      C = STK_HI;
-} else if (R2 > maxWriteResistance) {
+     
+} 
+else if (R2 > maxWriteResistance) {
+
      C = W_FAIL;
-} else if (R3 < minEraseResistance) {
+     
+} 
+else if (R3 < minEraseResistance) {
+
      C = E_FAIL;
-} else {
+     
+} 
+else {
+
      C = PASS;
+     
+
 }
 
 

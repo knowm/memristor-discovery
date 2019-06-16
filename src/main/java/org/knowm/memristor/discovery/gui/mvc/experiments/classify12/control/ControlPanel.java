@@ -70,6 +70,9 @@ public class ControlPanel extends ControlView {
     setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
 
     c.gridx = 0;
+    c.insets = new Insets(0, 0, 30, 6);
+    add(new JLabel("REMINDER: SWITCH BOARD TO MODE 2"), c);
+    c.gridy++;
 
     this.waveformComboBox = new JComboBox<>();
     waveformComboBox.setFocusable(false);
@@ -141,7 +144,7 @@ public class ControlPanel extends ControlView {
     add(pulseWidthSlider, c);
 
     // learn method
-    ahahRoutineLabel = new JLabel("AHaH Routine");
+    ahahRoutineLabel = new JLabel("kT-RAM Routine");
     ahahRoutineLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.gridy++;
     c.insets = new Insets(0, 10, 4, 0);

@@ -78,24 +78,40 @@ public class ResultPanel extends JPanel {
     // Waveform Chart ///////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    waveformChart = new XYChartBuilder().width(400).height(300).title("Waveform").yAxisTitle("Voltage [V]").xAxisTitle("Time [µs]").build();
+    waveformChart =
+        new XYChartBuilder()
+            .width(400)
+            .height(300)
+            .title("Waveform")
+            .yAxisTitle("Voltage [V]")
+            .xAxisTitle("Time [µs]")
+            .build();
     waveformChart.getStyler().setLegendVisible(false);
-    XYSeries series = waveformChart.addSeries("waveform", new double[]{0}, new double[]{0});
-    series.setMarker(SeriesMarkers.NONE); // waveformChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
+    XYSeries series = waveformChart.addSeries("waveform", new double[] {0}, new double[] {0});
+    series.setMarker(
+        SeriesMarkers
+            .NONE); // waveformChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
     waveformChartPanel = new XChartPanel<>(waveformChart);
 
     // ///////////////////////////////////////////////////////////
     // Capture Chart ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    captureChart = new XYChartBuilder().width(600).title("Capture").height(300).yAxisTitle("Voltage [V]").xAxisTitle("Time [µs]").build();
+    captureChart =
+        new XYChartBuilder()
+            .width(600)
+            .title("Capture")
+            .height(300)
+            .yAxisTitle("Voltage [V]")
+            .xAxisTitle("Time [µs]")
+            .build();
     captureChart.getStyler().setLegendPosition(LegendPosition.InsideNE);
 
-    series = captureChart.addSeries("V1(1+)", new double[]{0}, new double[]{0});
+    series = captureChart.addSeries("V1(1+)", new double[] {0}, new double[] {0});
     series.setMarker(SeriesMarkers.NONE);
-    series = captureChart.addSeries("V2(2+)", new double[]{0}, new double[]{0});
+    series = captureChart.addSeries("V2(2+)", new double[] {0}, new double[] {0});
     series.setMarker(SeriesMarkers.NONE);
-    series = captureChart.addSeries("V_Memristor", new double[]{0}, new double[]{0});
+    series = captureChart.addSeries("V_Memristor", new double[] {0}, new double[] {0});
     series.setMarker(SeriesMarkers.NONE);
     captureChartPanel = new XChartPanel<>(captureChart);
 
@@ -103,28 +119,40 @@ public class ResultPanel extends JPanel {
     // I-T Chart ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    iTChart = new XYChartBuilder().width(600).title("I-T").height(300).yAxisTitle("Current [" + PulsePreferences.CURRENT_UNIT.getLabel() + "]")
-        .xAxisTitle("Time [µs]").build();
+    iTChart =
+        new XYChartBuilder()
+            .width(600)
+            .title("I-T")
+            .height(300)
+            .yAxisTitle("Current [" + PulsePreferences.CURRENT_UNIT.getLabel() + "]")
+            .xAxisTitle("Time [µs]")
+            .build();
     iTChart.getStyler().setLegendVisible(false);
     iTChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);
-    iTChart.addSeries("it", new double[]{0}, new double[]{0});
+    iTChart.addSeries("it", new double[] {0}, new double[] {0});
     iTChartPanel = new XChartPanel<>(iTChart);
 
     /////////////////////////////////////////////////////////////
     // ReadCaptureChart  ////////////////////////////////////////////
     /////////////////////////////////////////////////////////////
 
-    readCaptureChart = new XYChartBuilder().width(600).title("Read Pulse Capture").height(300).yAxisTitle("Voltage [V]").xAxisTitle("Time [µs]")
-        .build();
+    readCaptureChart =
+        new XYChartBuilder()
+            .width(600)
+            .title("Read Pulse Capture")
+            .height(300)
+            .yAxisTitle("Voltage [V]")
+            .xAxisTitle("Time [µs]")
+            .build();
     readCaptureChart.getStyler().setLegendPosition(LegendPosition.InsideNE);
     // readCaptureChart.getStyler().setYAxisMin(0.0);
     readCaptureChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Line);
 
-    series = readCaptureChart.addSeries("V1(1+)", new double[]{0}, new double[]{0});
+    series = readCaptureChart.addSeries("V1(1+)", new double[] {0}, new double[] {0});
     series.setMarker(SeriesMarkers.NONE);
-    series = readCaptureChart.addSeries("V2(2+)", new double[]{0}, new double[]{0});
+    series = readCaptureChart.addSeries("V2(2+)", new double[] {0}, new double[] {0});
     series.setMarker(SeriesMarkers.NONE);
-    series = readCaptureChart.addSeries("V_Memristor", new double[]{0}, new double[]{0});
+    series = readCaptureChart.addSeries("V_Memristor", new double[] {0}, new double[] {0});
     series.setMarker(SeriesMarkers.NONE);
 
     readCaptureChartPanel = new XChartPanel<>(readCaptureChart);
@@ -133,16 +161,22 @@ public class ResultPanel extends JPanel {
     // G Chart ////////////////////////////////////////////
     // ///////////////////////////////////////////////////////////
 
-    gChart = new XYChartBuilder().width(600).height(300).title("G").xAxisTitle("Pulse Number")
-        .yAxisTitle("Conductance [" + PulsePreferences.CONDUCTANCE_UNIT.getLabel() + "]").build();
+    gChart =
+        new XYChartBuilder()
+            .width(600)
+            .height(300)
+            .title("G")
+            .xAxisTitle("Pulse Number")
+            .yAxisTitle("Conductance [" + PulsePreferences.CONDUCTANCE_UNIT.getLabel() + "]")
+            .build();
     gChart.getStyler().setLegendVisible(false);
     // gChart.getStyler().setYAxisMin(0.0);
 
     gChart.getStyler().setYAxisLogarithmic(true);
 
-    series = gChart.addSeries("g", new double[]{0}, new double[]{1E-10});
+    series = gChart.addSeries("g", new double[] {0}, new double[] {1E-10});
     series.setMarker(SeriesMarkers.NONE);
-    series = gChart.addSeries("glast", new double[]{0}, new double[]{1E-10});
+    series = gChart.addSeries("glast", new double[] {0}, new double[] {1E-10});
     series.setMarker(SeriesMarkers.NONE);
     gChartPanel = new XChartPanel<>(gChart);
 

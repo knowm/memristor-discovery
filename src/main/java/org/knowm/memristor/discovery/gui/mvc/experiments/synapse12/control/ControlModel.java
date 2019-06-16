@@ -33,7 +33,7 @@ import org.knowm.memristor.discovery.core.driver.waveform.SquareSmooth;
 import org.knowm.memristor.discovery.core.driver.waveform.Triangle;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
-import org.knowm.memristor.discovery.gui.mvc.experiments.synapse12.AHaHController_12.Instruction12;
+import org.knowm.memristor.discovery.gui.mvc.experiments.synapse12.KTRAM_Controller_12.Instruction12;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse12.Synapse12Preferences;
 
 public class ControlModel extends Model {
@@ -42,7 +42,8 @@ public class ControlModel extends Model {
   public static final String EVENT_INSTRUCTION_UPDATE = "EVENT_INSTRUCTION_UPDATE";
 
   private final double[] waveformTimeData = new double[Synapse12Preferences.CAPTURE_BUFFER_SIZE];
-  private final double[] waveformAmplitudeData = new double[Synapse12Preferences.CAPTURE_BUFFER_SIZE];
+  private final double[] waveformAmplitudeData =
+      new double[Synapse12Preferences.CAPTURE_BUFFER_SIZE];
   /** Waveform */
   public Synapse12Preferences.Waveform waveform;
 
@@ -68,19 +69,38 @@ public class ControlModel extends Model {
   @Override
   public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {
 
-    seriesResistance = experimentPreferences.getInteger(Synapse12Preferences.SERIES_R_INIT_KEY, Synapse12Preferences.SERIES_R_INIT_DEFAULT_VALUE);
-    waveform = Synapse12Preferences.Waveform.valueOf(
-        experimentPreferences.getString(Synapse12Preferences.WAVEFORM_INIT_STRING_KEY, Synapse12Preferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
+    seriesResistance =
+        experimentPreferences.getInteger(
+            Synapse12Preferences.SERIES_R_INIT_KEY,
+            Synapse12Preferences.SERIES_R_INIT_DEFAULT_VALUE);
+    waveform =
+        Synapse12Preferences.Waveform.valueOf(
+            experimentPreferences.getString(
+                Synapse12Preferences.WAVEFORM_INIT_STRING_KEY,
+                Synapse12Preferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
 
-    amplitude = experimentPreferences.getFloat(Synapse12Preferences.AMPLITUDE_INIT_FLOAT_KEY,
-        Synapse12Preferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
+    amplitude =
+        experimentPreferences.getFloat(
+            Synapse12Preferences.AMPLITUDE_INIT_FLOAT_KEY,
+            Synapse12Preferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
 
-    amplitudeReverse = experimentPreferences.getFloat(Synapse12Preferences.AMPLITUDE_REVERSE_INIT_FLOAT_KEY,
-        Synapse12Preferences.AMPLITUDE_REVERSE_INIT_FLOAT_DEFAULT_VALUE);
+    amplitudeReverse =
+        experimentPreferences.getFloat(
+            Synapse12Preferences.AMPLITUDE_REVERSE_INIT_FLOAT_KEY,
+            Synapse12Preferences.AMPLITUDE_REVERSE_INIT_FLOAT_DEFAULT_VALUE);
 
-    pulseWidth = experimentPreferences.getInteger(Synapse12Preferences.PULSE_WIDTH_INIT_KEY, Synapse12Preferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
-    pulseNumber = experimentPreferences.getInteger(Synapse12Preferences.NUM_PULSES_INIT_KEY, Synapse12Preferences.NUM_PULSES_INIT_DEFAULT_VALUE);
-    sampleRate = experimentPreferences.getInteger(Synapse12Preferences.SAMPLE_RATE_INIT_KEY, Synapse12Preferences.SAMPLE_RATE_INIT_DEFAULT_VALUE);
+    pulseWidth =
+        experimentPreferences.getInteger(
+            Synapse12Preferences.PULSE_WIDTH_INIT_KEY,
+            Synapse12Preferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
+    pulseNumber =
+        experimentPreferences.getInteger(
+            Synapse12Preferences.NUM_PULSES_INIT_KEY,
+            Synapse12Preferences.NUM_PULSES_INIT_DEFAULT_VALUE);
+    sampleRate =
+        experimentPreferences.getInteger(
+            Synapse12Preferences.SAMPLE_RATE_INIT_KEY,
+            Synapse12Preferences.SAMPLE_RATE_INIT_DEFAULT_VALUE);
   }
 
   /** Given the state of the model, update the waveform x and y axis data arrays. */
@@ -89,7 +109,8 @@ public class ControlModel extends Model {
     Driver driver;
     switch (waveform) {
       case Sawtooth:
-        driver = new Sawtooth("Sawtooth", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
+        driver =
+            new Sawtooth("Sawtooth", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
         break;
       case QuarterSine:
         driver = new QuarterSine("QuarterSine", 0, 0, amplitude, getCalculatedFrequency());
@@ -109,7 +130,8 @@ public class ControlModel extends Model {
     }
 
     double stopTime = 1 / getCalculatedFrequency() * pulseNumber;
-    double timeStep = 1 / getCalculatedFrequency() / Synapse12Preferences.CAPTURE_BUFFER_SIZE * pulseNumber;
+    double timeStep =
+        1 / getCalculatedFrequency() / Synapse12Preferences.CAPTURE_BUFFER_SIZE * pulseNumber;
 
     int counter = 0;
     for (double i = 0.0; i < stopTime; i = i + timeStep) {

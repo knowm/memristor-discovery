@@ -76,25 +76,49 @@ public class ControlController extends Controller {
   private void initGUIComponentsFromModel() {
 
     controlPanel.getWaveformComboBox().setSelectedItem(controlModel.getWaveform());
-    controlPanel.getWaveformComboBox().setModel(new DefaultComboBoxModel<>(
-        new Waveform[]{Waveform.SquareSmooth, Waveform.Square, Waveform.QuarterSine, Waveform.HalfSine, Waveform.Triangle}));
+    controlPanel
+        .getWaveformComboBox()
+        .setModel(
+            new DefaultComboBoxModel<>(
+                new Waveform[] {
+                  Waveform.SquareSmooth,
+                  Waveform.Square,
+                  Waveform.QuarterSine,
+                  Waveform.HalfSine,
+                  Waveform.Triangle
+                }));
 
     controlPanel.getAhahRoutineComboBox().setSelectedItem(controlModel.getAhahroutine());
-    controlPanel.getAhahRoutineComboBox().setModel(new DefaultComboBoxModel<AHaHRoutine>(AHaHRoutine.values()));
+    controlPanel
+        .getAhahRoutineComboBox()
+        .setModel(new DefaultComboBoxModel<AHaHRoutine>(AHaHRoutine.values()));
 
     controlPanel.getDatasetComboBox().setSelectedItem(controlModel.getDataset());
     controlPanel.getDatasetComboBox().setModel(new DefaultComboBoxModel<>(Datasets.values()));
 
     controlPanel.getAmplitudeSlider().setValue((int) (controlModel.getForwardAmplitude() * 100));
-    controlPanel.getAmplitudeSlider().setBorder(BorderFactory.createTitledBorder("Forward Amplitude [V] = " + controlModel.getForwardAmplitude()));
+    controlPanel
+        .getAmplitudeSlider()
+        .setBorder(
+            BorderFactory.createTitledBorder(
+                "Forward Amplitude [V] = " + controlModel.getForwardAmplitude()));
 
-    controlPanel.getAmplitudeReverseSlider().setValue((int) (controlModel.getReverseAmplitude() * 100));
-    controlPanel.getAmplitudeReverseSlider()
-        .setBorder(BorderFactory.createTitledBorder("Reverse Amplitude [V] = " + controlModel.getReverseAmplitude()));
+    controlPanel
+        .getAmplitudeReverseSlider()
+        .setValue((int) (controlModel.getReverseAmplitude() * 100));
+    controlPanel
+        .getAmplitudeReverseSlider()
+        .setBorder(
+            BorderFactory.createTitledBorder(
+                "Reverse Amplitude [V] = " + controlModel.getReverseAmplitude()));
 
     controlPanel.getPulseWidthSlider().setValue((controlModel.getPulseWidth()));
 
-    controlPanel.getPulseWidthSlider().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + controlModel.getPulseWidth() / 1000f));
+    controlPanel
+        .getPulseWidthSlider()
+        .setBorder(
+            BorderFactory.createTitledBorder(
+                "Pulse Width [µs] = " + controlModel.getPulseWidth() / 1000f));
     controlPanel.getNumTrainEpochsTextField().setText("" + controlModel.getNumTrainEpochs());
   }
 
@@ -108,89 +132,120 @@ public class ControlController extends Controller {
     // button.addActionListener(instructionRadioButtonActionListener);
     // }
 
-    controlPanel.getWaveformComboBox().addActionListener(new ActionListener() {
+    controlPanel
+        .getWaveformComboBox()
+        .addActionListener(
+            new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+              @Override
+              public void actionPerformed(ActionEvent e) {
 
-        controlModel.setWaveform(controlPanel.getWaveformComboBox().getSelectedItem().toString());
-      }
-    });
+                controlModel.setWaveform(
+                    controlPanel.getWaveformComboBox().getSelectedItem().toString());
+              }
+            });
 
-    controlPanel.getDatasetComboBox().addActionListener(new ActionListener() {
+    controlPanel
+        .getDatasetComboBox()
+        .addActionListener(
+            new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+              @Override
+              public void actionPerformed(ActionEvent e) {
 
-        controlModel.setDataStructure(controlPanel.getDatasetComboBox().getSelectedItem().toString());
-      }
-    });
+                controlModel.setDataStructure(
+                    controlPanel.getDatasetComboBox().getSelectedItem().toString());
+              }
+            });
 
-    controlPanel.getAmplitudeSlider().addChangeListener(new ChangeListener() {
+    controlPanel
+        .getAmplitudeSlider()
+        .addChangeListener(
+            new ChangeListener() {
 
-      @Override
-      public void stateChanged(ChangeEvent e) {
+              @Override
+              public void stateChanged(ChangeEvent e) {
 
-        JSlider source = (JSlider) e.getSource();
-        if (!(source.getValueIsAdjusting())) {
-          controlModel.setForwardAmplitude(source.getValue() / (float) 100);
-          controlPanel.getAmplitudeSlider()
-              .setBorder(BorderFactory.createTitledBorder("Forward Amplitude [V] = " + controlModel.getForwardAmplitude()));
-        }
-      }
-    });
+                JSlider source = (JSlider) e.getSource();
+                if (!(source.getValueIsAdjusting())) {
+                  controlModel.setForwardAmplitude(source.getValue() / (float) 100);
+                  controlPanel
+                      .getAmplitudeSlider()
+                      .setBorder(
+                          BorderFactory.createTitledBorder(
+                              "Forward Amplitude [V] = " + controlModel.getForwardAmplitude()));
+                }
+              }
+            });
 
-    controlPanel.getAmplitudeReverseSlider().addChangeListener(new ChangeListener() {
+    controlPanel
+        .getAmplitudeReverseSlider()
+        .addChangeListener(
+            new ChangeListener() {
 
-      @Override
-      public void stateChanged(ChangeEvent e) {
+              @Override
+              public void stateChanged(ChangeEvent e) {
 
-        JSlider source = (JSlider) e.getSource();
-        if (!(source.getValueIsAdjusting())) {
-          controlModel.setReverseAmplitude(source.getValue() / (float) 100);
-          controlPanel.getAmplitudeReverseSlider()
-              .setBorder(BorderFactory.createTitledBorder("Reverse Amplitude [V] = " + controlModel.getReverseAmplitude()));
-        }
-      }
-    });
+                JSlider source = (JSlider) e.getSource();
+                if (!(source.getValueIsAdjusting())) {
+                  controlModel.setReverseAmplitude(source.getValue() / (float) 100);
+                  controlPanel
+                      .getAmplitudeReverseSlider()
+                      .setBorder(
+                          BorderFactory.createTitledBorder(
+                              "Reverse Amplitude [V] = " + controlModel.getReverseAmplitude()));
+                }
+              }
+            });
 
-    controlPanel.getPulseWidthSlider().addChangeListener(new ChangeListener() {
+    controlPanel
+        .getPulseWidthSlider()
+        .addChangeListener(
+            new ChangeListener() {
 
-      @Override
-      public void stateChanged(ChangeEvent e) {
+              @Override
+              public void stateChanged(ChangeEvent e) {
 
-        JSlider source = (JSlider) e.getSource();
-        if (!(source.getValueIsAdjusting())) {
-          controlModel.setPulseWidth(source.getValue());
-          controlPanel.getPulseWidthSlider()
-              .setBorder(BorderFactory.createTitledBorder("Pulse Width [µs] = " + (double) controlModel.getPulseWidth() / 1000));
-          // controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
-        }
-      }
-    });
+                JSlider source = (JSlider) e.getSource();
+                if (!(source.getValueIsAdjusting())) {
+                  controlModel.setPulseWidth(source.getValue());
+                  controlPanel
+                      .getPulseWidthSlider()
+                      .setBorder(
+                          BorderFactory.createTitledBorder(
+                              "Pulse Width [µs] = "
+                                  + (double) controlModel.getPulseWidth() / 1000));
+                  // controlPanel.getPulseWidthSliderNs().setBorder(BorderFactory.createTitledBorder("Pulse Width [µs]"));
+                }
+              }
+            });
 
-    controlPanel.getNumTrainEpochsTextField().addKeyListener(new KeyAdapter() {
+    controlPanel
+        .getNumTrainEpochsTextField()
+        .addKeyListener(
+            new KeyAdapter() {
 
-      @Override
-      public void keyReleased(KeyEvent e) {
+              @Override
+              public void keyReleased(KeyEvent e) {
 
-        JTextField textField = (JTextField) e.getSource();
-        String text = textField.getText();
+                JTextField textField = (JTextField) e.getSource();
+                String text = textField.getText();
 
-        try {
-          int newValue = Integer.parseInt(text);
-          controlModel.setNumTrainEpochs(newValue);
-        } catch (Exception ex) {
-          // parsing error, default back to previous value
-          textField.setText(Integer.toString(controlModel.getNumTrainEpochs()));
-        }
-      }
-    });
+                try {
+                  int newValue = Integer.parseInt(text);
+                  controlModel.setNumTrainEpochs(newValue);
+                } catch (Exception ex) {
+                  // parsing error, default back to previous value
+                  textField.setText(Integer.toString(controlModel.getNumTrainEpochs()));
+                }
+              }
+            });
   }
 
   /**
-   * These property change events are triggered in the controlModel in the case where the underlying controlModel is updated. Here, the controller can
-   * respond to those events and make sure the corresponding GUI components get updated.
+   * These property change events are triggered in the controlModel in the case where the underlying
+   * controlModel is updated. Here, the controller can respond to those events and make sure the
+   * corresponding GUI components get updated.
    */
   @Override
   public void propertyChange(PropertyChangeEvent evt) {

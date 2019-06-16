@@ -21,17 +21,16 @@
  * <p>If you have any questions regarding our licensing policy, please contact us at
  * `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.experiments.synapse12;
+package org.knowm.memristor.discovery.gui.mvc.experiments.classify12;
 
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.core.Util;
 import org.knowm.memristor.discovery.core.WaveformUtils;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
-import org.knowm.memristor.discovery.gui.mvc.experiments.synapse12.control.ControlModel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.synapse12.control.ControlPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.classify12.control.ControlModel;
 import org.knowm.waveforms4j.DWF;
 
-public class AHaHController_12 {
+public class KTRAM_Controller_12 {
 
   private DWFProxy dWFProxy;
   private ControlModel controlModel;
@@ -39,63 +38,45 @@ public class AHaHController_12 {
   private double ga;
   private double gb;
 
-  private int switchA;
-  private int switchB;
+  // 0-7
+  private SupervisedPattern spikePattern;
 
-  public AHaHController_12(ControlModel controlModel) {
+  public KTRAM_Controller_12(ControlModel controlModel) {
 
     this.controlModel = controlModel;
   }
 
-  public void executeInstruction(Instruction12 instruction) {
+  public void executeInstruction(SupervisedPattern spikePattern, Instruction12 instruction) {
 
-    // this space reserved for compound instructions...
+    this.spikePattern = spikePattern;
 
     execute(instruction);
   }
 
-  public boolean readSwitchStates() {
-
-    switchA = -1;
-    switchB = -1;
-
-    String s = Integer.toBinaryString(dWFProxy.getDigitalIOStates());
-
-    int count = 0;
-    for (int i = s.length() - 1; i >= 0; i--) {
-      if (s.charAt(i) == '1') {
-        count++;
-        int idx = s.length() - 1 - i;
-        if (switchA == -1) {
-          switchA = idx;
-        } else {
-          switchB = idx;
-        }
-      }
-    }
-
-    if (count != 2) {
-      return false;
-    }
-
-    if (switchA > 7) {
-      return false;
-    }
-    if (switchB < 8) {
-      return false;
-    }
-
-    return true;
-  }
-
   private void execute(Instruction12 instruction) {
 
-    getControlModel().swingPropertyChangeSupport.firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null, "Executing Instruction: " + instruction);
+    getControlModel()
+        .swingPropertyChangeSupport
+        .firePropertyChange(
+            Model.EVENT_NEW_CONSOLE_LOG, null, "Executing Instruction: " + instruction);
 
     double W1Amplitude;
 
-    // turn off switches and invert pulse if necessary
+    dWFProxy.turnOffAllSwitches(2);
 
+    // turn on A and B memristors for spikes
+    // System.out.println("Instyruction: " + instruction);
+
+    // System.out.println("switches should be off: " +
+    // Integer.toBinaryString(dWFProxy.getDigitalIOStates()));
+
+    // System.out.println("spike pattern: " + spikePattern.spikePattern);
+    dWFProxy.update2DigitalIOStatesAtOnce(spikePattern.spikePattern, true);
+    dWFProxy.update2DigitalIOStatesAtOnce(spikePattern.spikePattern, 8, true); // 8 is the offset
+    // System.out.println("A and B switches should be on: " +
+    // Integer.toBinaryString(dWFProxy.getDigitalIOStates()));
+
+    // turn off switches and invert pulse if necessary
     if (instruction == Instruction12.FLV) {
       W1Amplitude = -.08f;
     } else if (instruction == Instruction12.RLV) {
@@ -106,26 +87,45 @@ public class AHaHController_12 {
       W1Amplitude = controlModel.getReverseAmplitude();
     } else if (instruction == Instruction12.FA) {
       W1Amplitude = -controlModel.getForwardAmplitude();
-      dWFProxy.update2DigitalIOStatesAtOnce(switchB, false);
+
+      // turn off B spikes
+      dWFProxy.update2DigitalIOStatesAtOnce(spikePattern.spikePattern, 8, false);
+
     } else if (instruction == Instruction12.FB) {
       W1Amplitude = -controlModel.getForwardAmplitude();
-      dWFProxy.update2DigitalIOStatesAtOnce(switchA, false);
+      // turn off A spikes
+      dWFProxy.update2DigitalIOStatesAtOnce(spikePattern.spikePattern, false);
+
     } else if (instruction == Instruction12.RA) {
       W1Amplitude = controlModel.getReverseAmplitude();
-      dWFProxy.update2DigitalIOStatesAtOnce(switchB, false);
+      // turn off B spikes
+      dWFProxy.update2DigitalIOStatesAtOnce(spikePattern.spikePattern, 8, false);
+
     } else if (instruction == Instruction12.RB) {
       W1Amplitude = controlModel.getReverseAmplitude();
-      dWFProxy.update2DigitalIOStatesAtOnce(switchA, false);
+      // turn off A spikes
+      dWFProxy.update2DigitalIOStatesAtOnce(spikePattern.spikePattern, false);
+
     } else { // default is forward read.
       W1Amplitude = -.08f;
     }
 
-    double[] W1 = WaveformUtils.generateCustomWaveform(controlModel.getWaveform(), W1Amplitude, controlModel.getCalculatedFrequency());
+    // System.out.println("Before Instruction " +
+    // Integer.toBinaryString(dWFProxy.getDigitalIOStates()));
 
-    dWFProxy.getDwf().startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency() * 300,
-        300 * 1, true);
+    double[] W1 =
+        WaveformUtils.generateCustomWaveform(
+            controlModel.getWaveform(), W1Amplitude, controlModel.getCalculatedFrequency());
+
+    dWFProxy
+        .getDwf()
+        .startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(
+            DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency() * 300, 300 * 1, true);
     dWFProxy.waitUntilArmed();
-    dWFProxy.getDwf().setCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, 1, W1);
+    dWFProxy
+        .getDwf()
+        .setCustomPulseTrain(
+            DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, 1, W1);
     dWFProxy.getDwf().startPulseTrain(DWF.WAVEFORM_CHANNEL_1);
 
     boolean success = dWFProxy.capturePulseData(controlModel.getCalculatedFrequency(), 1);
@@ -135,23 +135,29 @@ public class AHaHController_12 {
         setVy(W1Amplitude);
       }
 
-      //setVy(W1Amplitude);
     } else {
-      getControlModel().swingPropertyChangeSupport.firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null,
-          "Capture has failed! This is usually due to noise/interference. Try a shorter cable or use a magnetic choke.");
+      getControlModel()
+          .swingPropertyChangeSupport
+          .firePropertyChange(
+              Model.EVENT_NEW_CONSOLE_LOG,
+              null,
+              "Capture has failed! This is usually due to noise/interference. Try a shorter cable or use a magnetic choke.");
     }
 
-    // turn back on switches
-    if (instruction == Instruction12.FA) {
-      dWFProxy.update2DigitalIOStatesAtOnce(switchB, true);
-    } else if (instruction == Instruction12.FB) {
-      dWFProxy.update2DigitalIOStatesAtOnce(switchA, true);
-    } else if (instruction == Instruction12.RA) {
-      dWFProxy.update2DigitalIOStatesAtOnce(switchB, true);
-    } else if (instruction == Instruction12.RB) {
-      dWFProxy.update2DigitalIOStatesAtOnce(switchA, true);
-    }
+    //    // turn back on switches and invert pulse if necessary
+    //    if (instruction == Instruction12.FA) {
+    //      dWFProxy.update2DigitalIOStatesAtOnce(spikePattern.spikePattern, 8, true);
+    //    } else if (instruction == Instruction12.FB) {
+    //      dWFProxy.update2DigitalIOStatesAtOnce(spikePattern.spikePattern, true);
+    //    } else if (instruction == Instruction12.RA) {
+    //      dWFProxy.update2DigitalIOStatesAtOnce(spikePattern.spikePattern, 8, true);
+    //    } else if (instruction == Instruction12.RB) {
+    //      dWFProxy.update2DigitalIOStatesAtOnce(spikePattern.spikePattern, true);
+    //    }
 
+    // System.out.println("After Instruction " +
+    // Integer.toBinaryString(dWFProxy.getDigitalIOStates()));
+    dWFProxy.turnOffAllSwitches(2);
     /*
      * must wait here to allow pulses from AWG to finish. Should take no more that one ms...
      */
@@ -171,10 +177,17 @@ public class AHaHController_12 {
 
     int validSamples = dWFProxy.getDwf().FDwfAnalogInStatusSamplesValid();
 
-    double peakV1 = Util.maxAbs(dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples));
-    double peakV2 = Util.maxAbs(dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples));
+    double peakV1 =
+        Util.maxAbs(
+            dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples));
+    double peakV2 =
+        Util.maxAbs(
+            dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples));
 
     this.vy = -(peakV1 - peakV2) / W1Amplitude;
+
+    //    System.out.println("peakV1=" + peakV1);
+    //    System.out.println("peakV2=" + peakV2);
 
     double Ia = (peakV1 - W1Amplitude) / controlModel.getSeriesResistance();
     double Ib = (peakV2 - W1Amplitude) / controlModel.getSeriesResistance();
@@ -230,9 +243,15 @@ public class AHaHController_12 {
   public enum Instruction12 {
 
     // @formatter:off
-    FLV, FA, FB, FAB, RLV, RA, RB, RAB;
+    FLV,
+    FA,
+    FB,
+    FAB,
+    RLV,
+    RA,
+    RB,
+    RAB;
 
-    Instruction12() {
-    }
+    Instruction12() {}
   }
 }

@@ -40,7 +40,7 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
-import org.knowm.memristor.discovery.gui.mvc.experiments.synapse21.AHaHController_21.Instruction21;
+import org.knowm.memristor.discovery.gui.mvc.experiments.synapse21.KTRAM_Controller_21.Instruction21;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse21.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse21.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse21.control.ControlPanel;
@@ -55,7 +55,7 @@ public class Synapse21Experiment extends Experiment {
   private final MuxController muxController;
 
   DecimalFormat df = new DecimalFormat("0.000E0");
-  private AHaHController_21 aHaHController;
+  private KTRAM_Controller_21 kTRAM_Controller;
 
   // Control and Result MVC
   private final ControlModel controlModel;
@@ -90,8 +90,8 @@ public class Synapse21Experiment extends Experiment {
 
     dwfProxy.setUpper8IOStates(controlModel.getInstruction().getBits());
 
-    aHaHController = new AHaHController_21(controlModel);
-    aHaHController.setdWFProxy(dwfProxy);
+    kTRAM_Controller = new KTRAM_Controller_21(controlModel);
+    kTRAM_Controller.setdWFProxy(dwfProxy);
     muxController = new MuxController();
   }
 
@@ -225,7 +225,7 @@ public class Synapse21Experiment extends Experiment {
     @Override
     protected Boolean doInBackground() throws Exception {
 
-      aHaHController.executeInstruction(controlModel.getInstruction());
+      kTRAM_Controller.executeInstruction(controlModel.getInstruction());
       while (!isCancelled()) {
 
         try {
@@ -238,11 +238,11 @@ public class Synapse21Experiment extends Experiment {
         // set to constant pulse width for reads to help mitigate RC issues
         int pW = controlModel.getPulseWidth();
         controlModel.setPulseWidth(100_000);
-        aHaHController.executeInstruction(Instruction21.FFLV);
+        kTRAM_Controller.executeInstruction(Instruction21.FFLV);
         controlModel.setPulseWidth(pW); // set it back to whatever it was
 
         // System.out.println("Vy=" + aHaHController.getVy());
-        publish(aHaHController.getGa(), aHaHController.getGb(), aHaHController.getVy());
+        publish(kTRAM_Controller.getGa(), kTRAM_Controller.getGb(), kTRAM_Controller.getVy());
       }
       return true;
     }
@@ -270,17 +270,18 @@ public class Synapse21Experiment extends Experiment {
 
         // hard reset.
         for (int i = 0; i < 10; i++) {
-          aHaHController.executeInstruction(Instruction21.RLadn);
-          aHaHController.executeInstruction(Instruction21.RHbdn);
+          kTRAM_Controller.executeInstruction(Instruction21.RLadn);
+          kTRAM_Controller.executeInstruction(Instruction21.RHbdn);
         }
 
         // drive each memristor to target conductance.
         boolean aGood = false;
         boolean bGood = false;
         for (int i = 0; i < 100; i++) { // drive pulses until conductance reaches threshold
-          aHaHController.executeInstruction(Instruction21.FFLV);
-          if (Double.isNaN(aHaHController.getGa()) || aHaHController.getGa() < INIT_CONDUCTANCE) {
-            aHaHController.executeInstruction(Instruction21.RHaup);
+          kTRAM_Controller.executeInstruction(Instruction21.FFLV);
+          if (Double.isNaN(kTRAM_Controller.getGa())
+              || kTRAM_Controller.getGa() < INIT_CONDUCTANCE) {
+            kTRAM_Controller.executeInstruction(Instruction21.RHaup);
           } else {
 
             // System.out.println("Here A: aHaHController.getGa()=" + aHaHController.getGa());
@@ -288,8 +289,9 @@ public class Synapse21Experiment extends Experiment {
             aGood = true;
           }
 
-          if (Double.isNaN(aHaHController.getGb()) || aHaHController.getGb() < INIT_CONDUCTANCE) {
-            aHaHController.executeInstruction(Instruction21.RLbup);
+          if (Double.isNaN(kTRAM_Controller.getGb())
+              || kTRAM_Controller.getGb() < INIT_CONDUCTANCE) {
+            kTRAM_Controller.executeInstruction(Instruction21.RLbup);
           } else {
 
             // System.out.println("Here B: aHaHController.getGb()=" + aHaHController.getGb());
@@ -311,9 +313,9 @@ public class Synapse21Experiment extends Experiment {
                   Model.EVENT_NEW_CONSOLE_LOG,
                   null,
                   "  A="
-                      + df.format(aHaHController.getGa())
+                      + df.format(kTRAM_Controller.getGa())
                       + "mS, B="
-                      + df.format(aHaHController.getGb())
+                      + df.format(kTRAM_Controller.getGb())
                       + "mS");
         }
 
@@ -348,16 +350,16 @@ public class Synapse21Experiment extends Experiment {
         int stateChangedCount = 0;
         boolean s = true;
         for (int i = 0; i < 8; i++) {
-          aHaHController.executeInstruction(Instruction21.FFLV);
+          kTRAM_Controller.executeInstruction(Instruction21.FFLV);
 
-          boolean state = aHaHController.getVy() > 0;
+          boolean state = kTRAM_Controller.getVy() > 0;
           if (i > 0) {
             if (state != s) { // state changed
               stateChangedCount++;
             }
           }
           s = state;
-          aHaHController.executeInstruction(Instruction21.FF_RA);
+          kTRAM_Controller.executeInstruction(Instruction21.FF_RA);
         }
 
         if (stateChangedCount == 0) {
@@ -390,9 +392,9 @@ public class Synapse21Experiment extends Experiment {
                 Model.EVENT_NEW_CONSOLE_LOG,
                 null,
                 "  A="
-                    + df.format(aHaHController.getGa())
+                    + df.format(kTRAM_Controller.getGa())
                     + "mS, B="
-                    + df.format(aHaHController.getGb())
+                    + df.format(kTRAM_Controller.getGb())
                     + "mS");
 
         /*

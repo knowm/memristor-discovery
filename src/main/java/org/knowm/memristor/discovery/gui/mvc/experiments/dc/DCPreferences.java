@@ -34,7 +34,7 @@ public class DCPreferences extends ExperimentPreferences {
 
   public static final String WAVEFORM_INIT_STRING_DEFAULT_VALUE = "SawtoothUpDown";
   public static final int NUM_PULSES_INIT_DEFAULT_VALUE = 2;
-  public static final int SERIES_R_INIT_DEFAULT_VALUE = 5_000;
+  public static final int SERIES_R_INIT_DEFAULT_VALUE = 10_000;
   public static final float AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE = 0.1f;
   public static final int PERIOD_INIT_DEFAULT_VALUE = 5;
   public static final CurrentUnits CURRENT_UNIT = CurrentUnits.MicroAmps;

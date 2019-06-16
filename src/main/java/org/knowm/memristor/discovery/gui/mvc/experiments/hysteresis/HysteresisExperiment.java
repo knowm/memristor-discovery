@@ -84,7 +84,8 @@ public class HysteresisExperiment extends Experiment {
 
     //     trigger waveform update event so that the results panel can get initiated from the loaded
     // control model
-    PropertyChangeEvent evt = new PropertyChangeEvent(this, Model.EVENT_WAVEFORM_UPDATE, true, false);
+    PropertyChangeEvent evt =
+        new PropertyChangeEvent(this, Model.EVENT_WAVEFORM_UPDATE, true, false);
     propertyChange(evt);
 
     // when the control panel is manipulated, we need to communicate the changes to the results
@@ -95,29 +96,32 @@ public class HysteresisExperiment extends Experiment {
   @Override
   public void addWorkersToButtonEvents() {
 
-    controlPanel.getStartStopButton().addActionListener(new ActionListener() {
+    controlPanel
+        .getStartStopButton()
+        .addActionListener(
+            new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+              @Override
+              public void actionPerformed(ActionEvent e) {
 
-        if (!controlModel.isStartToggled()) {
+                if (!controlModel.isStartToggled()) {
 
-          controlModel.setStartToggled(true);
-          controlPanel.getStartStopButton().setText("Stop");
+                  controlModel.setStartToggled(true);
+                  controlPanel.getStartStopButton().setText("Stop");
 
-          // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
-          experimentCaptureWorker = new CaptureWorker();
-          experimentCaptureWorker.execute();
-        } else {
+                  // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
+                  experimentCaptureWorker = new CaptureWorker();
+                  experimentCaptureWorker.execute();
+                } else {
 
-          controlModel.setStartToggled(false);
-          controlPanel.getStartStopButton().setText("Start");
+                  controlModel.setStartToggled(false);
+                  controlPanel.getStartStopButton().setText("Start");
 
-          // cancel the worker
-          experimentCaptureWorker.cancel(true);
-        }
-      }
-    });
+                  // cancel the worker
+                  experimentCaptureWorker.cancel(true);
+                }
+              }
+            });
   }
 
   @Override
@@ -144,8 +148,9 @@ public class HysteresisExperiment extends Experiment {
   }
 
   /**
-   * These property change events are triggered in the model in the case where the underlying model is updated. Here, the controller can respond to
-   * those events and make sure the corresponding GUI components get updated.
+   * These property change events are triggered in the model in the case where the underlying model
+   * is updated. Here, the controller can respond to those events and make sure the corresponding
+   * GUI components get updated.
    */
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
@@ -166,18 +171,36 @@ public class HysteresisExperiment extends Experiment {
 
           if (boardVersion == 2) {
             DWF.Waveform dwfWaveform = WaveformUtils.getDWFWaveform(controlModel.getWaveform());
-            dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, controlModel.getFrequency(), -controlModel.getAmplitude(),
-                -controlModel.getOffset(), 50);
+            dwfProxy
+                .getDwf()
+                .startWave(
+                    DWF.WAVEFORM_CHANNEL_1,
+                    dwfWaveform,
+                    controlModel.getFrequency(),
+                    -controlModel.getAmplitude(),
+                    -controlModel.getOffset(),
+                    50);
           } else {
             DWF.Waveform dwfWaveform = WaveformUtils.getDWFWaveform(controlModel.getWaveform());
-            dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, controlModel.getFrequency(), controlModel.getAmplitude(),
-                controlModel.getOffset(), 50);
+            dwfProxy
+                .getDwf()
+                .startWave(
+                    DWF.WAVEFORM_CHANNEL_1,
+                    dwfWaveform,
+                    controlModel.getFrequency(),
+                    controlModel.getAmplitude(),
+                    controlModel.getOffset(),
+                    50);
           }
 
         } else {
           resultPanel.switch2WaveformChart();
-          resultController.udpateWaveformChart(controlModel.getWaveformTimeData(), controlModel.getWaveformAmplitudeData(),
-              controlModel.getAmplitude(), controlModel.getFrequency(), controlModel.getOffset());
+          resultController.udpateWaveformChart(
+              controlModel.getWaveformTimeData(),
+              controlModel.getWaveformAmplitudeData(),
+              controlModel.getAmplitude(),
+              controlModel.getFrequency(),
+              controlModel.getOffset());
         }
         break;
       case Model.EVENT_FREQUENCY_UPDATE:
@@ -188,10 +211,16 @@ public class HysteresisExperiment extends Experiment {
         if (controlModel.isStartToggled()) {
 
           // Analog In
-          double sampleFrequency = (double) controlModel.getFrequency() * HysteresisPreferences.CAPTURE_BUFFER_SIZE
-              / HysteresisPreferences.CAPTURE_PERIOD_COUNT;
-          dwfProxy.getDwf().startAnalogCaptureBothChannelsImmediately(sampleFrequency, HysteresisPreferences.CAPTURE_BUFFER_SIZE,
-              AcquisitionMode.ScanShift);
+          double sampleFrequency =
+              (double) controlModel.getFrequency()
+                  * HysteresisPreferences.CAPTURE_BUFFER_SIZE
+                  / HysteresisPreferences.CAPTURE_PERIOD_COUNT;
+          dwfProxy
+              .getDwf()
+              .startAnalogCaptureBothChannelsImmediately(
+                  sampleFrequency,
+                  HysteresisPreferences.CAPTURE_BUFFER_SIZE,
+                  AcquisitionMode.ScanShift);
         }
         break;
       default:
@@ -214,19 +243,39 @@ public class HysteresisExperiment extends Experiment {
 
       if (boardVersion == 2) {
         DWF.Waveform dwfWaveform = WaveformUtils.getDWFWaveform(controlModel.getWaveform());
-        dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, controlModel.getFrequency(), -controlModel.getAmplitude(),
-            -controlModel.getOffset(), 50);
+        dwfProxy
+            .getDwf()
+            .startWave(
+                DWF.WAVEFORM_CHANNEL_1,
+                dwfWaveform,
+                controlModel.getFrequency(),
+                -controlModel.getAmplitude(),
+                -controlModel.getOffset(),
+                50);
       } else {
         DWF.Waveform dwfWaveform = WaveformUtils.getDWFWaveform(controlModel.getWaveform());
-        dwfProxy.getDwf().startWave(DWF.WAVEFORM_CHANNEL_1, dwfWaveform, controlModel.getFrequency(), controlModel.getAmplitude(),
-            controlModel.getOffset(), 50);
+        dwfProxy
+            .getDwf()
+            .startWave(
+                DWF.WAVEFORM_CHANNEL_1,
+                dwfWaveform,
+                controlModel.getFrequency(),
+                controlModel.getAmplitude(),
+                controlModel.getOffset(),
+                50);
       }
 
       // Analog In
-      double sampleFrequency = (double) controlModel.getFrequency() * HysteresisPreferences.CAPTURE_BUFFER_SIZE
-          / HysteresisPreferences.CAPTURE_PERIOD_COUNT;
-      dwfProxy.getDwf().startAnalogCaptureBothChannelsImmediately(sampleFrequency, HysteresisPreferences.CAPTURE_BUFFER_SIZE,
-          AcquisitionMode.ScanShift);
+      double sampleFrequency =
+          (double) controlModel.getFrequency()
+              * HysteresisPreferences.CAPTURE_BUFFER_SIZE
+              / HysteresisPreferences.CAPTURE_PERIOD_COUNT;
+      dwfProxy
+          .getDwf()
+          .startAnalogCaptureBothChannelsImmediately(
+              sampleFrequency,
+              HysteresisPreferences.CAPTURE_BUFFER_SIZE,
+              AcquisitionMode.ScanShift);
 
       while (!isCancelled()) {
 
@@ -247,8 +296,10 @@ public class HysteresisExperiment extends Experiment {
 
         if (validSamples > 0) {
 
-          double[] rawV1 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
-          double[] rawV2 = dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
+          double[] rawV1 =
+              dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples);
+          double[] rawV2 =
+              dwfProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples);
 
           /*
            * board version 2 configuration is 'upside down and backwards' from other versions. Resistor-Memristor node is X1 not X2. Source voltage is
@@ -262,8 +313,11 @@ public class HysteresisExperiment extends Experiment {
               double[] V1 = new double[rawV1.length];
               double[] V2 = new double[rawV1.length];
 
-              double timeStep = 1 / (double) controlModel.getFrequency() * HysteresisPreferences.CAPTURE_PERIOD_COUNT
-                  / HysteresisPreferences.CAPTURE_BUFFER_SIZE;
+              double timeStep =
+                  1
+                      / (double) controlModel.getFrequency()
+                      * HysteresisPreferences.CAPTURE_PERIOD_COUNT
+                      / HysteresisPreferences.CAPTURE_BUFFER_SIZE;
 
               for (int i = 0; i < timeData.length; i++) {
                 timeData[i] = i * timeStep;
@@ -272,7 +326,7 @@ public class HysteresisExperiment extends Experiment {
                 V2[i] = -rawV1[i];
               }
 
-              publish(new double[][]{V1, V2, timeData});
+              publish(new double[][] {V1, V2, timeData});
             } else if (resultPanel.getIVButton().isSelected()) { // IV
 
               // create current data
@@ -284,7 +338,10 @@ public class HysteresisExperiment extends Experiment {
                 double dv = rawV2[i] - rawV1[i];
                 V1[i] = -rawV2[i];
 
-                current[i] = -dv / controlModel.getSeriesResistance() * HysteresisPreferences.CURRENT_UNIT.getDivisor();
+                current[i] =
+                    -dv
+                        / controlModel.getSeriesResistance()
+                        * HysteresisPreferences.CURRENT_UNIT.getDivisor();
               }
 
               // if (!HysteresisPreferences.IS_VIN) {
@@ -293,7 +350,7 @@ public class HysteresisExperiment extends Experiment {
               }
               //  }
 
-              publish(new double[][]{V1, voltage, current});
+              publish(new double[][] {V1, voltage, current});
 
             } else { // GV
               double[] conductance = new double[rawV1.length];
@@ -308,55 +365,64 @@ public class HysteresisExperiment extends Experiment {
 
                 double G = I / (rawV1[i]) * HysteresisPreferences.CONDUCTANCE_UNIT.getDivisor();
                 G = G < 0 ? 0 : G;
-                double ave = (1 - resultModel.getK()) * (resultModel.getAve()) + resultModel.getK() * (G);
+                double ave =
+                    (1 - resultModel.getK()) * (resultModel.getAve()) + resultModel.getK() * (G);
                 resultModel.setAve(ave);
                 conductance[i] = ave;
                 voltage[i] = -rawV1[i];
               }
 
-              publish(new double[][]{V1, voltage, conductance});
+              publish(new double[][] {V1, voltage, conductance});
             }
 
           } else {
             if (resultPanel.getCaptureButton().isSelected()) { // Capture
               // Calculate time data
               double[] timeData = new double[rawV1.length];
-              double timeStep = 1 / (double) controlModel.getFrequency() * HysteresisPreferences.CAPTURE_PERIOD_COUNT
-                  / HysteresisPreferences.CAPTURE_BUFFER_SIZE;
+              double timeStep =
+                  1
+                      / (double) controlModel.getFrequency()
+                      * HysteresisPreferences.CAPTURE_PERIOD_COUNT
+                      / HysteresisPreferences.CAPTURE_BUFFER_SIZE;
               for (int i = 0; i < timeData.length; i++) {
                 timeData[i] = i * timeStep;
               }
-              publish(new double[][]{rawV1, rawV2, timeData});
+              publish(new double[][] {rawV1, rawV2, timeData});
             } else if (resultPanel.getIVButton().isSelected()) { // IV
               // create current data
               double[] current = new double[rawV2.length];
               double[] voltage = new double[rawV1.length];
               for (int i = 0; i < current.length; i++) {
-                current[i] = rawV2[i] / controlModel.getSeriesResistance() * HysteresisPreferences.CURRENT_UNIT.getDivisor();
+                current[i] =
+                    rawV2[i]
+                        / controlModel.getSeriesResistance()
+                        * HysteresisPreferences.CURRENT_UNIT.getDivisor();
               }
 
-              //if (!HysteresisPreferences.IS_VIN) {
+              // if (!HysteresisPreferences.IS_VIN) {
               for (int i = 0; i < current.length; i++) {
                 voltage[i] = rawV1[i] - rawV2[i];
               }
               // }
 
-              publish(new double[][]{rawV1, voltage, current});
+              publish(new double[][] {rawV1, voltage, current});
 
             } else { // GV
               double[] conductance = new double[rawV2.length];
               double[] voltage = new double[rawV1.length];
               for (int i = 0; i < conductance.length; i++) {
                 double I = rawV2[i] / controlModel.getSeriesResistance();
-                double G = I / (rawV1[i] - rawV2[i]) * HysteresisPreferences.CONDUCTANCE_UNIT.getDivisor();
+                double G =
+                    I / (rawV1[i] - rawV2[i]) * HysteresisPreferences.CONDUCTANCE_UNIT.getDivisor();
                 G = G < 0 ? 0 : G;
-                double ave = (1 - resultModel.getK()) * (resultModel.getAve()) + resultModel.getK() * (G);
+                double ave =
+                    (1 - resultModel.getK()) * (resultModel.getAve()) + resultModel.getK() * (G);
                 resultModel.setAve(ave);
                 conductance[i] = ave;
                 voltage[i] = rawV1[i] - rawV2[i];
               }
 
-              publish(new double[][]{rawV1, voltage, conductance});
+              publish(new double[][] {rawV1, voltage, conductance});
             }
           }
         }
@@ -375,21 +441,40 @@ public class HysteresisExperiment extends Experiment {
         double[][] newestChunk = chunks.get(chunks.size() - 1);
 
         if (resultPanel.getCaptureButton().isSelected()) {
-          resultController.udpateVtChartData(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getFrequency(), controlModel.getAmplitude(),
+          resultController.udpateVtChartData(
+              newestChunk[0],
+              newestChunk[1],
+              newestChunk[2],
+              controlModel.getFrequency(),
+              controlModel.getAmplitude(),
               controlModel.getOffset());
           resultPanel.switch2CaptureChart();
         } else if (resultPanel.getIVButton().isSelected()) {
-          resultController.udpateIVChartData(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getFrequency(), controlModel.getAmplitude(),
+          resultController.udpateIVChartData(
+              newestChunk[0],
+              newestChunk[1],
+              newestChunk[2],
+              controlModel.getFrequency(),
+              controlModel.getAmplitude(),
               controlModel.getOffset());
           resultPanel.switch2IVChart();
         } else {
-          boolean result = resultController.updateGVChartData(newestChunk[0], newestChunk[1], newestChunk[2], controlModel.getFrequency(),
-              controlModel.getAmplitude(), controlModel.getOffset());
+          boolean result =
+              resultController.updateGVChartData(
+                  newestChunk[0],
+                  newestChunk[1],
+                  newestChunk[2],
+                  controlModel.getFrequency(),
+                  controlModel.getAmplitude(),
+                  controlModel.getOffset());
           resultPanel.switch2GVChart();
 
           if (!result) {
-            controlModel.swingPropertyChangeSupport.firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null,
-                "WARNING: voltage drop across memristor is less than " + MemristorDiscoveryPreferences.MIN_VOLTAGE_MEASURE_AMPLITUDE
+            controlModel.swingPropertyChangeSupport.firePropertyChange(
+                Model.EVENT_NEW_CONSOLE_LOG,
+                null,
+                "WARNING: voltage drop across memristor is less than "
+                    + MemristorDiscoveryPreferences.MIN_VOLTAGE_MEASURE_AMPLITUDE
                     + ". Conductance will not be computed and chart will not display.");
           }
         }

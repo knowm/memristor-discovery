@@ -33,15 +33,12 @@ import java.text.NumberFormat;
 import java.util.Hashtable;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
-import org.knowm.memristor.discovery.core.Util;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
-import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferences;
 
 /**
  * Provides controls for running the control
@@ -55,8 +52,8 @@ public class ControlPanel extends ControlView {
   // private final JLabel appliedAmplitudeLabel;
   // private final JLabel currentLabel;
   private final JLabel energyLabel;
-  //private final JLabel energyMemRistorOnlyLabel;
-  //private final JCheckBox memristorVoltageCheckBox;
+  // private final JLabel energyMemRistorOnlyLabel;
+  // private final JCheckBox memristorVoltageCheckBox;
   private final JSlider amplitudeSlider;
   private final JSlider pulseWidthSlider;
   private final JSlider pulseWidthSliderNs;
@@ -262,10 +259,12 @@ public class ControlPanel extends ControlView {
     startStopButton.setEnabled(enabled);
   }
 
-  public void updateEnergyGUI(double appliedAmplitude, double appliedCurrent, double appliedEnergy) {
+  public void updateEnergyGUI(
+      double appliedAmplitude, double appliedCurrent, double appliedEnergy) {
 
     // appliedAmplitudeLabel.setText("Applied Amplitude [V]: " + Util.round(appliedAmplitude, 4));
-    // currentLabel.setText("Current [" + PulsePreferences.CURRENT_UNIT.getLabel() + "]: " + Util.round(appliedCurrent, 3));
+    // currentLabel.setText("Current [" + PulsePreferences.CURRENT_UNIT.getLabel() + "]: " +
+    // Util.round(appliedCurrent, 3));
     energyLabel.setText("Energy M+R (J): " + formatter.format(appliedEnergy));
   }
 

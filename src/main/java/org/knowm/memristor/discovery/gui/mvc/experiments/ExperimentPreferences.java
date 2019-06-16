@@ -29,7 +29,7 @@ public abstract class ExperimentPreferences {
 
   public static final double TOTAL_PARASITIC_RESISTANCE =
       160; // Total average voltage drop across closed switches and board line traces between A and
-           // B nodes.
+  // B nodes.
   public static final double R_SWITCH = 75;
   protected Preferences preferences;
 

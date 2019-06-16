@@ -38,8 +38,8 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
-import org.knowm.memristor.discovery.gui.mvc.experiments.classify12.AHaHController_12.Instruction12;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify12.Classify12Preferences.AHaHRoutine;
+import org.knowm.memristor.discovery.gui.mvc.experiments.classify12.KTRAM_Controller_12.Instruction12;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify12.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify12.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify12.control.ControlPanel;
@@ -65,7 +65,7 @@ public class Classify12Experiment extends Experiment {
   private SwingWorker runTrialWorker;
   private SwingWorker resetWorker;
 
-  private AHaHController_12 aHaHController;
+  private KTRAM_Controller_12 KTRAM_Controller;
 
   /**
    * Constructor
@@ -86,79 +86,76 @@ public class Classify12Experiment extends Experiment {
     new ControlController(controlPanel, controlModel, dwfProxy);
     resultController = new ResultController(resultPanel, resultModel);
 
-    aHaHController = new AHaHController_12(controlModel);
+    KTRAM_Controller = new KTRAM_Controller_12(controlModel);
 
-    aHaHController.setdWFProxy(dwfProxy);
+    KTRAM_Controller.setdWFProxy(dwfProxy);
   }
 
   @Override
-  public void doCreateAndShowGUI() {
-  }
+  public void doCreateAndShowGUI() {}
 
   @Override
   public void addWorkersToButtonEvents() {
 
-    controlPanel.clearPlotButton.addActionListener(new ActionListener() {
+    controlPanel.clearPlotButton.addActionListener(
+        new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        System.out.println("should reset chart now");
-        resultController.resetChart();
-      }
-    });
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            System.out.println("should reset chart now");
+            resultController.resetChart();
+          }
+        });
 
-    controlPanel.runTrialButton.addActionListener(new ActionListener() {
+    controlPanel.runTrialButton.addActionListener(
+        new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+          @Override
+          public void actionPerformed(ActionEvent e) {
 
-        runTrialWorker = new TrialWorker();
-        runTrialWorker.execute();
-      }
-    });
-    controlPanel.resetAllButton.addActionListener(new ActionListener() {
+            runTrialWorker = new TrialWorker();
+            runTrialWorker.execute();
+          }
+        });
+    controlPanel.resetAllButton.addActionListener(
+        new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+          @Override
+          public void actionPerformed(ActionEvent e) {
 
-        resetWorker = new ResetWorker();
-        resetWorker.execute();
-      }
-    });
+            resetWorker = new ResetWorker();
+            resetWorker.execute();
+          }
+        });
   }
 
   private void learnCombo(SupervisedPattern pattern, double Vy) {
-
     if (pattern.state) {
-
-      aHaHController.executeInstruction(pattern, Instruction12.FA);
-      aHaHController.executeInstruction(pattern, Instruction12.RB);
-
+      KTRAM_Controller.executeInstruction(pattern, Instruction12.FA);
+      KTRAM_Controller.executeInstruction(pattern, Instruction12.RB);
     } else if (Vy > 0) {
-
-      aHaHController.executeInstruction(pattern, Instruction12.RA);
-      aHaHController.executeInstruction(pattern, Instruction12.FB);
+      KTRAM_Controller.executeInstruction(pattern, Instruction12.RA);
+      KTRAM_Controller.executeInstruction(pattern, Instruction12.FB);
     }
   }
 
   private void learnAlways(SupervisedPattern pattern, double Vy) {
     if (pattern.state) {
-      aHaHController.executeInstruction(pattern, Instruction12.FA);
-      aHaHController.executeInstruction(pattern, Instruction12.RB);
+      KTRAM_Controller.executeInstruction(pattern, Instruction12.FA);
+      KTRAM_Controller.executeInstruction(pattern, Instruction12.RB);
     } else {
-      aHaHController.executeInstruction(pattern, Instruction12.RA);
-      aHaHController.executeInstruction(pattern, Instruction12.FB);
+      KTRAM_Controller.executeInstruction(pattern, Instruction12.RA);
+      KTRAM_Controller.executeInstruction(pattern, Instruction12.FB);
     }
   }
 
   private void learnOnMistakes(SupervisedPattern pattern, double Vy) {
     if (Vy < 0 && pattern.state) {
-
-      aHaHController.executeInstruction(pattern, Instruction12.FA);
-      aHaHController.executeInstruction(pattern, Instruction12.RB);
+      KTRAM_Controller.executeInstruction(pattern, Instruction12.FA);
+      KTRAM_Controller.executeInstruction(pattern, Instruction12.RB);
     } else if (Vy > 0 && !pattern.state) {
-      aHaHController.executeInstruction(pattern, Instruction12.RA);
-      aHaHController.executeInstruction(pattern, Instruction12.FB);
+      KTRAM_Controller.executeInstruction(pattern, Instruction12.RA);
+      KTRAM_Controller.executeInstruction(pattern, Instruction12.FB);
     }
   }
 
@@ -171,10 +168,10 @@ public class Classify12Experiment extends Experiment {
     List<Double> synapticWeights = new ArrayList<Double>();
     for (int i = 0; i < 8; i++) {
       SupervisedPattern pattern = new SupervisedPattern(true, Arrays.asList(i));
-      aHaHController.executeInstruction(pattern, Instruction12.FLV);
-      synapticWeights.add(aHaHController.getVy());
+      KTRAM_Controller.executeInstruction(pattern, Instruction12.FLV);
+      synapticWeights.add(KTRAM_Controller.getVy());
 
-      System.out.println(i + "=" + aHaHController.getVy());
+      // System.out.println(i + "=" + aHaHController.getVy());
 
     }
     resultController.addSynapticWeightValuesPoint(synapticWeights);
@@ -189,12 +186,12 @@ public class Classify12Experiment extends Experiment {
   //  }
 
   /**
-   * These property change events are triggered in the controlModel in the case where the underlying controlModel is updated. Here, the controller can
-   * respond to those events and make sure the corresponding GUI components get updated.
+   * These property change events are triggered in the controlModel in the case where the underlying
+   * controlModel is updated. Here, the controller can respond to those events and make sure the
+   * corresponding GUI components get updated.
    */
   @Override
-  public void propertyChange(PropertyChangeEvent evt) {
-  }
+  public void propertyChange(PropertyChangeEvent evt) {}
 
   @Override
   public Model getControlModel() {
@@ -236,29 +233,22 @@ public class Classify12Experiment extends Experiment {
 
         for (int epoch = 0; epoch < controlModel.getNumTrainEpochs(); epoch++) {
 
-          for (int i = 0; i < 10; i++) {
+          for (int i = 0; i < 4; i++) {
 
             Collections.shuffle(allSpikes);
-            //loadSpikePattern(allSpikes.subList(0, 1));
+            // loadSpikePattern(allSpikes.subList(0, 1));
 
             SupervisedPattern pattern = new SupervisedPattern(true, allSpikes.subList(0, 1));
-            aHaHController.executeInstruction(pattern, Instruction12.FLV);
+            KTRAM_Controller.executeInstruction(pattern, Instruction12.FLV);
 
-            if (aHaHController.getVy() >= 0) {
-              //              aHaHController.executeInstruction(pattern, Instruction12.FAB);
-              //              aHaHController.executeInstruction(pattern, Instruction12.RB);
-
-              aHaHController.executeInstruction(pattern, Instruction12.RA);
-              aHaHController.executeInstruction(pattern, Instruction12.FB);
+            if (KTRAM_Controller.getVy() >= 0) {
+              KTRAM_Controller.executeInstruction(pattern, Instruction12.RA);
+              KTRAM_Controller.executeInstruction(pattern, Instruction12.FB);
 
             } else {
-              //              aHaHController.executeInstruction(pattern, Instruction12.FAB);
-              //              aHaHController.executeInstruction(pattern, Instruction12.RA);
-
-              aHaHController.executeInstruction(pattern, Instruction12.FA);
-              aHaHController.executeInstruction(pattern, Instruction12.RB);
+              KTRAM_Controller.executeInstruction(pattern, Instruction12.FA);
+              KTRAM_Controller.executeInstruction(pattern, Instruction12.RB);
             }
-
           }
           readAllSynapses();
         }
@@ -288,12 +278,8 @@ public class Classify12Experiment extends Experiment {
 
           for (SupervisedPattern pattern : dataset) {
 
-            aHaHController.executeInstruction(pattern, Instruction12.FLV);
-            double Vy = aHaHController.getVy();
-            //            System.out.println("Vy=" + Vy);
-            //            System.out.println("  >pattern=" + pattern.spikePattern);
-            //            System.out.println("  >  state=" + pattern.state);
-
+            KTRAM_Controller.executeInstruction(pattern, Instruction12.FLV);
+            double Vy = KTRAM_Controller.getVy();
             if ((Vy < 0 && pattern.state) || (Vy > 0 && !pattern.state)) { // mistake
               trainAccuracy = (1 - k) * trainAccuracy;
             } else { // got it.

@@ -36,9 +36,9 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 public class Classify12Preferences extends ExperimentPreferences {
 
   public static final String WAVEFORM_INIT_STRING_DEFAULT_VALUE = "HalfSine";
-  public static final int SERIES_R_INIT_DEFAULT_VALUE = 5_000;
+  public static final int SERIES_R_INIT_DEFAULT_VALUE = 20_000;
   public static final float AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE = 1f;
-  public static final float AMPLITUDE_REVERSE_INIT_FLOAT_DEFAULT_VALUE = .5f;
+  public static final float AMPLITUDE_REVERSE_INIT_FLOAT_DEFAULT_VALUE = 1f;
   public static final int PULSE_WIDTH_INIT_DEFAULT_VALUE = 50_000;
   public static final int NUM_TRAIN_EPOCHS_INIT_DEFAULT_VALUE = 50;
   public static final CurrentUnits CURRENT_UNIT = CurrentUnits.MicroAmps;
@@ -71,6 +71,7 @@ public class Classify12Preferences extends ExperimentPreferences {
   // allowed.
 
   public enum Datasets {
+
     Ortho2Pattern(orthogonal2Pattern()), AntiOrtho2Pattern(antiOrthogonal2Pattern()), Ortho4Pattern(orthogonal4Pattern()), AntiOrtho4Pattern(
         antiOrthogonal4Pattern()), Ortho8Pattern(orthogonal8Pattern()), AntiOrtho8Pattern(
             antiOrthogonal8Pattern()), TwoEightPattern5Frustrated(TwoEightPattern4Frustrated()), TwoPattern36Frustrated(twoPattern25Frustrated());
@@ -165,7 +166,6 @@ public class Classify12Preferences extends ExperimentPreferences {
       dataset.add(new SupervisedPattern(false, Arrays.asList(7, 8)));
 
       return dataset;
-
     }
 
     private static List<SupervisedPattern> twoPattern25Frustrated() {

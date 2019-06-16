@@ -23,6 +23,7 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.classify12;
 
+import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.JFrame;
@@ -68,6 +69,7 @@ public class Classify12PreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridy = 0;
     gc.gridx = 0;
+
     this.seriesResistorLabel = new JLabel("Series Resistor:");
     preferencesPanel.add(seriesResistorLabel, gc);
 
@@ -116,7 +118,7 @@ public class Classify12PreferencesPanel extends ExperimentPreferencesPanel {
     gc.gridy++;
 
     gc.gridx = 0;
-    this.numTrainEpochsLabel = new JLabel("Sample Rate [s]:");
+    this.numTrainEpochsLabel = new JLabel("Train Epochs:");
     preferencesPanel.add(numTrainEpochsLabel, gc);
 
     gc.gridx = 1;

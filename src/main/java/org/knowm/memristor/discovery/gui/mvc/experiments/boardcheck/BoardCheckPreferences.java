@@ -32,7 +32,7 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
  */
 public class BoardCheckPreferences extends ExperimentPreferences {
 
-  public static final int SERIES_R_INIT_DEFAULT_VALUE = 5_000;
+  public static final int SERIES_R_INIT_DEFAULT_VALUE = 10_000;
   public static final CurrentUnits CURRENT_UNIT = CurrentUnits.MicroAmps;
   public static final ResistanceUnits RESISTANCE_UNIT = ResistanceUnits.KiloOhms;
   public static final ConductanceUnits CONDUCTANCE_UNIT = ConductanceUnits.MilliSiemens;

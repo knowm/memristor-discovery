@@ -39,7 +39,7 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
-import org.knowm.memristor.discovery.gui.mvc.experiments.synapse12.AHaHController_12.Instruction12;
+import org.knowm.memristor.discovery.gui.mvc.experiments.synapse12.KTRAM_Controller_12.Instruction12;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse12.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse12.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse12.control.ControlPanel;
@@ -49,10 +49,8 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.synapse12.result.Result
 
 public class Synapse12Experiment extends Experiment {
 
-  private static final float INIT_CONDUCTANCE = .0002f;
-
   DecimalFormat df = new DecimalFormat("0.000E0");
-  private AHaHController_12 aHaHController;
+  private KTRAM_Controller_12 kTRAM_Controller;
 
   // Control and Result MVC
   private final ControlModel controlModel;
@@ -84,55 +82,59 @@ public class Synapse12Experiment extends Experiment {
     refreshModelsFromPreferences();
     new ControlController(controlPanel, controlModel, dwfProxy);
     resultController = new ResultController(resultPanel, resultModel);
-    aHaHController = new AHaHController_12(controlModel);
-    aHaHController.setdWFProxy(dwfProxy);
+    kTRAM_Controller = new KTRAM_Controller_12(controlModel);
+    kTRAM_Controller.setdWFProxy(dwfProxy);
   }
 
   @Override
-  public void doCreateAndShowGUI() {
-  }
+  public void doCreateAndShowGUI() {}
 
   @Override
   public void addWorkersToButtonEvents() {
 
-    controlPanel.clearPlotButton.addActionListener(new ActionListener() {
+    controlPanel.clearPlotButton.addActionListener(
+        new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+          @Override
+          public void actionPerformed(ActionEvent e) {
 
-        clearChartWorker = new ClearChartWorker();
-        clearChartWorker.execute();
-      }
-    });
-
-    controlPanel.getStartStopButton().addActionListener(new ActionListener() {
-
-      @Override
-      public void actionPerformed(ActionEvent e) {
-
-        if (!controlModel.isStartToggled()) {
-
-          if (aHaHController.readSwitchStates()) {
-            controlModel.setStartToggled(true);
-            controlPanel.getStartStopButton().setText("Stop");
-            // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
-            experimentCaptureWorker = new CaptureWorker();
-            experimentCaptureWorker.execute();
-          } else {
-            JOptionPane.showMessageDialog(null,
-                "Please select two memristors for 'A' and 'B' synapse channels. 'A' must be in the range 1-8 and 'B' in the range 9-16.");
+            clearChartWorker = new ClearChartWorker();
+            clearChartWorker.execute();
           }
+        });
 
-        } else {
+    controlPanel
+        .getStartStopButton()
+        .addActionListener(
+            new ActionListener() {
 
-          controlModel.setStartToggled(false);
-          controlPanel.getStartStopButton().setText("Start");
+              @Override
+              public void actionPerformed(ActionEvent e) {
 
-          // cancel the worker
-          experimentCaptureWorker.cancel(true);
-        }
-      }
-    });
+                if (!controlModel.isStartToggled()) {
+
+                  if (kTRAM_Controller.readSwitchStates()) {
+                    controlModel.setStartToggled(true);
+                    controlPanel.getStartStopButton().setText("Stop");
+                    // start AD2 waveform 1 and start AD2 capture on channel 1 and 2
+                    experimentCaptureWorker = new CaptureWorker();
+                    experimentCaptureWorker.execute();
+                  } else {
+                    JOptionPane.showMessageDialog(
+                        null,
+                        "Please select two memristors for 'A' and 'B' synapse channels. 'A' must be in the range 1-8 and 'B' in the range 9-16.");
+                  }
+
+                } else {
+
+                  controlModel.setStartToggled(false);
+                  controlPanel.getStartStopButton().setText("Start");
+
+                  // cancel the worker
+                  experimentCaptureWorker.cancel(true);
+                }
+              }
+            });
 
     //    controlPanel.initSynapseButton.addActionListener(new ActionListener() {
     //
@@ -169,8 +171,9 @@ public class Synapse12Experiment extends Experiment {
   }
 
   /**
-   * These property change events are triggered in the controlModel in the case where the underlying controlModel is updated. Here, the controller can
-   * respond to those events and make sure the corresponding GUI components get updated.
+   * These property change events are triggered in the controlModel in the case where the underlying
+   * controlModel is updated. Here, the controller can respond to those events and make sure the
+   * corresponding GUI components get updated.
    */
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
@@ -212,7 +215,7 @@ public class Synapse12Experiment extends Experiment {
     @Override
     protected Boolean doInBackground() throws Exception {
 
-      aHaHController.executeInstruction(controlModel.getInstruction());
+      kTRAM_Controller.executeInstruction(controlModel.getInstruction());
       while (!isCancelled()) {
 
         try {
@@ -225,11 +228,11 @@ public class Synapse12Experiment extends Experiment {
         // set to constant pulse width for reads to help mitigate RC issues
         int pW = controlModel.getPulseWidth();
         controlModel.setPulseWidth(20_000);
-        aHaHController.executeInstruction(Instruction12.FLV);
+        kTRAM_Controller.executeInstruction(Instruction12.FLV);
         controlModel.setPulseWidth(pW); // set it back to whatever it was
 
         // System.out.println("Vy=" + aHaHController.getVy());
-        publish(aHaHController.getGa(), aHaHController.getGb(), aHaHController.getVy());
+        publish(kTRAM_Controller.getGa(), kTRAM_Controller.getGb(), kTRAM_Controller.getVy());
       }
       return true;
     }
@@ -257,13 +260,13 @@ public class Synapse12Experiment extends Experiment {
         // 1. Reset both memristors to low conducting state-->
         controlModel.setPulseWidth(25_000_000);
         controlModel.setReverseAmplitude(1.0f);
-        aHaHController.executeInstruction(Instruction12.RAB);
+        kTRAM_Controller.executeInstruction(Instruction12.RAB);
 
         //  System.out.println("Here2");
         // 2. Apply set forward voltage to program
         controlModel.setPulseWidth(25_000_000);
         controlModel.setForwardAmplitude(.5f);
-        aHaHController.executeInstruction(Instruction12.FAB);
+        kTRAM_Controller.executeInstruction(Instruction12.FAB);
         //  System.out.println("Here3");
         // set things back.
         controlModel.setPulseWidth(initPulseWidth);

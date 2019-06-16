@@ -39,8 +39,8 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
-import org.knowm.memristor.discovery.gui.mvc.experiments.classify21.AHaHController_21.Instruction;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify21.Classify21Preferences.AHaHRoutine;
+import org.knowm.memristor.discovery.gui.mvc.experiments.classify21.KTRAM_Controller_21.Instruction;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify21.control.ControlController;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify21.control.ControlModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify21.control.ControlPanel;
@@ -66,7 +66,7 @@ public class Classify21Experiment extends Experiment {
   private SwingWorker runTrialWorker;
   private SwingWorker resetWorker;
 
-  private AHaHController_21 aHaHController;
+  private KTRAM_Controller_21 kTRAM_Controller;
 
   /**
    * Constructor
@@ -87,14 +87,15 @@ public class Classify21Experiment extends Experiment {
     new ControlController(controlPanel, controlModel, dwfProxy);
     resultController = new ResultController(resultPanel, resultModel);
 
-    aHaHController = new AHaHController_21(controlModel);
-    aHaHController.setdWFProxy(dwfProxy);
+    kTRAM_Controller = new KTRAM_Controller_21(controlModel);
+    kTRAM_Controller.setdWFProxy(dwfProxy);
   }
 
   @Override
   public void doCreateAndShowGUI() {
 
-    JOptionPane.showMessageDialog(null,
+    JOptionPane.showMessageDialog(
+        null,
         "This experiment has been replaced with a better one! Use Classify12 experiment with the V2 or higher board instead. If you have purchased a"
             + " V1 board, Knowm Inc will replace it for free (excluding shipping). Email contact@knowm.org for details.");
   }
@@ -102,57 +103,60 @@ public class Classify21Experiment extends Experiment {
   @Override
   public void addWorkersToButtonEvents() {
 
-    controlPanel.clearPlotButton.addActionListener(new ActionListener() {
+    controlPanel.clearPlotButton.addActionListener(
+        new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        System.out.println("should reset chart now");
-        resultController.resetChart();
-      }
-    });
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            System.out.println("should reset chart now");
+            resultController.resetChart();
+          }
+        });
 
-    controlPanel.runTrialButton.addActionListener(new ActionListener() {
+    controlPanel.runTrialButton.addActionListener(
+        new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+          @Override
+          public void actionPerformed(ActionEvent e) {
 
-        runTrialWorker = new TrialWorker();
-        runTrialWorker.execute();
-      }
-    });
-    controlPanel.resetAllButton.addActionListener(new ActionListener() {
+            runTrialWorker = new TrialWorker();
+            runTrialWorker.execute();
+          }
+        });
+    controlPanel.resetAllButton.addActionListener(
+        new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+          @Override
+          public void actionPerformed(ActionEvent e) {
 
-        resetWorker = new ResetWorker();
-        resetWorker.execute();
-      }
-    });
+            resetWorker = new ResetWorker();
+            resetWorker.execute();
+          }
+        });
   }
 
   private void learnCombo(SupervisedPattern pattern, double Vy) {
 
     if (pattern.state) {
-      aHaHController.executeInstruction(Instruction.FF_RH);
+      kTRAM_Controller.executeInstruction(Instruction.FF_RH);
     } else if (Vy > 0) {
-      aHaHController.executeInstruction(Instruction.FF_RL);
+      kTRAM_Controller.executeInstruction(Instruction.FF_RL);
     }
   }
 
   private void learnAlways(SupervisedPattern pattern, double Vy) {
     if (pattern.state) {
-      aHaHController.executeInstruction(Instruction.FF_RH);
+      kTRAM_Controller.executeInstruction(Instruction.FF_RH);
     } else {
-      aHaHController.executeInstruction(Instruction.FF_RL);
+      kTRAM_Controller.executeInstruction(Instruction.FF_RL);
     }
   }
 
   private void learnOnMistakes(SupervisedPattern pattern, double Vy) {
     if (Vy < 0 && pattern.state) {
-      aHaHController.executeInstruction(Instruction.FF_RH);
+      kTRAM_Controller.executeInstruction(Instruction.FF_RH);
     } else if (Vy > 0 && !pattern.state) {
-      aHaHController.executeInstruction(Instruction.FF_RL);
+      kTRAM_Controller.executeInstruction(Instruction.FF_RL);
     }
   }
 
@@ -166,8 +170,8 @@ public class Classify21Experiment extends Experiment {
     for (int i = 0; i < 8; i++) {
       List<Integer> spike = Arrays.asList(i);
       loadSpikePattern(spike);
-      aHaHController.executeInstruction(Instruction.FFLV);
-      synapticWeights.add(aHaHController.getVy());
+      kTRAM_Controller.executeInstruction(Instruction.FFLV);
+      synapticWeights.add(kTRAM_Controller.getVy());
     }
     resultController.addSynapticWeightValuesPoint(synapticWeights);
 
@@ -181,12 +185,12 @@ public class Classify21Experiment extends Experiment {
   }
 
   /**
-   * These property change events are triggered in the controlModel in the case where the underlying controlModel is updated. Here, the controller can
-   * respond to those events and make sure the corresponding GUI components get updated.
+   * These property change events are triggered in the controlModel in the case where the underlying
+   * controlModel is updated. Here, the controller can respond to those events and make sure the
+   * corresponding GUI components get updated.
    */
   @Override
-  public void propertyChange(PropertyChangeEvent evt) {
-  }
+  public void propertyChange(PropertyChangeEvent evt) {}
 
   @Override
   public Model getControlModel() {
@@ -233,8 +237,8 @@ public class Classify21Experiment extends Experiment {
             Collections.shuffle(allSpikes);
             loadSpikePattern(allSpikes.subList(0, 1));
 
-            aHaHController.executeInstruction(Instruction.FFLV);
-            aHaHController.executeInstruction(Instruction.FF_RA);
+            kTRAM_Controller.executeInstruction(Instruction.FFLV);
+            kTRAM_Controller.executeInstruction(Instruction.FF_RA);
           }
           readAllSynapses();
         }
@@ -265,8 +269,8 @@ public class Classify21Experiment extends Experiment {
           for (SupervisedPattern pattern : dataset) {
 
             loadSpikePattern(pattern.spikePattern);
-            aHaHController.executeInstruction(Instruction.FFLV);
-            double Vy = aHaHController.getVy();
+            kTRAM_Controller.executeInstruction(Instruction.FFLV);
+            double Vy = kTRAM_Controller.getVy();
             System.out.println("Vy=" + Vy);
             System.out.println("  >pattern=" + pattern.spikePattern);
             System.out.println("  >  state=" + pattern.state);

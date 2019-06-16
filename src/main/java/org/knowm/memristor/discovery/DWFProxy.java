@@ -99,7 +99,7 @@ public class DWFProxy {
     while (true) {
       try {
         long sleepTime = (long) (1 / frequency * pulseNumber * 1000);
-        // System.out.println("sleepTime = " + sleepTime);
+        //System.out.println("sleepTime = " + sleepTime);
         Thread.sleep(sleepTime);
       } catch (InterruptedException e) {
         e.printStackTrace();
@@ -244,9 +244,9 @@ public class DWFProxy {
 
     // logger.debug("new state: " + digitalIOStates);
 
-    System.out.println("toggleClickedID: " + toggleClickedID);
-    System.out.println("isOn: " + isOn);
-    System.out.println("digitalIOStates: " + Integer.toBinaryString(digitalIOStates));
+    //System.out.println("toggleClickedID: " + toggleClickedID);
+    // System.out.println("isOn: " + isOn);
+    // System.out.println("digitalIOStates: " + Integer.toBinaryString(digitalIOStates));
 
     boolean successful = dwf.FDwfDigitalIOOutputSet(digitalIOStates);
     // logger.debug("AD2 Device Digital I/O Written: " + successful);
