@@ -83,21 +83,43 @@ public class ControlModel extends Model {
   @Override
   public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {
 
-    waveform = PulsePreferences.Waveform
-        .valueOf(experimentPreferences.getString(PulsePreferences.WAVEFORM_INIT_STRING_KEY, PulsePreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
-    seriesResistance = experimentPreferences.getInteger(PulsePreferences.SERIES_R_INIT_KEY, PulsePreferences.SERIES_R_INIT_DEFAULT_VALUE);
-    amplitude = experimentPreferences.getFloat(PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY, PulsePreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
+    waveform =
+        PulsePreferences.Waveform.valueOf(
+            experimentPreferences.getString(
+                PulsePreferences.WAVEFORM_INIT_STRING_KEY,
+                PulsePreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
+    seriesResistance =
+        experimentPreferences.getInteger(
+            PulsePreferences.SERIES_R_INIT_KEY, PulsePreferences.SERIES_R_INIT_DEFAULT_VALUE);
+    amplitude =
+        experimentPreferences.getFloat(
+            PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY,
+            PulsePreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
     // appliedAmplitude = amplitude;
 
-    pulseWidth = experimentPreferences.getInteger(PulsePreferences.PULSE_WIDTH_INIT_KEY, PulsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
-    pulseNumber = experimentPreferences.getInteger(PulsePreferences.NUM_PULSES_INIT_KEY, PulsePreferences.NUM_PULSES_INIT_DEFAULT_VALUE);
-    sampleRate = experimentPreferences.getInteger(PulsePreferences.SAMPLE_RATE_INIT_KEY, PulsePreferences.SAMPLE_RATE_INIT_DEFAULT_VALUE);
+    pulseWidth =
+        experimentPreferences.getInteger(
+            PulsePreferences.PULSE_WIDTH_INIT_KEY, PulsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
+    pulseNumber =
+        experimentPreferences.getInteger(
+            PulsePreferences.NUM_PULSES_INIT_KEY, PulsePreferences.NUM_PULSES_INIT_DEFAULT_VALUE);
+    sampleRate =
+        experimentPreferences.getInteger(
+            PulsePreferences.SAMPLE_RATE_INIT_KEY, PulsePreferences.SAMPLE_RATE_INIT_DEFAULT_VALUE);
 
-    dutyCycle = experimentPreferences.getFloat(PulsePreferences.PULSE_DUTY_CYCLE_KEY, PulsePreferences.PULSE_DUTY_CYCLE_DEFAULT_VALUE);
+    dutyCycle =
+        experimentPreferences.getFloat(
+            PulsePreferences.PULSE_DUTY_CYCLE_KEY, PulsePreferences.PULSE_DUTY_CYCLE_DEFAULT_VALUE);
 
     updateWaveformChartData();
 
-    rcComputer = new RC_ResistanceComputer(boardVersion, readPulseAmplitude, readPulseWidth, seriesResistance, parasiticReadCapacitance);
+    rcComputer =
+        new RC_ResistanceComputer(
+            boardVersion,
+            readPulseAmplitude,
+            readPulseWidth,
+            seriesResistance,
+            parasiticReadCapacitance);
   }
 
   /** Given the state of the model, update the waveform x and y axis data arrays. */
@@ -106,7 +128,8 @@ public class ControlModel extends Model {
     Driver driver;
     switch (waveform) {
       case Sawtooth:
-        driver = new Sawtooth("Sawtooth", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
+        driver =
+            new Sawtooth("Sawtooth", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
         break;
       case QuarterSine:
         driver = new QuarterSinePulse("QuarterSine", 0, pulseWidth, dutyCycle, amplitude);
@@ -155,7 +178,13 @@ public class ControlModel extends Model {
   public void setSeriesResistance(int seriesResistance) {
 
     this.seriesResistance = seriesResistance;
-    rcComputer = new RC_ResistanceComputer(boardVersion, readPulseAmplitude, readPulseWidth, seriesResistance, parasiticReadCapacitance);
+    rcComputer =
+        new RC_ResistanceComputer(
+            boardVersion,
+            readPulseAmplitude,
+            readPulseWidth,
+            seriesResistance,
+            parasiticReadCapacitance);
   }
 
   public float getAmplitude() {
@@ -287,11 +316,17 @@ public class ControlModel extends Model {
     // if (lastG > 0.0) {
     // this.appliedAmplitude = amplitude;
 
-    this.appliedCurrent = amplitude / (getLastR() + seriesResistance + Util.getSwitchesSeriesResistance())
-        * PulsePreferences.CURRENT_UNIT.getDivisor();
-    this.appliedEnergy = amplitude * amplitude / (getLastR() + seriesResistance + Util.getSwitchesSeriesResistance()) * pulseNumber * pulseWidth
-        / 1E9;
-
+    this.appliedCurrent =
+        amplitude
+            / (getLastR() + seriesResistance + Util.getSwitchesSeriesResistance())
+            * PulsePreferences.CURRENT_UNIT.getDivisor();
+    this.appliedEnergy =
+        amplitude
+            * amplitude
+            / (getLastR() + seriesResistance + Util.getSwitchesSeriesResistance())
+            * pulseNumber
+            * pulseWidth
+            / 1E9;
   }
 
   public boolean isStartToggled() {

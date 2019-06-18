@@ -35,7 +35,8 @@ public class DWFProxy {
 
   public static final int SWITCHES_MASK = 0b1111_1111_1111_1111;
   public static final int ALL_DIO_OFF = 0b0000_0000_0000_0000;
-  public static final int DEFAULT_SELECTOR_DIO = 0b0001_1101_0000_0000; // the top 8 bits control the 4 MUXes
+  public static final int DEFAULT_SELECTOR_DIO =
+      0b0001_1101_0000_0000; // the top 8 bits control the 4 MUXes
   // public final static int DEFAULT_SELECTOR_DIO = 0b0000_0000_0000_0000;
   public static final String AD2_STARTUP_CHANGE = "AD2_START_UP";
   public static final String DIGITAL_IO_READ = "DIGITAL_IO_READ";
@@ -69,8 +70,8 @@ public class DWFProxy {
   }
 
   /**
-   * This is called by the main app once on start up or during a switch-triggered shut off event. Here, the AD2 is started up and the GUI will reflect
-   * its startup state.
+   * This is called by the main app once on start up or during a switch-triggered shut off event.
+   * Here, the AD2 is started up and the GUI will reflect its startup state.
    */
   public void startupAD2() {
 
@@ -99,7 +100,7 @@ public class DWFProxy {
     while (true) {
       try {
         long sleepTime = (long) (1 / frequency * pulseNumber * 1000);
-        //System.out.println("sleepTime = " + sleepTime);
+        // System.out.println("sleepTime = " + sleepTime);
         Thread.sleep(sleepTime);
       } catch (InterruptedException e) {
         e.printStackTrace();
@@ -149,7 +150,8 @@ public class DWFProxy {
     boolean oldValDevice = isAD2Running;
     isAD2Running = false;
     dwf.FDwfDeviceCloseAll();
-    swingPropertyChangeSupport.firePropertyChange(DWFProxy.AD2_STARTUP_CHANGE, oldValDevice, isAD2Running);
+    swingPropertyChangeSupport.firePropertyChange(
+        DWFProxy.AD2_STARTUP_CHANGE, oldValDevice, isAD2Running);
 
     // try {
     // Thread.sleep(500);
@@ -171,7 +173,8 @@ public class DWFProxy {
     boolean successful = dwf.FDwfDigitalIOOutputSet(digitalIOStates);
     dwf.FDwfDigitalIOConfigure();
     digitalIOStates = dwf.getDigitalIOStatus();
-    swingPropertyChangeSupport.firePropertyChange(DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
+    swingPropertyChangeSupport.firePropertyChange(
+        DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
   }
 
   public void update2DigitalIOStatesAtOnce(List<Integer> mask, int offset, boolean isOn) {
@@ -193,7 +196,8 @@ public class DWFProxy {
     dwf.FDwfDigitalIOConfigure();
 
     digitalIOStates = dwf.getDigitalIOStatus();
-    swingPropertyChangeSupport.firePropertyChange(DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
+    swingPropertyChangeSupport.firePropertyChange(
+        DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
 
     // System.out.println("digitalIO states= " + Integer.toBinaryString(digitalIOStates));
 
@@ -218,14 +222,16 @@ public class DWFProxy {
     dwf.FDwfDigitalIOConfigure();
 
     digitalIOStates = dwf.getDigitalIOStatus();
-    swingPropertyChangeSupport.firePropertyChange(DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
+    swingPropertyChangeSupport.firePropertyChange(
+        DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
 
     // System.out.println("digitalIO states= " + Integer.toBinaryString(digitalIOStates));
 
   }
 
   /**
-   * A GUI element was clicked, so we need to update the model. Don't need to fire a property change for the GUI since the change came from the GUI.
+   * A GUI element was clicked, so we need to update the model. Don't need to fire a property change
+   * for the GUI since the change came from the GUI.
    *
    * @param toggleClickedID
    * @param isOn
@@ -244,7 +250,7 @@ public class DWFProxy {
 
     // logger.debug("new state: " + digitalIOStates);
 
-    //System.out.println("toggleClickedID: " + toggleClickedID);
+    // System.out.println("toggleClickedID: " + toggleClickedID);
     // System.out.println("isOn: " + isOn);
     // System.out.println("digitalIOStates: " + Integer.toBinaryString(digitalIOStates));
 
@@ -253,7 +259,8 @@ public class DWFProxy {
     dwf.FDwfDigitalIOConfigure();
 
     digitalIOStates = dwf.getDigitalIOStatus();
-    swingPropertyChangeSupport.firePropertyChange(DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
+    swingPropertyChangeSupport.firePropertyChange(
+        DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
   }
 
   public void update2DigitalIOStatesAtOnce(int io1, int io2, boolean value1, boolean value2) {
@@ -280,7 +287,8 @@ public class DWFProxy {
     dwf.FDwfDigitalIOConfigure();
 
     digitalIOStates = dwf.getDigitalIOStatus();
-    swingPropertyChangeSupport.firePropertyChange(DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
+    swingPropertyChangeSupport.firePropertyChange(
+        DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
   }
 
   public void setUpper8IOStates(int upper8SetMask) {
@@ -304,7 +312,8 @@ public class DWFProxy {
     dwf.FDwfDigitalIOConfigure();
 
     digitalIOStates = dwf.getDigitalIOStatus();
-    swingPropertyChangeSupport.firePropertyChange(DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
+    swingPropertyChangeSupport.firePropertyChange(
+        DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
   }
 
   public void setAllIOStates(int outputSetMask) {
@@ -322,7 +331,8 @@ public class DWFProxy {
     dwf.FDwfDigitalIOConfigure();
 
     digitalIOStates = dwf.getDigitalIOStatus();
-    swingPropertyChangeSupport.firePropertyChange(DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
+    swingPropertyChangeSupport.firePropertyChange(
+        DWFProxy.DIGITAL_IO_READ, oldValDigitalIO, digitalIOStates);
   }
 
   public int getDigitalIOStates() {
@@ -420,7 +430,8 @@ public class DWFProxy {
     @Override
     protected void done() {
 
-      swingPropertyChangeSupport.firePropertyChange(DWFProxy.AD2_STARTUP_CHANGE, !isAD2Running, isAD2Running);
+      swingPropertyChangeSupport.firePropertyChange(
+          DWFProxy.AD2_STARTUP_CHANGE, !isAD2Running, isAD2Running);
     }
   }
 }

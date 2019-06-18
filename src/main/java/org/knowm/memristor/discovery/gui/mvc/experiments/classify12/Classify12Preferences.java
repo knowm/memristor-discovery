@@ -53,7 +53,8 @@ public class Classify12Preferences extends ExperimentPreferences {
   public static final String WAVEFORM_INIT_STRING_KEY = PREFIX + "WAVEFORM_INIT_STRING_KEY";
   public static final String SERIES_R_INIT_KEY = PREFIX + "SERIES_R_INIT_KEY";
   public static final String AMPLITUDE_INIT_FLOAT_KEY = PREFIX + "AMPLITUDE_INIT_FLOAT_KEY";
-  public static final String AMPLITUDE_REVERSE_INIT_FLOAT_KEY = PREFIX + "AMPLITUDE_REVERSE_INIT_FLOAT_KEY";
+  public static final String AMPLITUDE_REVERSE_INIT_FLOAT_KEY =
+      PREFIX + "AMPLITUDE_REVERSE_INIT_FLOAT_KEY";
   public static final String PULSE_WIDTH_INIT_KEY = PREFIX + "PERIOD_INIT_KEY";
   public static final String NUM_TRAIN_EPOCHS_INIT_KEY = PREFIX + "NUM_TRAIN_EPOCHS_INIT_KEY";
 
@@ -64,17 +65,23 @@ public class Classify12Preferences extends ExperimentPreferences {
   }
 
   public enum AHaHRoutine {
-    LearnOnMistakes, LearnAlways, LearnCombo;
+    LearnOnMistakes,
+    LearnAlways,
+    LearnCombo;
   }
 
   // public static final int CAPTURE_BUFFER_SIZE = 8192 / 11; // AD2 buffer size / most pulses
   // allowed.
 
   public enum Datasets {
-
-    Ortho2Pattern(orthogonal2Pattern()), AntiOrtho2Pattern(antiOrthogonal2Pattern()), Ortho4Pattern(orthogonal4Pattern()), AntiOrtho4Pattern(
-        antiOrthogonal4Pattern()), Ortho8Pattern(orthogonal8Pattern()), AntiOrtho8Pattern(
-            antiOrthogonal8Pattern()), TwoEightPattern5Frustrated(TwoEightPattern4Frustrated()), TwoPattern36Frustrated(twoPattern25Frustrated());
+    Ortho2Pattern(orthogonal2Pattern()),
+    AntiOrtho2Pattern(antiOrthogonal2Pattern()),
+    Ortho4Pattern(orthogonal4Pattern()),
+    AntiOrtho4Pattern(antiOrthogonal4Pattern()),
+    Ortho8Pattern(orthogonal8Pattern()),
+    AntiOrtho8Pattern(antiOrthogonal8Pattern()),
+    TwoEightPattern5Frustrated(TwoEightPattern4Frustrated()),
+    TwoPattern36Frustrated(twoPattern25Frustrated());
 
     private final List<SupervisedPattern> dataset;
 

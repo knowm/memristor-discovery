@@ -54,7 +54,8 @@ public class Synapse12Preferences extends ExperimentPreferences {
   public static final String NUM_PULSES_INIT_KEY = PREFIX + "NUM_PULSES_INIT_KEY";
   public static final String SERIES_R_INIT_KEY = PREFIX + "SERIES_R_INIT_KEY";
   public static final String AMPLITUDE_INIT_FLOAT_KEY = PREFIX + "AMPLITUDE_INIT_FLOAT_KEY";
-  public static final String AMPLITUDE_REVERSE_INIT_FLOAT_KEY = PREFIX + "AMPLITUDE_REVERSE_INIT_FLOAT_KEY";
+  public static final String AMPLITUDE_REVERSE_INIT_FLOAT_KEY =
+      PREFIX + "AMPLITUDE_REVERSE_INIT_FLOAT_KEY";
   public static final String PULSE_WIDTH_INIT_KEY = PREFIX + "PERIOD_INIT_KEY";
   public static final String SAMPLE_RATE_INIT_KEY = PREFIX + "SAMPLE_RATE_INIT_KEY";
 

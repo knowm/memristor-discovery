@@ -62,16 +62,23 @@ public class Classify21Preferences extends ExperimentPreferences {
   }
 
   public enum AHaHRoutine {
-    LearnOnMistakes, LearnAlways, LearnCombo;
+    LearnOnMistakes,
+    LearnAlways,
+    LearnCombo;
   }
 
   // public static final int CAPTURE_BUFFER_SIZE = 8192 / 11; // AD2 buffer size / most pulses
   // allowed.
 
   public enum Datasets {
-    Ortho2Pattern(orthogonal2Pattern()), AntiOrtho2Pattern(antiOrthogonal2Pattern()), Ortho4Pattern(orthogonal4Pattern()), AntiOrtho4Pattern(
-        antiOrthogonal4Pattern()), Ortho8Pattern(orthogonal8Pattern()), AntiOrtho8Pattern(
-            antiOrthogonal8Pattern()), TwoPattern25Frustrated(twoPattern25Frustrated()), TwoPattern2345Frustrated(twoPattern2345Frustrated());
+    Ortho2Pattern(orthogonal2Pattern()),
+    AntiOrtho2Pattern(antiOrthogonal2Pattern()),
+    Ortho4Pattern(orthogonal4Pattern()),
+    AntiOrtho4Pattern(antiOrthogonal4Pattern()),
+    Ortho8Pattern(orthogonal8Pattern()),
+    AntiOrtho8Pattern(antiOrthogonal8Pattern()),
+    TwoPattern25Frustrated(twoPattern25Frustrated()),
+    TwoPattern2345Frustrated(twoPattern2345Frustrated());
 
     private final List<SupervisedPattern> dataset;
 

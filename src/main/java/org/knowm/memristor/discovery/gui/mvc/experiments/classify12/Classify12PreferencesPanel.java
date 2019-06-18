@@ -23,7 +23,6 @@
  */
 package org.knowm.memristor.discovery.gui.mvc.experiments.classify12;
 
-import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import javax.swing.JFrame;
@@ -76,7 +75,10 @@ public class Classify12PreferencesPanel extends ExperimentPreferencesPanel {
     gc.gridx = 1;
     this.seriesResistorTextField = new JTextField(12);
     this.seriesResistorTextField.setText(
-        String.valueOf(experimentPreferences.getInteger(Classify12Preferences.SERIES_R_INIT_KEY, Classify12Preferences.SERIES_R_INIT_DEFAULT_VALUE)));
+        String.valueOf(
+            experimentPreferences.getInteger(
+                Classify12Preferences.SERIES_R_INIT_KEY,
+                Classify12Preferences.SERIES_R_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(seriesResistorTextField, gc);
 
     gc.gridy++;
@@ -87,8 +89,11 @@ public class Classify12PreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.amplitudeTextField = new JTextField(12);
-    this.amplitudeTextField.setText(String.valueOf(
-        experimentPreferences.getFloat(Classify12Preferences.AMPLITUDE_INIT_FLOAT_KEY, Classify12Preferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
+    this.amplitudeTextField.setText(
+        String.valueOf(
+            experimentPreferences.getFloat(
+                Classify12Preferences.AMPLITUDE_INIT_FLOAT_KEY,
+                Classify12Preferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
     preferencesPanel.add(amplitudeTextField, gc);
 
     gc.gridy++;
@@ -99,8 +104,11 @@ public class Classify12PreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.amplitudeReverseTextField = new JTextField(12);
-    this.amplitudeReverseTextField.setText(String.valueOf(experimentPreferences.getFloat(Classify12Preferences.AMPLITUDE_REVERSE_INIT_FLOAT_KEY,
-        Classify12Preferences.AMPLITUDE_REVERSE_INIT_FLOAT_DEFAULT_VALUE)));
+    this.amplitudeReverseTextField.setText(
+        String.valueOf(
+            experimentPreferences.getFloat(
+                Classify12Preferences.AMPLITUDE_REVERSE_INIT_FLOAT_KEY,
+                Classify12Preferences.AMPLITUDE_REVERSE_INIT_FLOAT_DEFAULT_VALUE)));
     preferencesPanel.add(amplitudeReverseTextField, gc);
 
     gc.gridy++;
@@ -111,8 +119,11 @@ public class Classify12PreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.pulseWidthTextField = new JTextField(12);
-    this.pulseWidthTextField.setText(String
-        .valueOf(experimentPreferences.getInteger(Classify12Preferences.PULSE_WIDTH_INIT_KEY, Classify12Preferences.PULSE_WIDTH_INIT_DEFAULT_VALUE)));
+    this.pulseWidthTextField.setText(
+        String.valueOf(
+            experimentPreferences.getInteger(
+                Classify12Preferences.PULSE_WIDTH_INIT_KEY,
+                Classify12Preferences.PULSE_WIDTH_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(pulseWidthTextField, gc);
 
     gc.gridy++;
@@ -123,18 +134,29 @@ public class Classify12PreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.numTrainEpochsTextField = new JTextField(12);
-    this.numTrainEpochsTextField.setText(String.valueOf(experimentPreferences.getInteger(Classify12Preferences.NUM_TRAIN_EPOCHS_INIT_KEY,
-        Classify12Preferences.NUM_TRAIN_EPOCHS_INIT_DEFAULT_VALUE)));
+    this.numTrainEpochsTextField.setText(
+        String.valueOf(
+            experimentPreferences.getInteger(
+                Classify12Preferences.NUM_TRAIN_EPOCHS_INIT_KEY,
+                Classify12Preferences.NUM_TRAIN_EPOCHS_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(numTrainEpochsTextField, gc);
   }
 
   @Override
   public void doSavePreferences() {
 
-    experimentPreferences.setInteger(Classify12Preferences.SERIES_R_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
-    experimentPreferences.setFloat(Classify12Preferences.AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(amplitudeTextField.getText()));
-    experimentPreferences.setInteger(Classify12Preferences.PULSE_WIDTH_INIT_KEY, Integer.parseInt(pulseWidthTextField.getText()));
-    experimentPreferences.setInteger(Classify12Preferences.NUM_TRAIN_EPOCHS_INIT_KEY, Integer.parseInt(numTrainEpochsTextField.getText()));
+    experimentPreferences.setInteger(
+        Classify12Preferences.SERIES_R_INIT_KEY,
+        Integer.parseInt(seriesResistorTextField.getText()));
+    experimentPreferences.setFloat(
+        Classify12Preferences.AMPLITUDE_INIT_FLOAT_KEY,
+        Float.parseFloat(amplitudeTextField.getText()));
+    experimentPreferences.setInteger(
+        Classify12Preferences.PULSE_WIDTH_INIT_KEY,
+        Integer.parseInt(pulseWidthTextField.getText()));
+    experimentPreferences.setInteger(
+        Classify12Preferences.NUM_TRAIN_EPOCHS_INIT_KEY,
+        Integer.parseInt(numTrainEpochsTextField.getText()));
   }
 
   @Override
