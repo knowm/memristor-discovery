@@ -1,7 +1,7 @@
 set INPUT=jar
 set OUTPUT=_exe
-set JAR=memristor-discovery-0.0.9.jar
-set VERSION=0.0.9
+set JAR=memristor-discovery-2.0.0.jar
+set VERSION=2.0.0
 set APP_ICON=_exe/icons.ico
 
 call "%JAVA_HOME%\bin\java.exe" ^
