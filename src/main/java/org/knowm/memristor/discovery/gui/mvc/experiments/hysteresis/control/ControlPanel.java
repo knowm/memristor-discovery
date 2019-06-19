@@ -91,7 +91,7 @@ public class ControlPanel extends ControlView {
     c.insets = new Insets(0, 6, 4, 6);
     add(waveformRadioButtonBox, c);
 
-    offsetSlider = new JSlider(JSlider.HORIZONTAL, -200, 100, 0);
+    offsetSlider = new JSlider(JSlider.HORIZONTAL, -150, 100, 0);
     offsetSlider.setBorder(BorderFactory.createTitledBorder("Offset [V]"));
     offsetSlider.setMajorTickSpacing(25);
     offsetSlider.setMinorTickSpacing(5);
@@ -99,7 +99,7 @@ public class ControlPanel extends ControlView {
     offsetSlider.setPaintLabels(true);
     offsetSlider.setSnapToTicks(true);
     Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
-    labelTable.put(-200, new JLabel("-2"));
+    // labelTable.put(-200, new JLabel("-2"));
     labelTable.put(-150, new JLabel("-1.5"));
     labelTable.put(-100, new JLabel("-1"));
     labelTable.put(-50, new JLabel("-.5"));
@@ -114,7 +114,7 @@ public class ControlPanel extends ControlView {
     amplitudeSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 0);
     amplitudeSlider.setBorder(BorderFactory.createTitledBorder("Amplitude [V]"));
     amplitudeSlider.setMajorTickSpacing(10);
-    amplitudeSlider.setMinorTickSpacing(2);
+    amplitudeSlider.setMinorTickSpacing(1);
     amplitudeSlider.setPaintTicks(true);
     amplitudeSlider.setPaintLabels(true);
     amplitudeSlider.setSnapToTicks(true);

@@ -35,8 +35,8 @@ public class HysteresisPreferences extends ExperimentPreferences {
   // NOT YET IN PREFERENCES
   public static final CurrentUnits CURRENT_UNIT = CurrentUnits.MicroAmps;
   public static final ConductanceUnits CONDUCTANCE_UNIT = ConductanceUnits.MilliSiemens;
-  public static final boolean IS_VIN = true;
-  public static final int CAPTURE_BUFFER_SIZE = 100;
+  // public static final boolean IS_VIN = true;
+  public static final int CAPTURE_BUFFER_SIZE = 200;
   public static final int CAPTURE_PERIOD_COUNT = 1;
 
   // ALREADY IN PREFERENCES
@@ -50,7 +50,7 @@ public class HysteresisPreferences extends ExperimentPreferences {
   public static final String FREQUENCY_INIT_KEY = PREFIX + "FREQUENCY_INIT_KEY";
   public static final int FREQUENCY_INIT_DEFAULT_VALUE = 100;
   public static final String SERIES_R_INIT_KEY = PREFIX + "SERIES_R_INIT_KEY";
-  public static final int SERIES_R_INIT_DEFAULT_VALUE = 5_000;
+  public static final int SERIES_R_INIT_DEFAULT_VALUE = 10_000;
   public static final String K_INIT_FLOAT_KEY = PREFIX + "K_INIT_FLOAT_KEY";
   public static final float K_INIT_FLOAT_DEFAULT_VALUE = 1.0f;
 

@@ -63,11 +63,11 @@ public class DCExperiment extends Experiment {
    * @param dwfProxy
    * @param mainFrameContainer
    */
-  public DCExperiment(DWFProxy dwfProxy, Container mainFrameContainer, boolean isV1Board) {
+  public DCExperiment(DWFProxy dwfProxy, Container mainFrameContainer, int boardVersion) {
 
-    super(dwfProxy, mainFrameContainer, isV1Board);
+    super(dwfProxy, mainFrameContainer, boardVersion);
 
-    controlModel = new ControlModel();
+    controlModel = new ControlModel(boardVersion);
     controlPanel = new ControlPanel();
     resultModel = new ResultModel();
     resultPanel = new ResultPanel(); //
@@ -190,13 +190,24 @@ public class DCExperiment extends Experiment {
       double sampleFrequency =
           controlModel.getCalculatedFrequency()
               * samplesPerPulse; // adjust this down if you want to capture more pulses as the
-      // buffer size is limited.
-      dwfProxy
-          .getDwf()
-          .startAnalogCaptureBothChannelsLevelTrigger(
-              sampleFrequency,
-              0.02 * (controlModel.getAmplitude() > 0 ? 1 : -1),
-              samplesPerPulse * controlModel.getPulseNumber());
+
+      if (boardVersion == 2) {
+        // buffer size is limited.
+        dwfProxy
+            .getDwf()
+            .startAnalogCaptureBothChannelsLevelTrigger(
+                sampleFrequency,
+                -0.02 * (controlModel.getAmplitude() > 0 ? 1 : -1),
+                samplesPerPulse * controlModel.getPulseNumber());
+      } else {
+        // buffer size is limited.
+        dwfProxy
+            .getDwf()
+            .startAnalogCaptureBothChannelsLevelTrigger(
+                sampleFrequency,
+                0.02 * (controlModel.getAmplitude() > 0 ? 1 : -1),
+                samplesPerPulse * controlModel.getPulseNumber());
+      }
 
       dwfProxy.waitUntilArmed();
 
@@ -204,11 +215,22 @@ public class DCExperiment extends Experiment {
       // Pulse Out /////////////////
       // ////////////////////////////////
 
-      double[] customWaveform =
-          WaveformUtils.generateCustomWaveform(
-              controlModel.getWaveform(),
-              controlModel.getAmplitude(),
-              controlModel.getCalculatedFrequency());
+      double[] customWaveform;
+
+      if (boardVersion == 2) {
+        customWaveform =
+            WaveformUtils.generateCustomWaveform(
+                controlModel.getWaveform(),
+                -controlModel.getAmplitude(),
+                controlModel.getCalculatedFrequency());
+      } else {
+        customWaveform =
+            WaveformUtils.generateCustomWaveform(
+                controlModel.getWaveform(),
+                controlModel.getAmplitude(),
+                controlModel.getCalculatedFrequency());
+      }
+
       dwfProxy
           .getDwf()
           .startCustomPulseTrain(
@@ -244,7 +266,52 @@ public class DCExperiment extends Experiment {
       // Create Chart Data //////
       // /////////////////////////
 
-      double[] V2MinusV1 = PostProcessDataUtils.getV1MinusV2(v1, v2);
+      double[] VMemristor;
+
+      if (boardVersion == 2) {
+
+        VMemristor = PostProcessDataUtils.invert(v1);
+        int bufferLength = v1.length;
+
+        // create time data
+        double[] timeData = new double[bufferLength];
+        double timeStep = 1 / sampleFrequency * DCPreferences.TIME_UNIT.getDivisor();
+        for (int i = 0; i < bufferLength; i++) {
+          timeData[i] = i * timeStep;
+        }
+
+        // create current data
+        double[] current = new double[bufferLength];
+        for (int i = 0; i < bufferLength; i++) {
+          double dv = (v1[i] - v2[i]);
+          current[i] =
+              dv / controlModel.getSeriesResistance() * DCPreferences.CURRENT_UNIT.getDivisor();
+        }
+
+        // create conductance data
+        double[] conductance = new double[bufferLength];
+        for (int i = 0; i < bufferLength; i++) {
+
+          double I = (v1[i] - v2[i]) / controlModel.getSeriesResistance();
+          double G = I / (-v1[i]) * DCPreferences.CONDUCTANCE_UNIT.getDivisor();
+          G = G < 0 ? 0 : G;
+          conductance[i] = G;
+        }
+
+        publish(
+            new double[][] {
+              timeData,
+              PostProcessDataUtils.invert(v2),
+              PostProcessDataUtils.invert(v1),
+              VMemristor,
+              current,
+              conductance
+            });
+
+        return true;
+      }
+
+      VMemristor = PostProcessDataUtils.getV1MinusV2(v1, v2);
 
       int bufferLength = v1.length;
 
@@ -272,7 +339,7 @@ public class DCExperiment extends Experiment {
         conductance[i] = G;
       }
 
-      publish(new double[][] {timeData, v1, v2, V2MinusV1, current, conductance});
+      publish(new double[][] {timeData, v1, v2, VMemristor, current, conductance});
 
       return true;
     }
@@ -289,19 +356,31 @@ public class DCExperiment extends Experiment {
           newestChunk[3],
           controlModel.getPeriod(),
           controlModel.getAmplitude());
+
+      // v1,current,
+
       resultController.updateIVChartData(
-          newestChunk[1], newestChunk[4], controlModel.getPeriod(), controlModel.getAmplitude());
+          newestChunk[1],
+          newestChunk[3],
+          newestChunk[4],
+          controlModel.getPeriod(),
+          controlModel.getAmplitude());
+
       resultController.updateGVChartData(
-          newestChunk[1], newestChunk[5], controlModel.getPeriod(), controlModel.getAmplitude());
+          newestChunk[1],
+          newestChunk[3],
+          newestChunk[5],
+          controlModel.getPeriod(),
+          controlModel.getAmplitude());
 
       if (resultPanel.getCaptureButton().isSelected()) {
         resultController.repaintCaptureChart();
         resultPanel.switch2CaptureChart();
       } else if (resultPanel.getIVButton().isSelected()) {
-        resultController.repaintItChart();
+        resultController.repaintIVChart();
         resultPanel.switch2IVChart();
       } else {
-        resultController.repaintRtChart();
+        resultController.repaintGVChart();
         resultPanel.switch2GVChart();
       }
       controlPanel.getStartStopButton().doClick();

@@ -28,18 +28,17 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Hashtable;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
-import org.knowm.memristor.discovery.core.Util;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
-import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferences;
 
 /**
  * Provides controls for running the control
@@ -48,11 +47,13 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferences;
  */
 public class ControlPanel extends ControlView {
 
-  private final JLabel appliedAmplitudeLabel;
-  private final JLabel currentLabel;
+  private NumberFormat formatter = new DecimalFormat("0.###E0");
+
+  // private final JLabel appliedAmplitudeLabel;
+  // private final JLabel currentLabel;
   private final JLabel energyLabel;
-  private final JLabel energyMemRistorOnlyLabel;
-  private final JCheckBox memristorVoltageCheckBox;
+  // private final JLabel energyMemRistorOnlyLabel;
+  // private final JCheckBox memristorVoltageCheckBox;
   private final JSlider amplitudeSlider;
   private final JSlider pulseWidthSlider;
   private final JSlider pulseWidthSliderNs;
@@ -78,29 +79,29 @@ public class ControlPanel extends ControlView {
 
     c.gridx = 0;
 
-    appliedAmplitudeLabel = new JLabel("Applied Amplitude [V]: ");
-    appliedAmplitudeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-    c.gridy++;
-    c.insets = new Insets(0, 10, 4, 0);
-    add(appliedAmplitudeLabel, c);
+    //    appliedAmplitudeLabel = new JLabel("Applied Amplitude [V]: ");
+    //    appliedAmplitudeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    //    c.gridy++;
+    //    c.insets = new Insets(0, 10, 4, 0);
+    //    add(appliedAmplitudeLabel, c);
 
-    currentLabel = new JLabel("Current [" + PulsePreferences.CURRENT_UNIT.getLabel() + "]: ");
-    currentLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-    c.gridy++;
-    c.insets = new Insets(0, 10, 4, 0);
-    add(currentLabel, c);
+    //    currentLabel = new JLabel("Current [" + PulsePreferences.CURRENT_UNIT.getLabel() + "]: ");
+    //    currentLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    //    c.gridy++;
+    //    c.insets = new Insets(0, 10, 4, 0);
+    //    add(currentLabel, c);
 
-    energyLabel = new JLabel("Energy M+R [nJ]: ");
+    energyLabel = new JLabel("Energy M+R (J): ");
     energyLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.gridy++;
     c.insets = new Insets(0, 10, 4, 0);
     add(energyLabel, c);
 
-    energyMemRistorOnlyLabel = new JLabel("Energy M [nJ]: ");
-    energyMemRistorOnlyLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-    c.gridy++;
-    c.insets = new Insets(0, 10, 4, 0);
-    add(energyMemRistorOnlyLabel, c);
+    //    energyMemRistorOnlyLabel = new JLabel("Energy M [nJ]: ");
+    //    energyMemRistorOnlyLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+    //    c.gridy++;
+    //    c.insets = new Insets(0, 10, 4, 0);
+    //    add(energyMemRistorOnlyLabel, c);
 
     this.waveformComboBox = new JComboBox<>();
     waveformComboBox.setFocusable(false);
@@ -108,16 +109,16 @@ public class ControlPanel extends ControlView {
     c.insets = new Insets(0, 0, 4, 6);
     add(waveformComboBox, c);
 
-    c.gridy++;
-    c.insets = new Insets(0, 0, 0, 0);
-    memristorVoltageCheckBox = new JCheckBox("Memristor Voltage Drop");
-    add(memristorVoltageCheckBox, c);
+    //    c.gridy++;
+    //    c.insets = new Insets(0, 0, 0, 0);
+    //    memristorVoltageCheckBox = new JCheckBox("Memristor Voltage Drop");
+    //    add(memristorVoltageCheckBox, c);
 
     //  int amplitude=
     // experimentPreferences.getInteger(PulsePreferences.MAX_SLIDER_VOLTAGE_INIT_KEY,
     // PulsePreferences.MAX_SLIDER_VOLTAGE_INIT_DEFAULT_VALUE)
 
-    amplitudeSlider = new JSlider(JSlider.HORIZONTAL, -500, 500, 0);
+    amplitudeSlider = new JSlider(JSlider.HORIZONTAL, -300, 300, 0);
     amplitudeSlider.setBorder(BorderFactory.createTitledBorder("Amplitude [V]"));
     amplitudeSlider.setMajorTickSpacing(100);
     amplitudeSlider.setMinorTickSpacing(5);
@@ -126,8 +127,8 @@ public class ControlPanel extends ControlView {
     amplitudeSlider.setSnapToTicks(true);
     Hashtable<Integer, JLabel> labelTable = new Hashtable<>();
 
-    labelTable.put(-500, new JLabel("-5"));
-    labelTable.put(-400, new JLabel("-4"));
+    //    labelTable.put(-500, new JLabel("-5"));
+    //    labelTable.put(-400, new JLabel("-4"));
     labelTable.put(-300, new JLabel("-3"));
     labelTable.put(-200, new JLabel("-2"));
     labelTable.put(-100, new JLabel("-1"));
@@ -135,8 +136,8 @@ public class ControlPanel extends ControlView {
     labelTable.put(100, new JLabel("1"));
     labelTable.put(200, new JLabel("2"));
     labelTable.put(300, new JLabel("3"));
-    labelTable.put(400, new JLabel("4"));
-    labelTable.put(500, new JLabel("5"));
+    //    labelTable.put(400, new JLabel("4"));
+    //    labelTable.put(500, new JLabel("5"));
     amplitudeSlider.setLabelTable(labelTable);
 
     c.gridy++;
@@ -222,7 +223,7 @@ public class ControlPanel extends ControlView {
     c.insets = new Insets(0, 5, 14, 5);
     add(seriesTextField, c);
 
-    sampleRateLabel = new JLabel("Sample Rate [s]");
+    sampleRateLabel = new JLabel("Sample Period [s]");
     sampleRateLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
     c.gridy++;
     c.insets = new Insets(0, 10, 4, 0);
@@ -247,7 +248,7 @@ public class ControlPanel extends ControlView {
   public void enableAllChildComponents(boolean enabled) {
 
     waveformComboBox.setEnabled(enabled);
-    memristorVoltageCheckBox.setEnabled(enabled);
+    // memristorVoltageCheckBox.setEnabled(enabled);
     amplitudeSlider.setEnabled(enabled);
     pulseWidthSlider.setEnabled(enabled);
     pulseWidthSliderNs.setEnabled(enabled);
@@ -259,19 +260,12 @@ public class ControlPanel extends ControlView {
   }
 
   public void updateEnergyGUI(
-      double appliedAmplitude,
-      double appliedCurrent,
-      double appliedEnergy,
-      double appliedMemristorEnergy) {
+      double appliedAmplitude, double appliedCurrent, double appliedEnergy) {
 
-    appliedAmplitudeLabel.setText("Applied Amplitude [V]: " + Util.round(appliedAmplitude, 2));
-    currentLabel.setText(
-        "Current ["
-            + PulsePreferences.CURRENT_UNIT.getLabel()
-            + "]: "
-            + Util.round(appliedCurrent, 3));
-    energyLabel.setText("Energy M+R [nJ]: " + Util.round(appliedEnergy, 3));
-    energyMemRistorOnlyLabel.setText("Energy M [fJ]: " + Util.round(appliedMemristorEnergy, 3));
+    // appliedAmplitudeLabel.setText("Applied Amplitude [V]: " + Util.round(appliedAmplitude, 4));
+    // currentLabel.setText("Current [" + PulsePreferences.CURRENT_UNIT.getLabel() + "]: " +
+    // Util.round(appliedCurrent, 3));
+    energyLabel.setText("Energy M+R (J): " + formatter.format(appliedEnergy));
   }
 
   public JComboBox<Waveform> getWaveformComboBox() {
@@ -313,10 +307,10 @@ public class ControlPanel extends ControlView {
     return sampleRateTextField;
   }
 
-  public JCheckBox getMemristorVoltageCheckBox() {
-
-    return memristorVoltageCheckBox;
-  }
+  //  public JCheckBox getMemristorVoltageCheckBox() {
+  //
+  //    return memristorVoltageCheckBox;
+  //  }
 
   public JButton getStartStopButton() {
     return startStopButton;

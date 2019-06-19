@@ -64,9 +64,9 @@ public class ConductanceExperiment extends Experiment {
    * @param dwfProxy
    * @param mainFrameContainer
    */
-  public ConductanceExperiment(DWFProxy dwfProxy, Container mainFrameContainer, boolean isV1Board) {
+  public ConductanceExperiment(DWFProxy dwfProxy, Container mainFrameContainer, int boardVersion) {
 
-    super(dwfProxy, mainFrameContainer, isV1Board);
+    super(dwfProxy, mainFrameContainer, boardVersion);
 
     controlModel = new ControlModel();
     controlPanel = new ControlPanel();

@@ -40,8 +40,10 @@ public class PulseUtility {
   private MuxController muxController;
   private float voltageReadNoiseFloor;
   private static int sleep = 5;
+  private int boardVersion = 2;
 
   public PulseUtility(
+      int boardVersion,
       Model controlModel,
       DWFProxy dwfProxy,
       MuxController muxController,
@@ -50,6 +52,7 @@ public class PulseUtility {
     this.dwfProxy = dwfProxy;
     this.muxController = muxController;
     this.voltageReadNoiseFloor = voltageReadNoiseFloor;
+    this.boardVersion = boardVersion;
   }
 
   /*
@@ -68,12 +71,19 @@ public class PulseUtility {
 
     try {
 
-      // initialize in erased state
+      //  initialize in erased state
       measureAllSwitchResistances(writeEraseWaveform, V_ERASE, ERASE_PULSE_WIDTH_IN_MICRO_SECONDS);
       Thread.sleep(25);
+
       float[][] reads = new float[3][9];
+
+      if (boardVersion == 2) {
+        reads = new float[3][17];
+      }
+
       reads[0] =
           measureAllSwitchResistances(Waveform.Square, V_READ, READ_PULSE_WIDTH_IN_MICRO_SECONDS);
+
       Thread.sleep(25);
       measureAllSwitchResistances(writeEraseWaveform, V_WRITE, WRITE_PULSE_WIDTH_IN_MICRO_SECONDS);
       Thread.sleep(25);
@@ -96,7 +106,7 @@ public class PulseUtility {
   public float[] measureAllSwitchResistances(
       Waveform waveform, float readVoltage, int pulseWidthInMicroSeconds) {
 
-    if (muxController != null) {
+    if (boardVersion == 1) {
       muxController.setW1(Destination.A);
       muxController.setW2(Destination.OUT);
       muxController.setScope1(Destination.A);
@@ -106,6 +116,10 @@ public class PulseUtility {
 
     float[] r_array = new float[9];
 
+    if (boardVersion == 2) {
+      r_array = new float[17];
+    }
+
     r_array[0] =
         getSwitchResistancekOhm(
             waveform,
@@ -113,7 +127,7 @@ public class PulseUtility {
             pulseWidthInMicroSeconds,
             DWF.WAVEFORM_CHANNEL_1); // all switches off
 
-    for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < (boardVersion == 2 ? 16 : 8); i++) {
 
       dwfProxy.update2DigitalIOStatesAtOnce(i, true);
 
@@ -130,6 +144,8 @@ public class PulseUtility {
       dwfProxy.update2DigitalIOStatesAtOnce(i, false);
     }
 
+    // System.out.println("resistance array: " + Arrays.toString(r_array));
+
     return r_array;
   }
 
@@ -139,6 +155,9 @@ public class PulseUtility {
     float[] vMeasure =
         getScopesAverageVoltage(
             waveform, readVoltage, pulseWidthInMicroSeconds, dWFWaveformChannel);
+
+    //    System.out.println("readVoltage=" + readVoltage);
+    //    System.out.println("vMeasure=" + Arrays.toString(vMeasure));
 
     model.swingPropertyChangeSupport.firePropertyChange(
         Model.EVENT_NEW_CONSOLE_LOG,
@@ -154,24 +173,50 @@ public class PulseUtility {
       return Float.NaN;
     }
 
-    if (vMeasure[1] <= voltageReadNoiseFloor) {
-      model.swingPropertyChangeSupport.firePropertyChange(
-          Model.EVENT_NEW_CONSOLE_LOG,
-          null,
-          "WARNING: Voltage drop across series resistor ("
-              + vMeasure[1]
-              + ") is at or below noise threshold.");
-      return Float.POSITIVE_INFINITY;
+    if (boardVersion < 2) {
+      if (vMeasure[1] <= voltageReadNoiseFloor) {
+        model.swingPropertyChangeSupport.firePropertyChange(
+            Model.EVENT_NEW_CONSOLE_LOG,
+            null,
+            "WARNING: Voltage drop across series resistor ("
+                + vMeasure[1]
+                + ") is at or below noise threshold.");
+        return Float.POSITIVE_INFINITY;
+      }
+
+      /*
+       * Vy/Rseries=I Vdrop/I=Rswitch (Vin-Vy)/I=Rswitch
+       */
+
+      float I = Math.abs(vMeasure[1] / model.seriesResistance);
+      float rSwitch =
+          (Math.abs(vMeasure[0] - vMeasure[1]) / I)
+              - (float) ExperimentPreferences.TOTAL_PARASITIC_RESISTANCE;
+
+      return rSwitch / 1000; // to kilohms
+
+    } else {
+
+      if (Math.abs(vMeasure[1] - vMeasure[0]) <= voltageReadNoiseFloor) {
+        model.swingPropertyChangeSupport.firePropertyChange(
+            Model.EVENT_NEW_CONSOLE_LOG,
+            null,
+            "WARNING: Voltage drop across series resistor ("
+                + vMeasure[1]
+                + ") is at or below noise threshold.");
+        return Float.POSITIVE_INFINITY;
+      }
+
+      float I = (vMeasure[1] - vMeasure[0]) / model.seriesResistance;
+
+      // System.out.println("I=" + I);
+
+      float rSwitch = Math.abs(vMeasure[0] / I);
+
+      // System.out.println("rSwitch=" + rSwitch);
+
+      return rSwitch / 1000; // to kilohms
     }
-
-    /*
-     * Vy/Rseries=I Vdrop/I=Rswitch (Vin-Vy)/I=Rswitch
-     */
-
-    float I = Math.abs(vMeasure[1] / model.seriesResistance);
-    float rSwitch = (Math.abs(vMeasure[0] - vMeasure[1]) / I) - 2 * ExperimentPreferences.R_SWITCH;
-
-    return rSwitch / 1000; // to kilohms
   }
 
   public float[] getScopesAverageVoltage(

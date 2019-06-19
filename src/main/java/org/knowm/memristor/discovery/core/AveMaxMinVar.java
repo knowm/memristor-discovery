@@ -52,6 +52,15 @@ public class AveMaxMinVar {
     init(values);
   }
 
+  public AveMaxMinVar(double[] values) {
+    float[] floatValues = new float[values.length];
+    for (int i = 0; i < floatValues.length; i++) {
+      floatValues[i] = (float) values[i];
+    }
+
+    init(floatValues);
+  }
+
   private void init(float[] values) {
 
     max = values[0];

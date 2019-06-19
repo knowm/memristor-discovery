@@ -1,35 +1,36 @@
 # Hysteresis Experiment
 
-This app allows you to drive a memristor in series with a resistor with a sinusoidal or triangle waveform and observe the response as either a time series (V1+ vs T) and (V2+ vs T), (I vs V) or (G vs V) plot, revealing the signature hysteresis behavior of the memristor. The user can adjust the input signal voltage, frequency and offset and observe the response in real-time.
+This experiment drives a memristor in series with a resistor with a sinusoidal or triangle waveform and allows you to observe the response as a time series, current-vs-voltage (I-V) or conductance-vs-voltage (G-V) plot, revealing the signature hysteresis behavior of the memristor. The user can adjust the input signal voltage, frequency and offset and observe the response in real-time. The circuit under test depends on the Memristor Discovery board version, as shown here:
 
-![](Hysteresis.png)
+![](_img/BasicCircuit.png)
 
-## Connections
+**W1**: Arbitrary Waveform Generator One on the Analog Discovery 2
 
-1.  Arbitrary Waveform Generator W1 (AD2's W1 and Gnd connectors) is connected across the memristor (M) and series resistor (R).
-2.  Oscilloscope Probe V1+ (AD2's 1+ and 1- connectors) is connected across the memristor (M) and series resistor (Rs).
-3.  Oscilloscope Probe V2+ (AD2's 2+ and 2- connectors) is connected across the series resistor ( R ).
+**1+**: Oscilloscope Probe 1+ on the Analog Discovery 2
 
-note: AD2 = Analog Discovery 2
+**2+**: Oscilloscope Probe 2+ on the Analog Discovery 2
 
-## V1.X Jumper Connections
+## V2.0 Mode 1 Selection
 
-![](HysteresisV1Board.png)
+Memristor Discovery V2.0 boards must be set to "Mode 1" by moving selection switch on board to the '1' position. 
+
+## V1.X (Deprecated) Jumper Connections
+
+![](_img/HysteresisV1Board.png)
 
 ## Memristor Selection
 
-Use the toggle switches near the top of the app window to connect one or more individual memristors into the circuit.
+Use the toggle switches near the top of the app window to connect one or more individual memristors into the circuit. 
 
 ## Series Resistor
 
 The series resistor provides two important functions:
 
 1.  Limits the maximum current through the memristor to prevent device damage (see memristor datasheet).
-2.  Allows for a current measurement to be made with the oscilloscope (I = V2+/R).
+2.  Allows for a current measurement to be made with the oscilloscope.
 
-## Controls
+Version 2.0 Memristor Discovery boards have two series resistors, A and B. These resistors are connected in parallel when the board is in Mode 1. The series resistance of the circuit is thus half of the value of the resistors in the socket, which needs to be reflected in the preferences menu. Boards are shipped with 20kΩ precision resistors. Alternately, you may remove either resistor A or B and record the value of the remaining resistor in the preferences. Whatever you do, the value of the series resistor in the preferences must match the actual series resistance for measurements to be accurate.
 
-The control panel can be used to adjust the driver waveform of W1. The series resistor value must correspond to the actual series resistance value used in the experimental setup, otherwise the calculated values will be invalid.
 
 ## Conductance Plot Averaging
 

@@ -42,8 +42,12 @@ public class ControlModel extends Model {
   private int pulseNumber;
   private boolean isStartToggled = false;
 
+  private int boardVersion;
+
   /** Constructor */
-  public ControlModel() {}
+  public ControlModel(int boardVersion) {
+    this.boardVersion = boardVersion;
+  }
 
   @Override
   public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {
@@ -128,7 +132,13 @@ public class ControlModel extends Model {
 
   public void setAmplitude(float amplitude) {
 
+    //	  if(boardVersion==2) {
+    //		  this.amplitude = -amplitude;
+    //	  }else {
+    //		  this.amplitude = amplitude;
+    //	  }
     this.amplitude = amplitude;
+
     swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 

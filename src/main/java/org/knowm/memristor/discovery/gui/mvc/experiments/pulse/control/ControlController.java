@@ -29,7 +29,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.beans.PropertyChangeEvent;
 import javax.swing.AbstractAction;
-import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
@@ -86,6 +85,7 @@ public class ControlController extends Controller {
                   Waveform.Square,
                   Waveform.SquareSmooth,
                   Waveform.SquareDecay,
+                  Waveform.SquareLongDecay,
                   Waveform.Triangle,
                   Waveform.QuarterSine,
                   Waveform.HalfSine
@@ -300,20 +300,20 @@ public class ControlController extends Controller {
               }
             });
 
-    controlPanel
-        .getMemristorVoltageCheckBox()
-        .addActionListener(
-            new ActionListener() {
-
-              @Override
-              public void actionPerformed(ActionEvent actionEvent) {
-
-                AbstractButton abstractButton = (AbstractButton) actionEvent.getSource();
-                boolean selected = abstractButton.getModel().isSelected();
-                // System.out.println("selected = " + selected);
-                controlModel.setMemristorVoltageDropSelected(selected);
-              }
-            });
+    //    controlPanel
+    //        .getMemristorVoltageCheckBox()
+    //        .addActionListener(
+    //            new ActionListener() {
+    //
+    //              @Override
+    //              public void actionPerformed(ActionEvent actionEvent) {
+    //
+    //                AbstractButton abstractButton = (AbstractButton) actionEvent.getSource();
+    //                boolean selected = abstractButton.getModel().isSelected();
+    //                // System.out.println("selected = " + selected);
+    //                controlModel.setMemristorVoltageDropSelected(selected);
+    //              }
+    //            });
 
     controlView
         .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
@@ -353,10 +353,9 @@ public class ControlController extends Controller {
         controlModel.updateWaveformChartData();
         controlModel.updateEnergyData();
         controlPanel.updateEnergyGUI(
-            controlModel.getAppliedAmplitude(),
+            controlModel.getAmplitude(),
             controlModel.getAppliedCurrent(),
-            controlModel.getAppliedEnergy(),
-            controlModel.getAppliedMemristorEnergy());
+            controlModel.getAppliedEnergy());
         break;
 
       default:

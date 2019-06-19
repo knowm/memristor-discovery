@@ -5,19 +5,28 @@
 
   <groupId>org.knowm</groupId>
   <artifactId>memristor-discovery</artifactId>
-  <version>0.0.9</version>
+  <version>2.0.0</version>
   <name>Memristor-Discovery</name>
   <packaging>jar</packaging>
   <description>Java Application for automated memristor experiments and data collection based on
     Digilent's Analog Discovery 2 USB Oscilloscope and Knowm's Memristor Discovery Board.
   </description>
-  <url>http://knowm.org</url>
+  <url>https://github.com/knowm/memristor-discovery</url>
   <inceptionYear>2016</inceptionYear>
 
   <organization>
     <name>Knowm Inc.</name>
     <url>http://knowm.org/</url>
   </organization>
+
+  <developers>
+    <developer>
+      <name>Tim Molter</name>
+    </developer>
+    <developer>
+      <name>Alex Nugent</name>
+    </developer>
+  </developers>
 
   <licenses>
     <license>
@@ -32,20 +41,8 @@
     </license>
   </licenses>
 
-  <repositories>
-    <repository>
-      <id>sonatype-oss-public</id>
-      <url>https://oss.sonatype.org/content/groups/public/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
-
   <dependencies>
+
     <dependency>
       <groupId>org.knowm</groupId>
       <artifactId>waveforms4j</artifactId>
@@ -72,6 +69,13 @@
       <artifactId>slf4j-simple</artifactId>
       <version>1.7.26</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.knowm</groupId>
+      <artifactId>jspice</artifactId>
+      <version>0.0.1</version>
+    </dependency>
+
 
   </dependencies>
 
@@ -192,6 +196,37 @@
       </plugin>
 
     </plugins>
+    <pluginManagement>
+      <plugins>
+        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>com.coveo</groupId>
+                    <artifactId>
+                      fmt-maven-plugin
+                    </artifactId>
+                    <versionRange>[2.8,)</versionRange>
+                    <goals>
+                      <goal>format</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
 
   <properties>

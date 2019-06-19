@@ -44,13 +44,13 @@ public class PulsePreferences extends ExperimentPreferences {
   public static final String WAVEFORM_INIT_STRING_KEY = PREFIX + "WAVEFORM_INIT_STRING_KEY";
   public static final String WAVEFORM_INIT_STRING_DEFAULT_VALUE = "Square";
   public static final String NUM_PULSES_INIT_KEY = PREFIX + "NUM_PULSES_INIT_KEY";
-  public static final int NUM_PULSES_INIT_DEFAULT_VALUE = 2;
+  public static final int NUM_PULSES_INIT_DEFAULT_VALUE = 1;
   public static final String AMPLITUDE_INIT_FLOAT_KEY = PREFIX + "AMPLITUDE_INIT_FLOAT_KEY";
   public static final float AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE = 1f;
   public static final String PULSE_WIDTH_INIT_KEY = PREFIX + "PERIOD_INIT_KEY";
-  public static final int PULSE_WIDTH_INIT_DEFAULT_VALUE = 5_000;
+  public static final int PULSE_WIDTH_INIT_DEFAULT_VALUE = 50_000;
   public static final String SERIES_R_INIT_KEY = PREFIX + "SERIES_R_INIT_KEY";
-  public static final int SERIES_R_INIT_DEFAULT_VALUE = 1_000;
+  public static final int SERIES_R_INIT_DEFAULT_VALUE = 10_000;
   public static final String SAMPLE_RATE_INIT_KEY = PREFIX + "SAMPLE_RATE_INIT_KEY";
   public static final int SAMPLE_RATE_INIT_DEFAULT_VALUE = 1;
 

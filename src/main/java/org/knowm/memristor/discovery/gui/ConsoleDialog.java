@@ -25,6 +25,8 @@ package org.knowm.memristor.discovery.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -33,6 +35,7 @@ import javax.swing.SwingUtilities;
 public class ConsoleDialog extends JDialog {
 
   private final JTextArea textArea;
+  private SimpleDateFormat dateFormat = new SimpleDateFormat("HH-mm-ss");
 
   /** Constructor */
   public ConsoleDialog() {
@@ -65,7 +68,7 @@ public class ConsoleDialog extends JDialog {
           @Override
           public void run() {
 
-            textArea.append(text + "\n");
+            textArea.append(dateFormat.format(new Date()) + " : " + text + "\n");
           }
         });
   }

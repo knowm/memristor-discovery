@@ -27,6 +27,7 @@ import org.knowm.memristor.discovery.core.driver.Driver;
 import org.knowm.memristor.discovery.core.driver.pulse.HalfSinePulse;
 import org.knowm.memristor.discovery.core.driver.pulse.QuarterSinePulse;
 import org.knowm.memristor.discovery.core.driver.pulse.SquareDecayPulse;
+import org.knowm.memristor.discovery.core.driver.pulse.SquareLongDecayPulse;
 import org.knowm.memristor.discovery.core.driver.pulse.SquarePulse;
 import org.knowm.memristor.discovery.core.driver.pulse.SquareSmoothPulse;
 import org.knowm.memristor.discovery.core.driver.pulse.TrianglePulse;
@@ -66,11 +67,11 @@ public class WaveformUtils {
   public static double[] generateCustomPulse(
       Waveform waveform, double amplitude, double pulseWidthInNS, double dutyCycle) {
 
-    System.out.println("generateCustomPulse");
-    System.out.println("pulseWidth=" + pulseWidthInNS);
-    System.out.println("dutyCycle=" + dutyCycle);
-    System.out.println("amplitude=" + amplitude);
-    System.out.println("waveform=" + waveform);
+    //    System.out.println("generateCustomPulse");
+    //    System.out.println("pulseWidth=" + pulseWidthInNS);
+    //    System.out.println("dutyCycle=" + dutyCycle);
+    //    System.out.println("amplitude=" + amplitude);
+    //    System.out.println("waveform=" + waveform);
 
     Driver driver;
     switch (waveform) {
@@ -79,6 +80,10 @@ public class WaveformUtils {
         //        break;
       case SquareDecay:
         driver = new SquareDecayPulse("SquareDecay", 0, pulseWidthInNS, dutyCycle, amplitude);
+        break;
+      case SquareLongDecay:
+        driver =
+            new SquareLongDecayPulse("SquareLongDecay", 0, pulseWidthInNS, dutyCycle, amplitude);
         break;
       case Triangle:
         driver = new TrianglePulse("Triangle", 0, pulseWidthInNS, dutyCycle, amplitude);

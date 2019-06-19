@@ -100,10 +100,10 @@ public class ResultPanel extends JPanel {
             .build();
     captureChart.getStyler().setLegendPosition(LegendPosition.InsideNE);
 
-    series = captureChart.addSeries("V1", new double[] {0}, new double[] {0});
+    series = captureChart.addSeries("V1(1+)", new double[] {0}, new double[] {0});
     series.setMarker(SeriesMarkers.NONE);
 
-    series = captureChart.addSeries("V2", new double[] {0}, new double[] {0});
+    series = captureChart.addSeries("V2(2+)", new double[] {0}, new double[] {0});
     series.setMarker(SeriesMarkers.NONE);
 
     captureChartPanel = new XChartPanel<>(captureChart);
@@ -120,10 +120,13 @@ public class ResultPanel extends JPanel {
             .xAxisTitle("Voltage [V]")
             .yAxisTitle("Current [" + HysteresisPreferences.CURRENT_UNIT.getLabel() + "]")
             .build();
-    ivChart.getStyler().setLegendVisible(false);
-    // ivChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);
+    ivChart.getStyler().setLegendVisible(true);
+    ivChart.getStyler().setLegendPosition(LegendPosition.InsideNW);
 
-    series = ivChart.addSeries("iv", new double[] {0}, new double[] {0});
+    series = ivChart.addSeries("Resistor+Memristor", new double[] {0}, new double[] {0});
+    series.setMarker(SeriesMarkers.NONE);
+    series = ivChart.addSeries("Memristor", new double[] {0}, new double[] {0});
+    series.setMarker(SeriesMarkers.NONE);
 
     ivChartPanel = new XChartPanel<>(ivChart);
 
@@ -143,10 +146,12 @@ public class ResultPanel extends JPanel {
     gvChart.getStyler().setLegendPosition(LegendPosition.InsideNW);
     gvChart.getStyler().setYAxisMin(0.0);
     // gvChart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);
-    gvChart.addSeries("V1", new double[] {0}, new double[] {0});
-    gvChart.addSeries("Memristor", new double[] {0}, new double[] {0});
+    series = gvChart.addSeries("Resistor+Memristor", new double[] {0}, new double[] {0});
+    series.setMarker(SeriesMarkers.NONE);
+    series = gvChart.addSeries("Memristor", new double[] {0}, new double[] {0});
+    series.setMarker(SeriesMarkers.NONE);
     gvChart.getStyler().setYAxisMin(0.0);
-    gvChart.getStyler().setXAxisMin(-2.0);
+    gvChart.getStyler().setXAxisMin(-1.0);
     gvChart.getStyler().setXAxisMax(1.0);
     gvChartPanel = new XChartPanel<>(gvChart);
 
@@ -281,22 +286,22 @@ public class ResultPanel extends JPanel {
 
   public double getIVChartMax() {
 
-    return ivChart.getSeriesMap().get("iv").getYMax();
+    return ivChart.getSeriesMap().get("Resistor+Memristor").getYMax();
   }
 
   public double getIVChartMin() {
 
-    return ivChart.getSeriesMap().get("iv").getYMin();
+    return ivChart.getSeriesMap().get("Resistor+Memristor").getYMin();
   }
 
   public double getGVChartMax() {
 
-    return gvChart.getSeriesMap().get("V1").getYMax();
+    return gvChart.getSeriesMap().get("Resistor+Memristor").getYMax();
   }
 
   public double getGVChartMin() {
 
-    return gvChart.getSeriesMap().get("V1").getYMin();
+    return gvChart.getSeriesMap().get("Resistor+Memristor").getYMin();
   }
 
   public JPanel getRadioPanel() {
