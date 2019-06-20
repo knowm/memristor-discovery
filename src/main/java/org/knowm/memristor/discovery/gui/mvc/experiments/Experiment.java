@@ -40,16 +40,16 @@ public abstract class Experiment implements PropertyChangeListener {
 
   public final Container mainFrameContainer;
 
-  private final boolean isV1Board;
+  protected final int boardVersion;
 
   protected ExperimentPreferences experimentPreferences;
 
   /** Constructor */
-  public Experiment(DWFProxy dwfProxy, Container mainFrameContainer, boolean isV1Board) {
+  public Experiment(DWFProxy dwfProxy, Container mainFrameContainer, int boardVersion) {
 
     this.dwfProxy = dwfProxy;
     this.mainFrameContainer = mainFrameContainer;
-    this.isV1Board = isV1Board;
+    this.boardVersion = boardVersion;
 
     this.experimentPreferences = initAppPreferences();
   }
@@ -92,7 +92,7 @@ public abstract class Experiment implements PropertyChangeListener {
     // Right Bar Panel //////////
     // //////////////////////
 
-    if (isV1Board) {
+    if (boardVersion == 1) {
       RightBarPanel rightBarPanel = new RightBarPanel();
       RightBarController rightBarController = new RightBarController(rightBarPanel, dwfProxy);
       mainFrameContainer.add(rightBarPanel, BorderLayout.EAST);

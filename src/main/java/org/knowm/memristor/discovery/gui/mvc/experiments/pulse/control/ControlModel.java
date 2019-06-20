@@ -34,6 +34,7 @@ import org.knowm.memristor.discovery.core.driver.pulse.SquarePulse;
 import org.knowm.memristor.discovery.core.driver.pulse.SquareSmoothPulse;
 import org.knowm.memristor.discovery.core.driver.pulse.TrianglePulse;
 import org.knowm.memristor.discovery.core.driver.waveform.Sawtooth;
+import org.knowm.memristor.discovery.core.rc_engine.RC_ResistanceComputer;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferences;
@@ -52,17 +53,32 @@ public class ControlModel extends Model {
   private double dutyCycle; // 0 to 1.
 
   private int pulseNumber;
-  private double appliedAmplitude;
+  // private double appliedAmplitude;
   private double appliedCurrent;
   private double appliedEnergy;
-  private double appliedMemristorEnergy;
+  //  private double appliedMemristorEnergy;
   private double lastG;
   private int sampleRate;
 
   private boolean isStartToggled = false;
 
+  private double readPulseWidth = 25E-6;
+  private double readPulseAmplitude = .1;
+  private double parasiticReadCapacitance = 140E-12;
+
+  // used to compute resistance give read pulse voltage and takes into account parasitic capacitance
+  // by using a board circuit model
+  private RC_ResistanceComputer rcComputer;
+
+  private int boardVersion;
+
   /** Constructor */
-  public ControlModel() {}
+  public ControlModel(int boardVersion) {
+    this.boardVersion = boardVersion;
+    if (boardVersion == 2) {
+      readPulseAmplitude = -readPulseAmplitude;
+    }
+  }
 
   @Override
   public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {
@@ -79,7 +95,7 @@ public class ControlModel extends Model {
         experimentPreferences.getFloat(
             PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY,
             PulsePreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
-    appliedAmplitude = amplitude;
+    // appliedAmplitude = amplitude;
 
     pulseWidth =
         experimentPreferences.getInteger(
@@ -96,6 +112,14 @@ public class ControlModel extends Model {
             PulsePreferences.PULSE_DUTY_CYCLE_KEY, PulsePreferences.PULSE_DUTY_CYCLE_DEFAULT_VALUE);
 
     updateWaveformChartData();
+
+    rcComputer =
+        new RC_ResistanceComputer(
+            boardVersion,
+            readPulseAmplitude,
+            readPulseWidth,
+            seriesResistance,
+            parasiticReadCapacitance);
   }
 
   /** Given the state of the model, update the waveform x and y axis data arrays. */
@@ -123,7 +147,6 @@ public class ControlModel extends Model {
         driver = new SquareDecayPulse("SquareDecay", 0, pulseWidth, dutyCycle, amplitude);
         break;
       case SquareLongDecay:
-
         driver = new SquareLongDecayPulse("SquareLongDecay", 0, pulseWidth, dutyCycle, amplitude);
         break;
       default:
@@ -151,6 +174,18 @@ public class ControlModel extends Model {
   /////////////////////////////////////////////////////////////
   // GETTERS AND SETTERS //////////////////////////////////////
   /////////////////////////////////////////////////////////////
+
+  public void setSeriesResistance(int seriesResistance) {
+
+    this.seriesResistance = seriesResistance;
+    rcComputer =
+        new RC_ResistanceComputer(
+            boardVersion,
+            readPulseAmplitude,
+            readPulseWidth,
+            seriesResistance,
+            parasiticReadCapacitance);
+  }
 
   public float getAmplitude() {
 
@@ -210,10 +245,10 @@ public class ControlModel extends Model {
     swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
-  public double getAppliedAmplitude() {
-
-    return appliedAmplitude;
-  }
+  //  public double getAppliedAmplitude() {
+  //
+  //    return appliedAmplitude;
+  //  }
 
   public PulsePreferences.Waveform getWaveform() {
 
@@ -265,10 +300,10 @@ public class ControlModel extends Model {
     return appliedEnergy;
   }
 
-  public double getAppliedMemristorEnergy() {
-
-    return appliedMemristorEnergy;
-  }
+  //  public double getAppliedMemristorEnergy() {
+  //
+  //    return appliedMemristorEnergy;
+  //  }
 
   public String getLastRAsString() {
 
@@ -278,42 +313,20 @@ public class ControlModel extends Model {
   public void updateEnergyData() {
 
     // calculate applied voltage
-    if (lastG > 0.0) {
-      if (isMemristorVoltageDropSelected) {
-        this.appliedAmplitude =
-            amplitude
-                / (1
-                    - seriesResistance
-                        / (seriesResistance + getLastR() + Util.getSwitchesSeriesResistance()));
-      } else {
-        this.appliedAmplitude = amplitude;
-      }
-      this.appliedCurrent =
-          appliedAmplitude
-              / (getLastR() + seriesResistance + Util.getSwitchesSeriesResistance())
-              * PulsePreferences.CURRENT_UNIT.getDivisor();
-      this.appliedEnergy =
-          appliedAmplitude
-              * appliedAmplitude
-              / (getLastR() + seriesResistance + Util.getSwitchesSeriesResistance())
-              * pulseNumber
-              * pulseWidth;
+    // if (lastG > 0.0) {
+    // this.appliedAmplitude = amplitude;
 
-      // V=IR =
-      double voltageDropOnMemristor =
-          appliedCurrent / PulsePreferences.CURRENT_UNIT.getDivisor() * getLastR();
-      // System.out.println("voltageDropOnMemristor = " + voltageDropOnMemristor);
-      this.appliedMemristorEnergy =
-          voltageDropOnMemristor
-              * voltageDropOnMemristor
-              / getLastR()
-              * pulseNumber
-              * pulseWidth
-              / 1000;
-      // System.out.println("appliedMemristorEnergy = " + appliedMemristorEnergy);
-    } else {
-      this.appliedAmplitude = amplitude;
-    }
+    this.appliedCurrent =
+        amplitude
+            / (getLastR() + seriesResistance + Util.getSwitchesSeriesResistance())
+            * PulsePreferences.CURRENT_UNIT.getDivisor();
+    this.appliedEnergy =
+        amplitude
+            * amplitude
+            / (getLastR() + seriesResistance + Util.getSwitchesSeriesResistance())
+            * pulseNumber
+            * pulseWidth
+            / 1E9;
   }
 
   public boolean isStartToggled() {
@@ -333,5 +346,33 @@ public class ControlModel extends Model {
   public void setDutyCycle(double dutyCycle) {
     this.dutyCycle = dutyCycle;
     swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
+  }
+
+  public double getReadPulseWidth() {
+    return readPulseWidth;
+  }
+
+  public void setReadPulseWidth(double readPulseWidth) {
+    this.readPulseWidth = readPulseWidth;
+  }
+
+  public double getReadPulseAmplitude() {
+    return readPulseAmplitude;
+  }
+
+  public void setReadPulseAmplitude(double readPulseAmplitude) {
+    this.readPulseAmplitude = readPulseAmplitude;
+  }
+
+  public double getParasiticReadCapacitance() {
+    return parasiticReadCapacitance;
+  }
+
+  public void setParasiticReadCapacitance(double parasiticReadCapacitance) {
+    this.parasiticReadCapacitance = parasiticReadCapacitance;
+  }
+
+  public RC_ResistanceComputer getRcComputer() {
+    return rcComputer;
   }
 }

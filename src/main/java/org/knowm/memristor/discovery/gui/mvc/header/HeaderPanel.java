@@ -29,15 +29,19 @@ import javax.swing.JPanel;
 
 public class HeaderPanel extends JPanel {
 
-  private static final int NUM_SWITCHES = 8;
+  // private static final int NUM_SWITCHES = 8;
   private final SteelCheckBox[] checkBoxes;
-
   private final Color warnColor = new Color(255, 33, 33);
 
   /** Constructor */
-  public HeaderPanel() {
+  public HeaderPanel(int boardVersion) {
 
-    checkBoxes = new SteelCheckBox[NUM_SWITCHES];
+    if (boardVersion == 2) {
+      checkBoxes = new SteelCheckBox[16];
+    } else {
+      checkBoxes = new SteelCheckBox[8];
+    }
+
     for (int i = 0; i < checkBoxes.length; i++) {
       checkBoxes[i] = new SteelCheckBox("" + (i + 1), i);
       checkBoxes[i].setColored(true);
@@ -58,19 +62,32 @@ public class HeaderPanel extends JPanel {
 
   public void updateDigitalIOSwitches(int digitalIOStates) {
 
-    for (int i = 0; i < checkBoxes.length; i++) {
+    boolean allOff = true;
 
+    for (int i = 0; i < checkBoxes.length; i++) {
       int bit = (digitalIOStates >> i) & 1;
       // System.out.println("bit: " + bit);
       checkBoxes[i].setSelected(bit > 0);
       checkBoxes[i].setBackground(null);
+
+      if (bit > 0) {
+        allOff = false;
+      }
     }
-    //  check lowest 8 bits for all zeros
-    if ((byte) (digitalIOStates & 0xFF) == 0) {
+
+    if (allOff) {
       setBackground(warnColor);
     } else {
       setBackground(null);
     }
+
+    //    //  check lowest 8 bits for all zeros
+    //    if ((byte) (digitalIOStates & 0xFF) == 0) {
+    //      setBackground(warnColor);
+    //    } else {
+    //      setBackground(null);
+    //    }
+
   }
 
   public void enableAllDigitalIOCheckBoxes(boolean enabled) {

@@ -1,7 +1,7 @@
 set INPUT=jar
 set OUTPUT=_exe
-set JAR=memristor-discovery-0.0.9.jar
-set VERSION=0.0.9
+set JAR=memristor-discovery-2.0.0.jar
+set VERSION=2.0.0
 set APP_ICON=_exe/icons.ico
 
 call "%JAVA_HOME%\bin\java.exe" ^
@@ -19,4 +19,5 @@ call "%JAVA_HOME%\bin\java.exe" ^
     --main-jar "%JAR%" ^
     --version "%VERSION%" ^
     --jvm-args "--add-opens javafx.base/com.sun.javafx.reflect=ALL-UNNAMED" ^
-    --icon "%APP_ICON%"
+    --icon "%APP_ICON%" ^
+    --copyright "Knowm Inc."

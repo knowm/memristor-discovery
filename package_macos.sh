@@ -6,8 +6,8 @@ PACKAGER=/usr/local/Cellar/jdk.packager-osx/jpackager
 INSTALLER_TYPE=pkg
 INPUT=jar
 OUTPUT=target
-JAR=memristor-discovery-0.0.9.jar
-VERSION=0.0.9
+JAR=memristor-discovery-2.0.0.jar
+VERSION=2.0.0
 APP_ICON=_exe/icons.icns
 
 ${PACKAGER} \

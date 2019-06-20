@@ -53,8 +53,8 @@ public class ResultController {
   public void initGUIComponents() {
 
     resultPanel.getCaptureButton().setSelected(true);
-    resultPanel.getFreezeYAxisCheckBoxIV().setSelected(false);
-    resultPanel.getFreezeYAxisCheckBoxGV().setSelected(false);
+    //    resultPanel.getFreezeYAxisCheckBoxIV().setSelected(false);
+    //    resultPanel.getFreezeYAxisCheckBoxGV().setSelected(false);
   }
 
   private void setUpViewEvents() {
@@ -90,43 +90,39 @@ public class ResultController {
               @Override
               public void actionPerformed(ActionEvent e) {
 
-                resultPanel.switch2GVChart();
+                resultPanel.switchReadPulseCaptureChart();
               }
             });
-    resultPanel
-        .getFreezeYAxisCheckBoxIV()
-        .addActionListener(
-            new ActionListener() {
+    //    resultPanel.getFreezeYAxisCheckBoxIV().addActionListener(new ActionListener() {
+    //
+    //      @Override
+    //      public void actionPerformed(ActionEvent e) {
+    //
+    //        if (resultPanel.getFreezeYAxisCheckBoxIV().isSelected()) {
+    //          resultModel.setyMaxIV(resultPanel.getIVChartMax());
+    //          resultModel.setyMinIV(resultPanel.getIVChartMin());
+    //        } else {
+    //          resultModel.setyMaxIV(null);
+    //          resultModel.setyMinIV(null);
+    //        }
+    //      }
+    //    });
 
-              @Override
-              public void actionPerformed(ActionEvent e) {
+    //    resultPanel.getFreezeYAxisCheckBoxGV().addActionListener(new ActionListener() {
+    //
+    //      @Override
+    //      public void actionPerformed(ActionEvent e) {
+    //
+    //        if (resultPanel.getFreezeYAxisCheckBoxGV().isSelected()) {
+    //          resultModel.setyMaxGV(resultPanel.getGVChartMax());
+    //          resultModel.setyMinGV(resultPanel.getGVChartMin());
+    //        } else {
+    //          resultModel.setyMaxGV(null);
+    //          resultModel.setyMinGV(null);
+    //        }
+    //      }
+    //    });
 
-                if (resultPanel.getFreezeYAxisCheckBoxIV().isSelected()) {
-                  resultModel.setyMaxIV(resultPanel.getIVChartMax());
-                  resultModel.setyMinIV(resultPanel.getIVChartMin());
-                } else {
-                  resultModel.setyMaxIV(null);
-                  resultModel.setyMinIV(null);
-                }
-              }
-            });
-    resultPanel
-        .getFreezeYAxisCheckBoxGV()
-        .addActionListener(
-            new ActionListener() {
-
-              @Override
-              public void actionPerformed(ActionEvent e) {
-
-                if (resultPanel.getFreezeYAxisCheckBoxGV().isSelected()) {
-                  resultModel.setyMaxGV(resultPanel.getGVChartMax());
-                  resultModel.setyMinGV(resultPanel.getGVChartMin());
-                } else {
-                  resultModel.setyMaxGV(null);
-                  resultModel.setyMinGV(null);
-                }
-              }
-            });
   }
 
   public void updateWaveformChart(
@@ -149,35 +145,53 @@ public class ResultController {
       double amplitude) {
 
     resultPanel.getCaptureChart().setTitle(getVtChartTitle(amplitude, pulseWidth));
-    resultPanel.getCaptureChart().updateXYSeries("V1", timeData, v1, null);
-    resultPanel.getCaptureChart().updateXYSeries("V2", timeData, v2, null);
-    resultPanel.getCaptureChart().updateXYSeries("V1-V2", timeData, v1Minusv2, null);
+    resultPanel.getCaptureChart().updateXYSeries("V1(1+)", timeData, v1, null);
+    resultPanel.getCaptureChart().updateXYSeries("V2(2+)", timeData, v2, null);
+    resultPanel.getCaptureChart().updateXYSeries("V_Memristor", timeData, v1Minusv2, null);
   }
 
   public void updateIVChartData(
       double[] timeData, double[] current, int pulseWidth, double amplitude) {
 
-    resultPanel.getIvChart().getStyler().setYAxisMax(resultModel.getyMaxIV());
-    resultPanel.getIvChart().getStyler().setYAxisMin(resultModel.getyMinIV());
+    resultPanel.getITChart().getStyler().setYAxisMax(resultModel.getyMaxIV());
+    resultPanel.getITChart().getStyler().setYAxisMin(resultModel.getyMinIV());
 
-    resultPanel.getIvChart().setTitle(getIVChartTitle(amplitude, pulseWidth));
-    resultPanel.getIvChart().updateXYSeries("iv", timeData, current, null);
+    resultPanel.getITChart().setTitle(getIVChartTitle(amplitude, pulseWidth));
+    resultPanel.getITChart().updateXYSeries("it", timeData, current, null);
   }
 
-  public void updateGVChartData(
-      double[] timeData, double[] conductance, int pulseWidth, double amplitude) {
+  public void updateReadPulseCaptureChartData(
+      double[] timeData,
+      double[] v1,
+      double[] v2,
+      double[] vMemristor,
+      int pulseWidth,
+      double amplitude) {
 
-    resultPanel.getGvChart().getStyler().setYAxisMax(resultModel.getyMaxGV());
-    resultPanel.getGvChart().getStyler().setYAxisMin(0.0);
-    resultPanel.getGvChart().setTitle(getGVChartTitle(amplitude, pulseWidth));
-    resultPanel.getGvChart().updateXYSeries("gv", timeData, conductance, null);
+    //  System.out.println("ResultController().updateReadPulseCaptureChartData()");
+
+    resultPanel.getReadPulseCaptureChart().updateXYSeries("V1(1+)", timeData, v1, null);
+    resultPanel.getReadPulseCaptureChart().updateXYSeries("V2(2+)", timeData, v2, null);
+    resultPanel
+        .getReadPulseCaptureChart()
+        .updateXYSeries("V_Memristor", timeData, vMemristor, null);
   }
 
   public void updateGChartData(double conductance, String resistance) {
 
+    // System.out.println("conductance=" + conductance);
+
+    if (conductance <= 0) {
+      return; //
+    }
+
+    //  System.out.println("resistance=" + resistance);
     resultModel.getGData().add(conductance);
     resultPanel.getGChart().getStyler().setYAxisMax(resultModel.getyMaxGV());
-    resultPanel.getGChart().getStyler().setYAxisMin(0.0);
+    // resultPanel.getGChart().getStyler().setYAxisMin(0.0);
+
+    // System.out.println("g: " + resultModel.getGData());
+
     resultPanel.getGChart().setTitle("G (R = " + resistance + ")");
     resultPanel.getGChart().updateXYSeries("g", null, resultModel.getGData(), null);
     resultPanel
@@ -197,14 +211,14 @@ public class ResultController {
 
   public void repaintItChart() {
 
-    resultPanel.getIvChartPanel().revalidate();
-    resultPanel.getIvChartPanel().repaint();
+    resultPanel.getITChartPanel().revalidate();
+    resultPanel.getITChartPanel().repaint();
   }
 
-  public void repaintGVChart() {
+  public void repaintReadPulseCaptureChart() {
 
-    resultPanel.getGvChartPanel().revalidate();
-    resultPanel.getGvChartPanel().repaint();
+    resultPanel.getReadPulseCaptureChartPanel().revalidate();
+    resultPanel.getReadPulseCaptureChartPanel().repaint();
   }
 
   public void repaintGChart() {
@@ -226,11 +240,6 @@ public class ResultController {
   private String getIVChartTitle(double amplitude, int pulseWidth) {
 
     return "I-V: " + getWaveform(amplitude, pulseWidth);
-  }
-
-  private String getGVChartTitle(double amplitude, int pulseWidth) {
-
-    return "G-V: " + getWaveform(amplitude, pulseWidth);
   }
 
   private String getWaveform(double amplitude, int pulseWidth) {

@@ -1,7 +1,7 @@
 ; Memristor-Discovery Inno Setup File
 
 #define MyAppName "Memristor-Discovery"
-#define MyAppVersion "2.0.0"
+#define MyAppVersion "0.0.8"
 #define MyAppPublisher "Knowm Inc."
 #define MyAppURL "https://github.com/knowm/memristor-discovery"
 #define MyAppExeName "Memristor-Discovery.exe"

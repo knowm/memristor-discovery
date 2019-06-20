@@ -33,8 +33,14 @@ public class MemristorDiscoveryPreferences {
   public static final String EXPERIMENT_INIT_STRING_KEY = "EXPERIMENT_INIT_STRING_KEY";
   public static final String EXPERIMENT_INIT_STRING_DEFAULT_VALUE = "HYSTERESIS";
   protected Preferences preferences;
+
   private String boardVersion;
   private String experiment;
+
+  /*
+   * will not compute measured values like conductance if source voltage is less than this.
+   */
+  public static final float MIN_VOLTAGE_MEASURE_AMPLITUDE = .005f;
 
   /** Constructor */
   public MemristorDiscoveryPreferences() {
@@ -59,6 +65,19 @@ public class MemristorDiscoveryPreferences {
 
   public String getBoardVersion() {
     return boardVersion;
+  }
+
+  public int getBoardVersionNumber() {
+
+    if (boardVersion.equalsIgnoreCase("v0")) {
+      return 0;
+    } else if (boardVersion.equalsIgnoreCase("v1")) {
+      return 1;
+    } else if (boardVersion.equalsIgnoreCase("v2")) {
+      return 2;
+    }
+
+    return 2;
   }
 
   public String getExperiment() {

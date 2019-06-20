@@ -81,9 +81,9 @@ public class ShelfLifeExperiment extends Experiment {
   private DecimalFormat kOhmFormat = new DecimalFormat("0.0");
 
   /** Constructor */
-  public ShelfLifeExperiment(DWFProxy dwfProxy, Container mainFrameContainer, boolean isV1Board) {
+  public ShelfLifeExperiment(DWFProxy dwfProxy, Container mainFrameContainer, int boardVersion) {
 
-    super(dwfProxy, mainFrameContainer, isV1Board);
+    super(dwfProxy, mainFrameContainer, boardVersion);
 
     controlModel = new ControlModel();
     controlPanel = new ControlPanel();
@@ -96,7 +96,8 @@ public class ShelfLifeExperiment extends Experiment {
 
     muxController = new MuxController();
     pulseUtility =
-        new PulseUtility(controlModel, dwfProxy, muxController, VOLTAGE_READ_NOISE_FLOOR);
+        new PulseUtility(
+            boardVersion, controlModel, dwfProxy, muxController, VOLTAGE_READ_NOISE_FLOOR);
   }
 
   @Override
@@ -253,7 +254,10 @@ public class ShelfLifeExperiment extends Experiment {
         csvBuilder.append("Time");
         csvBuilder.append(",");
         csvBuilder.append("SwitchTest");
-        for (int i = 1; i < 9; i++) {
+
+        int N = boardVersion == 2 ? 17 : 9;
+
+        for (int i = 1; i < N; i++) {
           csvBuilder.append(",");
           csvBuilder.append(i + "_E0");
           csvBuilder.append(",");
@@ -271,25 +275,40 @@ public class ShelfLifeExperiment extends Experiment {
 
         while (!isCancelled()) {
 
-          float[][] reads =
-              pulseUtility.testMeminline(
-                  Waveform.HalfSine,
-                  V_WRITE,
-                  V_ERASE,
-                  V_READ,
-                  PULSE_WIDTH_READ,
-                  PULSE_WIDTH_WRITE,
-                  PULSE_WIDTH_ERASE);
+          float[][] reads;
+
+          if (boardVersion == 2) {
+            reads =
+                pulseUtility.testMeminline(
+                    Waveform.HalfSine,
+                    -V_WRITE,
+                    -V_ERASE,
+                    -V_READ,
+                    PULSE_WIDTH_READ,
+                    PULSE_WIDTH_WRITE,
+                    PULSE_WIDTH_ERASE);
+          } else {
+            reads =
+                pulseUtility.testMeminline(
+                    Waveform.HalfSine,
+                    V_WRITE,
+                    V_ERASE,
+                    V_READ,
+                    PULSE_WIDTH_READ,
+                    PULSE_WIDTH_WRITE,
+                    PULSE_WIDTH_ERASE);
+          }
+
           MemristorTestResult[] result =
               PostProcessDataUtils.categorizeMemristorTestReads(
-                  reads, minEraseResistance, maxWriteResistance, 1000f);
+                  reads, minEraseResistance, maxWriteResistance, 150f);
 
           csvBuilder = new StringBuilder();
           csvBuilder.append(dateFormat.format(new Date()));
           csvBuilder.append(",");
           csvBuilder.append(result[0]);
 
-          for (int i = 1; i < 9; i++) {
+          for (int i = 1; i < N; i++) {
             csvBuilder.append(",");
             csvBuilder.append(formatResistance(reads[0][i]));
             csvBuilder.append(",");

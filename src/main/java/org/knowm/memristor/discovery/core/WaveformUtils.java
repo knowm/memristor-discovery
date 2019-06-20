@@ -67,11 +67,11 @@ public class WaveformUtils {
   public static double[] generateCustomPulse(
       Waveform waveform, double amplitude, double pulseWidthInNS, double dutyCycle) {
 
-    System.out.println("generateCustomPulse");
-    System.out.println("pulseWidth=" + pulseWidthInNS);
-    System.out.println("dutyCycle=" + dutyCycle);
-    System.out.println("amplitude=" + amplitude);
-    System.out.println("waveform=" + waveform);
+    //    System.out.println("generateCustomPulse");
+    //    System.out.println("pulseWidth=" + pulseWidthInNS);
+    //    System.out.println("dutyCycle=" + dutyCycle);
+    //    System.out.println("amplitude=" + amplitude);
+    //    System.out.println("waveform=" + waveform);
 
     Driver driver;
     switch (waveform) {
@@ -82,7 +82,8 @@ public class WaveformUtils {
         driver = new SquareDecayPulse("SquareDecay", 0, pulseWidthInNS, dutyCycle, amplitude);
         break;
       case SquareLongDecay:
-        driver = new SquareLongDecayPulse("SquareLongDecay", 0, pulseWidthInNS, dutyCycle, amplitude);
+        driver =
+            new SquareLongDecayPulse("SquareLongDecay", 0, pulseWidthInNS, dutyCycle, amplitude);
         break;
       case Triangle:
         driver = new TrianglePulse("Triangle", 0, pulseWidthInNS, dutyCycle, amplitude);
