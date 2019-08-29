@@ -21,13 +21,13 @@
  * <p>If you have any questions regarding our licensing policy, please contact us at
  * `contact@knowm.org`.
  */
-package org.knowm.memristor.discovery.gui.mvc.experiments.synapse12;
+package org.knowm.memristor.discovery.gui.mvc.experiments.ktbitsatsolver;
 
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.core.Util;
 import org.knowm.memristor.discovery.core.WaveformUtils;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
-import org.knowm.memristor.discovery.gui.mvc.experiments.synapse12.control.ControlModel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.ktbitsatsolver.control.ControlModel;
 import org.knowm.waveforms4j.DWF;
 
 public class KTRAM_Controller_12 {
@@ -38,99 +38,81 @@ public class KTRAM_Controller_12 {
   private double ga;
   private double gb;
 
-  private int switchA;
-  private int switchB;
+  // 0-7
+  private SpikePattern spikePattern;
 
   public KTRAM_Controller_12(ControlModel controlModel) {
 
     this.controlModel = controlModel;
   }
 
-  public void executeInstruction(Instruction12 instruction) {
+  public void executeInstruction(SpikePattern spikePattern, Instruction instruction) {
 
-    if (instruction == Instruction12.HEBBIAN) {
+    this.spikePattern = spikePattern;
+
+    if (instruction == Instruction.HEBBIAN) {
       if (ga >= gb) {//state is positive. make more positive.
-        execute(Instruction12.FA);//increase conductance of A
-        execute(Instruction12.RB);//decrease conductance of B
+        execute(Instruction.FA);//increase conductance of A
+        execute(Instruction.RB);//decrease conductance of B
       } else if (ga < gb) {//state is negative. make more negative.
-        execute(Instruction12.RA);//decrease conductance of A
-        execute(Instruction12.FB);//increase conductance of B
+        execute(Instruction.RA);//decrease conductance of A
+        execute(Instruction.FB);//increase conductance of B
       }
-    } else if (instruction == Instruction12.ANTI_HEBBIAN) {
+    } else if (instruction == Instruction.ANTI_HEBBIAN) {
       if (ga >= gb) {//state is positive. Make less positive.
-        execute(Instruction12.RA);//decrease conductance of A
-        execute(Instruction12.FB);//increase conductance of B
+        execute(Instruction.RA);//decrease conductance of A
+        execute(Instruction.FB);//increase conductance of B
       } else if (ga < gb) {//state is negative. make less negative.
-        execute(Instruction12.FA);//increase conductance of A
-        execute(Instruction12.RB);//decrease conductance of B
+        execute(Instruction.FA);//increase conductance of A
+        execute(Instruction.RB);//decrease conductance of B
       }
     } else {
       execute(instruction);
     }
+
   }
 
-  public boolean readSwitchStates() {
-
-    switchA = -1;
-    switchB = -1;
-
-    String s = Integer.toBinaryString(dWFProxy.getDigitalIOStates());
-
-    int count = 0;
-    for (int i = s.length() - 1; i >= 0; i--) {
-      if (s.charAt(i) == '1') {
-        count++;
-        int idx = s.length() - 1 - i;
-        if (switchA == -1) {
-          switchA = idx;
-        } else {
-          switchB = idx;
-        }
-      }
-    }
-
-    if (count != 2) {
-      return false;
-    }
-
-    if (switchA > 7) {
-      return false;
-    }
-    if (switchB < 8) {
-      return false;
-    }
-
-    return true;
-  }
-
-  private void execute(Instruction12 instruction) {
+  private void execute(Instruction instruction) {
 
     getControlModel().swingPropertyChangeSupport.firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null, "Executing Instruction: " + instruction);
 
     double W1Amplitude;
 
-    // turn off switches and invert pulse if necessary
+    dWFProxy.turnOffAllSwitches(2);
 
-    if (instruction == Instruction12.FLV) {
+    dWFProxy.update2DigitalIOStatesAtOnce(spikePattern.spikes, true);
+    dWFProxy.update2DigitalIOStatesAtOnce(spikePattern.spikes, 8, true); // 8 is the offset
+
+    // turn off switches and invert pulse if necessary
+    if (instruction == Instruction.FLV) {
       W1Amplitude = -.08f;
-    } else if (instruction == Instruction12.RLV) {
+    } else if (instruction == Instruction.RLV) {
       W1Amplitude = .08f;
-    } else if (instruction == Instruction12.FAB) {
+    } else if (instruction == Instruction.FAB) {
       W1Amplitude = -controlModel.getForwardAmplitude();
-    } else if (instruction == Instruction12.RAB) {
+    } else if (instruction == Instruction.RAB) {
       W1Amplitude = controlModel.getReverseAmplitude();
-    } else if (instruction == Instruction12.FA) {
+    } else if (instruction == Instruction.FA) {
       W1Amplitude = -controlModel.getForwardAmplitude();
-      dWFProxy.update2DigitalIOStatesAtOnce(switchB, false);
-    } else if (instruction == Instruction12.FB) {
+
+      // turn off B spikes
+      dWFProxy.update2DigitalIOStatesAtOnce(spikePattern.spikes, 8, false);
+
+    } else if (instruction == Instruction.FB) {
       W1Amplitude = -controlModel.getForwardAmplitude();
-      dWFProxy.update2DigitalIOStatesAtOnce(switchA, false);
-    } else if (instruction == Instruction12.RA) {
+      // turn off A spikes
+      dWFProxy.update2DigitalIOStatesAtOnce(spikePattern.spikes, false);
+
+    } else if (instruction == Instruction.RA) {
       W1Amplitude = controlModel.getReverseAmplitude();
-      dWFProxy.update2DigitalIOStatesAtOnce(switchB, false);
-    } else if (instruction == Instruction12.RB) {
+      // turn off B spikes
+      dWFProxy.update2DigitalIOStatesAtOnce(spikePattern.spikes, 8, false);
+
+    } else if (instruction == Instruction.RB) {
       W1Amplitude = controlModel.getReverseAmplitude();
-      dWFProxy.update2DigitalIOStatesAtOnce(switchA, false);
+      // turn off A spikes
+      dWFProxy.update2DigitalIOStatesAtOnce(spikePattern.spikes, false);
+
     } else { // default is forward read.
       W1Amplitude = -.08f;
     }
@@ -146,27 +128,16 @@ public class KTRAM_Controller_12 {
     boolean success = dWFProxy.capturePulseData(controlModel.getCalculatedFrequency(), 1);
     if (success) {
 
-      if (instruction == Instruction12.FLV || instruction == Instruction12.RLV) {
+      if (instruction == Instruction.FLV || instruction == Instruction.RLV) {
         setVy(W1Amplitude);
       }
 
-      // setVy(W1Amplitude);
     } else {
       getControlModel().swingPropertyChangeSupport.firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null,
           "Capture has failed! This is usually due to noise/interference. Try a shorter cable or use a magnetic choke.");
     }
 
-    // turn back on switches
-    if (instruction == Instruction12.FA) {
-      dWFProxy.update2DigitalIOStatesAtOnce(switchB, true);
-    } else if (instruction == Instruction12.FB) {
-      dWFProxy.update2DigitalIOStatesAtOnce(switchA, true);
-    } else if (instruction == Instruction12.RA) {
-      dWFProxy.update2DigitalIOStatesAtOnce(switchB, true);
-    } else if (instruction == Instruction12.RB) {
-      dWFProxy.update2DigitalIOStatesAtOnce(switchA, true);
-    }
-
+    dWFProxy.turnOffAllSwitches(2);
     /*
      * must wait here to allow pulses from AWG to finish. Should take no more that one ms...
      */
@@ -242,12 +213,12 @@ public class KTRAM_Controller_12 {
     this.gb = gb;
   }
 
-  public enum Instruction12 {
+  public enum Instruction {
 
     // @formatter:off
     FLV, FA, FB, FAB, RLV, RA, RB, RAB, HEBBIAN, ANTI_HEBBIAN;
 
-    Instruction12() {
+    Instruction() {
     }
   }
 }
