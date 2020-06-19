@@ -186,8 +186,10 @@ public class PulseExperiment extends Experiment {
       // ////////////////////////////////
 
       int samplesPerPulse = 200;
+    
       double sampleFrequency = controlModel.getCalculatedFrequency() * samplesPerPulse;
       boolean isScale2V = Math.abs(controlModel.getAmplitude()) <= 2.5;
+     
       int bufferSize = samplesPerPulse * controlModel.getPulseNumber() + samplesPerPulse;
 
       dwfProxy
