@@ -42,8 +42,6 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.W
 
 /**
  * Provides controls for running the control
- *
- * @author timmolter
  */
 public class ControlPanel extends ControlView {
 

@@ -46,8 +46,6 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.synapse21.KTRAM_Control
 
 /**
  * Provides controls for running the control
- *
- * @author timmolter
  */
 public class ControlPanel extends ControlView {
 

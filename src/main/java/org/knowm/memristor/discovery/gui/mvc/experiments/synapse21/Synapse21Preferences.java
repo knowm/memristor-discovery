@@ -27,8 +27,6 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 
 /**
  * Stores various operational preferences
- *
- * @author timmolter
  */
 public class Synapse21Preferences extends ExperimentPreferences {
 

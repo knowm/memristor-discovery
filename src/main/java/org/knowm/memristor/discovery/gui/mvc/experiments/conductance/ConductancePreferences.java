@@ -28,8 +28,6 @@ import org.knowm.waveforms4j.DWF;
 
 /**
  * Stores various operational preferences
- *
- * @author timmolter
  */
 public class ConductancePreferences extends ExperimentPreferences {
 

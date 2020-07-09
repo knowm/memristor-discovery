@@ -23,7 +23,6 @@
  */
 package org.knowm.memristor.discovery.core.driver.waveform;
 
-/** @author timmolter */
 public class Arbitrary extends WaveformDriver {
 
   private final double[] activePhases;

@@ -25,7 +25,6 @@ package org.knowm.memristor.discovery.core;
 
 import java.util.List;
 
-/** @author alexnugent */
 public class AveMaxMinVar {
 
   private float max = 0;

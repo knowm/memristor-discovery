@@ -23,7 +23,6 @@
  */
 package org.knowm.memristor.discovery.core.driver;
 
-/** @author timmolter */
 public abstract class Driver {
 
   protected final String id;

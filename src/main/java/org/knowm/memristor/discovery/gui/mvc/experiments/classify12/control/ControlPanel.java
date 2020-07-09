@@ -42,8 +42,6 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.classify12.Classify12Pr
 
 /**
  * Provides controls for running the control
- *
- * @author alexnugent
  */
 public class ControlPanel extends ControlView {
 

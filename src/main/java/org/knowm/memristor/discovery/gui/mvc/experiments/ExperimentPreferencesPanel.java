@@ -38,8 +38,6 @@ import javax.swing.border.EmptyBorder;
 
 /**
  * Experiment Preferences
- *
- * @author timmolter
  */
 public abstract class ExperimentPreferencesPanel extends JDialog {
 
