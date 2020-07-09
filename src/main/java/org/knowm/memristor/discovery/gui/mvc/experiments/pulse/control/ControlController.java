@@ -232,7 +232,7 @@ public class ControlController extends Controller {
                       .getPulseNumberSlider()
                       .setBorder(
                           BorderFactory.createTitledBorder(
-                              "Pulse Number = " + controlModel.getPulseNumber()));
+                              "Read Pulse Number = " + controlModel.getPulseNumber()));
                 }
               }
             });

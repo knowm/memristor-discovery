@@ -25,7 +25,6 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.ktbitsatsolver.result;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 
@@ -43,8 +42,7 @@ public class ResultModel extends Model {
   }
 
   @Override
-  public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {
-  }
+  public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {}
 
   public List<Double> getNumSatisfied() {
     return numSatisfied;

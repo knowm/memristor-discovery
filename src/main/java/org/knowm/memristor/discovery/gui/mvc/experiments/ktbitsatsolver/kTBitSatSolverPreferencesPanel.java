@@ -29,13 +29,11 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
 import org.knowm.memristor.discovery.core.FileUtils;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferencesPanel;
@@ -88,26 +86,34 @@ public class kTBitSatSolverPreferencesPanel extends ExperimentPreferencesPanel {
     gc.gridx = 1;
     preferencesPanel.add(filePathButton, gc);
 
-    filePathButton.addActionListener(new ActionListener() {
+    filePathButton.addActionListener(
+        new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+          @Override
+          public void actionPerformed(ActionEvent e) {
 
-        try {
-          filePath = FileUtils.showPickFileDialog(preferencesPanel, filePathLabel.getText(), ControlController.getSATFileFilter());
-          filePathTextField.setText(filePath);
-        } catch (IOException e1) {
-          e1.printStackTrace();
-        }
-      }
-    });
+            try {
+              filePath =
+                  FileUtils.showPickFileDialog(
+                      preferencesPanel,
+                      filePathLabel.getText(),
+                      ControlController.getSATFileFilter());
+              filePathTextField.setText(filePath);
+            } catch (IOException e1) {
+              e1.printStackTrace();
+            }
+          }
+        });
     gc.gridy++;
     gc.gridx = 0;
     gc.gridwidth = 2;
 
     this.filePathTextField = new JTextField(24);
-    this.filePathTextField.setText(String.valueOf(
-        experimentPreferences.getString(kTBitSatSolverPreferences.FILE_PATH_INIT_KEY, kTBitSatSolverPreferences.FILE_PATH_INIT_DEFAULT_VALUE)));
+    this.filePathTextField.setText(
+        String.valueOf(
+            experimentPreferences.getString(
+                kTBitSatSolverPreferences.FILE_PATH_INIT_KEY,
+                kTBitSatSolverPreferences.FILE_PATH_INIT_DEFAULT_VALUE)));
 
     preferencesPanel.add(filePathTextField, gc);
 
@@ -120,8 +126,11 @@ public class kTBitSatSolverPreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.seriesResistorTextField = new JTextField(12);
-    this.seriesResistorTextField.setText(String.valueOf(
-        experimentPreferences.getInteger(kTBitSatSolverPreferences.SERIES_R_INIT_KEY, kTBitSatSolverPreferences.SERIES_R_INIT_DEFAULT_VALUE)));
+    this.seriesResistorTextField.setText(
+        String.valueOf(
+            experimentPreferences.getInteger(
+                kTBitSatSolverPreferences.SERIES_R_INIT_KEY,
+                kTBitSatSolverPreferences.SERIES_R_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(seriesResistorTextField, gc);
 
     gc.gridy++;
@@ -131,8 +140,11 @@ public class kTBitSatSolverPreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.amplitudeTextField = new JTextField(12);
-    this.amplitudeTextField.setText(String.valueOf(experimentPreferences.getFloat(kTBitSatSolverPreferences.AMPLITUDE_INIT_FLOAT_KEY,
-        kTBitSatSolverPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
+    this.amplitudeTextField.setText(
+        String.valueOf(
+            experimentPreferences.getFloat(
+                kTBitSatSolverPreferences.AMPLITUDE_INIT_FLOAT_KEY,
+                kTBitSatSolverPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE)));
     preferencesPanel.add(amplitudeTextField, gc);
 
     gc.gridy++;
@@ -143,8 +155,11 @@ public class kTBitSatSolverPreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.amplitudeReverseTextField = new JTextField(12);
-    this.amplitudeReverseTextField.setText(String.valueOf(experimentPreferences.getFloat(kTBitSatSolverPreferences.AMPLITUDE_REVERSE_INIT_FLOAT_KEY,
-        kTBitSatSolverPreferences.AMPLITUDE_REVERSE_INIT_FLOAT_DEFAULT_VALUE)));
+    this.amplitudeReverseTextField.setText(
+        String.valueOf(
+            experimentPreferences.getFloat(
+                kTBitSatSolverPreferences.AMPLITUDE_REVERSE_INIT_FLOAT_KEY,
+                kTBitSatSolverPreferences.AMPLITUDE_REVERSE_INIT_FLOAT_DEFAULT_VALUE)));
     preferencesPanel.add(amplitudeReverseTextField, gc);
 
     gc.gridy++;
@@ -155,21 +170,30 @@ public class kTBitSatSolverPreferencesPanel extends ExperimentPreferencesPanel {
 
     gc.gridx = 1;
     this.pulseWidthTextField = new JTextField(12);
-    this.pulseWidthTextField.setText(String.valueOf(
-        experimentPreferences.getInteger(kTBitSatSolverPreferences.PULSE_WIDTH_INIT_KEY, kTBitSatSolverPreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE)));
+    this.pulseWidthTextField.setText(
+        String.valueOf(
+            experimentPreferences.getInteger(
+                kTBitSatSolverPreferences.PULSE_WIDTH_INIT_KEY,
+                kTBitSatSolverPreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(pulseWidthTextField, gc);
 
     gc.gridy++;
-
   }
 
   @Override
   public void doSavePreferences() {
 
-    experimentPreferences.setString(kTBitSatSolverPreferences.FILE_PATH_INIT_KEY, filePathTextField.getText().trim());
-    experimentPreferences.setInteger(kTBitSatSolverPreferences.SERIES_R_INIT_KEY, Integer.parseInt(seriesResistorTextField.getText()));
-    experimentPreferences.setFloat(kTBitSatSolverPreferences.AMPLITUDE_INIT_FLOAT_KEY, Float.parseFloat(amplitudeTextField.getText()));
-    experimentPreferences.setInteger(kTBitSatSolverPreferences.PULSE_WIDTH_INIT_KEY, Integer.parseInt(pulseWidthTextField.getText()));
+    experimentPreferences.setString(
+        kTBitSatSolverPreferences.FILE_PATH_INIT_KEY, filePathTextField.getText().trim());
+    experimentPreferences.setInteger(
+        kTBitSatSolverPreferences.SERIES_R_INIT_KEY,
+        Integer.parseInt(seriesResistorTextField.getText()));
+    experimentPreferences.setFloat(
+        kTBitSatSolverPreferences.AMPLITUDE_INIT_FLOAT_KEY,
+        Float.parseFloat(amplitudeTextField.getText()));
+    experimentPreferences.setInteger(
+        kTBitSatSolverPreferences.PULSE_WIDTH_INIT_KEY,
+        Integer.parseInt(pulseWidthTextField.getText()));
   }
 
   @Override

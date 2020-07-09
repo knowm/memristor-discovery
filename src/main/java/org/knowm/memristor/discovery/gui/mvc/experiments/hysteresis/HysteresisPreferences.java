@@ -25,9 +25,7 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.hysteresis;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 
-/**
- * Stores various operational preferences
- */
+/** Stores various operational preferences */
 public class HysteresisPreferences extends ExperimentPreferences {
 
   // NOT YET IN PREFERENCES

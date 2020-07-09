@@ -28,9 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 
-/**
- * Stores various operational preferences
- */
+/** Stores various operational preferences */
 public class Classify12Preferences extends ExperimentPreferences {
 
   public static final String WAVEFORM_INIT_STRING_DEFAULT_VALUE = "HalfSine";

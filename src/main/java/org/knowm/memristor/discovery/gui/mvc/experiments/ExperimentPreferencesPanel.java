@@ -36,9 +36,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-/**
- * Experiment Preferences
- */
+/** Experiment Preferences */
 public abstract class ExperimentPreferencesPanel extends JDialog {
 
   public static final int ID_OK = 1;

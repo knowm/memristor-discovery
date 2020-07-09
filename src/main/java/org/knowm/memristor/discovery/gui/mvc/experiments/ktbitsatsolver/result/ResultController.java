@@ -41,7 +41,9 @@ public class ResultController {
   }
 
   public void updateConstraintsSatisfiedChart() {
-    resultPanel.getNumSatisfiedChart().updateXYSeries("Constraints Satisfied", null, resultModel.getNumSatisfied(), null);
+    resultPanel
+        .getNumSatisfiedChart()
+        .updateXYSeries("Constraints Satisfied", null, resultModel.getNumSatisfied(), null);
     resultPanel.repaint();
   }
 
@@ -50,7 +52,10 @@ public class ResultController {
     resultModel.addSynapticWeightValues(synapseValues);
 
     for (int i = 0; i < 8; i++) {
-      resultPanel.getSynapticWeightsChart().updateXYSeries("kT-Synapse " + (i + 1), null, resultModel.getSynapseWeightHistory(i), null);
+      resultPanel
+          .getSynapticWeightsChart()
+          .updateXYSeries(
+              "kT-Synapse " + (i + 1), null, resultModel.getSynapseWeightHistory(i), null);
     }
     resultPanel.repaint();
   }

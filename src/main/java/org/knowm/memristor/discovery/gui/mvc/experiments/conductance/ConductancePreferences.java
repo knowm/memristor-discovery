@@ -26,9 +26,7 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.conductance;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.waveforms4j.DWF;
 
-/**
- * Stores various operational preferences
- */
+/** Stores various operational preferences */
 public class ConductancePreferences extends ExperimentPreferences {
 
   public static final String RESET_PULSE_TYPE_INIT_STRING_DEFAULT_VALUE = "Sawtooth";

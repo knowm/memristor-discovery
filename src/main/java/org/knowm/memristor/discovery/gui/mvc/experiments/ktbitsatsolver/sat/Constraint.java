@@ -49,7 +49,6 @@ public class Constraint {
 
     l3.add(this);
     map.put(Math.abs(c), l3);
-
   }
 
   public boolean isSatisfied() {
@@ -61,7 +60,7 @@ public class Constraint {
     //    System.out.println("setSatisfied");
     //    System.out.println("(a,b,c) = " + a + "," + b + "," + c);
 
-    //constraints are '1' indexed not '0' indexed...
+    // constraints are '1' indexed not '0' indexed...
     if (kTBits[Math.abs(a) - 1] * a > 0) {
       satisfied = true;
     } else if (kTBits[Math.abs(b) - 1] * b > 0) {
@@ -71,7 +70,5 @@ public class Constraint {
     } else {
       satisfied = false;
     }
-
   }
-
 }

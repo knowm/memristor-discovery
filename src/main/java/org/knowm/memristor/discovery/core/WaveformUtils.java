@@ -116,8 +116,7 @@ public class WaveformUtils {
 
     do {
       double time = counter * timeInc;
-      customWaveform[counter] =
-          driver.getSignal(time);
+      customWaveform[counter] = driver.getSignal(time);
 
     } while (++counter < 4096);
     return customWaveform;

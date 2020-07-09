@@ -49,20 +49,20 @@ public class KTRAM_Controller_12 {
   public void executeInstruction(Instruction12 instruction) {
 
     if (instruction == Instruction12.HEBBIAN) {
-      if (ga >= gb) {//state is positive. make more positive.
-        execute(Instruction12.FA);//increase conductance of A
-        execute(Instruction12.RB);//decrease conductance of B
-      } else if (ga < gb) {//state is negative. make more negative.
-        execute(Instruction12.RA);//decrease conductance of A
-        execute(Instruction12.FB);//increase conductance of B
+      if (ga >= gb) { // state is positive. make more positive.
+        execute(Instruction12.FA); // increase conductance of A
+        execute(Instruction12.RB); // decrease conductance of B
+      } else if (ga < gb) { // state is negative. make more negative.
+        execute(Instruction12.RA); // decrease conductance of A
+        execute(Instruction12.FB); // increase conductance of B
       }
     } else if (instruction == Instruction12.ANTI_HEBBIAN) {
-      if (ga >= gb) {//state is positive. Make less positive.
-        execute(Instruction12.RA);//decrease conductance of A
-        execute(Instruction12.FB);//increase conductance of B
-      } else if (ga < gb) {//state is negative. make less negative.
-        execute(Instruction12.FA);//increase conductance of A
-        execute(Instruction12.RB);//decrease conductance of B
+      if (ga >= gb) { // state is positive. Make less positive.
+        execute(Instruction12.RA); // decrease conductance of A
+        execute(Instruction12.FB); // increase conductance of B
+      } else if (ga < gb) { // state is negative. make less negative.
+        execute(Instruction12.FA); // increase conductance of A
+        execute(Instruction12.RB); // decrease conductance of B
       }
     } else {
       execute(instruction);
@@ -105,7 +105,10 @@ public class KTRAM_Controller_12 {
 
   private void execute(Instruction12 instruction) {
 
-    getControlModel().swingPropertyChangeSupport.firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null, "Executing Instruction: " + instruction);
+    getControlModel()
+        .swingPropertyChangeSupport
+        .firePropertyChange(
+            Model.EVENT_NEW_CONSOLE_LOG, null, "Executing Instruction: " + instruction);
 
     double W1Amplitude;
 
@@ -135,12 +138,19 @@ public class KTRAM_Controller_12 {
       W1Amplitude = -.08f;
     }
 
-    double[] W1 = WaveformUtils.generateCustomWaveform(controlModel.getWaveform(), W1Amplitude, controlModel.getCalculatedFrequency());
+    double[] W1 =
+        WaveformUtils.generateCustomWaveform(
+            controlModel.getWaveform(), W1Amplitude, controlModel.getCalculatedFrequency());
 
-    dWFProxy.getDwf().startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency() * 300,
-        300 * 1, true);
+    dWFProxy
+        .getDwf()
+        .startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(
+            DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency() * 300, 300 * 1, true);
     dWFProxy.waitUntilArmed();
-    dWFProxy.getDwf().setCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, 1, W1);
+    dWFProxy
+        .getDwf()
+        .setCustomPulseTrain(
+            DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, 1, W1);
     dWFProxy.getDwf().startPulseTrain(DWF.WAVEFORM_CHANNEL_1);
 
     boolean success = dWFProxy.capturePulseData(controlModel.getCalculatedFrequency(), 1);
@@ -152,8 +162,12 @@ public class KTRAM_Controller_12 {
 
       // setVy(W1Amplitude);
     } else {
-      getControlModel().swingPropertyChangeSupport.firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null,
-          "Capture has failed! This is usually due to noise/interference. Try a shorter cable or use a magnetic choke.");
+      getControlModel()
+          .swingPropertyChangeSupport
+          .firePropertyChange(
+              Model.EVENT_NEW_CONSOLE_LOG,
+              null,
+              "Capture has failed! This is usually due to noise/interference. Try a shorter cable or use a magnetic choke.");
     }
 
     // turn back on switches
@@ -186,8 +200,12 @@ public class KTRAM_Controller_12 {
 
     int validSamples = dWFProxy.getDwf().FDwfAnalogInStatusSamplesValid();
 
-    double peakV1 = Util.maxAbs(dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples));
-    double peakV2 = Util.maxAbs(dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples));
+    double peakV1 =
+        Util.maxAbs(
+            dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples));
+    double peakV2 =
+        Util.maxAbs(
+            dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples));
 
     this.vy = -(peakV1 - peakV2) / W1Amplitude;
 
@@ -245,9 +263,17 @@ public class KTRAM_Controller_12 {
   public enum Instruction12 {
 
     // @formatter:off
-    FLV, FA, FB, FAB, RLV, RA, RB, RAB, HEBBIAN, ANTI_HEBBIAN;
+    FLV,
+    FA,
+    FB,
+    FAB,
+    RLV,
+    RA,
+    RB,
+    RAB,
+    HEBBIAN,
+    ANTI_HEBBIAN;
 
-    Instruction12() {
-    }
+    Instruction12() {}
   }
 }

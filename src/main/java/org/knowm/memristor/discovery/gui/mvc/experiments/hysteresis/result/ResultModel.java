@@ -32,6 +32,7 @@ public class ResultModel extends Model {
 
   /** Min Max params */
   Double yMaxIV = null;
+
   Double yMinIV = null;
   Double yMaxGV = null;
   Double yMinGV = null;

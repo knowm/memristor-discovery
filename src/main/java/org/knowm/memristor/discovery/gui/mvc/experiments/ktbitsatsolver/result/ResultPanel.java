@@ -26,10 +26,8 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.ktbitsatsolver.result;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.util.Arrays;
-
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
-
 import org.knowm.xchart.XChartPanel;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
@@ -51,11 +49,18 @@ public class ResultPanel extends JPanel {
     setLayout(new GridLayout(2, 1));
     setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
 
-    numConstraintsSatisfiedChart = new XYChartBuilder().width(200).title("Constraints Satisfied vs Time").height(200).xAxisTitle("Time Step")
-        .yAxisTitle("Constraints Satisfied").build();
+    numConstraintsSatisfiedChart =
+        new XYChartBuilder()
+            .width(200)
+            .title("Constraints Satisfied vs Time")
+            .height(200)
+            .xAxisTitle("Time Step")
+            .yAxisTitle("Constraints Satisfied")
+            .build();
     numConstraintsSatisfiedChart.getStyler().setLegendVisible(false);
 
-    XYSeries series1 = numConstraintsSatisfiedChart.addSeries("Constraints Satisfied", null, Arrays.asList(0.0));
+    XYSeries series1 =
+        numConstraintsSatisfiedChart.addSeries("Constraints Satisfied", null, Arrays.asList(0.0));
     series1.setMarker(SeriesMarkers.NONE);
     series1.setLineWidth(1f);
 
@@ -63,11 +68,19 @@ public class ResultPanel extends JPanel {
     trainChartPanel.setLayout(new BorderLayout());
     add(trainChartPanel, BorderLayout.CENTER);
 
-    synapticWeightsChart = new XYChartBuilder().width(200).title("kT-Synapse Value").height(200).xAxisTitle("Time").yAxisTitle("Value").build();
+    synapticWeightsChart =
+        new XYChartBuilder()
+            .width(200)
+            .title("kT-Synapse Value")
+            .height(200)
+            .xAxisTitle("Time")
+            .yAxisTitle("Value")
+            .build();
     synapticWeightsChart.getStyler().setLegendVisible(true);
 
     for (int i = 0; i < 8; i++) {
-      XYSeries series = synapticWeightsChart.addSeries("kT-Synapse " + (i + 1), null, Arrays.asList(0.0));
+      XYSeries series =
+          synapticWeightsChart.addSeries("kT-Synapse " + (i + 1), null, Arrays.asList(0.0));
       series.setMarker(SeriesMarkers.NONE);
       series.setLineWidth(1f);
     }
@@ -84,5 +97,4 @@ public class ResultPanel extends JPanel {
   public XYChart getNumSatisfiedChart() {
     return numConstraintsSatisfiedChart;
   }
-
 }

@@ -25,9 +25,7 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.pulse;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 
-/**
- * Stores various operational preferences
- */
+/** Stores various operational preferences */
 public class PulsePreferences extends ExperimentPreferences {
 
   // NOT YET IN PREFERENCES

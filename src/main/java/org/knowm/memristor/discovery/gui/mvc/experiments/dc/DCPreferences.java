@@ -25,9 +25,7 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.dc;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 
-/**
- * Stores various operational preferences
- */
+/** Stores various operational preferences */
 public class DCPreferences extends ExperimentPreferences {
 
   public static final String WAVEFORM_INIT_STRING_DEFAULT_VALUE = "SawtoothUpDown";

@@ -166,7 +166,7 @@ public class ResultPanel extends JPanel {
             .width(600)
             .height(300)
             .title("G")
-            .xAxisTitle("Pulse Number")
+            .xAxisTitle("Read Pulse Number")
             .yAxisTitle("Conductance [" + PulsePreferences.CONDUCTANCE_UNIT.getLabel() + "]")
             .build();
     gChart.getStyler().setLegendVisible(false);

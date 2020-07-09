@@ -52,7 +52,8 @@ import org.knowm.waveforms4j.DWF;
 
 public class BoardCheckExperiment extends Experiment {
 
-  private static final float V_MUX_TEST = 1.5f; // the voltage used to test the waveform generators/muxes
+  private static final float V_MUX_TEST =
+      1.5f; // the voltage used to test the waveform generators/muxes
   private static final float V_READ = .1f;
   private static final float V_WRITE = 1.5f;
   private static final float V_RESET = -2f;
@@ -68,7 +69,8 @@ public class BoardCheckExperiment extends Experiment {
   private float MIN_Q = 2; // minimum ratio between erase/write resistance
   private float MEMINLINE_MIN_R = 10; // if all states are below this (kiloohms), its stuck low
   private float MEMINLINE_MAX_R = 100; // if all state are above this (kilohms), its stuck low
-  private float MEMINLINE_MIN_SWITCH_OFF = 1000; // if switch is below this resistance (kOhm) when OFF then its a bad switch
+  private float MEMINLINE_MIN_SWITCH_OFF =
+      1000; // if switch is below this resistance (kOhm) when OFF then its a bad switch
   private int meminline_numFailed = 0;
   private int COL_WIDTH = 10;
   private DecimalFormat qFormat = new DecimalFormat("0.00 X");
@@ -114,12 +116,17 @@ public class BoardCheckExperiment extends Experiment {
 
     muxController = new MuxController();
 
-    pulseUtility = new PulseUtility(boardVersion, controlModel, dwfProxy, muxController, MemristorDiscoveryPreferences.MIN_VOLTAGE_MEASURE_AMPLITUDE);
+    pulseUtility =
+        new PulseUtility(
+            boardVersion,
+            controlModel,
+            dwfProxy,
+            muxController,
+            MemristorDiscoveryPreferences.MIN_VOLTAGE_MEASURE_AMPLITUDE);
   }
 
   @Override
-  public void doCreateAndShowGUI() {
-  }
+  public void doCreateAndShowGUI() {}
 
   /*
    * Here action listeners are attached to the widgets in the control panel and mapped to a worker, also defined here in the experiment.
@@ -157,45 +164,49 @@ public class BoardCheckExperiment extends Experiment {
     //      }
     //    });
 
-    controlPanel.meminlineTestButton.addActionListener(new ActionListener() {
+    controlPanel.meminlineTestButton.addActionListener(
+        new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+          @Override
+          public void actionPerformed(ActionEvent e) {
 
-        meminlineTestWorker = new MeminlineTestWorker();
-        meminlineTestWorker.execute();
-      }
-    });
+            meminlineTestWorker = new MeminlineTestWorker();
+            meminlineTestWorker.execute();
+          }
+        });
 
-    controlPanel.muxTestButton.addActionListener(new ActionListener() {
+    controlPanel.muxTestButton.addActionListener(
+        new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+          @Override
+          public void actionPerformed(ActionEvent e) {
 
-        muxTestWorker = new MuxDiagnosticWorker();
-        muxTestWorker.execute();
-      }
-    });
+            muxTestWorker = new MuxDiagnosticWorker();
+            muxTestWorker.execute();
+          }
+        });
 
-    controlPanel.switchTestButton.addActionListener(new ActionListener() {
+    controlPanel.switchTestButton.addActionListener(
+        new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+          @Override
+          public void actionPerformed(ActionEvent e) {
 
-        switchTestWorker = new SwitchDiagnosticWorker();
-        switchTestWorker.execute();
-      }
-    });
+            switchTestWorker = new SwitchDiagnosticWorker();
+            switchTestWorker.execute();
+          }
+        });
 
-    controlPanel.clearConsolButton.addActionListener(new ActionListener() {
+    controlPanel.clearConsolButton.addActionListener(
+        new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+          @Override
+          public void actionPerformed(ActionEvent e) {
 
-        clearConsoleWorker = new ClearConsoleWorker();
-        clearConsoleWorker.execute();
-      }
-    });
+            clearConsoleWorker = new ClearConsoleWorker();
+            clearConsoleWorker.execute();
+          }
+        });
   }
 
   float[] measureMuxDeviation(int dWFWaveformChannel, Destination destination) {
@@ -213,13 +224,17 @@ public class BoardCheckExperiment extends Experiment {
 
     dwfProxy.setUpper8IOStates(muxController.getGPIOConfig());
 
-    float[] scopeReading = pulseUtility.getScopesAverageVoltage(Waveform.Square, V_MUX_TEST, PULSE_WIDTH_IN_MICRO_SECONDS, dWFWaveformChannel);
+    float[] scopeReading =
+        pulseUtility.getScopesAverageVoltage(
+            Waveform.Square, V_MUX_TEST, PULSE_WIDTH_IN_MICRO_SECONDS, dWFWaveformChannel);
 
     if (scopeReading == null) {
       resultController.addNewLine("Pulse capture failed. This is usually a triggering issue.");
     }
 
-    return new float[]{Math.abs(scopeReading[0] - V_MUX_TEST), Math.abs(scopeReading[1] - V_MUX_TEST)};
+    return new float[] {
+      Math.abs(scopeReading[0] - V_MUX_TEST), Math.abs(scopeReading[1] - V_MUX_TEST)
+    };
   }
 
   private boolean isWithenPercentPercent(float value, float reference, float percent) {
@@ -246,8 +261,9 @@ public class BoardCheckExperiment extends Experiment {
   }
 
   /**
-   * These property change events are triggered in the controlModel in the case where the underlying controlModel is updated. Here, the controller can
-   * respond to those events and make sure the corresponding GUI components get updated.
+   * These property change events are triggered in the controlModel in the case where the underlying
+   * controlModel is updated. Here, the controller can respond to those events and make sure the
+   * corresponding GUI components get updated.
    */
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
@@ -313,9 +329,13 @@ public class BoardCheckExperiment extends Experiment {
 
       float[] r;
       if (boardVersion == 2) {
-        r = pulseUtility.measureAllSwitchResistances(Waveform.Square, -V_READ, PULSE_WIDTH_IN_MICRO_SECONDS);
+        r =
+            pulseUtility.measureAllSwitchResistances(
+                Waveform.Square, -V_READ, PULSE_WIDTH_IN_MICRO_SECONDS);
       } else {
-        r = pulseUtility.measureAllSwitchResistances(Waveform.Square, V_READ, PULSE_WIDTH_IN_MICRO_SECONDS);
+        r =
+            pulseUtility.measureAllSwitchResistances(
+                Waveform.Square, V_READ, PULSE_WIDTH_IN_MICRO_SECONDS);
       }
 
       for (int i = 0; i < r.length; i++) {
@@ -374,42 +394,66 @@ public class BoardCheckExperiment extends Experiment {
         boolean pass = true;
 
         float[] deviations = measureMuxDeviation(DWF.WAVEFORM_CHANNEL_1, Destination.A);
-        resultController.addNewLine("W1-->A      " + percentFormat.format(deviations[0]) + "          " + percentFormat.format(deviations[1]));
+        resultController.addNewLine(
+            "W1-->A      "
+                + percentFormat.format(deviations[0])
+                + "          "
+                + percentFormat.format(deviations[1]));
 
         if (deviations[0] > MIN_DEVIATION | deviations[1] > MIN_DEVIATION) {
           pass = false;
         }
 
         deviations = measureMuxDeviation(DWF.WAVEFORM_CHANNEL_1, Destination.B);
-        resultController.addNewLine("W1-->B      " + percentFormat.format(deviations[0]) + "          " + percentFormat.format(deviations[1]));
+        resultController.addNewLine(
+            "W1-->B      "
+                + percentFormat.format(deviations[0])
+                + "          "
+                + percentFormat.format(deviations[1]));
 
         if (deviations[0] > MIN_DEVIATION | deviations[1] > MIN_DEVIATION) {
           pass = false;
         }
 
         deviations = measureMuxDeviation(DWF.WAVEFORM_CHANNEL_1, Destination.Y);
-        resultController.addNewLine("W1-->Y      " + percentFormat.format(deviations[0]) + "          " + percentFormat.format(deviations[1]));
+        resultController.addNewLine(
+            "W1-->Y      "
+                + percentFormat.format(deviations[0])
+                + "          "
+                + percentFormat.format(deviations[1]));
 
         if (deviations[0] > MIN_DEVIATION | deviations[1] > MIN_DEVIATION) {
           pass = false;
         }
 
         deviations = measureMuxDeviation(DWF.WAVEFORM_CHANNEL_2, Destination.A);
-        resultController.addNewLine("W2-->A      " + percentFormat.format(deviations[0]) + "          " + percentFormat.format(deviations[1]));
+        resultController.addNewLine(
+            "W2-->A      "
+                + percentFormat.format(deviations[0])
+                + "          "
+                + percentFormat.format(deviations[1]));
 
         if (deviations[0] > MIN_DEVIATION | deviations[1] > MIN_DEVIATION) {
           pass = false;
         }
 
         deviations = measureMuxDeviation(DWF.WAVEFORM_CHANNEL_2, Destination.B);
-        resultController.addNewLine("W2-->B      " + percentFormat.format(deviations[0]) + "          " + percentFormat.format(deviations[1]));
+        resultController.addNewLine(
+            "W2-->B      "
+                + percentFormat.format(deviations[0])
+                + "          "
+                + percentFormat.format(deviations[1]));
 
         if (deviations[0] > MIN_DEVIATION | deviations[1] > MIN_DEVIATION) {
           pass = false;
         }
 
         deviations = measureMuxDeviation(DWF.WAVEFORM_CHANNEL_2, Destination.Y);
-        resultController.addNewLine("W2-->Y      " + percentFormat.format(deviations[0]) + "          " + percentFormat.format(deviations[1]));
+        resultController.addNewLine(
+            "W2-->Y      "
+                + percentFormat.format(deviations[0])
+                + "          "
+                + percentFormat.format(deviations[1]));
 
         if (deviations[0] > MIN_DEVIATION | deviations[1] > MIN_DEVIATION) {
           pass = false;
@@ -460,7 +504,9 @@ public class BoardCheckExperiment extends Experiment {
 
       if (boardVersion == 1) {
         MuxController muxController = new MuxController();
-        dwfProxy.setUpper8IOStates(muxController.getGPIOConfig()); // default configuration is for series resistor measurment.
+        dwfProxy.setUpper8IOStates(
+            muxController
+                .getGPIOConfig()); // default configuration is for series resistor measurment.
       }
 
       resultController.addNewLine("Mem-Inline Chip Test");
@@ -491,11 +537,25 @@ public class BoardCheckExperiment extends Experiment {
 
       // form device
       if (boardVersion == 2) {
-        reads = pulseUtility.testMeminline(Waveform.HalfSine, -V_WRITE, -V_RESET, -V_READ, PULSE_WIDTH_IN_MICRO_SECONDS, PULSE_WIDTH_IN_MICRO_SECONDS,
-            PULSE_WIDTH_IN_MICRO_SECONDS);
+        reads =
+            pulseUtility.testMeminline(
+                Waveform.HalfSine,
+                -V_WRITE,
+                -V_RESET,
+                -V_READ,
+                PULSE_WIDTH_IN_MICRO_SECONDS,
+                PULSE_WIDTH_IN_MICRO_SECONDS,
+                PULSE_WIDTH_IN_MICRO_SECONDS);
       } else {
-        reads = pulseUtility.testMeminline(Waveform.HalfSine, V_WRITE, V_RESET, V_READ, PULSE_WIDTH_IN_MICRO_SECONDS, PULSE_WIDTH_IN_MICRO_SECONDS,
-            PULSE_WIDTH_IN_MICRO_SECONDS);
+        reads =
+            pulseUtility.testMeminline(
+                Waveform.HalfSine,
+                V_WRITE,
+                V_RESET,
+                V_READ,
+                PULSE_WIDTH_IN_MICRO_SECONDS,
+                PULSE_WIDTH_IN_MICRO_SECONDS,
+                PULSE_WIDTH_IN_MICRO_SECONDS);
       }
 
       resultController.addNewLine(formatResistanceArray("ERASE       ", reads[0]));
@@ -507,9 +567,11 @@ public class BoardCheckExperiment extends Experiment {
 
       // for debugging-->
       boolean pulseCaptureFail = false;
-      controlModel.swingPropertyChangeSupport.firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null, "MeminlineTestWorker Read Voltage Array: ");
+      controlModel.swingPropertyChangeSupport.firePropertyChange(
+          Model.EVENT_NEW_CONSOLE_LOG, null, "MeminlineTestWorker Read Voltage Array: ");
       for (int i = 0; i < reads.length; i++) {
-        controlModel.swingPropertyChangeSupport.firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null, Arrays.toString(reads[i]));
+        controlModel.swingPropertyChangeSupport.firePropertyChange(
+            Model.EVENT_NEW_CONSOLE_LOG, null, Arrays.toString(reads[i]));
         for (int j = 0; j < reads[i].length; j++) {
           if (reads[i][j] == Float.NaN) {
             pulseCaptureFail = true;
@@ -558,10 +620,14 @@ public class BoardCheckExperiment extends Experiment {
           float q1 = reads[0][i] / reads[1][i];
           float q2 = reads[2][i] / reads[1][i];
 
-          if (reads[0][i] < MEMINLINE_MIN_R && reads[1][i] < MEMINLINE_MIN_R && reads[2][i] < MEMINLINE_MIN_R) {
+          if (reads[0][i] < MEMINLINE_MIN_R
+              && reads[1][i] < MEMINLINE_MIN_R
+              && reads[2][i] < MEMINLINE_MIN_R) {
             testResult = "X [STK LOW]";
             meminline_numFailed++;
-          } else if (reads[0][i] > MEMINLINE_MAX_R && reads[1][i] > MEMINLINE_MAX_R && reads[2][i] > MEMINLINE_MAX_R) {
+          } else if (reads[0][i] > MEMINLINE_MAX_R
+              && reads[1][i] > MEMINLINE_MAX_R
+              && reads[2][i] > MEMINLINE_MAX_R) {
             testResult = "X [STK HIGH]";
             meminline_numFailed++;
           } else if (q1 < MIN_Q) {

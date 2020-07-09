@@ -29,14 +29,12 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.Hashtable;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
-
 import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
 
@@ -218,5 +216,4 @@ public class ControlPanel extends ControlView {
   public JTextField getSelectedFileTextField() {
     return selectedFileTextField;
   }
-
 }

@@ -26,9 +26,7 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.shelflife;
 import java.util.concurrent.TimeUnit;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 
-/**
- * Stores various operational preferences
- */
+/** Stores various operational preferences */
 public class ShelfLifePreferences extends ExperimentPreferences {
 
   // NOT YET IN PREFERENCES

@@ -24,7 +24,6 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.ktbitsatsolver.control;
 
 import java.text.DecimalFormat;
-
 import org.knowm.memristor.discovery.core.driver.Driver;
 import org.knowm.memristor.discovery.core.driver.waveform.HalfSine;
 import org.knowm.memristor.discovery.core.driver.waveform.QuarterSine;
@@ -41,8 +40,10 @@ public class ControlModel extends Model {
   /** Events */
   public static final String EVENT_INSTRUCTION_UPDATE = "EVENT_INSTRUCTION_UPDATE";
 
-  private final double[] waveformTimeData = new double[kTBitSatSolverPreferences.CAPTURE_BUFFER_SIZE];
-  private final double[] waveformAmplitudeData = new double[kTBitSatSolverPreferences.CAPTURE_BUFFER_SIZE];
+  private final double[] waveformTimeData =
+      new double[kTBitSatSolverPreferences.CAPTURE_BUFFER_SIZE];
+  private final double[] waveformAmplitudeData =
+      new double[kTBitSatSolverPreferences.CAPTURE_BUFFER_SIZE];
   /** Waveform */
   public kTBitSatSolverPreferences.Waveform waveform;
 
@@ -66,23 +67,39 @@ public class ControlModel extends Model {
   @Override
   public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {
 
-    filePath = experimentPreferences.getString(kTBitSatSolverPreferences.FILE_PATH_INIT_KEY, kTBitSatSolverPreferences.FILE_PATH_INIT_DEFAULT_VALUE);
+    filePath =
+        experimentPreferences.getString(
+            kTBitSatSolverPreferences.FILE_PATH_INIT_KEY,
+            kTBitSatSolverPreferences.FILE_PATH_INIT_DEFAULT_VALUE);
 
-    waveform = kTBitSatSolverPreferences.Waveform.valueOf(experimentPreferences.getString(kTBitSatSolverPreferences.WAVEFORM_INIT_STRING_KEY,
-        kTBitSatSolverPreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
+    waveform =
+        kTBitSatSolverPreferences.Waveform.valueOf(
+            experimentPreferences.getString(
+                kTBitSatSolverPreferences.WAVEFORM_INIT_STRING_KEY,
+                kTBitSatSolverPreferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
 
-    seriesResistance = experimentPreferences.getInteger(kTBitSatSolverPreferences.SERIES_R_INIT_KEY,
-        kTBitSatSolverPreferences.SERIES_R_INIT_DEFAULT_VALUE);
-    amplitude = experimentPreferences.getFloat(kTBitSatSolverPreferences.AMPLITUDE_INIT_FLOAT_KEY,
-        kTBitSatSolverPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
+    seriesResistance =
+        experimentPreferences.getInteger(
+            kTBitSatSolverPreferences.SERIES_R_INIT_KEY,
+            kTBitSatSolverPreferences.SERIES_R_INIT_DEFAULT_VALUE);
+    amplitude =
+        experimentPreferences.getFloat(
+            kTBitSatSolverPreferences.AMPLITUDE_INIT_FLOAT_KEY,
+            kTBitSatSolverPreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
 
-    amplitudeReverse = experimentPreferences.getFloat(kTBitSatSolverPreferences.AMPLITUDE_REVERSE_INIT_FLOAT_KEY,
-        kTBitSatSolverPreferences.AMPLITUDE_REVERSE_INIT_FLOAT_DEFAULT_VALUE);
-    pulseWidth = experimentPreferences.getInteger(kTBitSatSolverPreferences.PULSE_WIDTH_INIT_KEY,
-        kTBitSatSolverPreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
+    amplitudeReverse =
+        experimentPreferences.getFloat(
+            kTBitSatSolverPreferences.AMPLITUDE_REVERSE_INIT_FLOAT_KEY,
+            kTBitSatSolverPreferences.AMPLITUDE_REVERSE_INIT_FLOAT_DEFAULT_VALUE);
+    pulseWidth =
+        experimentPreferences.getInteger(
+            kTBitSatSolverPreferences.PULSE_WIDTH_INIT_KEY,
+            kTBitSatSolverPreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
 
-    numTrainEpochs = experimentPreferences.getInteger(kTBitSatSolverPreferences.NUM_TRAIN_EPOCHS_INIT_KEY,
-        kTBitSatSolverPreferences.NUM_TRAIN_EPOCHS_INIT_DEFAULT_VALUE);
+    numTrainEpochs =
+        experimentPreferences.getInteger(
+            kTBitSatSolverPreferences.NUM_TRAIN_EPOCHS_INIT_KEY,
+            kTBitSatSolverPreferences.NUM_TRAIN_EPOCHS_INIT_DEFAULT_VALUE);
   }
 
   /** Given the state of the model, update the waveform x and y axis data arrays. */
@@ -91,7 +108,8 @@ public class ControlModel extends Model {
     Driver driver;
     switch (waveform) {
       case Sawtooth:
-        driver = new Sawtooth("Sawtooth", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
+        driver =
+            new Sawtooth("Sawtooth", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
         break;
       case QuarterSine:
         driver = new QuarterSine("QuarterSine", 0, 0, amplitude, getCalculatedFrequency());
@@ -111,7 +129,8 @@ public class ControlModel extends Model {
     }
 
     double stopTime = 1 / getCalculatedFrequency() * pulseNumber;
-    double timeStep = 1 / getCalculatedFrequency() / kTBitSatSolverPreferences.CAPTURE_BUFFER_SIZE * pulseNumber;
+    double timeStep =
+        1 / getCalculatedFrequency() / kTBitSatSolverPreferences.CAPTURE_BUFFER_SIZE * pulseNumber;
 
     int counter = 0;
     for (double i = 0.0; i < stopTime; i = i + timeStep) {
@@ -210,5 +229,4 @@ public class ControlModel extends Model {
   public void setFilePath(String filePath) {
     this.filePath = filePath;
   }
-
 }

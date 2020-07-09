@@ -44,9 +44,7 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse21.KTRAM_Controller_21.Instruction21;
 
-/**
- * Provides controls for running the control
- */
+/** Provides controls for running the control */
 public class ControlPanel extends ControlView {
 
   private final JSlider amplitudeSlider;
@@ -56,7 +54,8 @@ public class ControlPanel extends ControlView {
 
   // private final JSlider pulseNumberSlider;
   private final Box instructionRadioButtonBox;
-  private final JLabel sampleRateLabel;;
+  private final JLabel sampleRateLabel;
+  ;
   private final JTextField sampleRateTextField;
   public JButton clearPlotButton;
   public JButton initSynapseButton;

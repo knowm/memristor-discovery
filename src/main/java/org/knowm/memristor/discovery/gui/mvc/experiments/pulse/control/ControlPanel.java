@@ -40,9 +40,7 @@ import javax.swing.JTextField;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.Waveform;
 
-/**
- * Provides controls for running the control
- */
+/** Provides controls for running the control */
 public class ControlPanel extends ControlView {
 
   private NumberFormat formatter = new DecimalFormat("0.###E0");

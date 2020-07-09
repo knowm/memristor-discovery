@@ -40,9 +40,7 @@ import javax.swing.JTextField;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 import org.knowm.memristor.discovery.gui.mvc.experiments.dc.DCPreferences;
 
-/**
- * Provides controls for running the control
- */
+/** Provides controls for running the control */
 public class ControlPanel extends ControlView {
 
   private final Box waveformRadioButtonBox;

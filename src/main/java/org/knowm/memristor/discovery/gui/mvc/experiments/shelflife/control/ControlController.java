@@ -27,11 +27,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.io.IOException;
-
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.KeyStroke;
-
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.core.FileUtils;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Controller;
@@ -72,44 +70,54 @@ public class ControlController extends Controller {
   private void initGUIComponentsFromModel() {
 
     controlPanel.getSaveDirectoryTextField().setText("" + controlModel.getSaveDirectory());
-
   }
 
   /** Here, all the action listeners are attached to the GUI components */
   @Override
   public void doSetUpViewEvents() {
 
-    controlPanel.getSaveDirectoryButton().addActionListener(new ActionListener() {
+    controlPanel
+        .getSaveDirectoryButton()
+        .addActionListener(
+            new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+              @Override
+              public void actionPerformed(ActionEvent e) {
 
-        try {
-          String saveDirectory = FileUtils.showSaveAsDialog(controlPanel, controlModel.getSaveDirectory());
-          controlModel.setSaveDirectory(saveDirectory);
+                try {
+                  String saveDirectory =
+                      FileUtils.showSaveAsDialog(controlPanel, controlModel.getSaveDirectory());
+                  controlModel.setSaveDirectory(saveDirectory);
 
-          controlPanel.getSaveDirectoryTextField().setText(saveDirectory);
+                  controlPanel.getSaveDirectoryTextField().setText(saveDirectory);
 
-        } catch (IOException e1) {
-          e1.printStackTrace();
-        }
-      }
-    });
+                } catch (IOException e1) {
+                  e1.printStackTrace();
+                }
+              }
+            });
 
-    controlView.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("S"), "startstop");
-    controlView.getActionMap().put("startstop", new AbstractAction() {
+    controlView
+        .getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+        .put(KeyStroke.getKeyStroke("S"), "startstop");
+    controlView
+        .getActionMap()
+        .put(
+            "startstop",
+            new AbstractAction() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+              @Override
+              public void actionPerformed(ActionEvent e) {
 
-        controlPanel.getStartStopButton().doClick();
-      }
-    });
+                controlPanel.getStartStopButton().doClick();
+              }
+            });
   }
 
   /**
-   * These property change events are triggered in the controlModel in the case where the underlying controlModel is updated. Here, the controller can
-   * respond to those events and make sure the corresponding GUI components get updated.
+   * These property change events are triggered in the controlModel in the case where the underlying
+   * controlModel is updated. Here, the controller can respond to those events and make sure the
+   * corresponding GUI components get updated.
    */
   @Override
   public void propertyChange(PropertyChangeEvent evt) {

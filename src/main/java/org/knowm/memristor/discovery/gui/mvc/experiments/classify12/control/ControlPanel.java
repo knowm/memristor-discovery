@@ -40,9 +40,7 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences.W
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify12.Classify12Preferences.AHaHRoutine;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify12.Classify12Preferences.Datasets;
 
-/**
- * Provides controls for running the control
- */
+/** Provides controls for running the control */
 public class ControlPanel extends ControlView {
 
   private final JSlider amplitudeSlider;

@@ -45,6 +45,8 @@ public class AboutDialog extends JDialog {
    */
   public AboutDialog(JFrame parentFrame) {
 
+    //    System.out.println("AboutDialog");
+
     setPreferredSize(new Dimension(400, 300));
     setTitle("About");
     getContentPane().setLayout(new BorderLayout());

@@ -25,9 +25,7 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.synapse21;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 
-/**
- * Stores various operational preferences
- */
+/** Stores various operational preferences */
 public class Synapse21Preferences extends ExperimentPreferences {
 
   public static final String WAVEFORM_INIT_STRING_DEFAULT_VALUE = "SquareSmooth";

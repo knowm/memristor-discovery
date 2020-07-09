@@ -35,10 +35,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
-
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
@@ -78,7 +76,8 @@ public class kTBitSatSolverExperiment extends Experiment {
    * @param dwfProxy
    * @param mainFrameContainer
    */
-  public kTBitSatSolverExperiment(DWFProxy dwfProxy, Container mainFrameContainer, int boardVersion) {
+  public kTBitSatSolverExperiment(
+      DWFProxy dwfProxy, Container mainFrameContainer, int boardVersion) {
 
     super(dwfProxy, mainFrameContainer, boardVersion);
 
@@ -97,59 +96,58 @@ public class kTBitSatSolverExperiment extends Experiment {
   }
 
   @Override
-  public void doCreateAndShowGUI() {
-  }
+  public void doCreateAndShowGUI() {}
 
   @Override
   public void addWorkersToButtonEvents() {
 
-    controlPanel.initButton.addActionListener(new ActionListener() {
+    controlPanel.initButton.addActionListener(
+        new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+          @Override
+          public void actionPerformed(ActionEvent e) {
 
-        initWorker = new InitializeWorker();
-        initWorker.execute();
+            initWorker = new InitializeWorker();
+            initWorker.execute();
+          }
+        });
 
-      }
-    });
+    controlPanel.clearPlotButton.addActionListener(
+        new ActionListener() {
 
-    controlPanel.clearPlotButton.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            System.out.println("should reset chart now");
+            resultController.resetChart();
+          }
+        });
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        System.out.println("should reset chart now");
-        resultController.resetChart();
-      }
-    });
+    controlPanel.runTrialButton.addActionListener(
+        new ActionListener() {
 
-    controlPanel.runTrialButton.addActionListener(new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+            if (controlPanel.runTrialButton.getText().equalsIgnoreCase("Solve")) {
 
-        if (controlPanel.runTrialButton.getText().equalsIgnoreCase("Solve")) {
+              resultPanel.getSynapticWeightsChart().setTitle("Solving...");
+              terminate = false;
+              runTrialWorker = new TrialWorker();
+              runTrialWorker.execute();
+              controlPanel.runTrialButton.setText("Stop");
 
-          resultPanel.getSynapticWeightsChart().setTitle("Solving...");
-          terminate = false;
-          runTrialWorker = new TrialWorker();
-          runTrialWorker.execute();
-          controlPanel.runTrialButton.setText("Stop");
-
-        } else {
-          terminate = true;
-          controlPanel.runTrialButton.setText("Solve");
-        }
-
-      }
-    });
-
+            } else {
+              terminate = true;
+              controlPanel.runTrialButton.setText("Solve");
+            }
+          }
+        });
   }
 
   private float[] initSynapses() {
 
     // int pw = controlModel.getPulseWidth();
-    //controlModel.setPulseWidth(pulseWidthInNs);
+    // controlModel.setPulseWidth(pulseWidthInNs);
     float[] synapticWeights = new float[8];
     for (int i = 0; i < 8; i++) {
       SpikePattern pattern = new SpikePattern(true, Arrays.asList(i));
@@ -191,12 +189,12 @@ public class kTBitSatSolverExperiment extends Experiment {
   //  }
 
   /**
-   * These property change events are triggered in the controlModel in the case where the underlying controlModel is updated. Here, the controller can
-   * respond to those events and make sure the corresponding GUI components get updated.
+   * These property change events are triggered in the controlModel in the case where the underlying
+   * controlModel is updated. Here, the controller can respond to those events and make sure the
+   * corresponding GUI components get updated.
    */
   @Override
-  public void propertyChange(PropertyChangeEvent evt) {
-  }
+  public void propertyChange(PropertyChangeEvent evt) {}
 
   @Override
   public Model getControlModel() {
@@ -253,7 +251,7 @@ public class kTBitSatSolverExperiment extends Experiment {
 
       try {
 
-        //load constraints
+        // load constraints
         List<Constraint> constraints = new ArrayList<>();
         String textLine;
         int lineNumber = 0;
@@ -266,7 +264,7 @@ public class kTBitSatSolverExperiment extends Experiment {
           lineNumber++;
         }
 
-        //map variables to the constraints they are part of
+        // map variables to the constraints they are part of
         Map<Integer, List<Constraint>> map = new HashMap<>();
         for (int i = 0; i < constraints.size(); i++) {
           constraints.get(i).loadMap(map);
@@ -274,12 +272,12 @@ public class kTBitSatSolverExperiment extends Experiment {
 
         while (!terminate) {
 
-          //read the state of the kT-Synapses
+          // read the state of the kT-Synapses
           float[] kTBits = readAllSynapses(50_000);
 
-          //System.out.println(Arrays.toString(kTBits));
+          // System.out.println(Arrays.toString(kTBits));
 
-          //check constraints
+          // check constraints
           int numConstraintsSatisfied = 0;
           for (int i = 0; i < constraints.size(); i++) {
 
@@ -293,21 +291,23 @@ public class kTBitSatSolverExperiment extends Experiment {
 
           // System.out.println("constraints sat: " + numConstraintsSatisfied);
 
-          //update upper plot with number of constraints satisfied
+          // update upper plot with number of constraints satisfied
           resultController.updateConstraintsSatisfiedChart();
 
           if (numConstraintsSatisfied == constraints.size()) {
 
             terminate = true;
             controlPanel.runTrialButton.setText("Solve");
-            resultPanel.getSynapticWeightsChart().setTitle("Solved: " + kTBitsToBinaryString(kTBits));
+            resultPanel
+                .getSynapticWeightsChart()
+                .setTitle("Solved: " + kTBitsToBinaryString(kTBits));
 
             break;
           }
 
           // System.out.println("");
-          //System.out.println("Feedback");
-          //reward or punish each kTBit
+          // System.out.println("Feedback");
+          // reward or punish each kTBit
           Set<Integer> variables = map.keySet();
           for (Integer x : variables) {
 
@@ -328,26 +328,25 @@ public class kTBitSatSolverExperiment extends Experiment {
 
             // System.out.println(x + ":  " + numSat + " / " + numNotSat);
 
-            int idx = x - 1;//not zero indexed
+            int idx = x - 1; // not zero indexed
             SpikePattern spikePattern = new SpikePattern(Arrays.asList(idx));
-            if (reward) {// HEBBIAN feedback
-              if (kTBits[idx] >= 0) {//kTBit is positive. make more positive
+            if (reward) { // HEBBIAN feedback
+              if (kTBits[idx] >= 0) { // kTBit is positive. make more positive
                 KTRAM_Controller.executeInstruction(spikePattern, Instruction.FA);
                 KTRAM_Controller.executeInstruction(spikePattern, Instruction.RB);
-              } else {//kTBit is negative. Make more negative.
+              } else { // kTBit is negative. Make more negative.
                 KTRAM_Controller.executeInstruction(spikePattern, Instruction.RA);
                 KTRAM_Controller.executeInstruction(spikePattern, Instruction.FB);
               }
-            } else {//ANTIHEBBIAN feedback
-              if (kTBits[idx] >= 0) {//kTBit is positive. Make less positive. 
+            } else { // ANTIHEBBIAN feedback
+              if (kTBits[idx] >= 0) { // kTBit is positive. Make less positive.
                 KTRAM_Controller.executeInstruction(spikePattern, Instruction.RA);
                 KTRAM_Controller.executeInstruction(spikePattern, Instruction.FB);
-              } else {//kTBit is negative. Make less negative.
+              } else { // kTBit is negative. Make less negative.
                 KTRAM_Controller.executeInstruction(spikePattern, Instruction.FA);
                 KTRAM_Controller.executeInstruction(spikePattern, Instruction.RB);
               }
             }
-
           }
 
           // Thread.sleep(2000);
@@ -369,7 +368,5 @@ public class kTBitSatSolverExperiment extends Experiment {
       b.append(ktBits[i] >= 0 ? "1" : "0");
     }
     return b.toString();
-
   }
-
 }

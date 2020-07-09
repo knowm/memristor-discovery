@@ -33,9 +33,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 
-/**
- * Provides controls for running the control
- */
+/** Provides controls for running the control */
 public class ControlPanel extends ControlView {
 
   private final JLabel saveDirectoryLabel;

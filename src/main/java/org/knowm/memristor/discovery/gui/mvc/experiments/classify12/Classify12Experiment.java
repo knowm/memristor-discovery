@@ -92,39 +92,41 @@ public class Classify12Experiment extends Experiment {
   }
 
   @Override
-  public void doCreateAndShowGUI() {
-  }
+  public void doCreateAndShowGUI() {}
 
   @Override
   public void addWorkersToButtonEvents() {
 
-    controlPanel.clearPlotButton.addActionListener(new ActionListener() {
+    controlPanel.clearPlotButton.addActionListener(
+        new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        System.out.println("should reset chart now");
-        resultController.resetChart();
-      }
-    });
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            System.out.println("should reset chart now");
+            resultController.resetChart();
+          }
+        });
 
-    controlPanel.runTrialButton.addActionListener(new ActionListener() {
+    controlPanel.runTrialButton.addActionListener(
+        new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+          @Override
+          public void actionPerformed(ActionEvent e) {
 
-        runTrialWorker = new TrialWorker();
-        runTrialWorker.execute();
-      }
-    });
-    controlPanel.resetAllButton.addActionListener(new ActionListener() {
+            runTrialWorker = new TrialWorker();
+            runTrialWorker.execute();
+          }
+        });
+    controlPanel.resetAllButton.addActionListener(
+        new ActionListener() {
 
-      @Override
-      public void actionPerformed(ActionEvent e) {
+          @Override
+          public void actionPerformed(ActionEvent e) {
 
-        resetWorker = new ResetWorker();
-        resetWorker.execute();
-      }
-    });
+            resetWorker = new ResetWorker();
+            resetWorker.execute();
+          }
+        });
   }
 
   private void learnCombo(SupervisedPattern pattern, double Vy) {
@@ -184,12 +186,12 @@ public class Classify12Experiment extends Experiment {
   //  }
 
   /**
-   * These property change events are triggered in the controlModel in the case where the underlying controlModel is updated. Here, the controller can
-   * respond to those events and make sure the corresponding GUI components get updated.
+   * These property change events are triggered in the controlModel in the case where the underlying
+   * controlModel is updated. Here, the controller can respond to those events and make sure the
+   * corresponding GUI components get updated.
    */
   @Override
-  public void propertyChange(PropertyChangeEvent evt) {
-  }
+  public void propertyChange(PropertyChangeEvent evt) {}
 
   @Override
   public Model getControlModel() {

@@ -25,9 +25,7 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.boardcheck;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 
-/**
- * Stores various operational preferences
- */
+/** Stores various operational preferences */
 public class BoardCheckPreferences extends ExperimentPreferences {
 
   public static final int SERIES_R_INIT_DEFAULT_VALUE = 10_000;
