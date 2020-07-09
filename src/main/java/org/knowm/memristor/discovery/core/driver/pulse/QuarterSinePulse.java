@@ -32,7 +32,6 @@ public class QuarterSinePulse extends PulseDriver {
   public QuarterSinePulse(
       String id, double dcOffset, double pulseWidthInNS, double dutyCycle, double amplitude) {
     super(id, dcOffset, pulseWidthInNS, dutyCycle, amplitude);
-
     this.freq = 1 / (4 * pulseWidth);
   }
 
@@ -40,9 +39,7 @@ public class QuarterSinePulse extends PulseDriver {
   public double getSignal(double time) {
     double t = time % getPeriod();
     if (t < pulseWidth) {
-
       return amplitude * Math.sin(2 * Math.PI * freq * t) + dcOffset;
-
     } else {
       return dcOffset;
     }
