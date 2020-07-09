@@ -71,7 +71,7 @@ Right-click on `MemristorDiscovery.java`, `Run As...` ==> `Java Application`.
 
 Maven is used to build the executable jar and it will contain all the dependencies within that single jar as well. The jar `memristor-discovery.jar` will be found in the directory `target`.
 
-    mvn clean install
+    mvn clean package
     java -jar memristor-discovery.jar
     
 
