@@ -34,6 +34,7 @@ import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
 import org.knowm.xchart.XYSeries;
 import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
+import org.knowm.xchart.style.Styler;
 import org.knowm.xchart.style.Styler.LegendPosition;
 import org.knowm.xchart.style.markers.SeriesMarkers;
 
@@ -167,16 +168,22 @@ public class ResultPanel extends JPanel {
             .height(300)
             .title("G")
             .xAxisTitle("Read Pulse Number")
-            .yAxisTitle("Conductance [" + PulsePreferences.CONDUCTANCE_UNIT.getLabel() + "]")
             .build();
-    gChart.getStyler().setLegendVisible(false);
-    // gChart.getStyler().setYAxisMin(0.0);
+    gChart.setYAxisGroupTitle(
+        0, "Conductance [" + PulsePreferences.CONDUCTANCE_UNIT.getLabel() + "]");
+    gChart.setYAxisGroupTitle(1, "Resistance [Ω]");
+    gChart.getStyler().setYAxisGroupPosition(1, Styler.YAxisPosition.Right);
 
-    gChart.getStyler().setYAxisLogarithmic(true);
+    //    gChart.getStyler().setLegendVisible(false);
+    // gChart.getStyler().setYAxisMin(0.0);
+    gChart.getStyler().setYAxisTickMarkSpacingHint(40);
+    gChart.getStyler().setYAxisLogarithmic(false);
 
     series = gChart.addSeries("g", new double[] {0}, new double[] {1E-10});
+    series.setYAxisGroup(0);
     series.setMarker(SeriesMarkers.NONE);
-    series = gChart.addSeries("glast", new double[] {0}, new double[] {1E-10});
+    series = gChart.addSeries("r", new double[] {0}, new double[] {1E-10});
+    series.setYAxisGroup(1);
     series.setMarker(SeriesMarkers.NONE);
     gChartPanel = new XChartPanel<>(gChart);
 

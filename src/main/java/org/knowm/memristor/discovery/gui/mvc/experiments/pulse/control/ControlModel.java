@@ -24,6 +24,7 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.pulse.control;
 
 import java.text.DecimalFormat;
+import org.knowm.memristor.discovery.core.ExpRunAve;
 import org.knowm.memristor.discovery.core.Util;
 import org.knowm.memristor.discovery.core.driver.Driver;
 import org.knowm.memristor.discovery.core.driver.pulse.HalfSinePulse;
@@ -53,31 +54,15 @@ public class ControlModel extends Model {
   private double dutyCycle; // 0 to 1.
 
   private int pulseNumber;
-  // private double appliedAmplitude;
   private double appliedCurrent;
   private double appliedEnergy;
-  //  private double appliedMemristorEnergy;
   private double lastG;
   private int sampleRate;
 
   private boolean isStartToggled = false;
 
-  private double readPulseWidth = 25E-6;
-  private double readPulseAmplitude = .1;
-  private double parasiticReadCapacitance = 140E-12;
-
-  // used to compute resistance give read pulse voltage and takes into account parasitic capacitance
-  // by using a board circuit model
-  private RC_ResistanceComputer rcComputer;
-
-  private int boardVersion;
-
   /** Constructor */
-  public ControlModel(int boardVersion) {
-    this.boardVersion = boardVersion;
-    if (boardVersion == 2) {
-      readPulseAmplitude = -readPulseAmplitude;
-    }
+  public ControlModel() {
   }
 
   @Override
@@ -112,14 +97,6 @@ public class ControlModel extends Model {
             PulsePreferences.PULSE_DUTY_CYCLE_KEY, PulsePreferences.PULSE_DUTY_CYCLE_DEFAULT_VALUE);
 
     updateWaveformChartData();
-
-    rcComputer =
-        new RC_ResistanceComputer(
-            boardVersion,
-            readPulseAmplitude,
-            readPulseWidth,
-            seriesResistance,
-            parasiticReadCapacitance);
   }
 
   /** Given the state of the model, update the waveform x and y axis data arrays. */
@@ -178,13 +155,6 @@ public class ControlModel extends Model {
   public void setSeriesResistance(int seriesResistance) {
 
     this.seriesResistance = seriesResistance;
-    rcComputer =
-        new RC_ResistanceComputer(
-            boardVersion,
-            readPulseAmplitude,
-            readPulseWidth,
-            seriesResistance,
-            parasiticReadCapacitance);
   }
 
   public float getAmplitude() {
@@ -348,31 +318,31 @@ public class ControlModel extends Model {
     swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
-  public double getReadPulseWidth() {
-    return readPulseWidth;
-  }
+//  public double getReadPulseWidth() {
+//    return readPulseWidth;
+//  }
+//
+//  public void setReadPulseWidth(double readPulseWidth) {
+//    this.readPulseWidth = readPulseWidth;
+//  }
+//
+//  public double getReadPulseAmplitude() {
+//    return readPulseAmplitude;
+//  }
+//
+//  public void setReadPulseAmplitude(double readPulseAmplitude) {
+//    this.readPulseAmplitude = readPulseAmplitude;
+//  }
 
-  public void setReadPulseWidth(double readPulseWidth) {
-    this.readPulseWidth = readPulseWidth;
-  }
+//  public double getParasiticReadCapacitance() {
+//    return parasiticReadCapacitance;
+//  }
+//
+//  public void setParasiticReadCapacitance(double parasiticReadCapacitance) {
+//    this.parasiticReadCapacitance = parasiticReadCapacitance;
+//  }
 
-  public double getReadPulseAmplitude() {
-    return readPulseAmplitude;
-  }
-
-  public void setReadPulseAmplitude(double readPulseAmplitude) {
-    this.readPulseAmplitude = readPulseAmplitude;
-  }
-
-  public double getParasiticReadCapacitance() {
-    return parasiticReadCapacitance;
-  }
-
-  public void setParasiticReadCapacitance(double parasiticReadCapacitance) {
-    this.parasiticReadCapacitance = parasiticReadCapacitance;
-  }
-
-  public RC_ResistanceComputer getRcComputer() {
-    return rcComputer;
-  }
+//  public RC_ResistanceComputer getRcComputer() {
+//    return rcComputer;
+//  }
 }

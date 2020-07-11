@@ -24,12 +24,15 @@ import org.knowm.jspice.netlist.NetlistResistor;
 
 public class MD_V0_V1_Board extends Netlist {
 
-  public MD_V0_V1_Board(double Rm, double Rs, double C_B2Gnd) {
+  public MD_V0_V1_Board(double initV2, double Rm, double Rs) {
 
     addNetListComponent(new NetlistDCVoltage("V1", 0.0, "1", "0"));
     addNetListComponent(new NetlistResistor("Rm", Rm, "1", "2"));
-    addNetListComponent(new NetlistCapacitor("C_B2Gnd", C_B2Gnd, 0, "2", "0"));
+    addNetListComponent(new NetlistCapacitor("C_B2Gnd", 180E-12, initV2, "2", "0"));
     addNetListComponent(new NetlistResistor("Rs", Rs, "2", "0"));
-    addNetListComponent(new NetlistResistor("R_1XScope", 1_000_000, "2", "0"));
+    addNetListComponent(new NetlistResistor("R_1XScope1", 1_000_000, "2", "0"));
+    addNetListComponent(new NetlistResistor("R_1XScope2", 1_000_000, "1", "0"));
+
+    setInitialConditions(true);
   }
 }

@@ -82,7 +82,7 @@ public class PostProcessDataUtils {
    *
    * @param v1
    * @param v2
-   * @param v1Threshold
+   * @param vThreshold
    * @param windowBuffer - how many data points outside the window should be included
    * @return
    */

@@ -33,8 +33,10 @@ import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 import org.knowm.memristor.discovery.DWFProxy;
 import org.knowm.memristor.discovery.core.AveMaxMinVar;
+import org.knowm.memristor.discovery.core.ExpRunAve;
 import org.knowm.memristor.discovery.core.PostProcessDataUtils;
 import org.knowm.memristor.discovery.core.WaveformUtils;
+import org.knowm.memristor.discovery.core.rc_engine.RC_ResistanceComputer;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ControlView;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Experiment;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
@@ -48,8 +50,12 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.result.ResultCont
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.result.ResultModel;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.result.ResultPanel;
 import org.knowm.waveforms4j.DWF;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PulseExperiment extends Experiment {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(PulseExperiment.class);
 
   // Control and Result MVC
   private final ControlModel controlModel;
@@ -66,8 +72,18 @@ public class PulseExperiment extends Experiment {
       0.0f; // calibration may not work. This adjusts the readpulse magnitude so that
   // it equals .1V.
 
-  // private static float READ_PULSE_AMPLITUDE = .07f;//move this to preferences
-  // eventually...
+  // Bug fix for "bad" AD2 boards and parasitic RC effects
+  private RC_ResistanceComputer rcComputer;
+  AD2BugCalibrationValues ad2BugCalibrationValues = new AD2BugCalibrationValues();
+  private ExpRunAve readPulseAve;
+
+  // TODO move these to control model with GUI and preferences
+  // Read-pulse properties
+  private final double readPulseWidth = 10; // us
+  private double readPulseAmplitude = .1; // V
+  //  private double parasiticReadCapacitance = 140E-12;
+
+  // plot data
 
   /**
    * Constructor
@@ -79,7 +95,7 @@ public class PulseExperiment extends Experiment {
 
     super(dwfProxy, mainFrameContainer, boardVersion);
 
-    controlModel = new ControlModel(boardVersion);
+    controlModel = new ControlModel();
     controlPanel = new ControlPanel();
     resultModel = new ResultModel();
     resultPanel = new ResultPanel();
@@ -87,6 +103,9 @@ public class PulseExperiment extends Experiment {
     refreshModelsFromPreferences();
     new ControlController(controlPanel, controlModel, dwfProxy);
     resultController = new ResultController(resultPanel, resultModel);
+    if (boardVersion == 2) {
+      readPulseAmplitude = -readPulseAmplitude;
+    }
   }
 
   @Override
@@ -327,20 +346,18 @@ public class PulseExperiment extends Experiment {
                   * PulsePreferences.CURRENT_UNIT.getDivisor();
         }
 
-        // create conductance data
-        double[] conductance = new double[bufferLength];
-        for (int i = 0; i < bufferLength; i++) {
-
-          double I = V2Trimmed[i] / controlModel.getSeriesResistance();
-          double G =
-              I / (V1Trimmed[i] - V2Trimmed[i]) * PulsePreferences.CONDUCTANCE_UNIT.getDivisor();
-          G = G < 0 ? 0 : G;
-          conductance[i] = G;
-        }
-        publish(
-            new double[][] {
-              timeData, V1Trimmed, V2Trimmed, VMemristor, current, conductance, null
-            });
+        //        // create conductance data
+        //        double[] conductance = new double[bufferLength];
+        //        for (int i = 0; i < bufferLength; i++) {
+        //
+        //          double I = V2Trimmed[i] / controlModel.getSeriesResistance();
+        //          double G =
+        //              I / (V1Trimmed[i] - V2Trimmed[i]) *
+        // PulsePreferences.CONDUCTANCE_UNIT.getDivisor();
+        //          G = G < 0 ? 0 : G;
+        //          conductance[i] = G;
+        //        }
+        publish(new double[][] {timeData, V1Trimmed, V2Trimmed, VMemristor, current, null, null});
       }
 
       while (!initialPulseTrainCaptured) {
@@ -366,31 +383,37 @@ public class PulseExperiment extends Experiment {
         // Analog In /////////////////
         // ////////////////////////////////
 
-        // trigger on 20% the rising .1 V read pulse
-        samplesPerPulse = 300;
-        double f = 1 / (controlModel.getReadPulseWidth() * 2);
+        samplesPerPulse = 2048;
+        double f = 1 / (readPulseWidth / 1_000_000 * 2);
         sampleFrequency = f * samplesPerPulse;
+
+        //        double f = 1 / (pulseWidthInNS * 1E-9);
+        bufferSize = 4096; // samplesPerPulse * 2;
+        //         sampleFrequency = 1 / ((pulseWidthInNS * 1E-9) / 2048);
+
         dwfProxy
             .getDwf()
             .startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(
-                DWF.WAVEFORM_CHANNEL_1, sampleFrequency, samplesPerPulse, true);
+                DWF.WAVEFORM_CHANNEL_1, sampleFrequency, bufferSize, true);
         dwfProxy.waitUntilArmed();
 
         //////////////////////////////////
         // Pulse Out /////////////////
         //////////////////////////////////
 
-        // read pulse: 0.1 V, 5 us pulse width
+        // read pulse approximately: 0.1 V, 10 us pulse width
 
         customWaveform =
             WaveformUtils.generateCustomWaveform(
-                Waveform.Square, controlModel.getReadPulseAmplitude() + readPulseCalibration, f);
+                Waveform.Square, readPulseAmplitude + readPulseCalibration, f);
 
         dwfProxy.getDwf().startCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, f, 0, 1, customWaveform);
 
         // Read In Data
         success = dwfProxy.capturePulseData(f, 1);
+
         if (!success) {
+
           // Stop Analog In and Out
           dwfProxy.getDwf().stopWave(DWF.WAVEFORM_CHANNEL_1);
           dwfProxy.getDwf().stopAnalogCaptureBothChannels();
@@ -407,17 +430,17 @@ public class PulseExperiment extends Experiment {
           // Create Chart Data //////
           // /////////////////////////
 
-          trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, 0, 10);
-          V1Trimmed = trimmedRawData[0];
-          V2Trimmed = trimmedRawData[1];
+          //          trimmedRawData = PostProcessDataUtils.trimIdleData(v1, v2, 0, 10);
+          //          V1Trimmed = trimmedRawData[0];
+          //          V2Trimmed = trimmedRawData[1];
 
           if (boardVersion == 2) {
-            VMemristor = PostProcessDataUtils.invert(V1Trimmed);
+            VMemristor = PostProcessDataUtils.invert(v1);
           } else {
-            VMemristor = PostProcessDataUtils.getV1MinusV2(V1Trimmed, V2Trimmed);
+            VMemristor = PostProcessDataUtils.getV1MinusV2(v1, v2);
           }
 
-          bufferLength = V1Trimmed.length;
+          bufferLength = v1.length;
 
           // create time data
           timeData = new double[bufferLength];
@@ -425,48 +448,60 @@ public class PulseExperiment extends Experiment {
           for (int i = 0; i < bufferLength; i++) {
             timeData[i] = i * timeStep;
           }
+          //
+          //          /*
+          //           *
+          //           * Check for pulse calibration issues. This will add an offset to the applied
+          //           * read pulse until its .1V in magnitude. If offset is over .005 v, it will
+          // skip
+          //           * measurement.
+          //           *
+          //           */
+          //
+          //          if (boardVersion == 2) {
+          //            AveMaxMinVar aveMaxMinVar = new AveMaxMinVar(Arrays.copyOfRange(V2Trimmed,
+          // 50, 150));
+          //            double dV = readPulseAmplitude - aveMaxMinVar.getAve();
+          //            readPulseCalibration += dV;
+          //            if (Math.abs(dV) > .005) {
+          //              continue;
+          //            }
+          //          } else {
+          //            AveMaxMinVar aveMaxMinVar = new AveMaxMinVar(Arrays.copyOfRange(V1Trimmed,
+          // 50, 150));
+          //            double dV = readPulseAmplitude - aveMaxMinVar.getAve();
+          //            readPulseCalibration += dV;
+          //            if (Math.abs(dV) > .005) {
+          //              continue;
+          //            }
+          //          }
+          //
+          //          // System.out.println("readPulseCalibration=" + readPulseCalibration);
+          //
+          //          /*
+          //           * Estimate the voltage just before the end of the read pulse. This is given
+          // to
+          //           * the RC Computer to get the resistance.
+          //           *
+          //           */
+          //
+          //          double resistance;
+          //          if (boardVersion == 2) {
+          //            AveMaxMinVar aveMaxMinVar = new AveMaxMinVar(Arrays.copyOfRange(V1Trimmed,
+          // 130, 150));
+          //            System.out.println("VRead=" + aveMaxMinVar.getAve());
+          //            resistance = rcComputer.getRFromV(aveMaxMinVar.getAve());
+          //          } else {
+          //            AveMaxMinVar aveMaxMinVar = new AveMaxMinVar(Arrays.copyOfRange(V2Trimmed,
+          // 130, 150));
+          //            resistance = rcComputer.getRFromV(aveMaxMinVar.getAve());
+          //          }
 
-          /*
-           *
-           * Check for pulse calibration issues. This will add an offset to the applied
-           * read pulse until its .1V in magnitude. If offset is over .005 v, it will skip
-           * measurement.
-           *
-           */
-
-          if (boardVersion == 2) {
-            AveMaxMinVar aveMaxMinVar = new AveMaxMinVar(Arrays.copyOfRange(V2Trimmed, 50, 150));
-            double dV = controlModel.getReadPulseAmplitude() - aveMaxMinVar.getAve();
-            readPulseCalibration += dV;
-            if (Math.abs(dV) > .005) {
-              continue;
-            }
-          } else {
-            AveMaxMinVar aveMaxMinVar = new AveMaxMinVar(Arrays.copyOfRange(V1Trimmed, 50, 150));
-            double dV = controlModel.getReadPulseAmplitude() - aveMaxMinVar.getAve();
-            readPulseCalibration += dV;
-            if (Math.abs(dV) > .005) {
-              continue;
-            }
-          }
-
-          // System.out.println("readPulseCalibration=" + readPulseCalibration);
-
-          /*
-           * Estimate the voltage just before the end of the read pulse. This is given to
-           * the RC Computer to get the resistance.
-           *
-           */
-
-          double resistance;
-          if (boardVersion == 2) {
-            AveMaxMinVar aveMaxMinVar = new AveMaxMinVar(Arrays.copyOfRange(V1Trimmed, 130, 150));
-            System.out.println("VRead=" + aveMaxMinVar.getAve());
-            resistance = controlModel.getRcComputer().getRFromV(aveMaxMinVar.getAve());
-          } else {
-            AveMaxMinVar aveMaxMinVar = new AveMaxMinVar(Arrays.copyOfRange(V2Trimmed, 130, 150));
-            resistance = controlModel.getRcComputer().getRFromV(aveMaxMinVar.getAve());
-          }
+          updateReadPulseVoltageAndOffsets(v2, v1);
+          //
+          initResistanceComputer();
+          double resistance = rcComputer.getRFromV(ad2BugCalibrationValues.getReadPulseVoltage());
+          //          double resistance = 10;
 
           double[] conductanceAve =
               new double[] {
@@ -474,15 +509,9 @@ public class PulseExperiment extends Experiment {
               };
 
           if (boardVersion == 2) {
-            publish(
-                new double[][] {
-                  timeData, V1Trimmed, V2Trimmed, VMemristor, null, null, conductanceAve
-                });
+            publish(new double[][] {timeData, v1, v2, VMemristor, null, null, conductanceAve});
           } else {
-            publish(
-                new double[][] {
-                  timeData, V1Trimmed, V2Trimmed, VMemristor, null, null, conductanceAve
-                });
+            publish(new double[][] {timeData, v1, v2, VMemristor, null, null, conductanceAve});
           }
         }
         // Stop Analog In and Out
@@ -539,7 +568,7 @@ public class PulseExperiment extends Experiment {
 
         // update G chart
         controlModel.setLastG(newestChunk[6][0]);
-        resultController.updateGChartData(controlModel.getLastG(), controlModel.getLastRAsString());
+        resultController.updateGChartData(controlModel.getLastG(), controlModel.getLastR(), controlModel.getLastRAsString());
         resultController.repaintGChart();
 
         controlModel.updateEnergyData();
@@ -548,6 +577,80 @@ public class PulseExperiment extends Experiment {
             controlModel.getAppliedCurrent(),
             controlModel.getAppliedEnergy());
       }
+    }
+  }
+
+  private void initResistanceComputer() {
+
+    double pulseAmp =
+        ad2BugCalibrationValues.getReadPulseOffset()
+            - ad2BugCalibrationValues.getReadPulseZeroOffset();
+    double pulseWidth = readPulseWidth / 1_000_000; // in microseconds
+
+    // if the measured applied pulse amplitude differs by more than 5%,
+    // re-initialized the RC Computer. Use exp run average.
+    if (rcComputer != null) {
+      double dpA = (pulseAmp - rcComputer.getReadPulseAmplitude()) / pulseAmp;
+      // System.out.println("dpA=" + dpA);
+      if (Math.abs(dpA) < .05) {
+        return;
+      } else {
+        LOGGER.warn(
+            "Measured pulse amplitude has drifted by "
+                + dpA
+                + ". RC Computer re-initialized. If this is frequent there is a noise problem.");
+      }
+    }
+
+    long t = System.currentTimeMillis();
+    this.rcComputer =
+        new RC_ResistanceComputer(
+            boardVersion,
+            readPulseAve.getValue(),
+            pulseWidth,
+            controlModel.getSeriesResistance(),
+            ad2BugCalibrationValues.getReadPulseZeroOffset(),
+            ad2BugCalibrationValues.getReadPulseInitialVoltage());
+
+    LOGGER.info(
+        "RC_Resistance Computer was initialized in " + (System.currentTimeMillis() - t) + " ms");
+  }
+
+  private void updateReadPulseVoltageAndOffsets(double[] v2, double[] v1) {
+
+    try {
+      double[] xz = Arrays.copyOfRange(v2, 3097, 4097);
+      AveMaxMinVar statz = new AveMaxMinVar(xz);
+      ad2BugCalibrationValues.setReadPulseZeroOffset(statz.getAve());
+
+      double[] x = Arrays.copyOfRange(v2, 960, 1020);
+      AveMaxMinVar stat = new AveMaxMinVar(x);
+      ad2BugCalibrationValues.setReadPulseOffset(stat.getAve());
+
+      double[] xv = Arrays.copyOfRange(v1, 1010, 1020);
+      AveMaxMinVar statv = new AveMaxMinVar(xv);
+      ad2BugCalibrationValues.setReadPulseVoltage(statv.getAve());
+
+      double[] xvi =
+          Arrays.copyOfRange(
+              v1, 3097,
+              4097); // take from the end because the start can   get clipped for big pulses.
+      AveMaxMinVar statvi = new AveMaxMinVar(xvi);
+      ad2BugCalibrationValues.setReadPulseInitialVoltage(statvi.getAve());
+
+      double pulseAmp =
+          ad2BugCalibrationValues.getReadPulseOffset()
+              - ad2BugCalibrationValues.getReadPulseZeroOffset();
+      if (readPulseAve == null) {
+        readPulseAve = new ExpRunAve((float) pulseAmp, .1f);
+      } else {
+        readPulseAve.update((float) pulseAmp);
+      }
+
+      System.out.println("ad2BugCalibrationValues = " + ad2BugCalibrationValues);
+
+    } catch (Exception e) {
+      LOGGER.error("", e);
     }
   }
 }

@@ -177,7 +177,7 @@ public class ResultController {
         .updateXYSeries("V_Memristor", timeData, vMemristor, null);
   }
 
-  public void updateGChartData(double conductance, String resistance) {
+  public void updateGChartData(double conductance, double resistance, String resistanceAsString) {
 
     // System.out.println("conductance=" + conductance);
 
@@ -187,20 +187,16 @@ public class ResultController {
 
     //  System.out.println("resistance=" + resistance);
     resultModel.getGData().add(conductance);
-    resultPanel.getGChart().getStyler().setYAxisMax(resultModel.getyMaxGV());
+    resultPanel.getGChart().getStyler().setYAxisMax(0, resultModel.getyMaxGV());
+    resultModel.getRData().add(resistance);
+    resultPanel.getGChart().getStyler().setYAxisMax(1, resultModel.getyMaxRV());
     // resultPanel.getGChart().getStyler().setYAxisMin(0.0);
 
     // System.out.println("g: " + resultModel.getGData());
 
-    resultPanel.getGChart().setTitle("G (R = " + resistance + ")");
+    resultPanel.getGChart().setTitle("G (R = " + resistanceAsString + ")");
     resultPanel.getGChart().updateXYSeries("g", null, resultModel.getGData(), null);
-    resultPanel
-        .getGChart()
-        .updateXYSeries(
-            "glast",
-            new double[] {1, resultModel.getGData().size()},
-            new double[] {conductance, conductance},
-            null);
+    resultPanel.getGChart().updateXYSeries("r", null, resultModel.getRData(), null);
   }
 
   public void repaintVtChart() {

@@ -7,7 +7,7 @@ import org.knowm.jspice.netlist.Netlist;
 import org.knowm.jspice.simulate.SimulationPlotData;
 import org.knowm.jspice.simulate.SimulationResult;
 import org.knowm.jspice.simulate.transientanalysis.TransientConfig;
-import org.knowm.jspice.simulate.transientanalysis.driver.DC;
+import org.knowm.jspice.simulate.transientanalysis.driver.Pulse;
 
 /**
  * used to measure memristor resistance at low currents, when pulse capture results in capacitive
@@ -18,10 +18,11 @@ import org.knowm.jspice.simulate.transientanalysis.driver.DC;
  */
 public class RC_ResistanceComputer {
 
-  private double parasiticCapacitance;
   private double seriesResistor;
   private double readPulseAmplitude;
   private double readPulseWidth;
+  private double driverOffset;
+  private double readInitVoltage;
 
   private double[] voltage;
   private double[] resistance;
@@ -46,13 +47,15 @@ public class RC_ResistanceComputer {
       double readPulseAmplitude,
       double readPulseWidth,
       double seriesResistance,
-      double parasiticCapacitance) {
+      double driverOffset,
+      double readInitVoltage) {
 
-    this.parasiticCapacitance = parasiticCapacitance;
     this.seriesResistor = seriesResistance;
     this.readPulseAmplitude = readPulseAmplitude;
     this.readPulseWidth = readPulseWidth;
     this.boardVersion = boardVersion;
+    this.driverOffset = driverOffset;
+    this.readInitVoltage = readInitVoltage;
 
     loadTrace();
   }
@@ -105,25 +108,70 @@ public class RC_ResistanceComputer {
 
   public void loadTrace() {
 
-    double Rinit = 1E2;
+    //    double Rinit = 1E2;
+    //    double Rfinal = 1E8;
+    //
+    //    List<Number> voltage = new ArrayList<>();
+    //    List<Number> resistance = new ArrayList<>();
+    //
+    //    double simStepSize = readPulseWidth / 20;
+    //    TransientConfig transientConfig =
+    //        new TransientConfig(
+    //            "" + readPulseWidth, "" + simStepSize, new DC("V1", readPulseAmplitude));
+    //    for (double Rm = Rinit; Rm < Rfinal; Rm *= 1.025) {
+    //
+    //      Netlist netlist;
+    //      if (boardVersion == 2) {
+    //        netlist = new MD_V2_Board(Rm, seriesResistor, parasiticCapacitance);
+    //      } else {
+    //        netlist = new MD_V0_V1_Board(Rm, seriesResistor, parasiticCapacitance);
+    //      }
+    //
+    //      netlist.setSimulationConfig(transientConfig);
+    //      SimulationResult simulationResult = JSpice.simulate(netlist);
+    //      SimulationPlotData simulationData =
+    // simulationResult.getSimulationPlotDataMap().get("V(2)");
+    //      voltage.add(simulationData.getyData().get(simulationData.getyData().size() - 1));
+    //      resistance.add(Rm);
+    //    }
+    //
+    //    this.voltage = new double[voltage.size()];
+    //    this.resistance = new double[resistance.size()];
+    //
+    //    for (int i = 0; i < this.resistance.length; i++) {
+    //      this.voltage[i] = voltage.get(i).doubleValue();
+    //      this.resistance[i] = resistance.get(i).doubleValue();
+    //    }
+    ///////////
+    double Rinit = 1E1;
     double Rfinal = 1E8;
+    double phase = -readPulseWidth / 50;
 
     List<Number> voltage = new ArrayList<>();
     List<Number> resistance = new ArrayList<>();
-
     double simStepSize = readPulseWidth / 20;
+    double frequency = 1 / readPulseWidth;
+
+    Pulse pulse =
+        new Pulse(
+            "V1",
+            driverOffset + readPulseAmplitude / 2,
+            phase + "",
+            readPulseAmplitude / 2,
+            frequency + "",
+            "1");
+
     TransientConfig transientConfig =
-        new TransientConfig(
-            "" + readPulseWidth, "" + simStepSize, new DC("V1", readPulseAmplitude));
-    for (double Rm = Rinit; Rm < Rfinal; Rm *= 1.025) {
+        new TransientConfig("" + (readPulseWidth - phase), "" + simStepSize, pulse);
+
+    for (double Rm = Rinit; Rm < Rfinal; Rm *= 1.05) {
 
       Netlist netlist;
       if (boardVersion == 2) {
-        netlist = new MD_V2_Board(Rm, seriesResistor, parasiticCapacitance);
+        netlist = new MD_V2_Board(readInitVoltage, Rm, seriesResistor);
       } else {
-        netlist = new MD_V0_V1_Board(Rm, seriesResistor, parasiticCapacitance);
+        netlist = new MD_V0_V1_Board(readInitVoltage, Rm, seriesResistor);
       }
-
       netlist.setSimulationConfig(transientConfig);
       SimulationResult simulationResult = JSpice.simulate(netlist);
       SimulationPlotData simulationData = simulationResult.getSimulationPlotDataMap().get("V(2)");
@@ -134,9 +182,23 @@ public class RC_ResistanceComputer {
     this.voltage = new double[voltage.size()];
     this.resistance = new double[resistance.size()];
 
-    for (int i = 0; i < this.resistance.length; i++) {
-      this.voltage[i] = voltage.get(i).doubleValue();
-      this.resistance[i] = resistance.get(i).doubleValue();
+    if (readPulseAmplitude < 0) {
+      for (int i = 0; i < this.resistance.length; i++) {
+        this.voltage[i] = voltage.get(i).doubleValue();
+        this.resistance[i] = resistance.get(i).doubleValue();
+      }
+    } else { // lookup table needs to be reversed given method of access.
+      int idx = 0;
+      for (int i = this.resistance.length - 1; i >= 0; i--) {
+        this.voltage[idx] = voltage.get(i).doubleValue();
+        this.resistance[idx] = resistance.get(i).doubleValue();
+        idx++;
+      }
     }
+  }
+
+  // TODO remove this???
+  public double getReadPulseAmplitude() {
+    return readPulseAmplitude;
   }
 }

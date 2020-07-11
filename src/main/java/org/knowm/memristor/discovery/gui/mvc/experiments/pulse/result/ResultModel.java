@@ -32,13 +32,16 @@ public class ResultModel extends Model {
 
   /** Min Max params */
   Double yMaxIV = null;
-
   Double yMinIV = null;
 
   Double yMaxGV = null;
-  Double yMinGV = null;
+  Double yMinGV = null;  
+  
+  Double yMaxRV = null;
+  Double yMinRV = null;
 
   List<Double> gData = new ArrayList<>();
+  List<Double> rData = new ArrayList<>();
 
   public Double getyMaxIV() {
 
@@ -83,6 +86,27 @@ public class ResultModel extends Model {
   public List<Double> getGData() {
 
     return gData;
+  }
+
+  public List<Double> getRData() {
+
+    return rData;
+  }
+
+  public Double getyMaxRV() {
+    return yMaxRV;
+  }
+
+  public void setyMaxRV(Double yMaxRV) {
+    this.yMaxRV = yMaxRV;
+  }
+
+  public Double getyMinRV() {
+    return yMinRV;
+  }
+
+  public void setyMinRV(Double yMinRV) {
+    this.yMinRV = yMinRV;
   }
 
   @Override
