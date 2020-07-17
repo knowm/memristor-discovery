@@ -88,9 +88,16 @@ public class RC_ResistanceComputer {
 
       return resistance[resistance.length - 1];
     } else {
+
       for (int i = 0; i < voltage.length; i++) {
+
+        //        System.out.println(
+        //            "voltage[i]=" + voltage[i] + ", resistance[i]=" + resistance[i] + ", v=" + v);
+        //        System.out.println("v=" + v + ", voltage[i]=" + voltage[i]);
+
         if (voltage[i] <= v) {
           if (i == 0) { // edge case
+            System.out.println("HERE");
             return resistance[0];
           }
           // linear interpolation between i and i-1.
@@ -98,6 +105,10 @@ public class RC_ResistanceComputer {
           double r = (voltage[i - 1] - v) / dv;
           double dR = (resistance[i] - resistance[i - 1]) * r;
           double interpolation = resistance[i - 1] + dR;
+
+          //          System.out.println("v=" + v + ", voltage[i]=" + voltage[i]);
+          //          System.out.println("interpolation=" + interpolation);
+
           return interpolation;
         }
       }

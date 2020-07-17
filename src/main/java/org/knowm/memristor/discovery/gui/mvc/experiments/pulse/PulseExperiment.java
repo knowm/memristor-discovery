@@ -448,60 +448,10 @@ public class PulseExperiment extends Experiment {
           for (int i = 0; i < bufferLength; i++) {
             timeData[i] = i * timeStep;
           }
-          //
-          //          /*
-          //           *
-          //           * Check for pulse calibration issues. This will add an offset to the applied
-          //           * read pulse until its .1V in magnitude. If offset is over .005 v, it will
-          // skip
-          //           * measurement.
-          //           *
-          //           */
-          //
-          //          if (boardVersion == 2) {
-          //            AveMaxMinVar aveMaxMinVar = new AveMaxMinVar(Arrays.copyOfRange(V2Trimmed,
-          // 50, 150));
-          //            double dV = readPulseAmplitude - aveMaxMinVar.getAve();
-          //            readPulseCalibration += dV;
-          //            if (Math.abs(dV) > .005) {
-          //              continue;
-          //            }
-          //          } else {
-          //            AveMaxMinVar aveMaxMinVar = new AveMaxMinVar(Arrays.copyOfRange(V1Trimmed,
-          // 50, 150));
-          //            double dV = readPulseAmplitude - aveMaxMinVar.getAve();
-          //            readPulseCalibration += dV;
-          //            if (Math.abs(dV) > .005) {
-          //              continue;
-          //            }
-          //          }
-          //
-          //          // System.out.println("readPulseCalibration=" + readPulseCalibration);
-          //
-          //          /*
-          //           * Estimate the voltage just before the end of the read pulse. This is given
-          // to
-          //           * the RC Computer to get the resistance.
-          //           *
-          //           */
-          //
-          //          double resistance;
-          //          if (boardVersion == 2) {
-          //            AveMaxMinVar aveMaxMinVar = new AveMaxMinVar(Arrays.copyOfRange(V1Trimmed,
-          // 130, 150));
-          //            System.out.println("VRead=" + aveMaxMinVar.getAve());
-          //            resistance = rcComputer.getRFromV(aveMaxMinVar.getAve());
-          //          } else {
-          //            AveMaxMinVar aveMaxMinVar = new AveMaxMinVar(Arrays.copyOfRange(V2Trimmed,
-          // 130, 150));
-          //            resistance = rcComputer.getRFromV(aveMaxMinVar.getAve());
-          //          }
 
           updateReadPulseVoltageAndOffsets(v2, v1);
-          //
           initResistanceComputer();
           double resistance = rcComputer.getRFromV(ad2BugCalibrationValues.getReadPulseVoltage());
-          //          double resistance = 10;
 
           double[] conductanceAve =
               new double[] {
@@ -568,7 +518,8 @@ public class PulseExperiment extends Experiment {
 
         // update G chart
         controlModel.setLastG(newestChunk[6][0]);
-        resultController.updateGChartData(controlModel.getLastG(), controlModel.getLastR(), controlModel.getLastRAsString());
+        resultController.updateGChartData(
+            controlModel.getLastG(), controlModel.getLastR(), controlModel.getLastRAsString());
         resultController.repaintGChart();
 
         controlModel.updateEnergyData();
@@ -634,7 +585,7 @@ public class PulseExperiment extends Experiment {
       double[] xvi =
           Arrays.copyOfRange(
               v1, 3097,
-              4097); // take from the end because the start can   get clipped for big pulses.
+              4097); // take from the end because the start can get clipped for big pulses.
       AveMaxMinVar statvi = new AveMaxMinVar(xvi);
       ad2BugCalibrationValues.setReadPulseInitialVoltage(statvi.getAve());
 
@@ -647,7 +598,7 @@ public class PulseExperiment extends Experiment {
         readPulseAve.update((float) pulseAmp);
       }
 
-      System.out.println("ad2BugCalibrationValues = " + ad2BugCalibrationValues);
+//      System.out.println("ad2BugCalibrationValues = " + ad2BugCalibrationValues);
 
     } catch (Exception e) {
       LOGGER.error("", e);

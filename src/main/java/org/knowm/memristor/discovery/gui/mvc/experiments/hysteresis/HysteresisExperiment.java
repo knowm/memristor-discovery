@@ -303,7 +303,7 @@ public class HysteresisExperiment extends Experiment {
 
           /*
            * board version 2 configuration is 'upside down and backwards' from other versions. Resistor-Memristor node is X1 not X2. Source voltage is
-           * V2 not V1 and due to inverted memristor polarity is reversesed.
+           * V2 not V1 and due to inverted memristor polarity is reversed.
            */
 
           if (boardVersion == 2) {
