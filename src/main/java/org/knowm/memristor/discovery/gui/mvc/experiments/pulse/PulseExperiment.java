@@ -2,7 +2,7 @@
  * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
  * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2020 Knowm Inc. www.knowm.org
  *
  * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
@@ -598,7 +598,7 @@ public class PulseExperiment extends Experiment {
         readPulseAve.update((float) pulseAmp);
       }
 
-//      System.out.println("ad2BugCalibrationValues = " + ad2BugCalibrationValues);
+      //      System.out.println("ad2BugCalibrationValues = " + ad2BugCalibrationValues);
 
     } catch (Exception e) {
       LOGGER.error("", e);

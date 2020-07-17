@@ -2,7 +2,7 @@
  * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
  * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2020 Knowm Inc. www.knowm.org
  *
  * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
@@ -230,31 +230,26 @@ public class KTRAM_Controller_12 {
     this.dWFProxy = dWFProxy;
   }
 
-  /** @return the controlModel */
   public ControlModel getControlModel() {
 
     return controlModel;
   }
 
-  /** @return the ga */
   public double getGa() {
 
     return ga;
   }
 
-  /** @param ga the ga to set */
   public void setGa(double ga) {
 
     this.ga = ga;
   }
 
-  /** @return the gb */
   public double getGb() {
 
     return gb;
   }
 
-  /** @param gb the gb to set */
   public void setGb(double gb) {
 
     this.gb = gb;
@@ -273,7 +268,7 @@ public class KTRAM_Controller_12 {
     RAB,
     HEBBIAN,
     ANTI_HEBBIAN;
-
+    // @formatter:on
     Instruction12() {}
   }
 }

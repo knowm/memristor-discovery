@@ -2,7 +2,7 @@
  * Memristor-Discovery is distributed under the GNU General Public License version 3 and is also
  * available under alternative licenses negotiated directly with Knowm, Inc.
  *
- * <p>Copyright (c) 2016-2019 Knowm Inc. www.knowm.org
+ * <p>Copyright (c) 2016-2020 Knowm Inc. www.knowm.org
  *
  * <p>This package also includes various components that are not part of Memristor-Discovery itself:
  *
@@ -24,7 +24,6 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.pulse.control;
 
 import java.text.DecimalFormat;
-import org.knowm.memristor.discovery.core.ExpRunAve;
 import org.knowm.memristor.discovery.core.Util;
 import org.knowm.memristor.discovery.core.driver.Driver;
 import org.knowm.memristor.discovery.core.driver.pulse.HalfSinePulse;
@@ -35,7 +34,6 @@ import org.knowm.memristor.discovery.core.driver.pulse.SquarePulse;
 import org.knowm.memristor.discovery.core.driver.pulse.SquareSmoothPulse;
 import org.knowm.memristor.discovery.core.driver.pulse.TrianglePulse;
 import org.knowm.memristor.discovery.core.driver.waveform.Sawtooth;
-import org.knowm.memristor.discovery.core.rc_engine.RC_ResistanceComputer;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.pulse.PulsePreferences;
@@ -62,8 +60,7 @@ public class ControlModel extends Model {
   private boolean isStartToggled = false;
 
   /** Constructor */
-  public ControlModel() {
-  }
+  public ControlModel() {}
 
   @Override
   public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {
@@ -318,31 +315,31 @@ public class ControlModel extends Model {
     swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
-//  public double getReadPulseWidth() {
-//    return readPulseWidth;
-//  }
-//
-//  public void setReadPulseWidth(double readPulseWidth) {
-//    this.readPulseWidth = readPulseWidth;
-//  }
-//
-//  public double getReadPulseAmplitude() {
-//    return readPulseAmplitude;
-//  }
-//
-//  public void setReadPulseAmplitude(double readPulseAmplitude) {
-//    this.readPulseAmplitude = readPulseAmplitude;
-//  }
+  //  public double getReadPulseWidth() {
+  //    return readPulseWidth;
+  //  }
+  //
+  //  public void setReadPulseWidth(double readPulseWidth) {
+  //    this.readPulseWidth = readPulseWidth;
+  //  }
+  //
+  //  public double getReadPulseAmplitude() {
+  //    return readPulseAmplitude;
+  //  }
+  //
+  //  public void setReadPulseAmplitude(double readPulseAmplitude) {
+  //    this.readPulseAmplitude = readPulseAmplitude;
+  //  }
 
-//  public double getParasiticReadCapacitance() {
-//    return parasiticReadCapacitance;
-//  }
-//
-//  public void setParasiticReadCapacitance(double parasiticReadCapacitance) {
-//    this.parasiticReadCapacitance = parasiticReadCapacitance;
-//  }
+  //  public double getParasiticReadCapacitance() {
+  //    return parasiticReadCapacitance;
+  //  }
+  //
+  //  public void setParasiticReadCapacitance(double parasiticReadCapacitance) {
+  //    this.parasiticReadCapacitance = parasiticReadCapacitance;
+  //  }
 
-//  public RC_ResistanceComputer getRcComputer() {
-//    return rcComputer;
-//  }
+  //  public RC_ResistanceComputer getRcComputer() {
+  //    return rcComputer;
+  //  }
 }
