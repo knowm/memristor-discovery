@@ -20,7 +20,7 @@ The above circuit depicts the synapse circuit where memristor A is selected from
 
 Notes:
 
-1. The conductance of each memristor in the synapse is calculated by determining a voltage drop across the A and B precision series resistors during a FLV operation. If the voltage drop is not sufficient to make a measurement (because it falls below the resolution of the AD2),  the data is not recorded in the chart and a message is printed to the consol (Menu-->Help--Consol).
+1. The conductance of each memristor in the synapse is calculated by determining a voltage drop across the A and B precision series resistors during a FLV operation. If the voltage drop is not sufficient to make a measurement (because it falls below the resolution of the AD2),  the data is not recorded in the chart and a message is printed to the console (Menu-->Help--Consol).
 
 ## Exporting Data
 

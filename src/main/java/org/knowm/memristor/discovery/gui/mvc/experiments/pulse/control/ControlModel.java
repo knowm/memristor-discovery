@@ -77,8 +77,6 @@ public class ControlModel extends Model {
         experimentPreferences.getFloat(
             PulsePreferences.AMPLITUDE_INIT_FLOAT_KEY,
             PulsePreferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
-    // appliedAmplitude = amplitude;
-
     pulseWidth =
         experimentPreferences.getInteger(
             PulsePreferences.PULSE_WIDTH_INIT_KEY, PulsePreferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
@@ -212,11 +210,6 @@ public class ControlModel extends Model {
     swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
-  //  public double getAppliedAmplitude() {
-  //
-  //    return appliedAmplitude;
-  //  }
-
   public PulsePreferences.Waveform getWaveform() {
 
     return waveform;
@@ -267,21 +260,12 @@ public class ControlModel extends Model {
     return appliedEnergy;
   }
 
-  //  public double getAppliedMemristorEnergy() {
-  //
-  //    return appliedMemristorEnergy;
-  //  }
-
   public String getLastRAsString() {
 
     return ohmFormatter.format(getLastR());
   }
 
   public void updateEnergyData() {
-
-    // calculate applied voltage
-    // if (lastG > 0.0) {
-    // this.appliedAmplitude = amplitude;
 
     this.appliedCurrent =
         amplitude
@@ -315,31 +299,4 @@ public class ControlModel extends Model {
     swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
 
-  //  public double getReadPulseWidth() {
-  //    return readPulseWidth;
-  //  }
-  //
-  //  public void setReadPulseWidth(double readPulseWidth) {
-  //    this.readPulseWidth = readPulseWidth;
-  //  }
-  //
-  //  public double getReadPulseAmplitude() {
-  //    return readPulseAmplitude;
-  //  }
-  //
-  //  public void setReadPulseAmplitude(double readPulseAmplitude) {
-  //    this.readPulseAmplitude = readPulseAmplitude;
-  //  }
-
-  //  public double getParasiticReadCapacitance() {
-  //    return parasiticReadCapacitance;
-  //  }
-  //
-  //  public void setParasiticReadCapacitance(double parasiticReadCapacitance) {
-  //    this.parasiticReadCapacitance = parasiticReadCapacitance;
-  //  }
-
-  //  public RC_ResistanceComputer getRcComputer() {
-  //    return rcComputer;
-  //  }
 }

@@ -35,7 +35,6 @@ public abstract class Driver {
    *
    * @param id
    * @param dcOffset
-   * @param phase
    * @param amplitude
    * @param frequency
    */

@@ -9,7 +9,7 @@ This app allows you to drive a 2-1 kT-RAM synapse with elemental kT-RAM instruct
 
 Notes:
 
-1. The conductance of each memristor in the synapse is calculated by determining a voltage drop across the series resistor during a FFLV operation as well as the voltage drop across each memristor. If the current is very low or the series resistance is low, the voltage drop may not be sufficient to make a measurement as it falls below the resolution of the AD2. In this case, the data is not recorded in the chart and a message is printed to the consol (Menu-->Help--Consol). The synaptic state, Vy, can be measured at all times even if the current is low, although it may become suseptible to noise for very low currents..
+1. The conductance of each memristor in the synapse is calculated by determining a voltage drop across the series resistor during a FFLV operation as well as the voltage drop across each memristor. If the current is very low or the series resistance is low, the voltage drop may not be sufficient to make a measurement as it falls below the resolution of the AD2. In this case, the data is not recorded in the chart and a message is printed to the console (Window-->Console). The synaptic state, Vy, can be measured at all times even if the current is low, although it may become suseptible to noise for very low currents.
 2. RC effects can render the 2-1 synapse partially or totally non-functional if memristors have not been initialized properly. The memristors should been conditioned into a higher conductance state of .1 to 1mS. If both memristors are in a low conductance state, capacitive charge and discharging effects on the Y node become significant, to the point where the voltage polarity across the synapse is reversed. For an FF operation this can lead to an "erase" following a "write", which in turn will undo any conductance increase. That is, the conductance of the memristors will rise during the first part of the pulse, but when the drive signal is removed, capacitive discharge inverts the polarity and causes memristor A to erase. This can have the effect of driving the synaptic state (Vy) low.
 
 ![](_img/SynapseInitialization.png)
@@ -28,7 +28,7 @@ Notes:
 
 With the synapse or group of synapses selected, hit the button. It will perform the above manual steps. Steps (3) and (4) will be applied a maximum of 50 times before initialization fails.
 
-View the consol to see results and warnings. (Window-->Consol)
+View the console to see results and warnings. (Window-->Console)
 
 ## Connections
 

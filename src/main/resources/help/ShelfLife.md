@@ -132,7 +132,7 @@ When resistance is measured as ∞, this means that the voltage drop across the 
 
 ## Experiment Consol
 
-The experiment consol will update to mirror the data being placed in the 'info' file. 
+The experiment console will update to mirror the data being placed in the 'info' file. 
 
 
 

@@ -247,6 +247,7 @@ public class PulseExperiment extends Experiment {
                 controlModel.getDutyCycle());
       }
 
+//      System.out.println(Arrays.toString(customWaveform));
       dwfProxy
           .getDwf()
           .startCustomPulseTrain(
