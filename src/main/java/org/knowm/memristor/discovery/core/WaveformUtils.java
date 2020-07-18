@@ -44,33 +44,14 @@ import org.knowm.waveforms4j.DWF;
 
 public class WaveformUtils {
 
-  public static double[] generateSquarePulseWithReadPulses(double amplitude) {
-
-    // read pulses
-    double readPulseMagnitude = .1;
-    int size = 1024; // could go up to 4096
-    double[] rgdData = new double[size];
-    for (int i = size / 4; i < size * 3 / 4; i++) {
-      rgdData[i] = amplitude;
-    }
-    for (int i = 0; i < size / 8; i++) {
-      rgdData[i] = readPulseMagnitude;
-    }
-    for (int i = size * 7 / 8; i < size; i++) {
-      rgdData[i] = readPulseMagnitude;
-    }
-
-    return rgdData; // weird name, but that's what Waveforms SDK calls it.
-  }
-
   public static double[] generateCustomPulse(
       Waveform waveform, double amplitude, double pulseWidthInNS, double dutyCycle) {
 
-    //    System.out.println("generateCustomPulse");
-    //    System.out.println("pulseWidth=" + pulseWidthInNS);
-    //    System.out.println("dutyCycle=" + dutyCycle);
-    //    System.out.println("amplitude=" + amplitude);
-    //    System.out.println("waveform=" + waveform);
+//    System.out.println("generateCustomPulse");
+//    System.out.println("pulseWidth=" + pulseWidthInNS);
+//    System.out.println("dutyCycle=" + dutyCycle);
+//    System.out.println("amplitude=" + amplitude);
+//    System.out.println("waveform=" + waveform);
 
     Driver driver;
     switch (waveform) {
@@ -116,7 +97,8 @@ public class WaveformUtils {
 
     do {
       double time = counter * timeInc;
-      customWaveform[counter] = driver.getSignal(time);
+      customWaveform[counter] = driver.getSignal(time) / 5.0; // / 5.0 to scale between 1 and -1
+      // driver.getSignal(time);
 
     } while (++counter < 4096);
     return customWaveform;
@@ -165,7 +147,8 @@ public class WaveformUtils {
 
     do {
       double time = counter * timeInc;
-      customWaveform[counter] = driver.getSignal(time);
+      customWaveform[counter] = driver.getSignal(time) / 5.0; // / 5.0 to scale between 1 and -1
+      // driver.getSignal(time);
     } while (++counter < 4096);
     return customWaveform;
   }
