@@ -24,6 +24,7 @@
 package org.knowm.memristor.discovery.gui.mvc.experiments.synapse12.control;
 
 import java.text.DecimalFormat;
+
 import org.knowm.memristor.discovery.core.driver.Driver;
 import org.knowm.memristor.discovery.core.driver.waveform.HalfSine;
 import org.knowm.memristor.discovery.core.driver.waveform.QuarterSine;
@@ -38,234 +39,242 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.synapse12.Synapse12Pref
 
 public class ControlModel extends Model {
 
-  /** Events */
-  public static final String EVENT_INSTRUCTION_UPDATE = "EVENT_INSTRUCTION_UPDATE";
+	/** Events */
+	public static final String EVENT_INSTRUCTION_UPDATE = "EVENT_INSTRUCTION_UPDATE";
 
-  private final double[] waveformTimeData = new double[Synapse12Preferences.CAPTURE_BUFFER_SIZE];
-  private final double[] waveformAmplitudeData =
-      new double[Synapse12Preferences.CAPTURE_BUFFER_SIZE];
-  /** Waveform */
-  public Synapse12Preferences.Waveform waveform;
+	private final double[] waveformTimeData = new double[Synapse12Preferences.CAPTURE_BUFFER_SIZE];
+	private final double[] waveformAmplitudeData = new double[Synapse12Preferences.CAPTURE_BUFFER_SIZE];
+	/** Waveform */
+	public Synapse12Preferences.Waveform waveform;
 
-  public Instruction12 instruction = Instruction12.FLV;
-  public DecimalFormat ohmFormatter = new DecimalFormat("#,### Ω");
+	public Instruction12 instruction = Instruction12.FLV;
+	public DecimalFormat ohmFormatter = new DecimalFormat("#,### Ω");
 
-  private float amplitude;
-  private float amplitudeReverse;
+	private float amplitude;
+	private float amplitudeReverse;
 
-  private int pulseWidth; // model store pulse width in nanoseconds
-  private int pulseNumber;
-  private double lastY;
-  private int sampleRate;
+	private int pulseWidth; // model store pulse width in nanoseconds
+	private int pulseNumber;
+	private double lastY;
+	private int sampleRate;
 
-  private boolean isStartToggled = false;
+	private boolean isStartToggled = false;
 
-  /** Constructor */
-  public ControlModel() {
+	private double scopeOneOffset;
+	private double scopeTwoOffset;
+	private double wOneOffset;
 
-    // updateWaveformChartData();
-  }
+	/** Constructor */
+	public ControlModel() {
 
-  @Override
-  public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {
+		// updateWaveformChartData();
+	}
 
-    seriesResistance =
-        experimentPreferences.getInteger(
-            Synapse12Preferences.SERIES_R_INIT_KEY,
-            Synapse12Preferences.SERIES_R_INIT_DEFAULT_VALUE);
-    waveform =
-        Synapse12Preferences.Waveform.valueOf(
-            experimentPreferences.getString(
-                Synapse12Preferences.WAVEFORM_INIT_STRING_KEY,
-                Synapse12Preferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
+	@Override
+	public void doLoadModelFromPrefs(ExperimentPreferences experimentPreferences) {
 
-    amplitude =
-        experimentPreferences.getFloat(
-            Synapse12Preferences.AMPLITUDE_INIT_FLOAT_KEY,
-            Synapse12Preferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
+		seriesResistance = experimentPreferences.getInteger(Synapse12Preferences.SERIES_R_INIT_KEY,
+				Synapse12Preferences.SERIES_R_INIT_DEFAULT_VALUE);
+		waveform = Synapse12Preferences.Waveform
+				.valueOf(experimentPreferences.getString(Synapse12Preferences.WAVEFORM_INIT_STRING_KEY,
+						Synapse12Preferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
 
-    amplitudeReverse =
-        experimentPreferences.getFloat(
-            Synapse12Preferences.AMPLITUDE_REVERSE_INIT_FLOAT_KEY,
-            Synapse12Preferences.AMPLITUDE_REVERSE_INIT_FLOAT_DEFAULT_VALUE);
+		amplitude = experimentPreferences.getFloat(Synapse12Preferences.AMPLITUDE_INIT_FLOAT_KEY,
+				Synapse12Preferences.AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE);
 
-    pulseWidth =
-        experimentPreferences.getInteger(
-            Synapse12Preferences.PULSE_WIDTH_INIT_KEY,
-            Synapse12Preferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
-    pulseNumber =
-        experimentPreferences.getInteger(
-            Synapse12Preferences.NUM_PULSES_INIT_KEY,
-            Synapse12Preferences.NUM_PULSES_INIT_DEFAULT_VALUE);
-    sampleRate =
-        experimentPreferences.getInteger(
-            Synapse12Preferences.SAMPLE_RATE_INIT_KEY,
-            Synapse12Preferences.SAMPLE_RATE_INIT_DEFAULT_VALUE);
-  }
+		amplitudeReverse = experimentPreferences.getFloat(Synapse12Preferences.AMPLITUDE_REVERSE_INIT_FLOAT_KEY,
+				Synapse12Preferences.AMPLITUDE_REVERSE_INIT_FLOAT_DEFAULT_VALUE);
 
-  /** Given the state of the model, update the waveform x and y axis data arrays. */
-  void updateWaveformChartData() {
+		pulseWidth = experimentPreferences.getInteger(Synapse12Preferences.PULSE_WIDTH_INIT_KEY,
+				Synapse12Preferences.PULSE_WIDTH_INIT_DEFAULT_VALUE);
+		pulseNumber = experimentPreferences.getInteger(Synapse12Preferences.NUM_PULSES_INIT_KEY,
+				Synapse12Preferences.NUM_PULSES_INIT_DEFAULT_VALUE);
+		sampleRate = experimentPreferences.getInteger(Synapse12Preferences.SAMPLE_RATE_INIT_KEY,
+				Synapse12Preferences.SAMPLE_RATE_INIT_DEFAULT_VALUE);
+		this.scopeOneOffset = experimentPreferences.getFloat(Synapse12Preferences.SCOPE_ONE_OFFSET_KEY,
+				Synapse12Preferences.SCOPE_ONE_OFFSET_DEFAULT_VALUE);
+		this.scopeTwoOffset = experimentPreferences.getFloat(Synapse12Preferences.SCOPE_TWO_OFFSET_KEY,
+				Synapse12Preferences.SCOPE_TWO_OFFSET_DEFAULT_VALUE);
 
-    Driver driver;
-    switch (waveform) {
-      case Sawtooth:
-        driver =
-            new Sawtooth("Sawtooth", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
-        break;
-      case QuarterSine:
-        driver = new QuarterSine("QuarterSine", 0, 0, amplitude, getCalculatedFrequency());
-        break;
-      case Triangle:
-        driver = new Triangle("Triangle", 0, 0, amplitude, getCalculatedFrequency());
-        break;
-      case Square:
-        driver = new Square("Square", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
-        break;
-      case SquareSmooth:
-        driver = new SquareSmooth("SquareSmooth", 0, 0, amplitude, getCalculatedFrequency());
-        break;
-      default:
-        driver = new HalfSine("HalfSine", 0, 0, amplitude, getCalculatedFrequency());
-        break;
-    }
+		this.wOneOffset = experimentPreferences.getFloat(Synapse12Preferences.W_ONE_OFFSET_KEY,
+				Synapse12Preferences.W_ONE_OFFSET_DEFAULT_VALUE);
+	}
 
-    double stopTime = 1 / getCalculatedFrequency() * pulseNumber;
-    double timeStep =
-        1 / getCalculatedFrequency() / Synapse12Preferences.CAPTURE_BUFFER_SIZE * pulseNumber;
+	/**
+	 * Given the state of the model, update the waveform x and y axis data arrays.
+	 */
+	void updateWaveformChartData() {
 
-    int counter = 0;
-    for (double i = 0.0; i < stopTime; i = i + timeStep) {
-      if (counter >= Synapse12Preferences.CAPTURE_BUFFER_SIZE) {
-        break;
-      }
-      waveformTimeData[counter] = i * Synapse12Preferences.TIME_UNIT.getDivisor();
-      waveformAmplitudeData[counter++] = driver.getSignal(i);
-    }
-  }
+		Driver driver;
+		switch (waveform) {
+		case Sawtooth:
+			driver = new Sawtooth("Sawtooth", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
+			break;
+		case QuarterSine:
+			driver = new QuarterSine("QuarterSine", 0, 0, amplitude, getCalculatedFrequency());
+			break;
+		case Triangle:
+			driver = new Triangle("Triangle", 0, 0, amplitude, getCalculatedFrequency());
+			break;
+		case Square:
+			driver = new Square("Square", amplitude / 2, 0, amplitude / 2, getCalculatedFrequency());
+			break;
+		case SquareSmooth:
+			driver = new SquareSmooth("SquareSmooth", 0, 0, amplitude, getCalculatedFrequency());
+			break;
+		default:
+			driver = new HalfSine("HalfSine", 0, 0, amplitude, getCalculatedFrequency());
+			break;
+		}
 
-  // ///////////////////////////////////////////////////////////
-  // GETTERS AND SETTERS //////////////////////////////////////
-  // ///////////////////////////////////////////////////////////
+		double stopTime = 1 / getCalculatedFrequency() * pulseNumber;
+		double timeStep = 1 / getCalculatedFrequency() / Synapse12Preferences.CAPTURE_BUFFER_SIZE * pulseNumber;
 
-  public float getForwardAmplitude() {
+		int counter = 0;
+		for (double i = 0.0; i < stopTime; i = i + timeStep) {
+			if (counter >= Synapse12Preferences.CAPTURE_BUFFER_SIZE) {
+				break;
+			}
+			waveformTimeData[counter] = i * Synapse12Preferences.TIME_UNIT.getDivisor();
+			waveformAmplitudeData[counter++] = driver.getSignal(i);
+		}
+	}
 
-    return amplitude;
-  }
+	// ///////////////////////////////////////////////////////////
+	// GETTERS AND SETTERS //////////////////////////////////////
+	// ///////////////////////////////////////////////////////////
 
-  public float getReverseAmplitude() {
+	public float getForwardAmplitude() {
 
-    return amplitudeReverse;
-  }
+		return amplitude;
+	}
 
-  public void setForwardAmplitude(float amplitude) {
+	public float getReverseAmplitude() {
 
-    this.amplitude = amplitude;
-    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
-  }
+		return amplitudeReverse;
+	}
 
-  public void setReverseAmplitude(float amplitude) {
+	public void setForwardAmplitude(float amplitude) {
 
-    this.amplitudeReverse = amplitude;
-    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
-  }
+		this.amplitude = amplitude;
+		swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
+	}
 
-  public int getPulseWidth() {
+	public void setReverseAmplitude(float amplitude) {
 
-    return pulseWidth;
-  }
+		this.amplitudeReverse = amplitude;
+		swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
+	}
 
-  public void setPulseWidth(int pulseWidth) {
+	public int getPulseWidth() {
 
-    this.pulseWidth = pulseWidth;
-    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
-  }
+		return pulseWidth;
+	}
 
-  public double getCalculatedFrequency() {
+	public void setPulseWidth(int pulseWidth) {
 
-    // System.out.println("pulseWidth = " + pulseWidth);
-    return (1.0 / (2.0 * pulseWidth) * 1_000_000_000); // 50% duty cycle
-  }
+		this.pulseWidth = pulseWidth;
+		swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
+	}
 
-  public double[] getWaveformTimeData() {
+	public double getCalculatedFrequency() {
 
-    return waveformTimeData;
-  }
+		// System.out.println("pulseWidth = " + pulseWidth);
+		return (1.0 / (2.0 * pulseWidth) * 1_000_000_000); // 50% duty cycle
+	}
 
-  public double[] getWaveformAmplitudeData() {
+	public double[] getWaveformTimeData() {
 
-    return waveformAmplitudeData;
-  }
+		return waveformTimeData;
+	}
 
-  public int getPulseNumber() {
+	public double[] getWaveformAmplitudeData() {
 
-    return pulseNumber;
-  }
+		return waveformAmplitudeData;
+	}
 
-  public void setPulseNumber(int pulseNumber) {
+	public int getPulseNumber() {
 
-    this.pulseNumber = pulseNumber;
-    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
-  }
+		return pulseNumber;
+	}
 
-  public Synapse12Preferences.Waveform getWaveform() {
+	public void setPulseNumber(int pulseNumber) {
 
-    return waveform;
-  }
+		this.pulseNumber = pulseNumber;
+		swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
+	}
 
-  public void setWaveform(Synapse12Preferences.Waveform waveform) {
+	public Synapse12Preferences.Waveform getWaveform() {
 
-    this.waveform = waveform;
-    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
-  }
+		return waveform;
+	}
 
-  public void setWaveform(String text) {
+	public void setWaveform(Synapse12Preferences.Waveform waveform) {
 
-    this.waveform = Enum.valueOf(Synapse12Preferences.Waveform.class, text);
-    swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
-  }
+		this.waveform = waveform;
+		swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
+	}
 
-  public Instruction12 getInstruction() {
+	public void setWaveform(String text) {
 
-    return instruction;
-  }
+		this.waveform = Enum.valueOf(Synapse12Preferences.Waveform.class, text);
+		swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
+	}
 
-  public void setInstruction(Instruction12 instruction) {
+	public Instruction12 getInstruction() {
 
-    this.instruction = instruction;
-    swingPropertyChangeSupport.firePropertyChange(EVENT_INSTRUCTION_UPDATE, true, false);
-  }
+		return instruction;
+	}
 
-  public void setInstruction(String text) {
+	public void setInstruction(Instruction12 instruction) {
 
-    this.instruction = Enum.valueOf(Instruction12.class, text);
-    swingPropertyChangeSupport.firePropertyChange(EVENT_INSTRUCTION_UPDATE, true, false);
-  }
+		this.instruction = instruction;
+		swingPropertyChangeSupport.firePropertyChange(EVENT_INSTRUCTION_UPDATE, true, false);
+	}
 
-  public int getSampleRate() {
-    return sampleRate;
-  }
+	public void setInstruction(String text) {
 
-  public void setSampleRate(int sampleRate) {
-    this.sampleRate = sampleRate;
-  }
+		this.instruction = Enum.valueOf(Instruction12.class, text);
+		swingPropertyChangeSupport.firePropertyChange(EVENT_INSTRUCTION_UPDATE, true, false);
+	}
 
-  public double getLastY() {
+	public int getSampleRate() {
+		return sampleRate;
+	}
 
-    return lastY;
-  }
+	public void setSampleRate(int sampleRate) {
+		this.sampleRate = sampleRate;
+	}
 
-  public void setLastY(double lastY) {
+	public double getLastY() {
 
-    this.lastY = lastY;
-  }
+		return lastY;
+	}
 
-  public boolean isStartToggled() {
+	public void setLastY(double lastY) {
 
-    return isStartToggled;
-  }
+		this.lastY = lastY;
+	}
 
-  public void setStartToggled(boolean isStartToggled) {
+	public boolean isStartToggled() {
 
-    this.isStartToggled = isStartToggled;
-  }
+		return isStartToggled;
+	}
+
+	public void setStartToggled(boolean isStartToggled) {
+
+		this.isStartToggled = isStartToggled;
+	}
+
+	public double getScopeOneOffset() {
+		return scopeOneOffset;
+	}
+
+	public double getScopeTwoOffset() {
+		return scopeTwoOffset;
+	}
+
+	public double getwOneOffset() {
+		return wOneOffset;
+	}
 }
