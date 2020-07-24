@@ -32,240 +32,264 @@ import org.knowm.waveforms4j.DWF;
 
 public class KTRAM_Controller_12 {
 
-	private DWFProxy dWFProxy;
-	private ControlModel controlModel;
-	private double vy; // last read value
-	private double ga;
-	private double gb;
+  private DWFProxy dWFProxy;
+  private ControlModel controlModel;
+  private double vy; // last read value
+  private double ga;
+  private double gb;
 
-	private int switchA;
-	private int switchB;
+  private int switchA;
+  private int switchB;
 
-	public KTRAM_Controller_12(ControlModel controlModel) {
+  public KTRAM_Controller_12(ControlModel controlModel) {
 
-		this.controlModel = controlModel;
-	}
+    this.controlModel = controlModel;
+  }
 
-	public void executeInstruction(Instruction12 instruction) {
+  public void executeInstruction(Instruction12 instruction) {
 
-		if (instruction == Instruction12.HEBBIAN) {
-			if (ga >= gb) { // state is positive. make more positive.
-				execute(Instruction12.FA); // increase conductance of A
-				execute(Instruction12.RB); // decrease conductance of B
-			} else if (ga < gb) { // state is negative. make more negative.
-				execute(Instruction12.RA); // decrease conductance of A
-				execute(Instruction12.FB); // increase conductance of B
-			}
-		} else if (instruction == Instruction12.ANTI_HEBBIAN) {
-			if (ga >= gb) { // state is positive. Make less positive.
-				execute(Instruction12.RA); // decrease conductance of A
-				execute(Instruction12.FB); // increase conductance of B
-			} else if (ga < gb) { // state is negative. make less negative.
-				execute(Instruction12.FA); // increase conductance of A
-				execute(Instruction12.RB); // decrease conductance of B
-			}
-		} else {
-			execute(instruction);
-		}
-	}
+    if (instruction == Instruction12.HEBBIAN) {
+      if (ga >= gb) { // state is positive. make more positive.
+        execute(Instruction12.FA); // increase conductance of A
+        execute(Instruction12.RB); // decrease conductance of B
+      } else if (ga < gb) { // state is negative. make more negative.
+        execute(Instruction12.RA); // decrease conductance of A
+        execute(Instruction12.FB); // increase conductance of B
+      }
+    } else if (instruction == Instruction12.ANTI_HEBBIAN) {
+      if (ga >= gb) { // state is positive. Make less positive.
+        execute(Instruction12.RA); // decrease conductance of A
+        execute(Instruction12.FB); // increase conductance of B
+      } else if (ga < gb) { // state is negative. make less negative.
+        execute(Instruction12.FA); // increase conductance of A
+        execute(Instruction12.RB); // decrease conductance of B
+      }
+    } else {
+      execute(instruction);
+    }
+  }
 
-	public boolean readSwitchStates() {
+  public boolean readSwitchStates() {
 
-		switchA = -1;
-		switchB = -1;
+    switchA = -1;
+    switchB = -1;
 
-		String s = Integer.toBinaryString(dWFProxy.getDigitalIOStates());
+    String s = Integer.toBinaryString(dWFProxy.getDigitalIOStates());
 
-		int count = 0;
-		for (int i = s.length() - 1; i >= 0; i--) {
-			if (s.charAt(i) == '1') {
-				count++;
-				int idx = s.length() - 1 - i;
-				if (switchA == -1) {
-					switchA = idx;
-				} else {
-					switchB = idx;
-				}
-			}
-		}
+    int count = 0;
+    for (int i = s.length() - 1; i >= 0; i--) {
+      if (s.charAt(i) == '1') {
+        count++;
+        int idx = s.length() - 1 - i;
+        if (switchA == -1) {
+          switchA = idx;
+        } else {
+          switchB = idx;
+        }
+      }
+    }
 
-		if (count != 2) {
-			return false;
-		}
+    if (count != 2) {
+      return false;
+    }
 
-		if (switchA > 7) {
-			return false;
-		}
-		if (switchB < 8) {
-			return false;
-		}
+    if (switchA > 7) {
+      return false;
+    }
+    if (switchB < 8) {
+      return false;
+    }
 
-		return true;
-	}
+    return true;
+  }
 
-	private void execute(Instruction12 instruction) {
+  private void execute(Instruction12 instruction) {
 
-		getControlModel().swingPropertyChangeSupport.firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null,
-				"Executing Instruction: " + instruction);
+    getControlModel()
+        .swingPropertyChangeSupport
+        .firePropertyChange(
+            Model.EVENT_NEW_CONSOLE_LOG, null, "Executing Instruction: " + instruction);
 
-		double W1Amplitude;
+    double W1Amplitude;
 
-		// turn off switches and invert pulse if necessary
+    // turn off switches and invert pulse if necessary
 
-		if (instruction == Instruction12.FLV) {
-			W1Amplitude = -.08f;
-		} else if (instruction == Instruction12.RLV) {
-			W1Amplitude = .08f;
-		} else if (instruction == Instruction12.FAB) {
-			W1Amplitude = -controlModel.getForwardAmplitude();
-		} else if (instruction == Instruction12.RAB) {
-			W1Amplitude = controlModel.getReverseAmplitude();
-		} else if (instruction == Instruction12.FA) {
-			W1Amplitude = -controlModel.getForwardAmplitude();
-			dWFProxy.update2DigitalIOStatesAtOnce(switchB, false);
-		} else if (instruction == Instruction12.FB) {
-			W1Amplitude = -controlModel.getForwardAmplitude();
-			dWFProxy.update2DigitalIOStatesAtOnce(switchA, false);
-		} else if (instruction == Instruction12.RA) {
-			W1Amplitude = controlModel.getReverseAmplitude();
-			dWFProxy.update2DigitalIOStatesAtOnce(switchB, false);
-		} else if (instruction == Instruction12.RB) {
-			W1Amplitude = controlModel.getReverseAmplitude();
-			dWFProxy.update2DigitalIOStatesAtOnce(switchA, false);
-		} else { // default is forward read.
-			W1Amplitude = -.08f;
-		}
+    if (instruction == Instruction12.FLV) {
+      W1Amplitude = -.08f;
+    } else if (instruction == Instruction12.RLV) {
+      W1Amplitude = .08f;
+    } else if (instruction == Instruction12.FAB) {
+      W1Amplitude = -controlModel.getForwardAmplitude();
+    } else if (instruction == Instruction12.RAB) {
+      W1Amplitude = controlModel.getReverseAmplitude();
+    } else if (instruction == Instruction12.FA) {
+      W1Amplitude = -controlModel.getForwardAmplitude();
+      dWFProxy.update2DigitalIOStatesAtOnce(switchB, false);
+    } else if (instruction == Instruction12.FB) {
+      W1Amplitude = -controlModel.getForwardAmplitude();
+      dWFProxy.update2DigitalIOStatesAtOnce(switchA, false);
+    } else if (instruction == Instruction12.RA) {
+      W1Amplitude = controlModel.getReverseAmplitude();
+      dWFProxy.update2DigitalIOStatesAtOnce(switchB, false);
+    } else if (instruction == Instruction12.RB) {
+      W1Amplitude = controlModel.getReverseAmplitude();
+      dWFProxy.update2DigitalIOStatesAtOnce(switchA, false);
+    } else { // default is forward read.
+      W1Amplitude = -.08f;
+    }
 
-		double[] W1 = WaveformUtils.generateCustomWaveform(controlModel.getWaveform(), W1Amplitude,
-				controlModel.getCalculatedFrequency());
+    double[] W1 =
+        WaveformUtils.generateCustomWaveform(
+            controlModel.getWaveform(), W1Amplitude, controlModel.getCalculatedFrequency());
 
-		dWFProxy.getDwf().startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(DWF.WAVEFORM_CHANNEL_1,
-				controlModel.getCalculatedFrequency() * 300, 300 * 1, true);
-		dWFProxy.waitUntilArmed();
-		dWFProxy.getDwf().setCustomPulseTrain(DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, 1, W1);
-		dWFProxy.getDwf().startPulseTrain(DWF.WAVEFORM_CHANNEL_1);
+    dWFProxy
+        .getDwf()
+        .startAnalogCaptureBothChannelsTriggerOnWaveformGenerator(
+            DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency() * 300, 300 * 1, true);
+    dWFProxy.waitUntilArmed();
+    dWFProxy
+        .getDwf()
+        .setCustomPulseTrain(
+            DWF.WAVEFORM_CHANNEL_1, controlModel.getCalculatedFrequency(), 0, 1, W1);
+    dWFProxy.getDwf().startPulseTrain(DWF.WAVEFORM_CHANNEL_1);
 
-		boolean success = dWFProxy.capturePulseData(controlModel.getCalculatedFrequency(), 1);
-		if (success) {
+    boolean success = dWFProxy.capturePulseData(controlModel.getCalculatedFrequency(), 1);
+    if (success) {
 
-			if (instruction == Instruction12.FLV || instruction == Instruction12.RLV) {
-				setVy(W1Amplitude);
-			}
+      if (instruction == Instruction12.FLV || instruction == Instruction12.RLV) {
+        setVy(W1Amplitude);
+      }
 
-			// setVy(W1Amplitude);
-		} else {
-			getControlModel().swingPropertyChangeSupport.firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null,
-					"Capture has failed! This is usually due to noise/interference. Try a shorter cable or use a magnetic choke.");
-		}
+      // setVy(W1Amplitude);
+    } else {
+      getControlModel()
+          .swingPropertyChangeSupport
+          .firePropertyChange(
+              Model.EVENT_NEW_CONSOLE_LOG,
+              null,
+              "Capture has failed! This is usually due to noise/interference. Try a shorter cable or use a magnetic choke.");
+    }
 
-		// turn back on switches
-		if (instruction == Instruction12.FA) {
-			dWFProxy.update2DigitalIOStatesAtOnce(switchB, true);
-		} else if (instruction == Instruction12.FB) {
-			dWFProxy.update2DigitalIOStatesAtOnce(switchA, true);
-		} else if (instruction == Instruction12.RA) {
-			dWFProxy.update2DigitalIOStatesAtOnce(switchB, true);
-		} else if (instruction == Instruction12.RB) {
-			dWFProxy.update2DigitalIOStatesAtOnce(switchA, true);
-		}
+    // turn back on switches
+    if (instruction == Instruction12.FA) {
+      dWFProxy.update2DigitalIOStatesAtOnce(switchB, true);
+    } else if (instruction == Instruction12.FB) {
+      dWFProxy.update2DigitalIOStatesAtOnce(switchA, true);
+    } else if (instruction == Instruction12.RA) {
+      dWFProxy.update2DigitalIOStatesAtOnce(switchB, true);
+    } else if (instruction == Instruction12.RB) {
+      dWFProxy.update2DigitalIOStatesAtOnce(switchA, true);
+    }
 
-		/*
-		 * must wait here to allow pulses from AWG to finish. Should take no more that
-		 * one ms...
-		 */
-		try {
-			Thread.sleep(1);
-		} catch (InterruptedException e) {
+    /*
+     * must wait here to allow pulses from AWG to finish. Should take no more that
+     * one ms...
+     */
+    try {
+      Thread.sleep(1);
+    } catch (InterruptedException e) {
 
-		}
-	}
+    }
+  }
 
-	public double getVy() {
+  public double getVy() {
 
-		return vy;
-	}
+    return vy;
+  }
 
-	private void setVy(double W1Amplitude) {
+  private void setVy(double W1Amplitude) {
 
-		int validSamples = dWFProxy.getDwf().FDwfAnalogInStatusSamplesValid();
+    int validSamples = dWFProxy.getDwf().FDwfAnalogInStatusSamplesValid();
 
-		double peakV1 = Util.maxAbs(dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples));
-		double peakV2 = Util.maxAbs(dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples));
+    double peakV1 =
+        Util.maxAbs(
+            dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_1, validSamples));
+    double peakV2 =
+        Util.maxAbs(
+            dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples));
 
-		getControlModel().swingPropertyChangeSupport.firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null,
-				"V(1+): " + peakV1);
-		getControlModel().swingPropertyChangeSupport.firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null,
-				"V(2+): " + peakV2);
-		getControlModel().swingPropertyChangeSupport.firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null,
-				"V(W1): " + W1Amplitude);
+    getControlModel()
+        .swingPropertyChangeSupport
+        .firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null, "V(1+): " + peakV1);
+    getControlModel()
+        .swingPropertyChangeSupport
+        .firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null, "V(2+): " + peakV2);
+    getControlModel()
+        .swingPropertyChangeSupport
+        .firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null, "V(W1): " + W1Amplitude);
 
-		peakV1 = peakV1 - controlModel.getScopeOneOffset() - controlModel.getwOneOffset();
-		peakV2 = peakV2 - controlModel.getScopeTwoOffset() - controlModel.getwOneOffset();
+    peakV1 = peakV1 - controlModel.getScopeOneOffset() - controlModel.getwOneOffset();
+    peakV2 = peakV2 - controlModel.getScopeTwoOffset() - controlModel.getwOneOffset();
 
-		double W1AmplitudeWithOffset = W1Amplitude + controlModel.getwOneOffset();
+    double W1AmplitudeWithOffset = W1Amplitude + controlModel.getwOneOffset();
 
-		this.vy = -(peakV1 - peakV2) / W1AmplitudeWithOffset;
+    this.vy = -(peakV1 - peakV2) / W1AmplitudeWithOffset;
 
-		System.out.println("peakV1: " + peakV1);
-		System.out.println("peakV2: " + peakV2);
-		System.out.println("W1AmplitudeWithOffset: " + W1AmplitudeWithOffset);
-		System.out.println("W1Amplitude: " + W1Amplitude);
+    System.out.println("peakV1: " + peakV1);
+    System.out.println("peakV2: " + peakV2);
+    System.out.println("W1AmplitudeWithOffset: " + W1AmplitudeWithOffset);
+    System.out.println("W1Amplitude: " + W1Amplitude);
 
-		double Ia = (peakV1 - W1AmplitudeWithOffset) / controlModel.getSeriesResistance();
-		double Ib = (peakV2 - W1AmplitudeWithOffset) / controlModel.getSeriesResistance();
+    double Ia = (peakV1 - W1AmplitudeWithOffset) / controlModel.getSeriesResistance();
+    double Ib = (peakV2 - W1AmplitudeWithOffset) / controlModel.getSeriesResistance();
 
-		if (Ia < 0 || Ib < 0) {
-			getControlModel().swingPropertyChangeSupport.firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null,
-					"WARNING! Current measurment is zero. This is likely a problem with scope and/or wavegenerator offsets."
-							+ System.lineSeparator() + "Please read help for information on how to set offsets.");
-		}
+    if (Ia < 0 || Ib < 0) {
+      getControlModel()
+          .swingPropertyChangeSupport
+          .firePropertyChange(
+              Model.EVENT_NEW_CONSOLE_LOG,
+              null,
+              "WARNING! Current measurment is zero. This is likely a problem with scope and/or wavegenerator offsets."
+                  + System.lineSeparator()
+                  + "Please read help for information on how to set offsets.");
+    }
 
-		double a = -Ia / peakV1;
-		double b = -Ib / peakV2;
+    double a = -Ia / peakV1;
+    double b = -Ib / peakV2;
 
-		// noise correction-->
-		this.ga = a < 0 ? 0 : a;
-		this.gb = b < 0 ? 0 : b;
-	}
+    // noise correction-->
+    this.ga = a < 0 ? 0 : a;
+    this.gb = b < 0 ? 0 : b;
+  }
 
-	public DWFProxy getdWFProxy() {
+  public DWFProxy getdWFProxy() {
 
-		return dWFProxy;
-	}
+    return dWFProxy;
+  }
 
-	public void setdWFProxy(DWFProxy dWFProxy) {
+  public void setdWFProxy(DWFProxy dWFProxy) {
 
-		this.dWFProxy = dWFProxy;
-	}
+    this.dWFProxy = dWFProxy;
+  }
 
-	public ControlModel getControlModel() {
+  public ControlModel getControlModel() {
 
-		return controlModel;
-	}
+    return controlModel;
+  }
 
-	public double getGa() {
+  public double getGa() {
 
-		return ga;
-	}
+    return ga;
+  }
 
-	public void setGa(double ga) {
+  public void setGa(double ga) {
 
-		this.ga = ga;
-	}
+    this.ga = ga;
+  }
 
-	public double getGb() {
+  public double getGb() {
 
-		return gb;
-	}
+    return gb;
+  }
 
-	public void setGb(double gb) {
+  public void setGb(double gb) {
 
-		this.gb = gb;
-	}
+    this.gb = gb;
+  }
 
-	public enum Instruction12 {
+  public enum Instruction12 {
 
-	// @formatter:off
+    // @formatter:off
     FLV,
     FA,
     FB,
@@ -277,7 +301,6 @@ public class KTRAM_Controller_12 {
     HEBBIAN,
     ANTI_HEBBIAN;
     // @formatter:on
-		Instruction12() {
-		}
-	}
+    Instruction12() {}
+  }
 }

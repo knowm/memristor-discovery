@@ -298,5 +298,4 @@ public class ControlModel extends Model {
     this.dutyCycle = dutyCycle;
     swingPropertyChangeSupport.firePropertyChange(Model.EVENT_WAVEFORM_UPDATE, true, false);
   }
-
 }
