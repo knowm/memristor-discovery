@@ -32,38 +32,45 @@ The preferences window allows you to save your preferred experimental control pa
 
 ## Analog Discovery 2 Scope and Waveform Offsets
 
-Some AD2 units have offsets of a few milivolts that can cause significant measurement issues. While waveforms software resolves this through calibration, and while the calibration data is stored on the device itself, the unit does not actually apply the calibration. Rather, Waveforms software uses the stored parameters to correct the aquired data and generated signals. To add calibration to your measurements, follow the below procedure:
+Some AD2 units have offsets of a few millivolts that can cause significant measurement issues. While waveforms software resolves this through calibration, and while the calibration data is stored on the device itself, the unit does not actually apply the calibration. Rather, Waveforms software uses the stored parameters to correct the acquired data and generated signals. To add calibration to your measurements, follow the below procedure:
 
-1. Remove the Discovery Board from the AD2.
+1. Remove the Memristor Discovery Board from the AD2.
 2. Open the Synapse 1-2 Experiment in Memristor Discovery software.
-3. Connect the AD2 1+,2+, 1- and 2- terminals to ground.
+3. Connect the AD2 1+, 2+, 1- and 2- terminals to ground.
 4. Select two memristors (otherwise the software will complain) and hit "start".
-5. Open the consol by going to Menu Bar--> Window-->Consol. Look at the logged messages for V(1+), V(2+) and V(W1). Stop the measurments by clicking on "Stop". Copy the consol information. For example:  
+5. Open the console by going to Menu Bar--> Window-->Console. Look at the logged messages for V(1+), V(2+) and V(W1). Stop the measurements by clicking on "Stop". Copy the console information. For example:  
 
-	V(1+): -0.001160290631058606
-	V(2+): -0.04096653596287886
-	V(W1): -0.07999999821186066
+```
+V(1+): -0.001160290631058606
+V(2+): -0.04096653596287886
+V(W1): -0.07999999821186066
+```
 	
-6. Connect 1+ and 2+ inputs to W1. You may need a breadboard for this. Click "Start". Look at the logged messages for V(1+), V(2+) and V(W1). Click "Stop". Copy the consol information again:
+6. Connect 1+ and 2+ inputs to W1. You may need a breadboard for this. Click "Start". Look at the logged messages for V(1+), V(2+) and V(W1). Click "Stop". Copy the console information again:
 
-	V(1+): -0.10088136722427613
-	V(2+): -0.14046089059718023
-	V(W1): -0.07999999821186066
+```
+V(1+): -0.10088136722427613
+V(2+): -0.14046089059718023
+V(W1): -0.07999999821186066
+```
 
-7. Record scope offsets from measurements in step (5). V(1+) is the scope 1+ offset and V(2+) is the scope 2 offset. 
+7. Record scope offsets from measurements in step (5). V(1+) is the Scope (1+) Offset and V(2+) is the Scope (2+) Offset. 
 	
-	Scope 1 Offset: -0.00116
-	Scope 2 Offset: -0.04096
+```
+Scope (1+) Offset: -0.00116
+Scope (2+) Offset: -0.04096
+```
 
 8. Compute waveform offset from equation using data recorded in step 6 and scope offsets.
 
-	  W1_offset=V(1+)-(Scope 1 Offset)-V(W1)
+```
+W1 Offset = V(1+) - [Scope (1+) Offset] - V(W1)
 
-For example: W1_offset = -0.101 - (-0.001) - (-.08) = -.02
-	
+For example: W1 Offset = -0.101 - (-0.001) - (-.08) = -.02
+```
 	
 9. Open the experiment preferences (Menu --> Window --> Preferences) and enter the measured offsets into the preferences. 
 
-10. Restart the experiment. The calibration information will now be used for measurments. 
+10. Restart the experiment. The calibration information will now be used for measurements. 
 
 

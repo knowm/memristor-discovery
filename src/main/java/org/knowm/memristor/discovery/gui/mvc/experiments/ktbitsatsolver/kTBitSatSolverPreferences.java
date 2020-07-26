@@ -25,38 +25,47 @@ package org.knowm.memristor.discovery.gui.mvc.experiments.ktbitsatsolver;
 
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 
-/**
- * Stores various operational preferences
- *
- * @author alexnugent
- */
 public class kTBitSatSolverPreferences extends ExperimentPreferences {
 
-  private static final String PREFIX = "KT_BIT_SAT_SOLVER";
-
-  public static final String WAVEFORM_INIT_STRING_DEFAULT_VALUE = "HalfSine";
-  public static final int SERIES_R_INIT_DEFAULT_VALUE = 20_000;
-  public static final float AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE = 1f;
-  public static final float AMPLITUDE_REVERSE_INIT_FLOAT_DEFAULT_VALUE = 1f;
-  public static final int PULSE_WIDTH_INIT_DEFAULT_VALUE = 50_000;
-  public static final int NUM_TRAIN_EPOCHS_INIT_DEFAULT_VALUE = 50;
+  /* NOT YET IN PREFERENCES*/
   public static final CurrentUnits CURRENT_UNIT = CurrentUnits.MicroAmps;
-  public static final ResistanceUnits RESISTANCE_UNIT = ResistanceUnits.KiloOhms;
   public static final ConductanceUnits CONDUCTANCE_UNIT = ConductanceUnits.MilliSiemens;
   public static final TimeUnits TIME_UNIT = TimeUnits.MicroSeconds;
   public static final int CAPTURE_BUFFER_SIZE = 8000;
 
-  public static final String FILE_PATH_INIT_KEY = PREFIX + "FILE_DIRECTORY_INIT_KEY";
+  /* ALREADY IN PREFERENCES*/
+
+  private static final String PREFIX = "KT_BIT_SAT_SOLVER_";
+
+  public static final String WAVEFORM_INIT_STRING_DEFAULT_VALUE = "HalfSine";
+  public static final int SERIES_R_INIT_DEFAULT_VALUE = 20_000;
+  public static final float AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE = 1f;
+
+  public static final float AMPLITUDE_REVERSE_INIT_FLOAT_DEFAULT_VALUE = 1f;
+  public static final int PULSE_WIDTH_INIT_DEFAULT_VALUE = 50_000;
+  public static final int NUM_TRAIN_EPOCHS_INIT_DEFAULT_VALUE = 50;
+
   public static final String FILE_PATH_INIT_DEFAULT_VALUE = "/Desktop/";
+
+  public static final float SCOPE_ONE_OFFSET_DEFAULT_VALUE = 0f;
+  public static final float SCOPE_TWO_OFFSET_DEFAULT_VALUE = 0f;
+  public static final float W_ONE_OFFSET_DEFAULT_VALUE = 0f;
 
   // /////////////////////////////////////////////////////////////////////////////////////
   public static final String WAVEFORM_INIT_STRING_KEY = PREFIX + "WAVEFORM_INIT_STRING_KEY";
   public static final String SERIES_R_INIT_KEY = PREFIX + "SERIES_R_INIT_KEY";
   public static final String AMPLITUDE_INIT_FLOAT_KEY = PREFIX + "AMPLITUDE_INIT_FLOAT_KEY";
+
   public static final String AMPLITUDE_REVERSE_INIT_FLOAT_KEY =
       PREFIX + "AMPLITUDE_REVERSE_INIT_FLOAT_KEY";
-  public static final String PULSE_WIDTH_INIT_KEY = PREFIX + "PERIOD_INIT_KEY";
+  public static final String PULSE_WIDTH_INIT_KEY = PREFIX + "PULSE_WIDTH_INIT_KEY";
   public static final String NUM_TRAIN_EPOCHS_INIT_KEY = PREFIX + "NUM_TRAIN_EPOCHS_INIT_KEY";
+
+  public static final String FILE_PATH_INIT_KEY = PREFIX + "FILE_DIRECTORY_INIT_KEY";
+
+  public static final String SCOPE_ONE_OFFSET_KEY = PREFIX + "SCOPE_ONE_OFFSET_KEY";
+  public static final String SCOPE_TWO_OFFSET_KEY = PREFIX + "SCOPE_TWO_OFFSET_KEY";
+  public static final String W_ONE_OFFSET_KEY = PREFIX + "W_ONE_OFFSET_KEY";
 
   /** Constructor */
   public kTBitSatSolverPreferences() {

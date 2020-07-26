@@ -31,6 +31,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferencesPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.synapse12.Synapse12Preferences;
 
 public class Classify12PreferencesPanel extends ExperimentPreferencesPanel {
 
@@ -48,6 +49,16 @@ public class Classify12PreferencesPanel extends ExperimentPreferencesPanel {
 
   private JLabel numTrainEpochsLabel;
   private JTextField numTrainEpochsTextField;
+
+
+  private JLabel scopeOneOffsetLabel;
+  private JTextField scopeOneOffsetTextField;
+
+  private JLabel scopeTwoOffsetLabel;
+  private JTextField scopeTwoOffsetTextField;
+
+  private JLabel wOneOffsetLabel;
+  private JTextField wOneOffsetTextField;
 
   /**
    * Constructor
@@ -140,6 +151,53 @@ public class Classify12PreferencesPanel extends ExperimentPreferencesPanel {
                 Classify12Preferences.NUM_TRAIN_EPOCHS_INIT_KEY,
                 Classify12Preferences.NUM_TRAIN_EPOCHS_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(numTrainEpochsTextField, gc);
+
+
+    gc.gridy++;
+
+    gc.gridx = 0;
+    this.scopeOneOffsetLabel = new JLabel("Scope (1+) Offset:");
+    preferencesPanel.add(scopeOneOffsetLabel, gc);
+
+    gc.gridx = 1;
+    this.scopeOneOffsetTextField = new JTextField(12);
+    this.scopeOneOffsetTextField.setText(
+        String.valueOf(
+            experimentPreferences.getFloat(
+                Classify12Preferences.SCOPE_ONE_OFFSET_KEY,
+                Classify12Preferences.SCOPE_ONE_OFFSET_DEFAULT_VALUE)));
+    preferencesPanel.add(scopeOneOffsetTextField, gc);
+
+    gc.gridy++;
+
+    gc.gridx = 0;
+    this.scopeTwoOffsetLabel = new JLabel("Scope (2+) Offset:");
+    preferencesPanel.add(scopeTwoOffsetLabel, gc);
+
+    gc.gridx = 1;
+    this.scopeTwoOffsetTextField = new JTextField(12);
+    this.scopeTwoOffsetTextField.setText(
+        String.valueOf(
+            experimentPreferences.getFloat(
+                Classify12Preferences.SCOPE_TWO_OFFSET_KEY,
+                Classify12Preferences.SCOPE_TWO_OFFSET_DEFAULT_VALUE)));
+    preferencesPanel.add(scopeTwoOffsetTextField, gc);
+
+    gc.gridy++;
+
+    gc.gridx = 0;
+    this.wOneOffsetLabel = new JLabel("W1 Offset:");
+    preferencesPanel.add(wOneOffsetLabel, gc);
+
+    gc.gridx = 1;
+    this.wOneOffsetTextField = new JTextField(12);
+    this.wOneOffsetTextField.setText(
+        String.valueOf(
+            experimentPreferences.getFloat(
+                Classify12Preferences.W_ONE_OFFSET_KEY,
+                Classify12Preferences.W_ONE_OFFSET_DEFAULT_VALUE)));
+    preferencesPanel.add(wOneOffsetTextField, gc);
+    
   }
 
   @Override
@@ -157,6 +215,16 @@ public class Classify12PreferencesPanel extends ExperimentPreferencesPanel {
     experimentPreferences.setInteger(
         Classify12Preferences.NUM_TRAIN_EPOCHS_INIT_KEY,
         Integer.parseInt(numTrainEpochsTextField.getText()));
+
+    experimentPreferences.setFloat(
+        Classify12Preferences.SCOPE_ONE_OFFSET_KEY,
+        Float.parseFloat(scopeOneOffsetTextField.getText()));
+    experimentPreferences.setFloat(
+        Classify12Preferences.SCOPE_TWO_OFFSET_KEY,
+        Float.parseFloat(scopeTwoOffsetTextField.getText()));
+    experimentPreferences.setFloat(
+        Classify12Preferences.W_ONE_OFFSET_KEY, Float.parseFloat(wOneOffsetTextField.getText()));
+    
   }
 
   @Override

@@ -69,7 +69,7 @@ public class ControlModel extends Model {
     resetPulseWidth =
         experimentPreferences.getInteger(
             ConductancePreferences.RESET_PULSE_WIDTH_INIT_KEY,
-            ConductancePreferences.RESET_PERIOD_INIT_DEFAULT_VALUE);
+            ConductancePreferences.RESET_PULSE_WIDTH_INIT_DEFAULT_VALUE);
 
     // SET
     setConductance =
@@ -83,7 +83,7 @@ public class ControlModel extends Model {
     setPulseWidth =
         experimentPreferences.getInteger(
             ConductancePreferences.SET_PULSE_WIDTH_INIT_KEY,
-            ConductancePreferences.SET_PERIOD_INIT_DEFAULT_VALUE);
+            ConductancePreferences.SET_PULSE_WIDTH_INIT_DEFAULT_VALUE);
 
     seriesResistance =
         experimentPreferences.getInteger(

@@ -180,7 +180,7 @@ public class ResultController {
     resultPanel.getGvChart().getStyler().setYAxisMin(0.0);
     resultPanel.getGvChart().setTitle(getGVChartTitle(amplitude, pulseWidth));
 
-    // filter out all conductance measurments less than .02V.
+    // filter out all conductance measurEments less than .02V.
     List<Number> v_rm = new ArrayList<>();
     List<Number> v_m = new ArrayList<>();
     List<Number> g = new ArrayList<>();

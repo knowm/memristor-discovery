@@ -105,16 +105,16 @@ public class ControlModel extends Model {
         experimentPreferences.getInteger(
             Synapse12Preferences.SAMPLE_RATE_INIT_KEY,
             Synapse12Preferences.SAMPLE_RATE_INIT_DEFAULT_VALUE);
-    this.scopeOneOffset =
+    
+    scopeOneOffset =
         experimentPreferences.getFloat(
             Synapse12Preferences.SCOPE_ONE_OFFSET_KEY,
             Synapse12Preferences.SCOPE_ONE_OFFSET_DEFAULT_VALUE);
-    this.scopeTwoOffset =
+    scopeTwoOffset =
         experimentPreferences.getFloat(
             Synapse12Preferences.SCOPE_TWO_OFFSET_KEY,
             Synapse12Preferences.SCOPE_TWO_OFFSET_DEFAULT_VALUE);
-
-    this.wOneOffset =
+    wOneOffset =
         experimentPreferences.getFloat(
             Synapse12Preferences.W_ONE_OFFSET_KEY, Synapse12Preferences.W_ONE_OFFSET_DEFAULT_VALUE);
   }

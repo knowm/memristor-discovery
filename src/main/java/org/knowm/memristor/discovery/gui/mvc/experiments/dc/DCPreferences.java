@@ -28,21 +28,29 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 /** Stores various operational preferences */
 public class DCPreferences extends ExperimentPreferences {
 
+  /* NOT YET IN PREFERENCES*/
+
+  public static final CurrentUnits CURRENT_UNIT = CurrentUnits.MicroAmps;
+  public static final ConductanceUnits CONDUCTANCE_UNIT = ConductanceUnits.MilliSiemens;
+  public static final TimeUnits TIME_UNIT = TimeUnits.MilliSeconds;
+
+  /* ALREADY IN PREFERENCES*/
+
   public static final String WAVEFORM_INIT_STRING_DEFAULT_VALUE = "SawtoothUpDown";
   public static final int NUM_PULSES_INIT_DEFAULT_VALUE = 2;
   public static final int SERIES_R_INIT_DEFAULT_VALUE = 10_000;
+
   public static final float AMPLITUDE_INIT_FLOAT_DEFAULT_VALUE = 0.1f;
   public static final int PERIOD_INIT_DEFAULT_VALUE = 5;
-  public static final CurrentUnits CURRENT_UNIT = CurrentUnits.MicroAmps;
-  public static final ResistanceUnits RESISTANCE_UNIT = ResistanceUnits.KiloOhms;
-  public static final ConductanceUnits CONDUCTANCE_UNIT = ConductanceUnits.MilliSiemens;
-  public static final TimeUnits TIME_UNIT = TimeUnits.MilliSeconds;
-  private static final String PREFIX = "DC_";
-  public static final String WAVEFORM_INIT_STRING_KEY = PREFIX + "WAVEFORM_INIT_STRING_KEY";
 
   ///////////////////////////////////////////////////////////////////////////////////////
+
+  private static final String PREFIX = "DC_";
+
+  public static final String WAVEFORM_INIT_STRING_KEY = PREFIX + "WAVEFORM_INIT_STRING_KEY";
   public static final String NUM_PULSES_INIT_KEY = PREFIX + "NUM_PULSES_INIT_KEY";
   public static final String SERIES_R_INIT_KEY = PREFIX + "SERIES_R_INIT_KEY";
+
   public static final String AMPLITUDE_INIT_FLOAT_KEY = PREFIX + "AMPLITUDE_INIT_FLOAT_KEY";
   public static final String PERIOD_INIT_KEY = PREFIX + "PERIOD_INIT_KEY";
 

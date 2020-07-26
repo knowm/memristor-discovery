@@ -246,7 +246,7 @@ public class ResultController implements PropertyChangeListener {
     resultPanel.getGvChart().setTitle(getGVChartTitle(amplitude, frequency, offset));
     resultPanel.getGvChart().updateXYSeries("Resistor+Memristor", v1, conductance, null);
 
-    // filter out all conductance measurments less than .02V.
+    // filter out all conductance measurEments less than .02V.
     List<Number> vm = new ArrayList<>();
     List<Number> g = new ArrayList<>();
 

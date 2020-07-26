@@ -33,6 +33,7 @@ import org.knowm.memristor.discovery.core.driver.waveform.SquareSmooth;
 import org.knowm.memristor.discovery.core.driver.waveform.Triangle;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
+import org.knowm.memristor.discovery.gui.mvc.experiments.synapse12.Synapse12Preferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse21.KTRAM_Controller_21.Instruction21;
 import org.knowm.memristor.discovery.gui.mvc.experiments.synapse21.Synapse21Preferences;
 
@@ -56,6 +57,11 @@ public class ControlModel extends Model {
   private int sampleRate;
 
   private boolean isStartToggled = false;
+
+
+  private double scopeOneOffset;
+  private double scopeTwoOffset;
+  private double wOneOffset;
 
   /** Constructor */
   public ControlModel() {
@@ -92,6 +98,18 @@ public class ControlModel extends Model {
         experimentPreferences.getInteger(
             Synapse21Preferences.SAMPLE_RATE_INIT_KEY,
             Synapse21Preferences.SAMPLE_RATE_INIT_DEFAULT_VALUE);
+
+    scopeOneOffset =
+        experimentPreferences.getFloat(
+            Synapse12Preferences.SCOPE_ONE_OFFSET_KEY,
+            Synapse12Preferences.SCOPE_ONE_OFFSET_DEFAULT_VALUE);
+    scopeTwoOffset =
+        experimentPreferences.getFloat(
+            Synapse12Preferences.SCOPE_TWO_OFFSET_KEY,
+            Synapse12Preferences.SCOPE_TWO_OFFSET_DEFAULT_VALUE);
+    wOneOffset =
+        experimentPreferences.getFloat(
+            Synapse12Preferences.W_ONE_OFFSET_KEY, Synapse12Preferences.W_ONE_OFFSET_DEFAULT_VALUE);
   }
 
   /** Given the state of the model, update the waveform x and y axis data arrays. */
@@ -247,5 +265,17 @@ public class ControlModel extends Model {
   public void setStartToggled(boolean isStartToggled) {
 
     this.isStartToggled = isStartToggled;
+  }
+
+  public double getScopeOneOffset() {
+    return scopeOneOffset;
+  }
+
+  public double getScopeTwoOffset() {
+    return scopeTwoOffset;
+  }
+
+  public double getwOneOffset() {
+    return wOneOffset;
   }
 }

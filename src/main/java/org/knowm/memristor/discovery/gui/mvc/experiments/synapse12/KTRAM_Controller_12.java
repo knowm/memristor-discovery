@@ -208,6 +208,8 @@ public class KTRAM_Controller_12 {
         Util.maxAbs(
             dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples));
 
+    ////////////////////////////////////////
+
     getControlModel()
         .swingPropertyChangeSupport
         .firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null, "V(1+): " + peakV1);
@@ -223,12 +225,14 @@ public class KTRAM_Controller_12 {
 
     double W1AmplitudeWithOffset = W1Amplitude + controlModel.getwOneOffset();
 
-    this.vy = -(peakV1 - peakV2) / W1AmplitudeWithOffset;
-
     System.out.println("peakV1: " + peakV1);
     System.out.println("peakV2: " + peakV2);
     System.out.println("W1AmplitudeWithOffset: " + W1AmplitudeWithOffset);
     System.out.println("W1Amplitude: " + W1Amplitude);
+
+    ////////////////////////////////////////
+
+    this.vy = -(peakV1 - peakV2) / W1AmplitudeWithOffset;
 
     double Ia = (peakV1 - W1AmplitudeWithOffset) / controlModel.getSeriesResistance();
     double Ib = (peakV2 - W1AmplitudeWithOffset) / controlModel.getSeriesResistance();
@@ -239,7 +243,7 @@ public class KTRAM_Controller_12 {
           .firePropertyChange(
               Model.EVENT_NEW_CONSOLE_LOG,
               null,
-              "WARNING! Current measurment is zero. This is likely a problem with scope and/or wavegenerator offsets."
+              "WARNING! Current measurement is zero. This is likely a problem with scope and/or wave generator offsets."
                   + System.lineSeparator()
                   + "Please read help for information on how to set offsets.");
     }

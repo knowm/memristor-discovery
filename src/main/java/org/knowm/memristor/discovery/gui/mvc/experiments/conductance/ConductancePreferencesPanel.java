@@ -123,7 +123,7 @@ public class ConductancePreferencesPanel extends ExperimentPreferencesPanel {
         String.valueOf(
             experimentPreferences.getInteger(
                 ConductancePreferences.RESET_PULSE_WIDTH_INIT_KEY,
-                ConductancePreferences.RESET_PERIOD_INIT_DEFAULT_VALUE)));
+                ConductancePreferences.RESET_PULSE_WIDTH_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(resetPulseWidthTextField, gc);
 
     // SET
@@ -167,7 +167,7 @@ public class ConductancePreferencesPanel extends ExperimentPreferencesPanel {
         String.valueOf(
             experimentPreferences.getInteger(
                 ConductancePreferences.SET_PULSE_WIDTH_INIT_KEY,
-                ConductancePreferences.SET_PERIOD_INIT_DEFAULT_VALUE)));
+                ConductancePreferences.SET_PULSE_WIDTH_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(setPulseWidthTextField, gc);
 
     gc.gridy++;

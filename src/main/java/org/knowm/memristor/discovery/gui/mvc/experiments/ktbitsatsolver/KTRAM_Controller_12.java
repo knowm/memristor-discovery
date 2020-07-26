@@ -177,10 +177,34 @@ public class KTRAM_Controller_12 {
         Util.maxAbs(
             dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples));
 
-    this.vy = -(peakV1 - peakV2) / W1Amplitude;
+    ////////////////////////////////////////
 
-    double Ia = (peakV1 - W1Amplitude) / controlModel.getSeriesResistance();
-    double Ib = (peakV2 - W1Amplitude) / controlModel.getSeriesResistance();
+    getControlModel()
+        .swingPropertyChangeSupport
+        .firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null, "V(1+): " + peakV1);
+    getControlModel()
+        .swingPropertyChangeSupport
+        .firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null, "V(2+): " + peakV2);
+    getControlModel()
+        .swingPropertyChangeSupport
+        .firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null, "V(W1): " + W1Amplitude);
+
+    peakV1 = peakV1 - controlModel.getScopeOneOffset() - controlModel.getwOneOffset();
+    peakV2 = peakV2 - controlModel.getScopeTwoOffset() - controlModel.getwOneOffset();
+
+    double W1AmplitudeWithOffset = W1Amplitude + controlModel.getwOneOffset();
+
+    System.out.println("peakV1: " + peakV1);
+    System.out.println("peakV2: " + peakV2);
+    System.out.println("W1AmplitudeWithOffset: " + W1AmplitudeWithOffset);
+    System.out.println("W1Amplitude: " + W1Amplitude);
+
+    ////////////////////////////////////
+
+    this.vy = -(peakV1 - peakV2) / W1AmplitudeWithOffset;
+
+    double Ia = (peakV1 - W1AmplitudeWithOffset) / controlModel.getSeriesResistance();
+    double Ib = (peakV2 - W1AmplitudeWithOffset) / controlModel.getSeriesResistance();
 
     double a = -Ia / peakV1;
     double b = -Ib / peakV2;

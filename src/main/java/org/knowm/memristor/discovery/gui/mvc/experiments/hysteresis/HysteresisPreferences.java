@@ -27,15 +27,16 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 
 /** Stores various operational preferences */
 public class HysteresisPreferences extends ExperimentPreferences {
-
+  
   // NOT YET IN PREFERENCES
+  
   public static final CurrentUnits CURRENT_UNIT = CurrentUnits.MicroAmps;
   public static final ConductanceUnits CONDUCTANCE_UNIT = ConductanceUnits.MilliSiemens;
-  // public static final boolean IS_VIN = true;
   public static final int CAPTURE_BUFFER_SIZE = 200;
   public static final int CAPTURE_PERIOD_COUNT = 1;
 
   // ALREADY IN PREFERENCES
+  
   private static final String PREFIX = "HYSTERESIS_";
   public static final String WAVEFORM_INIT_STRING_KEY = PREFIX + "WAVEFORM_INIT_STRING_KEY";
   public static final String WAVEFORM_INIT_STRING_DEFAULT_VALUE = "Sine";

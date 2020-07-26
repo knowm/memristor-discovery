@@ -31,6 +31,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferencesPanel;
+import org.knowm.memristor.discovery.gui.mvc.experiments.synapse12.Synapse12Preferences;
 
 public class Synapse21PreferencesPanel extends ExperimentPreferencesPanel {
 
@@ -45,6 +46,17 @@ public class Synapse21PreferencesPanel extends ExperimentPreferencesPanel {
 
   private JLabel sampleRateLabel;
   private JTextField sampleRateTextField;
+
+
+  private JLabel scopeOneOffsetLabel;
+  private JTextField scopeOneOffsetTextField;
+
+  private JLabel scopeTwoOffsetLabel;
+  private JTextField scopeTwoOffsetTextField;
+
+  private JLabel wOneOffsetLabel;
+  private JTextField wOneOffsetTextField;
+  
 
   /**
    * Constructor
@@ -121,6 +133,53 @@ public class Synapse21PreferencesPanel extends ExperimentPreferencesPanel {
                 Synapse21Preferences.SAMPLE_RATE_INIT_KEY,
                 Synapse21Preferences.SAMPLE_RATE_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(sampleRateTextField, gc);
+
+
+    gc.gridy++;
+
+    gc.gridx = 0;
+    this.scopeOneOffsetLabel = new JLabel("Scope (1+) Offset:");
+    preferencesPanel.add(scopeOneOffsetLabel, gc);
+
+    gc.gridx = 1;
+    this.scopeOneOffsetTextField = new JTextField(12);
+    this.scopeOneOffsetTextField.setText(
+        String.valueOf(
+            experimentPreferences.getFloat(
+                Synapse21Preferences.SCOPE_ONE_OFFSET_KEY,
+                Synapse21Preferences.SCOPE_ONE_OFFSET_DEFAULT_VALUE)));
+    preferencesPanel.add(scopeOneOffsetTextField, gc);
+
+    gc.gridy++;
+
+    gc.gridx = 0;
+    this.scopeTwoOffsetLabel = new JLabel("Scope (2+) Offset:");
+    preferencesPanel.add(scopeTwoOffsetLabel, gc);
+
+    gc.gridx = 1;
+    this.scopeTwoOffsetTextField = new JTextField(12);
+    this.scopeTwoOffsetTextField.setText(
+        String.valueOf(
+            experimentPreferences.getFloat(
+                Synapse21Preferences.SCOPE_TWO_OFFSET_KEY,
+                Synapse21Preferences.SCOPE_TWO_OFFSET_DEFAULT_VALUE)));
+    preferencesPanel.add(scopeTwoOffsetTextField, gc);
+
+    gc.gridy++;
+
+    gc.gridx = 0;
+    this.wOneOffsetLabel = new JLabel("W1 Offset:");
+    preferencesPanel.add(wOneOffsetLabel, gc);
+
+    gc.gridx = 1;
+    this.wOneOffsetTextField = new JTextField(12);
+    this.wOneOffsetTextField.setText(
+        String.valueOf(
+            experimentPreferences.getFloat(
+                Synapse21Preferences.W_ONE_OFFSET_KEY,
+                Synapse21Preferences.W_ONE_OFFSET_DEFAULT_VALUE)));
+    preferencesPanel.add(wOneOffsetTextField, gc);
+    
   }
 
   @Override
@@ -136,6 +195,15 @@ public class Synapse21PreferencesPanel extends ExperimentPreferencesPanel {
         Synapse21Preferences.PULSE_WIDTH_INIT_KEY, Integer.parseInt(pulseWidthTextField.getText()));
     experimentPreferences.setInteger(
         Synapse21Preferences.SAMPLE_RATE_INIT_KEY, Integer.parseInt(sampleRateTextField.getText()));
+
+    experimentPreferences.setFloat(
+        Synapse21Preferences.SCOPE_ONE_OFFSET_KEY,
+        Float.parseFloat(scopeOneOffsetTextField.getText()));
+    experimentPreferences.setFloat(
+        Synapse21Preferences.SCOPE_TWO_OFFSET_KEY,
+        Float.parseFloat(scopeTwoOffsetTextField.getText()));
+    experimentPreferences.setFloat(
+        Synapse21Preferences.W_ONE_OFFSET_KEY, Float.parseFloat(wOneOffsetTextField.getText()));
   }
 
   @Override

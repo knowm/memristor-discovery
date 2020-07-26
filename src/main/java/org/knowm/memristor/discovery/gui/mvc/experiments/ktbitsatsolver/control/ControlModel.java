@@ -34,6 +34,7 @@ import org.knowm.memristor.discovery.core.driver.waveform.Triangle;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ktbitsatsolver.kTBitSatSolverPreferences;
+import org.knowm.memristor.discovery.gui.mvc.experiments.synapse12.Synapse12Preferences;
 
 public class ControlModel extends Model {
 
@@ -57,6 +58,11 @@ public class ControlModel extends Model {
   private int numTrainEpochs;
 
   private String filePath = "";
+
+
+  private double scopeOneOffset;
+  private double scopeTwoOffset;
+  private double wOneOffset;
 
   /** Constructor */
   public ControlModel() {
@@ -100,6 +106,18 @@ public class ControlModel extends Model {
         experimentPreferences.getInteger(
             kTBitSatSolverPreferences.NUM_TRAIN_EPOCHS_INIT_KEY,
             kTBitSatSolverPreferences.NUM_TRAIN_EPOCHS_INIT_DEFAULT_VALUE);
+
+    scopeOneOffset =
+        experimentPreferences.getFloat(
+            Synapse12Preferences.SCOPE_ONE_OFFSET_KEY,
+            Synapse12Preferences.SCOPE_ONE_OFFSET_DEFAULT_VALUE);
+    scopeTwoOffset =
+        experimentPreferences.getFloat(
+            Synapse12Preferences.SCOPE_TWO_OFFSET_KEY,
+            Synapse12Preferences.SCOPE_TWO_OFFSET_DEFAULT_VALUE);
+    wOneOffset =
+        experimentPreferences.getFloat(
+            Synapse12Preferences.W_ONE_OFFSET_KEY, Synapse12Preferences.W_ONE_OFFSET_DEFAULT_VALUE);
   }
 
   /** Given the state of the model, update the waveform x and y axis data arrays. */
@@ -228,5 +246,17 @@ public class ControlModel extends Model {
 
   public void setFilePath(String filePath) {
     this.filePath = filePath;
+  }
+
+  public double getScopeOneOffset() {
+    return scopeOneOffset;
+  }
+
+  public double getScopeTwoOffset() {
+    return scopeTwoOffset;
+  }
+
+  public double getwOneOffset() {
+    return wOneOffset;
   }
 }

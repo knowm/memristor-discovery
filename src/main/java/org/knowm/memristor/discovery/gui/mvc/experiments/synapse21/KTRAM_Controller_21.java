@@ -186,16 +186,41 @@ public class KTRAM_Controller_21 {
         Util.maxAbs(
             dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples));
 
-    // note: if V1 is less than resolution of scope, the measurments will be useless
+
+    ////////////////////////////////////////
+
+    getControlModel()
+        .swingPropertyChangeSupport
+        .firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null, "V(1+): " + peakV1);
+    getControlModel()
+        .swingPropertyChangeSupport
+        .firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null, "V(2+): " + peakV2);
+    getControlModel()
+        .swingPropertyChangeSupport
+        .firePropertyChange(Model.EVENT_NEW_CONSOLE_LOG, null, "V(W1): " + W1Amplitude);
+
+    peakV1 = peakV1 - controlModel.getScopeOneOffset() - controlModel.getwOneOffset();
+    peakV2 = peakV2 - controlModel.getScopeTwoOffset() - controlModel.getwOneOffset();
+
+    double W1AmplitudeWithOffset = W1Amplitude + controlModel.getwOneOffset();
+
+    System.out.println("peakV1: " + peakV1);
+    System.out.println("peakV2: " + peakV2);
+    System.out.println("W1AmplitudeWithOffset: " + W1AmplitudeWithOffset);
+    System.out.println("W1Amplitude: " + W1Amplitude);
+    
+    ////////////////////////////////////
+
+    // note: if V1 is less than resolution of scope, the measurements will be useless
     double vb = peakV2;
-    this.vy = (vb - peakV1 - (W1Amplitude - peakV1) / 2.0) / (W1Amplitude - peakV1);
+    this.vy = (vb - peakV1 - (W1AmplitudeWithOffset - peakV1) / 2.0) / (W1AmplitudeWithOffset - peakV1);
 
     // System.out.println("vy=" + vy);
 
     if (peakV1 > MIN_V_RESOLUTION) {
 
       double I = peakV1 / controlModel.getSeriesResistance();
-      double va = W1Amplitude - ExperimentPreferences.R_SWITCH * I;
+      double va = W1AmplitudeWithOffset - ExperimentPreferences.R_SWITCH * I;
       double vc = peakV1 + ExperimentPreferences.R_SWITCH * I;
 
       //      System.out.println("va=" + va);

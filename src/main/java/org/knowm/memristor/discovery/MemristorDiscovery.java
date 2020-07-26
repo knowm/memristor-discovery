@@ -649,7 +649,7 @@ public class MemristorDiscovery
   private void showPreferences() {
 
     int result = 0;
-    System.out.println("showPreferences() experimentName= " + experimentName);
+//    System.out.println("showPreferences() experimentName= " + experimentName);
     switch (experimentName) {
       case "Hysteresis":
         result = new HysteresisPreferencesPanel(mainFrame, experimentName).doModal();

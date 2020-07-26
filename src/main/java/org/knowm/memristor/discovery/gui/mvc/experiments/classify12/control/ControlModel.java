@@ -36,6 +36,7 @@ import org.knowm.memristor.discovery.gui.mvc.experiments.Model;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify12.Classify12Preferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify12.Classify12Preferences.AHaHRoutine;
 import org.knowm.memristor.discovery.gui.mvc.experiments.classify12.Classify12Preferences.Datasets;
+import org.knowm.memristor.discovery.gui.mvc.experiments.synapse12.Synapse12Preferences;
 
 public class ControlModel extends Model {
 
@@ -59,6 +60,11 @@ public class ControlModel extends Model {
   private int pulseWidth; // model store pulse width in nanoseconds
   private int numTrainEpochs;
 
+
+  private double scopeOneOffset;
+  private double scopeTwoOffset;
+  private double wOneOffset;
+
   /** Constructor */
   public ControlModel() {
 
@@ -74,7 +80,7 @@ public class ControlModel extends Model {
                 Classify12Preferences.WAVEFORM_INIT_STRING_KEY,
                 Classify12Preferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
 
-    System.out.println("waveform = " + waveform);
+//    System.out.println("waveform = " + waveform);
 
     seriesResistance =
         experimentPreferences.getInteger(
@@ -98,6 +104,18 @@ public class ControlModel extends Model {
         experimentPreferences.getInteger(
             Classify12Preferences.NUM_TRAIN_EPOCHS_INIT_KEY,
             Classify12Preferences.NUM_TRAIN_EPOCHS_INIT_DEFAULT_VALUE);
+
+    scopeOneOffset =
+        experimentPreferences.getFloat(
+            Synapse12Preferences.SCOPE_ONE_OFFSET_KEY,
+            Synapse12Preferences.SCOPE_ONE_OFFSET_DEFAULT_VALUE);
+    scopeTwoOffset =
+        experimentPreferences.getFloat(
+            Synapse12Preferences.SCOPE_TWO_OFFSET_KEY,
+            Synapse12Preferences.SCOPE_TWO_OFFSET_DEFAULT_VALUE);
+    wOneOffset =
+        experimentPreferences.getFloat(
+            Synapse12Preferences.W_ONE_OFFSET_KEY, Synapse12Preferences.W_ONE_OFFSET_DEFAULT_VALUE);
   }
 
   /** Given the state of the model, update the waveform x and y axis data arrays. */
@@ -244,5 +262,17 @@ public class ControlModel extends Model {
 
   public AHaHRoutine getAhahroutine() {
     return ahahroutine;
+  }
+
+  public double getScopeOneOffset() {
+    return scopeOneOffset;
+  }
+
+  public double getScopeTwoOffset() {
+    return scopeTwoOffset;
+  }
+
+  public double getwOneOffset() {
+    return wOneOffset;
   }
 }

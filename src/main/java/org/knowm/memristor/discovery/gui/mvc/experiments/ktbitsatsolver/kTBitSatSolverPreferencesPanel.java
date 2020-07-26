@@ -58,6 +58,15 @@ public class kTBitSatSolverPreferencesPanel extends ExperimentPreferencesPanel {
   private JLabel pulseWidthLabel;
   private JTextField pulseWidthTextField;
 
+  private JLabel scopeOneOffsetLabel;
+  private JTextField scopeOneOffsetTextField;
+
+  private JLabel scopeTwoOffsetLabel;
+  private JTextField scopeTwoOffsetTextField;
+
+  private JLabel wOneOffsetLabel;
+  private JTextField wOneOffsetTextField;
+
   /**
    * Constructor
    *
@@ -178,6 +187,49 @@ public class kTBitSatSolverPreferencesPanel extends ExperimentPreferencesPanel {
     preferencesPanel.add(pulseWidthTextField, gc);
 
     gc.gridy++;
+
+    gc.gridx = 0;
+    this.scopeOneOffsetLabel = new JLabel("Scope (1+) Offset:");
+    preferencesPanel.add(scopeOneOffsetLabel, gc);
+
+    gc.gridx = 1;
+    this.scopeOneOffsetTextField = new JTextField(12);
+    this.scopeOneOffsetTextField.setText(
+        String.valueOf(
+            experimentPreferences.getFloat(
+                kTBitSatSolverPreferences.SCOPE_ONE_OFFSET_KEY,
+                kTBitSatSolverPreferences.SCOPE_ONE_OFFSET_DEFAULT_VALUE)));
+    preferencesPanel.add(scopeOneOffsetTextField, gc);
+
+    gc.gridy++;
+
+    gc.gridx = 0;
+    this.scopeTwoOffsetLabel = new JLabel("Scope (2+) Offset:");
+    preferencesPanel.add(scopeTwoOffsetLabel, gc);
+
+    gc.gridx = 1;
+    this.scopeTwoOffsetTextField = new JTextField(12);
+    this.scopeTwoOffsetTextField.setText(
+        String.valueOf(
+            experimentPreferences.getFloat(
+                kTBitSatSolverPreferences.SCOPE_TWO_OFFSET_KEY,
+                kTBitSatSolverPreferences.SCOPE_TWO_OFFSET_DEFAULT_VALUE)));
+    preferencesPanel.add(scopeTwoOffsetTextField, gc);
+
+    gc.gridy++;
+
+    gc.gridx = 0;
+    this.wOneOffsetLabel = new JLabel("W1 Offset:");
+    preferencesPanel.add(wOneOffsetLabel, gc);
+
+    gc.gridx = 1;
+    this.wOneOffsetTextField = new JTextField(12);
+    this.wOneOffsetTextField.setText(
+        String.valueOf(
+            experimentPreferences.getFloat(
+                kTBitSatSolverPreferences.W_ONE_OFFSET_KEY,
+                kTBitSatSolverPreferences.W_ONE_OFFSET_DEFAULT_VALUE)));
+    preferencesPanel.add(wOneOffsetTextField, gc);
   }
 
   @Override
@@ -194,6 +246,16 @@ public class kTBitSatSolverPreferencesPanel extends ExperimentPreferencesPanel {
     experimentPreferences.setInteger(
         kTBitSatSolverPreferences.PULSE_WIDTH_INIT_KEY,
         Integer.parseInt(pulseWidthTextField.getText()));
+
+    experimentPreferences.setFloat(
+        kTBitSatSolverPreferences.SCOPE_ONE_OFFSET_KEY,
+        Float.parseFloat(scopeOneOffsetTextField.getText()));
+    experimentPreferences.setFloat(
+        kTBitSatSolverPreferences.SCOPE_TWO_OFFSET_KEY,
+        Float.parseFloat(scopeTwoOffsetTextField.getText()));
+    experimentPreferences.setFloat(
+        kTBitSatSolverPreferences.W_ONE_OFFSET_KEY,
+        Float.parseFloat(wOneOffsetTextField.getText()));
   }
 
   @Override
