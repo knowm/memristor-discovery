@@ -136,8 +136,6 @@ The preferences window allows you to save your preferred experimental control pa
 
 ## Analog Discovery 2 Scope and Waveform Offsets
 
-## Analog Discovery 2 Scope and Waveform Offsets
-
 Some AD2 units have offsets of a few millivolts that can cause significant measurement issues. While waveforms software resolves this through calibration, and while the calibration data is stored on the device itself, the unit does not actually apply the calibration. Rather, Waveforms software uses the stored parameters to correct the acquired data and generated signals. To add calibration to your measurements, follow the below procedure:
 
 1. Remove the Memristor Discovery Board from the AD2.

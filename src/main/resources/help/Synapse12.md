@@ -32,7 +32,7 @@ The preferences window allows you to save your preferred experimental control pa
 
 ## Analog Discovery 2 Scope and Waveform Offsets
 
-Some AD2 units have offsets of a few millivolts that can cause significant measurement issues. While waveforms software resolves this through calibration, and while the calibration data is stored on the device itself, the unit does not actually apply the calibration. Rather, Waveforms software uses the stored parameters to correct the acquired data and generated signals. To add calibration to your measurements, follow the below procedure:
+Some AD2 units have offsets of a few millivolts that can cause significant measurement issues. While the Waveforms software resolves this through calibration, and while the calibration data is stored on the device itself, the physical AD2 unit does not actually apply the calibration. Rather, Waveforms software uses the stored parameters to correct the acquired data and generated signals. To add calibration to your measurements, follow the below procedure:
 
 1. Remove the Memristor Discovery Board from the AD2.
 2. Open the Synapse 1-2 Experiment in Memristor Discovery software.
@@ -61,7 +61,7 @@ Scope (1+) Offset: -0.00116
 Scope (2+) Offset: -0.04096
 ```
 
-8. Compute waveform offset from equation using data recorded in step 6 and scope offsets.
+8. Compute the waveform generator offset from the equation below using data recorded in step 6 and the scope offsets.
 
 ```
 W1 Offset = V(1+) - [Scope (1+) Offset] - V(W1)
