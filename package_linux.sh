@@ -6,8 +6,8 @@ PACKAGER=/usr/local/bin/jpackager/jpackager
 INSTALLER_TYPE=deb
 INPUT=jar
 OUTPUT=target
-JAR=memristor-discovery-2.0.0.jar
-VERSION=2.0.0
+JAR=memristor-discovery-2.0.1.jar
+VERSION=2.0.1
 APP_ICON=_exe/icon.png
 
 ${PACKAGER} \
