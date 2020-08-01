@@ -60,7 +60,6 @@ public class ControlModel extends Model {
   private int pulseWidth; // model store pulse width in nanoseconds
   private int numTrainEpochs;
 
-
   private double scopeOneOffset;
   private double scopeTwoOffset;
   private double wOneOffset;
@@ -80,7 +79,7 @@ public class ControlModel extends Model {
                 Classify12Preferences.WAVEFORM_INIT_STRING_KEY,
                 Classify12Preferences.WAVEFORM_INIT_STRING_DEFAULT_VALUE));
 
-//    System.out.println("waveform = " + waveform);
+    //    System.out.println("waveform = " + waveform);
 
     seriesResistance =
         experimentPreferences.getInteger(

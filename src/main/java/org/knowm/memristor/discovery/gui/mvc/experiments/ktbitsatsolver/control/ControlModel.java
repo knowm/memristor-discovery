@@ -59,7 +59,6 @@ public class ControlModel extends Model {
 
   private String filePath = "";
 
-
   private double scopeOneOffset;
   private double scopeTwoOffset;
   private double wOneOffset;

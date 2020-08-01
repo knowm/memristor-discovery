@@ -31,7 +31,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferencesPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.synapse12.Synapse12Preferences;
 
 public class Classify12PreferencesPanel extends ExperimentPreferencesPanel {
 
@@ -49,7 +48,6 @@ public class Classify12PreferencesPanel extends ExperimentPreferencesPanel {
 
   private JLabel numTrainEpochsLabel;
   private JTextField numTrainEpochsTextField;
-
 
   private JLabel scopeOneOffsetLabel;
   private JTextField scopeOneOffsetTextField;
@@ -152,7 +150,6 @@ public class Classify12PreferencesPanel extends ExperimentPreferencesPanel {
                 Classify12Preferences.NUM_TRAIN_EPOCHS_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(numTrainEpochsTextField, gc);
 
-
     gc.gridy++;
 
     gc.gridx = 0;
@@ -197,7 +194,6 @@ public class Classify12PreferencesPanel extends ExperimentPreferencesPanel {
                 Classify12Preferences.W_ONE_OFFSET_KEY,
                 Classify12Preferences.W_ONE_OFFSET_DEFAULT_VALUE)));
     preferencesPanel.add(wOneOffsetTextField, gc);
-    
   }
 
   @Override
@@ -224,7 +220,6 @@ public class Classify12PreferencesPanel extends ExperimentPreferencesPanel {
         Float.parseFloat(scopeTwoOffsetTextField.getText()));
     experimentPreferences.setFloat(
         Classify12Preferences.W_ONE_OFFSET_KEY, Float.parseFloat(wOneOffsetTextField.getText()));
-    
   }
 
   @Override

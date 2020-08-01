@@ -31,7 +31,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferencesPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.synapse12.Synapse12Preferences;
 
 public class Synapse21PreferencesPanel extends ExperimentPreferencesPanel {
 
@@ -47,7 +46,6 @@ public class Synapse21PreferencesPanel extends ExperimentPreferencesPanel {
   private JLabel sampleRateLabel;
   private JTextField sampleRateTextField;
 
-
   private JLabel scopeOneOffsetLabel;
   private JTextField scopeOneOffsetTextField;
 
@@ -56,7 +54,6 @@ public class Synapse21PreferencesPanel extends ExperimentPreferencesPanel {
 
   private JLabel wOneOffsetLabel;
   private JTextField wOneOffsetTextField;
-  
 
   /**
    * Constructor
@@ -134,7 +131,6 @@ public class Synapse21PreferencesPanel extends ExperimentPreferencesPanel {
                 Synapse21Preferences.SAMPLE_RATE_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(sampleRateTextField, gc);
 
-
     gc.gridy++;
 
     gc.gridx = 0;
@@ -179,7 +175,6 @@ public class Synapse21PreferencesPanel extends ExperimentPreferencesPanel {
                 Synapse21Preferences.W_ONE_OFFSET_KEY,
                 Synapse21Preferences.W_ONE_OFFSET_DEFAULT_VALUE)));
     preferencesPanel.add(wOneOffsetTextField, gc);
-    
   }
 
   @Override

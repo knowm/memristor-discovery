@@ -31,7 +31,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferences;
 import org.knowm.memristor.discovery.gui.mvc.experiments.ExperimentPreferencesPanel;
-import org.knowm.memristor.discovery.gui.mvc.experiments.synapse12.Synapse12Preferences;
 
 public class Classify21PreferencesPanel extends ExperimentPreferencesPanel {
 
@@ -46,7 +45,6 @@ public class Classify21PreferencesPanel extends ExperimentPreferencesPanel {
 
   private JLabel numTrainEpochsLabel;
   private JTextField numTrainEpochsTextField;
-
 
   private JLabel scopeOneOffsetLabel;
   private JTextField scopeOneOffsetTextField;
@@ -133,7 +131,6 @@ public class Classify21PreferencesPanel extends ExperimentPreferencesPanel {
                 Classify21Preferences.NUM_TRAIN_EPOCHS_INIT_DEFAULT_VALUE)));
     preferencesPanel.add(numTrainEpochsTextField, gc);
 
-
     gc.gridy++;
 
     gc.gridx = 0;
@@ -204,7 +201,6 @@ public class Classify21PreferencesPanel extends ExperimentPreferencesPanel {
         Float.parseFloat(scopeTwoOffsetTextField.getText()));
     experimentPreferences.setFloat(
         Classify21Preferences.W_ONE_OFFSET_KEY, Float.parseFloat(wOneOffsetTextField.getText()));
-    
   }
 
   @Override

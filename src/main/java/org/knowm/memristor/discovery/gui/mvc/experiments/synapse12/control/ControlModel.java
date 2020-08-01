@@ -105,7 +105,7 @@ public class ControlModel extends Model {
         experimentPreferences.getInteger(
             Synapse12Preferences.SAMPLE_RATE_INIT_KEY,
             Synapse12Preferences.SAMPLE_RATE_INIT_DEFAULT_VALUE);
-    
+
     scopeOneOffset =
         experimentPreferences.getFloat(
             Synapse12Preferences.SCOPE_ONE_OFFSET_KEY,

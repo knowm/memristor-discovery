@@ -202,7 +202,8 @@ public class KTRAM_Controller_21 {
 
     // note: if V1 is less than resolution of scope, the measurEments will be useless
     double vb = peakV2;
-    this.vy = (vb - peakV1 - (W1AmplitudeWithOffset - peakV1) / 2.0) / (W1AmplitudeWithOffset - peakV1);
+    this.vy =
+        (vb - peakV1 - (W1AmplitudeWithOffset - peakV1) / 2.0) / (W1AmplitudeWithOffset - peakV1);
 
     // System.out.println("vy=" + vy);
 

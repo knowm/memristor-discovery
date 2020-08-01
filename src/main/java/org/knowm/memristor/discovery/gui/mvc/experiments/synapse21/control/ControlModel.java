@@ -58,7 +58,6 @@ public class ControlModel extends Model {
 
   private boolean isStartToggled = false;
 
-
   private double scopeOneOffset;
   private double scopeTwoOffset;
   private double wOneOffset;

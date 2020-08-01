@@ -186,7 +186,6 @@ public class KTRAM_Controller_21 {
         Util.maxAbs(
             dWFProxy.getDwf().FDwfAnalogInStatusData(DWF.OSCILLOSCOPE_CHANNEL_2, validSamples));
 
-
     ////////////////////////////////////////
 
     getControlModel()
@@ -208,12 +207,13 @@ public class KTRAM_Controller_21 {
     System.out.println("peakV2: " + peakV2);
     System.out.println("W1AmplitudeWithOffset: " + W1AmplitudeWithOffset);
     System.out.println("W1Amplitude: " + W1Amplitude);
-    
+
     ////////////////////////////////////
 
     // note: if V1 is less than resolution of scope, the measurements will be useless
     double vb = peakV2;
-    this.vy = (vb - peakV1 - (W1AmplitudeWithOffset - peakV1) / 2.0) / (W1AmplitudeWithOffset - peakV1);
+    this.vy =
+        (vb - peakV1 - (W1AmplitudeWithOffset - peakV1) / 2.0) / (W1AmplitudeWithOffset - peakV1);
 
     // System.out.println("vy=" + vy);
 
