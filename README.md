@@ -1,6 +1,6 @@
 # About
 
-Memristor Discovery is a Java application for running memristor "experiments" on the Knowm [Memristor Discovery Board](http://knowm.org/product/memristor-discovery/). It is designed to be cross-platform, meaning it runs on the latest versions of MacOS, Debian-based Linux and Windows 10. Running Memristor-Discovery requires Java and the Digilent waveforms Framework to be installed on your system (see below).
+Memristor Discovery is a Java application for running memristor "experiments" on the Knowm [Memristor Discovery Board](https://knowm.com/products/memristor-discovery-board-chip-manual). It is designed to be cross-platform, meaning it runs on the latest versions of MacOS, Debian-based Linux and Windows 10. Running Memristor-Discovery requires Java and the Digilent waveforms Framework to be installed on your system (see below).
 
 The following screenshots show Memristor-Discovery running on the three supported operating systems.
 
