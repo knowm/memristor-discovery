@@ -69,7 +69,7 @@
     <dependency>
       <groupId>com.vladsch.flexmark</groupId>
       <artifactId>flexmark-all</artifactId>
-      <version>0.50.50</version>
+      <version>0.62.2</version>
     </dependency>
 
     <dependency>
